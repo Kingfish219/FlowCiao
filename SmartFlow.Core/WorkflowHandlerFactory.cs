@@ -9,38 +9,32 @@ namespace SmartFlow.Core
     internal static class WorkflowHandlerFactory
     {
         internal static Queue<WorkflowHandler> BuildHandlers(
-            EntityCommandType commandType,
-            Entity entity,
+            ProcessStepContext processStepContext,
             IProcessRepository processRepository,
             IProcessStepManager processStepManager,
             IEntityRepository entityRepository,
             LogRepository logRepository,
-            ProcessStepInput input,
-            ProcessUser user,
             string connectionString
             )
         {
 
-            return BuildDefaultHandlers(commandType, entity, processRepository, processStepManager, entityRepository, logRepository, input, user, connectionString);
+            return BuildDefaultHandlers(processStepContext, processRepository, processStepManager, entityRepository, logRepository, connectionString);
         }
 
         private static Queue<WorkflowHandler> BuildDefaultHandlers(
-            EntityCommandType commandType
-            , Entity entity
+             ProcessStepContext processStepContext
             , IProcessRepository processRepository
             , IProcessStepManager processStepManager
             , IEntityRepository entityRepository
             , LogRepository logRepository
-            , ProcessStepInput input
-            , ProcessUser user
             , string connectionString)
         {
-            var actionHandler = new ActionHandler(processRepository, input.ActionCode, logRepository);
-            var actionActivityHandler = new ActionActivityHandler(processRepository);
-            var transitionHandler = new TransitionHandler(processRepository, entityRepository, input.ActionCode, connectionString, logRepository);
-            var transitionActivityHandler = new TransitionActivityHandler(processRepository, input.ActionCode, connectionString, logRepository);
-            var processStepFinalizerHandler = new ProcessStepFinalizerHandler(processRepository, processStepManager, input.ActionCode, entity, user.Id);
-            var stateActivityHandler = new StateActivityHandler(processRepository, input.ActionCode, connectionString, logRepository);
+            var actionHandler = new ActionHandler(processRepository, processStepManager, processStepContext);
+            var actionActivityHandler = new ActionActivityHandler(processRepository, processStepManager, processStepContext);
+            var transitionHandler = new TransitionHandler(processRepository, processStepManager, processStepContext, entityRepository);
+            var transitionActivityHandler = new TransitionActivityHandler(processRepository, processStepManager, processStepContext);
+            var processStepFinalizerHandler = new ProcessStepFinalizerHandler(processRepository, processStepManager, processStepContext);
+            var stateActivityHandler = new StateActivityHandler(processRepository, processStepManager, processStepContext);
 
             actionHandler.SetNextHandler(actionActivityHandler);
 
@@ -58,9 +52,9 @@ namespace SmartFlow.Core
 
             var queue = new Queue<WorkflowHandler>();
 
-            if (commandType == EntityCommandType.Create)
+            if (processStepContext.EntityCommandType == EntityCommandType.Create)
             {
-                var entityCommandHandler = new EntityHandler(processRepository, entityRepository.Create);
+                var entityCommandHandler = new EntityHandler(processRepository, processStepManager, processStepContext, entityRepository.Create);
                 entityCommandHandler.SetNextHandler(actionHandler);
                 actionHandler.SetPreviousHandler(entityCommandHandler);
                 queue.Enqueue(entityCommandHandler);

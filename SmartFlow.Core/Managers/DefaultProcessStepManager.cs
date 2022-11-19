@@ -8,24 +8,23 @@ namespace SmartFlow.Core
 {
     internal class DefaultProcessStepManager : IProcessStepManager
     {
-        private readonly Entity _entity;
         private readonly IProcessRepository _processRepository;
         private readonly IEntityCreateHistory _entityCreateHistory;
-        internal DefaultProcessStepManager(IProcessRepository processRepository, IEntityCreateHistory entityCreateHistory, Entity entity)
+
+        internal DefaultProcessStepManager(IProcessRepository processRepository, IEntityCreateHistory entityCreateHistory)
         {
-            _entity = entity;
             _processRepository = processRepository;
             _entityCreateHistory = entityCreateHistory;
         }
 
-        public ProcessStep GetActiveProcessStep(Guid userId)
+        public ProcessStep GetActiveProcessStep(Guid userId, Entity entity)
         {
-            var processStep = _processRepository.GetActiveProcessStep(_entity).Result;
+            var processStep = _processRepository.GetActiveProcessStep(entity).Result;
             if (processStep != null)
             {
                 var process = _processRepository.GetProcess(processStep.ProcessId).Result;
-                var transitionActions = _processRepository.GetActiveTransitions(_entity, process.Id).Result;
-                processStep.Entity = _entity;
+                var transitionActions = _processRepository.GetActiveTransitions(entity, process.Id).Result;
+                processStep.Entity = entity;
                 processStep.TransitionActions = transitionActions;
                 processStep.Process = process;
             }
@@ -34,7 +33,7 @@ namespace SmartFlow.Core
         }
 
         //public ProcessStep InitializeActiveProcessStep(Guid userID)
-        public ProcessStep InitializeActiveProcessStep(Guid userId, bool initializeFromFirstState = false)
+        public ProcessStep InitializeActiveProcessStep(Guid userId, Entity entity, bool initializeFromFirstState = false)
         {
             var process = _processRepository.GetProcess(userId).Result;
             State state;
@@ -44,7 +43,7 @@ namespace SmartFlow.Core
             }
             else
             {
-                state = new State { Id = _entity.LastStatus };
+                state = new State { Id = entity.LastStatus };
             }
 
             var transitionActions = _processRepository.GetStateTransitions(process, state).Result;
@@ -52,7 +51,7 @@ namespace SmartFlow.Core
             {
                 Process = process,
                 TransitionActions = transitionActions,
-                Entity = _entity
+                Entity = entity
             };
 
             var result = _processRepository.CreateProcessStep(processStep).Result;
@@ -61,7 +60,7 @@ namespace SmartFlow.Core
                 throw new SmartFlowProcessException("No process step found");
             }
 
-            processStep = GetActiveProcessStep(userId);
+            processStep = GetActiveProcessStep(userId, entity);
 
             return processStep;
         }

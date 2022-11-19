@@ -9,6 +9,7 @@ namespace SmartFlow.Core.Exceptions
         public SmartFlowProcessException()
         {
         }
+
         public SmartFlowProcessException(string message, LogRepository logRepository, ProcessStep processStep, [System.Runtime.CompilerServices.CallerFilePath] string handlerName = "", [System.Runtime.CompilerServices.CallerLineNumber] int line = 0)
             : base(message)
         {
@@ -26,7 +27,7 @@ namespace SmartFlow.Core.Exceptions
                     Data = message + "- Line: " + line,
                     Handler = (handlerClassName.Length > 1 ? handlerClassName[handlerClassName.Length - 1] : handlerName)
                 };
-                logRepository.Create(log).GetAwaiter().GetResult();
+                //logRepository.Create(log).GetAwaiter().GetResult();
             }
             catch (Exception) { }
         }

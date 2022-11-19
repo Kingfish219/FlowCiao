@@ -1,28 +1,24 @@
-﻿using System;
+﻿using SmartFlow.Core.Models;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SmartFlow.Core
 {
     public class ProcessStepContext
     {
-        private static ProcessStepContext _instance=new ProcessStepContext();
-        public Dictionary<string, object> Context { get; private set; }
+        public ProcessStep ProcessStep { get; set; }
+        public ProcessUser ProcessUser { get; set; }
+        public ProcessStepInput ProcessStepInput { get; set; }
+        public EntityCommandType EntityCommandType { get; set; }
+        public Dictionary<string, object> Data { get; set; }
 
         public ProcessStepContext() 
         {
-            Context = new Dictionary<string, object>();
+            Data = new Dictionary<string, object>();
         }
 
-        public static ProcessStepContext ReturnInstance()
+        internal void ClearDictionary()
         {
-            return _instance ?? new ProcessStepContext();
-        }
-
-        internal static void ClearDictionary()
-        {
-            _instance = ReturnInstance();
-            _instance.Context = new Dictionary<string, object>();
+            Data = new Dictionary<string, object>();
         }
     }
 }

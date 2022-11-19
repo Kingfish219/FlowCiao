@@ -3,27 +3,25 @@ using SmartFlow.Core.Models;
 using System;
 using System.Linq;
 using SmartFlow.Core.Exceptions;
-using SmartFlow.Core.Repositories;
 
 namespace SmartFlow.Core.Handlers
 {
     internal class StateActivityHandler : WorkflowHandler
     {
-        private int _actionCode;
-        private string _connectionString;
-        private IProcessRepository _ProcessRepository;
-        private LogRepository _LogRepository;
-
-        internal StateActivityHandler(IProcessRepository processRepository, int actionCode, string connectionString, LogRepository logRepository) 
-            : base(processRepository)
+        public StateActivityHandler(IProcessRepository processRepository, IProcessStepManager processStepManager, ProcessStepContext processStepContext) : base(processRepository, processStepManager, processStepContext)
         {
-            _actionCode = actionCode;
-            _ProcessRepository = processRepository;
-            _connectionString = connectionString;
-            _LogRepository = logRepository;
         }
 
-        public override ProcessResult Handle(ProcessStep processStep, ProcessUser user, ProcessStepContext processStepContext)
+        //internal StateActivityHandler(IProcessRepository processRepository, int actionCode, string connectionString, LogRepository logRepository) 
+        //    : base(processRepository)
+        //{
+        //    _actionCode = actionCode;
+        //    _ProcessRepository = processRepository;
+        //    _connectionString = connectionString;
+        //    _LogRepository = logRepository;
+        //}
+
+        public override ProcessResult Handle()
         {
             try
             {
@@ -34,7 +32,7 @@ namespace SmartFlow.Core.Handlers
 
                 var stateCurrent = new State
                 {
-                    Id = processStep.TransitionActions.FirstOrDefault().Transition.CurrentStateId
+                    Id = ProcessStepContext.ProcessStep.TransitionActions.FirstOrDefault().Transition.CurrentStateId
                 };
 
                 var activities = ProcessRepository.GetStateActivities(stateCurrent, new Group()).Result;
@@ -44,50 +42,10 @@ namespace SmartFlow.Core.Handlers
                         .SelectMany(type => type.GetTypes())
                         .Where(p => typeof(Activity).IsAssignableFrom(p) && !p.IsInterface && !p.IsAbstract && p.BaseType == typeof(Activity));
 
-                    //var context = ProcessStepContext.ReturnInstance();
-                    //context.Context.Add("ProcessStep", processStep);
-                    //context.Context.Add("Entity", processStep.Entity);
-                    //context.Context.Add("User", user);
-                    //context.Context.Add("ActionComment", _comment);
-                    //context.Context.Add("CurrentState", stateCurrent);
-                    //context.Context.Add("ConnectionString", _connectionString);
-                    //context.Context.Add("ProcessRepoInstance", _ProcessRepository);
-                    //context.Context.Add("Creator", _creator);
-                    if (processStepContext.Context.ContainsKey("ProcessStep"))
-                        processStepContext.Context["ProcessStep"] = processStep;
-                    else
-                        processStepContext.Context.Add("ProcessStep", processStep);
-                    if (processStepContext.Context.ContainsKey("Entity"))
-                        processStepContext.Context["Entity"] = processStep.Entity;
-                    else 
-                        processStepContext.Context.Add("Entity", processStep.Entity);
-                    if (processStepContext.Context.ContainsKey("User"))
-                        processStepContext.Context["User"] = user;
-                    else
-                        processStepContext.Context.Add("User", user);
-                   
-                    if (processStepContext.Context.ContainsKey("CurrentState"))
-                        processStepContext.Context["CurrentState"] = stateCurrent;
-                    else
-                        processStepContext.Context.Add("CurrentState", stateCurrent);
-                    if (processStepContext.Context.ContainsKey("ConnectionString"))
-                        processStepContext.Context["ConnectionString"] = _connectionString;
-                    else
-                        processStepContext.Context.Add("ConnectionString", _connectionString);
-                    if (processStepContext.Context.ContainsKey("ProcessRepoInstance"))
-                        processStepContext.Context["ProcessRepoInstance"] = _ProcessRepository;
-                    else
-                        processStepContext.Context.Add("ProcessRepoInstance", _ProcessRepository);
-
                     foreach (var type in types)
                     {
-                        var activity = (IProcessActivity)Activator.CreateInstance(type, processStepContext);
+                        var activity = (IProcessActivity)Activator.CreateInstance(type, ProcessStepContext);
                         if (!activities.Exists(x => x.ActivityTypeCode == ((Activity)activity).ActivityTypeCode))
-                        {
-                            continue;
-                        }
-
-                        if (((Activity)activity).ActivityTypeCode == 2)
                         {
                             continue;
                         }
@@ -95,22 +53,13 @@ namespace SmartFlow.Core.Handlers
                         result = activity.Invoke();
                         if (result.Status != ProcessResultStatus.Completed && result.Status != ProcessResultStatus.SetOwner)
                         {
-                            if (type.Name.Trim().Equals(@"SubmitTicketActivity", StringComparison.OrdinalIgnoreCase))
-                            {
-                                RollBack(processStep);
-                                return new ProcessResult
-                                {
-                                    Status = ProcessResultStatus.Failed,
-                                    Message = @"متاسفانه ارتباط با سرور برقرار نشد، لطفا چند دقیقه دیگر مجددا امتحان کنید"
-                                };
-                            }
-
-                            throw new SmartFlowProcessException("Exception occured while invoking activities" + result.Message, _LogRepository, processStep);
+                            throw new SmartFlowProcessException("Exception occured while invoking activities" + result.Message);
                         }
+
                         //log to ProcessStepHistoryActivity
                         var currentActivity = activities.Find(a => a.ActivityTypeCode == ((Activity)activity).ActivityTypeCode);
-                        Guid LastProcessStepHistoryItemId = _ProcessRepository.GetLastProcessStepHistoryItem(processStep.Entity.Id).Result.Id;
-                        _ProcessRepository.AddProcessStepHistoryActivity(new ProcessStepHistoryActivity { ActivityId = currentActivity.Id, ActivityName = currentActivity.Name, StepType = 1, ProcessStepHistoryId = LastProcessStepHistoryItemId });
+                        Guid LastProcessStepHistoryItemId = ProcessRepository.GetLastProcessStepHistoryItem(ProcessStepContext.ProcessStep.Entity.Id).Result.Id;
+                        ProcessRepository.AddProcessStepHistoryActivity(new ProcessStepHistoryActivity { ActivityId = currentActivity.Id, ActivityName = currentActivity.Name, StepType = 1, ProcessStepHistoryId = LastProcessStepHistoryItemId });
                     }
                 }
 
@@ -119,7 +68,7 @@ namespace SmartFlow.Core.Handlers
                     return result;
                 }
 
-                return NextHandler.Handle(processStep, user,processStepContext);
+                return NextHandler.Handle();
             }
             catch (Exception exception)
             {
@@ -131,16 +80,13 @@ namespace SmartFlow.Core.Handlers
             }
         }
 
-        public override ProcessResult RollBack(ProcessStep processStep)
+        public override ProcessResult RollBack()
         {
             try
             {
-                _ProcessRepository.RemoveEntireFlow(processStep).GetAwaiter().GetResult();
+                ProcessRepository.RemoveEntireFlow(ProcessStepContext.ProcessStep).GetAwaiter().GetResult();
 
-                return new ProcessResult
-                {
-                    Status = ProcessResultStatus.Completed
-                };
+                return PreviousHandler.RollBack();
             }
             catch (Exception exception)
             {

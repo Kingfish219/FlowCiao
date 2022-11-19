@@ -1,5 +1,4 @@
 ﻿using SmartFlow.Core.Db;
-using SmartFlow.Core.Interfaces;
 using SmartFlow.Core.Models;
 using System;
 using System.Linq;
@@ -10,23 +9,31 @@ namespace SmartFlow.Core.Handlers
     {
         private readonly Func<Entity, ProcessResult> _command;
 
-        internal EntityHandler(IProcessRepository processRepository, Func<Entity, ProcessResult> command) : base(processRepository)
+        public EntityHandler(IProcessRepository processRepository
+            , IProcessStepManager processStepManager
+            , ProcessStepContext processStepContext
+            , Func<Entity, ProcessResult> command) : base(processRepository, processStepManager, processStepContext)
         {
             _command = command;
         }
 
-        public override ProcessResult Handle(ProcessStep processStep, ProcessUser user, ProcessStepContext processStepContext)
+        //internal EntityHandler(IProcessRepository processRepository, Func<Entity, ProcessResult> command) : base(processRepository)
+        //{
+        //    _command = command;
+        //}
+
+        public override ProcessResult Handle()
         {
             try
             {
-                processStep.Entity.LastStatus = processStep.TransitionActions.FirstOrDefault().Transition.CurrentStateId;
-                var result = _command(processStep.Entity);
-                if (result.Status != ProcessResultStatus.Completed)     
+                ProcessStepContext.ProcessStep.Entity.LastStatus = ProcessStepContext.ProcessStep.TransitionActions.FirstOrDefault().Transition.CurrentStateId;
+                var result = _command(ProcessStepContext.ProcessStep.Entity);
+                if (result.Status != ProcessResultStatus.Completed)
                 {
                     return result;
                 }
 
-                return NextHandler.Handle(processStep,user, processStepContext);
+                return NextHandler.Handle();
             }
             catch (Exception exception)
             {
@@ -38,7 +45,7 @@ namespace SmartFlow.Core.Handlers
             }
         }
 
-        public override ProcessResult RollBack(ProcessStep processStep)
+        public override ProcessResult RollBack()
         {
             throw new NotImplementedException();
         }

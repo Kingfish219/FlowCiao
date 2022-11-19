@@ -31,16 +31,16 @@ namespace SmartFlow.Core
                 {
                     var logRepository = new LogRepository(_connectionString);
                     var processRepository = new DefaultProcessRepository(_connectionString);
-                    var processStepManager = new DefaultProcessStepManager(processRepository, entityCreateHistory, entity);
+                    var processStepManager = new DefaultProcessStepManager(processRepository, entityCreateHistory);
                     ProcessStep processStep;
                     if (commandType == EntityCommandType.Create)
                     {
-                        processStep = processStepManager.InitializeActiveProcessStep(user.Id, true);
+                        processStep = processStepManager.InitializeActiveProcessStep(user.Id, entity, true);
                         input.ActionCode = 1;
                     }
                     else
                     {
-                        processStep = processStepManager.GetActiveProcessStep(user.Id);
+                        processStep = processStepManager.GetActiveProcessStep(user.Id, entity);
                     }
 
                     if (processStep is null)
@@ -51,25 +51,25 @@ namespace SmartFlow.Core
                         };
                     }
 
-                    var processStepContext = new ProcessStepContext();
-                    foreach (var element in parameters)
+                    var processStepContext = new ProcessStepContext
                     {
-                        processStepContext.Context.Add(element.Key, element.Value);
-                    }
+                        ProcessStep = processStep,
+                        ProcessUser = user,
+                        ProcessStepInput = input,
+                        Data = parameters,
+                        EntityCommandType = commandType,
+                    };
 
                     var handlers = WorkflowHandlerFactory.BuildHandlers(
-                        commandType
-                        , entity
-                        , processRepository
-                        , processStepManager
-                        , entityRepository
-                        , logRepository
-                        , input
-                        , user
-                        , _connectionString
+                        processStepContext,
+                        processRepository,
+                        processStepManager,
+                        entityRepository,
+                        logRepository,
+                        _connectionString
                        );
 
-                    var result = handlers.Peek().Handle(processStep, user, processStepContext);
+                    var result = handlers.Peek().Handle();
 
                     return result;
                 }

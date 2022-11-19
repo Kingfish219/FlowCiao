@@ -7,26 +7,26 @@ namespace SmartFlow.Core.Handlers
 {
     internal class ProcessStepFinalizerHandler : WorkflowHandler
     {
-        private readonly IProcessStepManager _processStepManager;
-        private readonly int _actionCode;
-        private Guid _userId;
-        private readonly IProcessRepository _processRepository;
-        private Entity _entity;
-
-        public ProcessStepFinalizerHandler(IProcessRepository processRepository, IProcessStepManager processStepManager, int actionCode, Entity entity, Guid userId) : base(processRepository)
+        public ProcessStepFinalizerHandler(IProcessRepository processRepository
+            , IProcessStepManager processStepManager
+            , ProcessStepContext processStepContext) : base(processRepository, processStepManager, processStepContext)
         {
-            _processStepManager = processStepManager;
-            _actionCode = actionCode;
-            _userId = userId;
-            _processRepository = processRepository;
-            _entity = entity;
         }
 
-        public override ProcessResult Handle(ProcessStep processStep, ProcessUser user, ProcessStepContext processStepContext)
+        //public ProcessStepFinalizerHandler(IProcessRepository processRepository, ProcessStepContext ProcessStepContext, IProcessStepManager processStepManager) : base(processRepository, ProcessStepContext)
+        //{
+        //    _processStepManager = processStepManager;
+        //    _actionCode = actionCode;
+        //    _userId = userId;
+        //    _processRepository = processRepository;
+        //    _entity = entity;
+        //}
+
+        public override ProcessResult Handle()
         {
             try
             {
-                var result = _processStepManager.FinalizeActiveProcessStep(processStep);
+                var result = ProcessStepManager.FinalizeActiveProcessStep(ProcessStepContext.ProcessStep);
                 if (result.Status == ProcessResultStatus.Failed)
                 {
                     return new ProcessResult
@@ -36,7 +36,9 @@ namespace SmartFlow.Core.Handlers
                     };
                 }
 
-                var state = ProcessRepository.GetState(processStep.TransitionActions.FirstOrDefault(x => x.Action.ActionTypeCode == _actionCode).Transition.NextStateId).Result;
+                var state = ProcessRepository.GetState(ProcessStepContext.ProcessStep.TransitionActions
+                    .FirstOrDefault(x => x.Action.ActionTypeCode == ProcessStepContext.ProcessStepInput.ActionCode)
+                    .Transition.NextStateId).Result;
                 if (state.IsFinalResponse)
                 {
                     return new ProcessResult
@@ -45,8 +47,11 @@ namespace SmartFlow.Core.Handlers
                     };
                 }
 
-                processStep = _processStepManager.InitializeActiveProcessStep(_userId, _entity, false);
-                if (processStep == null)
+                ProcessStepContext.ProcessStep = ProcessStepManager.InitializeActiveProcessStep(ProcessStepContext.ProcessUser.Id
+                    , ProcessStepContext.ProcessStep.Entity
+                    , false);
+
+                if (ProcessStepContext.ProcessStep == null)
                 {
                     return new ProcessResult
                     {
@@ -55,7 +60,7 @@ namespace SmartFlow.Core.Handlers
                     };
                 }
 
-                return NextHandler.Handle(processStep, user, processStepContext);
+                return NextHandler.Handle();
             }
             catch (Exception exception)
             {
@@ -67,7 +72,7 @@ namespace SmartFlow.Core.Handlers
             }
         }
 
-        public override ProcessResult RollBack(ProcessStep processStep)
+        public override ProcessResult RollBack()
         {
             throw new NotImplementedException();
         }

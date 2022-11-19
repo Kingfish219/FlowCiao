@@ -1,23 +1,22 @@
-﻿
-using System;
+﻿using System;
 using SmartFlow.Core.Db;
-using SmartFlow.Core.Interfaces;
 using SmartFlow.Core.Models;
 
 namespace SmartFlow.Core.Handlers
 {
     internal class ActionActivityHandler : WorkflowHandler
     {
-        internal ActionActivityHandler(IProcessRepository processRepository) : base(processRepository)
+        public ActionActivityHandler(IProcessRepository processRepository
+            , IProcessStepManager processStepManager
+            , ProcessStepContext processStepContext) : base(processRepository, processStepManager, processStepContext)
         {
-
         }
 
-        public override ProcessResult Handle(ProcessStep processStep, ProcessUser user, ProcessStepContext processStepContext)
+        public override ProcessResult Handle()
         {
             try
             {
-                return NextHandler.Handle(processStep,user, processStepContext);
+                return NextHandler.Handle();
             }
             catch (Exception exception)
             {
@@ -29,7 +28,7 @@ namespace SmartFlow.Core.Handlers
             }
         }
 
-        public override ProcessResult RollBack(ProcessStep processStep)
+        public override ProcessResult RollBack()
         {
             throw new NotImplementedException();
         }
