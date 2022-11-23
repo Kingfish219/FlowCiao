@@ -1,3 +1,5 @@
 # SmartFlow
 
-A lightweight workflow engine for .NET
+A lightweight state machine workflow engine for .NET
+
+Inspired by [exceptionnotfound](https://exceptionnotfound.net/)
