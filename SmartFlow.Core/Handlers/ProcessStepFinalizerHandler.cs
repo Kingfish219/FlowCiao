@@ -8,8 +8,7 @@ namespace SmartFlow.Core.Handlers
     internal class ProcessStepFinalizerHandler : WorkflowHandler
     {
         public ProcessStepFinalizerHandler(IProcessRepository processRepository
-            , IProcessStepManager processStepManager
-            , ProcessStepContext processStepContext) : base(processRepository, processStepManager, processStepContext)
+            , IProcessStepManager processStepManager) : base(processRepository, processStepManager)
         {
         }
 
@@ -22,11 +21,11 @@ namespace SmartFlow.Core.Handlers
         //    _entity = entity;
         //}
 
-        public override ProcessResult Handle()
+        public override ProcessResult Handle(ProcessStepContext processStepContext)
         {
             try
             {
-                var result = ProcessStepManager.FinalizeActiveProcessStep(ProcessStepContext.ProcessStep);
+                var result = ProcessStepManager.FinalizeActiveProcessStep(processStepContext.ProcessStep);
                 if (result.Status == ProcessResultStatus.Failed)
                 {
                     return new ProcessResult
@@ -36,10 +35,10 @@ namespace SmartFlow.Core.Handlers
                     };
                 }
 
-                var state = ProcessRepository.GetState(ProcessStepContext.ProcessStep.TransitionActions
-                    .FirstOrDefault(x => x.Action.ActionTypeCode == ProcessStepContext.ProcessStepInput.ActionCode)
+                var state = ProcessRepository.GetState(processStepContext.ProcessStep.TransitionActions
+                    .FirstOrDefault(x => x.Action.ActionTypeCode == processStepContext.ProcessStepInput.ActionCode)
                     .Transition.NextStateId).Result;
-                if (state.IsFinalResponse)
+                if (state.IsFinal)
                 {
                     return new ProcessResult
                     {
@@ -47,11 +46,11 @@ namespace SmartFlow.Core.Handlers
                     };
                 }
 
-                ProcessStepContext.ProcessStep = ProcessStepManager.InitializeActiveProcessStep(ProcessStepContext.ProcessUser.Id
-                    , ProcessStepContext.ProcessStep.Entity
+                processStepContext.ProcessStep = ProcessStepManager.InitializeActiveProcessStep(processStepContext.ProcessUser.Id
+                    , processStepContext.ProcessStep.Entity
                     , false);
 
-                if (ProcessStepContext.ProcessStep == null)
+                if (processStepContext.ProcessStep == null)
                 {
                     return new ProcessResult
                     {
@@ -60,7 +59,7 @@ namespace SmartFlow.Core.Handlers
                     };
                 }
 
-                return NextHandler.Handle();
+                return NextHandler.Handle(processStepContext);
             }
             catch (Exception exception)
             {
@@ -72,9 +71,12 @@ namespace SmartFlow.Core.Handlers
             }
         }
 
-        public override ProcessResult RollBack()
+        public override ProcessResult RollBack(ProcessStepContext processStepContext)
         {
-            throw new NotImplementedException();
+            return PreviousHandler?.RollBack(processStepContext) ?? new ProcessResult
+            {
+                Status = ProcessResultStatus.Failed
+            };
         }
     }
 }

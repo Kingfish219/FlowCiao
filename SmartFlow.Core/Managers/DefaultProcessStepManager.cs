@@ -22,7 +22,7 @@ namespace SmartFlow.Core
             var processStep = _processRepository.GetActiveProcessStep(entity).Result;
             if (processStep != null)
             {
-                var process = _processRepository.GetProcess(processStep.ProcessId).Result;
+                var process = _processRepository.GetProcess(processStep.Process.Id).Result;
                 var transitionActions = _processRepository.GetActiveTransitions(entity, process.Id).Result;
                 processStep.Entity = entity;
                 processStep.TransitionActions = transitionActions;

@@ -20,7 +20,7 @@ namespace SmartFlow.Core.Exceptions
                 {
                     Id = Guid.NewGuid(),
                     ProcessStepId = processStep.Id,
-                    ProcessId = processStep.ProcessId,
+                    ProcessId = processStep.Process.Id,
                     EntityId = processStep.Entity.Id,
                     CreateDate = DateTime.Now,
                     Type = 1,

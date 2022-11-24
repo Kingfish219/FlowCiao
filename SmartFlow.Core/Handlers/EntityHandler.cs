@@ -11,8 +11,7 @@ namespace SmartFlow.Core.Handlers
 
         public EntityHandler(IProcessRepository processRepository
             , IProcessStepManager processStepManager
-            , ProcessStepContext processStepContext
-            , Func<Entity, ProcessResult> command) : base(processRepository, processStepManager, processStepContext)
+            , Func<Entity, ProcessResult> command) : base(processRepository, processStepManager)
         {
             _command = command;
         }
@@ -22,18 +21,18 @@ namespace SmartFlow.Core.Handlers
         //    _command = command;
         //}
 
-        public override ProcessResult Handle()
+        public override ProcessResult Handle(ProcessStepContext processStepContext)
         {
             try
             {
-                ProcessStepContext.ProcessStep.Entity.LastStatus = ProcessStepContext.ProcessStep.TransitionActions.FirstOrDefault().Transition.CurrentStateId;
-                var result = _command(ProcessStepContext.ProcessStep.Entity);
+                processStepContext.ProcessStep.Entity.LastStatus = processStepContext.ProcessStep.TransitionActions.FirstOrDefault().Transition.CurrentStateId;
+                var result = _command(processStepContext.ProcessStep.Entity);
                 if (result.Status != ProcessResultStatus.Completed)
                 {
                     return result;
                 }
 
-                return NextHandler.Handle();
+                return NextHandler.Handle(processStepContext);
             }
             catch (Exception exception)
             {
@@ -45,9 +44,12 @@ namespace SmartFlow.Core.Handlers
             }
         }
 
-        public override ProcessResult RollBack()
+        public override ProcessResult RollBack(ProcessStepContext processStepContext)
         {
-            throw new NotImplementedException();
+            return PreviousHandler?.RollBack(processStepContext) ?? new ProcessResult
+            {
+                Status = ProcessResultStatus.Failed
+            };
         }
     }
 }

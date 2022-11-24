@@ -12,8 +12,7 @@ namespace SmartFlow.Core.Handlers
 
         public TransitionHandler(IProcessRepository processRepository
             , IProcessStepManager processStepManager
-            , ProcessStepContext processStepContext
-            , IEntityRepository entityRepository) : base(processRepository, processStepManager, processStepContext)
+            , IEntityRepository entityRepository) : base(processRepository, processStepManager)
         {
             _entityRepository = entityRepository;
         }
@@ -27,30 +26,30 @@ namespace SmartFlow.Core.Handlers
         //    _logRepository = logRepository;
         //}
 
-        public override ProcessResult Handle()
+        public override ProcessResult Handle(ProcessStepContext processStepContext)
         {
             try
             {
-                var transition = ProcessStepContext.ProcessStep.TransitionActions.FirstOrDefault(x => x.Action.ActionTypeCode == ProcessStepContext.ProcessStepInput.ActionCode).Transition;
+                var transition = processStepContext.ProcessStep.TransitionActions.FirstOrDefault(x => x.Action.ActionTypeCode == processStepContext.ProcessStepInput.ActionCode).Transition;
                 if (transition is null)
                 {
                     throw new SmartFlowProcessException("Exception occured while completing progress transition");
                 }
 
-                if (!ProcessStepContext.ProcessStep.IsCompleted)
+                if (!processStepContext.ProcessStep.IsCompleted)
                 {
                     throw new SmartFlowProcessException("Exception occured while completing progress transition, process step action is not yet completed");
                 }
 
-                var result = _entityRepository.ChangeState(ProcessStepContext.ProcessStep.Entity, transition.NextStateId);
+                var result = _entityRepository.ChangeState(processStepContext.ProcessStep.Entity, transition.NextStateId);
                 if (result.Status != ProcessResultStatus.Completed)
                 {
                     throw new SmartFlowProcessException("Exception occured while changing entity state");
                 }
 
-                ProcessStepContext.ProcessStep.Entity.LastStatus = transition.NextStateId;
+                processStepContext.ProcessStep.Entity.LastStatus = transition.NextStateId;
 
-                return NextHandler.Handle();
+                return NextHandler.Handle(processStepContext);
             }
             catch (Exception exception)
             {
@@ -62,9 +61,12 @@ namespace SmartFlow.Core.Handlers
             }
         }
 
-        public override ProcessResult RollBack()
+        public override ProcessResult RollBack(ProcessStepContext processStepContext)
         {
-            throw new NotImplementedException();
+            return PreviousHandler?.RollBack(processStepContext) ?? new ProcessResult
+            {
+                Status = ProcessResultStatus.Failed
+            };
         }
     }
 }

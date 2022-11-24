@@ -9,8 +9,7 @@ namespace SmartFlow.Core.Handlers
     internal class ActionHandler : WorkflowHandler
     {
         public ActionHandler(IProcessRepository processRepository
-            , IProcessStepManager processStepManager
-            , ProcessStepContext processStepContext) : base(processRepository, processStepManager, processStepContext)
+            , IProcessStepManager processStepManager) : base(processRepository, processStepManager)
         {
         }
 
@@ -20,22 +19,22 @@ namespace SmartFlow.Core.Handlers
         //    _logRepository = logRepository;
         //}
 
-        public override ProcessResult Handle()
+        public override ProcessResult Handle(ProcessStepContext processStepContext)
         {
             try
             {
-                var result = ProcessRepository.CompleteProgressAction(ProcessStepContext.ProcessStep,
-                    ProcessStepContext.ProcessStep.TransitionActions
-                    .FirstOrDefault(x => x.Action.ActionTypeCode == ProcessStepContext.ProcessStepInput.ActionCode)
+                var result = ProcessRepository.CompleteProgressAction(processStepContext.ProcessStep,
+                    processStepContext.ProcessStep.TransitionActions
+                    .FirstOrDefault(x => x.Action.ActionTypeCode == processStepContext.ProcessStepInput.ActionCode)
                     .Action).Result;
                 if (!result)
                 {
                     throw new SmartFlowProcessException("Exception occured while completing progress action");
                 }
 
-                ProcessStepContext.ProcessStep.IsCompleted = true;
+                processStepContext.ProcessStep.IsCompleted = true;
 
-                return NextHandler.Handle();
+                return NextHandler.Handle(processStepContext);
             }
             catch (Exception exception)
             {
@@ -47,9 +46,12 @@ namespace SmartFlow.Core.Handlers
             }
         }
 
-        public override ProcessResult RollBack()
+        public override ProcessResult RollBack(ProcessStepContext processStepContext)
         {
-            throw new NotImplementedException();
+            return PreviousHandler?.RollBack(processStepContext) ?? new ProcessResult
+            {
+                Status = ProcessResultStatus.Failed
+            };
         }
     }
 }

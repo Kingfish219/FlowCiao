@@ -17,7 +17,7 @@ namespace SmartFlow.Core.Db
         Task<Process> GetProcess(Guid processId);
         Task<bool> CreateProcessStep(ProcessStep entity);
         Task<bool> CompleteProgressAction(ProcessStep processStep, Action action);
-        Task<Status> GetState(Guid stateId);
+        Task<State> GetState(Guid stateId);
         Task<ProcessStep> GetActiveProcessStep(Entity entity);
         Task<bool> SetToHistory(Guid EntityId);
         Task<bool> SetToHistoryForGoToStep(Guid newId, Guid entityId, Guid targetStatus, Guid processGuid);

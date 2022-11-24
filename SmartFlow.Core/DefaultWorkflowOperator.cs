@@ -69,7 +69,7 @@ namespace SmartFlow.Core
                         _connectionString
                        );
 
-                    var result = handlers.Peek().Handle();
+                    var result = handlers.Peek().Handle(processStepContext);
 
                     return result;
                 }

@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace SmartFlow.Core.Models
@@ -9,9 +8,8 @@ namespace SmartFlow.Core.Models
         public Guid Id { get; set; }
         public Process Process { get; set; }
         public List<TransitionAction> TransitionActions { get; set; }
-        public Entity Entity { get; set; }
         public bool IsCompleted { get; set; }
+        public Entity Entity { get; set; }
         public int EntityType { get; set; }
-        public Guid ProcessId { get; set; }
     }
 }

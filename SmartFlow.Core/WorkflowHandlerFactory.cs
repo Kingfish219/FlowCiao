@@ -29,12 +29,12 @@ namespace SmartFlow.Core
             , LogRepository logRepository
             , string connectionString)
         {
-            var actionHandler = new ActionHandler(processRepository, processStepManager, processStepContext);
-            var actionActivityHandler = new ActionActivityHandler(processRepository, processStepManager, processStepContext);
-            var transitionHandler = new TransitionHandler(processRepository, processStepManager, processStepContext, entityRepository);
-            var transitionActivityHandler = new TransitionActivityHandler(processRepository, processStepManager, processStepContext);
-            var processStepFinalizerHandler = new ProcessStepFinalizerHandler(processRepository, processStepManager, processStepContext);
-            var stateActivityHandler = new StateActivityHandler(processRepository, processStepManager, processStepContext);
+            var actionHandler = new ActionHandler(processRepository, processStepManager);
+            var actionActivityHandler = new ActionActivityHandler(processRepository, processStepManager);
+            var transitionHandler = new TransitionHandler(processRepository, processStepManager, entityRepository);
+            var transitionActivityHandler = new TransitionActivityHandler(processRepository, processStepManager);
+            var processStepFinalizerHandler = new ProcessStepFinalizerHandler(processRepository, processStepManager);
+            var stateActivityHandler = new StateActivityHandler(processRepository, processStepManager);
 
             actionHandler.SetNextHandler(actionActivityHandler);
 
@@ -54,7 +54,7 @@ namespace SmartFlow.Core
 
             if (processStepContext.EntityCommandType == EntityCommandType.Create)
             {
-                var entityCommandHandler = new EntityHandler(processRepository, processStepManager, processStepContext, entityRepository.Create);
+                var entityCommandHandler = new EntityHandler(processRepository, processStepManager, entityRepository.Create);
                 entityCommandHandler.SetNextHandler(actionHandler);
                 actionHandler.SetPreviousHandler(entityCommandHandler);
                 queue.Enqueue(entityCommandHandler);

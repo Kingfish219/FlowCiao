@@ -1,7 +1,7 @@
 ﻿using SmartFlow.Core.Db;
 using SmartFlow.Core.Models;
 
-namespace SmartFlow.Core
+namespace SmartFlow.Core.Handlers
 {
     internal abstract class WorkflowHandler : IWorkflowHandler
     {
@@ -10,12 +10,10 @@ namespace SmartFlow.Core
 
         protected readonly IProcessRepository ProcessRepository;
         protected readonly IProcessStepManager ProcessStepManager;
-        protected readonly ProcessStepContext ProcessStepContext;
 
-        internal WorkflowHandler(IProcessRepository processRepository, IProcessStepManager processStepManager, ProcessStepContext processStepContext)
+        internal WorkflowHandler(IProcessRepository processRepository, IProcessStepManager processStepManager)
         {
             ProcessRepository = processRepository;
-            ProcessStepContext = processStepContext;
             ProcessStepManager = processStepManager;
         }
 
@@ -29,7 +27,7 @@ namespace SmartFlow.Core
             PreviousHandler = handler;
         }
 
-        public abstract ProcessResult Handle();
-        public abstract ProcessResult RollBack();
+        public abstract ProcessResult Handle(ProcessStepContext processStepContext);
+        public abstract ProcessResult RollBack(ProcessStepContext processStepContext);
     }
 }

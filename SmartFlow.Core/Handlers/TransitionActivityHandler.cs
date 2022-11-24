@@ -9,8 +9,7 @@ namespace SmartFlow.Core.Handlers
     internal class TransitionActivityHandler : WorkflowHandler
     {
         public TransitionActivityHandler(IProcessRepository processRepository
-            , IProcessStepManager processStepManager
-            , ProcessStepContext processStepContext) : base(processRepository, processStepManager, processStepContext)
+            , IProcessStepManager processStepManager) : base(processRepository, processStepManager)
         {
         }
 
@@ -24,7 +23,7 @@ namespace SmartFlow.Core.Handlers
         //    _logRepository = logRepository;
         //}
 
-        public override ProcessResult Handle()
+        public override ProcessResult Handle(ProcessStepContext processStepContext)
         {
             try
             {
@@ -33,7 +32,7 @@ namespace SmartFlow.Core.Handlers
                     Status = ProcessResultStatus.Completed
                 };
 
-                var currentTransition = ProcessStepContext.ProcessStep.TransitionActions.FirstOrDefault().Transition;
+                var currentTransition = processStepContext.ProcessStep.TransitionActions.FirstOrDefault().Transition;
                 var activities = ProcessRepository.GetTransitionActivities(currentTransition).Result;
 
                 if (activities.Count > 0)
@@ -44,7 +43,7 @@ namespace SmartFlow.Core.Handlers
 
                     foreach (var type in types)
                     {
-                        var activity = (IProcessActivity)Activator.CreateInstance(type, ProcessStepContext);
+                        var activity = (IProcessActivity)Activator.CreateInstance(type, processStepContext);
                         if (!activities.Exists(x => x.ActivityTypeCode == ((Activity)activity).ActivityTypeCode))
                         {
                             continue;
@@ -58,7 +57,7 @@ namespace SmartFlow.Core.Handlers
 
                         //log to ProcessStepHistoryActivity
                         var currentActivity = activities.Find(a => a.ActivityTypeCode == ((Activity)activity).ActivityTypeCode);
-                        Guid LastProcessStepHistoryItemId = ProcessRepository.GetLastProcessStepHistoryItem(ProcessStepContext.ProcessStep.Entity.Id).Result.Id;
+                        Guid LastProcessStepHistoryItemId = ProcessRepository.GetLastProcessStepHistoryItem(processStepContext.ProcessStep.Entity.Id).Result.Id;
                         ProcessRepository.AddProcessStepHistoryActivity(new ProcessStepHistoryActivity { ActivityId = currentActivity.Id, ActivityName = currentActivity.Name, StepType = 2, ProcessStepHistoryId = LastProcessStepHistoryItemId });
                     }
                 }
@@ -68,7 +67,7 @@ namespace SmartFlow.Core.Handlers
                     return result;
                 }
 
-                return NextHandler.Handle();
+                return NextHandler.Handle(processStepContext);
             }
             catch (Exception exception)
             {
@@ -80,9 +79,12 @@ namespace SmartFlow.Core.Handlers
             }
         }
 
-        public override ProcessResult RollBack()
+        public override ProcessResult RollBack(ProcessStepContext processStepContext)
         {
-            throw new NotImplementedException();
+            return PreviousHandler?.RollBack(processStepContext) ?? new ProcessResult
+            {
+                Status= ProcessResultStatus.Failed
+            };
         }
     }
 }

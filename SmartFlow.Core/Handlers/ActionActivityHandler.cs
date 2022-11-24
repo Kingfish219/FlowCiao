@@ -7,16 +7,15 @@ namespace SmartFlow.Core.Handlers
     internal class ActionActivityHandler : WorkflowHandler
     {
         public ActionActivityHandler(IProcessRepository processRepository
-            , IProcessStepManager processStepManager
-            , ProcessStepContext processStepContext) : base(processRepository, processStepManager, processStepContext)
+            , IProcessStepManager processStepManager) : base(processRepository, processStepManager)
         {
         }
 
-        public override ProcessResult Handle()
+        public override ProcessResult Handle(ProcessStepContext processStepContext)
         {
             try
             {
-                return NextHandler.Handle();
+                return NextHandler.Handle(processStepContext);
             }
             catch (Exception exception)
             {
@@ -28,9 +27,12 @@ namespace SmartFlow.Core.Handlers
             }
         }
 
-        public override ProcessResult RollBack()
+        public override ProcessResult RollBack(ProcessStepContext processStepContext)
         {
-            throw new NotImplementedException();
+            return PreviousHandler?.RollBack(processStepContext) ?? new ProcessResult
+            {
+                Status = ProcessResultStatus.Failed
+            };
         }
     }
 }

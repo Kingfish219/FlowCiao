@@ -1,5 +1,4 @@
-﻿
-using SmartFlow.Core.Db;
+﻿using SmartFlow.Core.Db;
 using SmartFlow.Core.Models;
 using System;
 
@@ -8,16 +7,15 @@ namespace SmartFlow.Core.Handlers
     internal class ProcessAuthHandler : WorkflowHandler
     {
         public ProcessAuthHandler(IProcessRepository processRepository
-            , IProcessStepManager processStepManager
-            , ProcessStepContext processStepContext) : base(processRepository, processStepManager, processStepContext)
+            , IProcessStepManager processStepManager) : base(processRepository, processStepManager)
         {
         }
 
-        public override ProcessResult Handle()
+        public override ProcessResult Handle(ProcessStepContext processStepContext)
         {
             try
             {
-                return NextHandler.Handle();
+                return NextHandler.Handle(processStepContext);
             }
             catch (Exception exception)
             {
@@ -29,9 +27,12 @@ namespace SmartFlow.Core.Handlers
             }
         }
 
-        public override ProcessResult RollBack()
+        public override ProcessResult RollBack(ProcessStepContext processStepContext)
         {
-            return PreviousHandler.RollBack();
+            return PreviousHandler?.RollBack(processStepContext) ?? new ProcessResult
+            {
+                Status = ProcessResultStatus.Failed
+            };
         }
     }
 }

@@ -6,7 +6,7 @@ namespace SmartFlow.Core
     {
         void SetNextHandler(IWorkflowHandler handler);
         void SetPreviousHandler(IWorkflowHandler handler);
-        ProcessResult Handle();
-        ProcessResult RollBack();
+        ProcessResult Handle(ProcessStepContext processStepContext);
+        ProcessResult RollBack(ProcessStepContext processStepContext);
     }
 }
