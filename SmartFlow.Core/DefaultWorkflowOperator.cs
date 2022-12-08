@@ -1,5 +1,4 @@
 ﻿using SmartFlow.Core.Db;
-using SmartFlow.Core.Interfaces;
 using SmartFlow.Core.Models;
 using SmartFlow.Core.Repositories;
 using System;
@@ -21,7 +20,6 @@ namespace SmartFlow.Core
             , ProcessUser user
             , ProcessStepInput input
             , IEntityRepository entityRepository
-            , IEntityCreateHistory entityCreateHistory
             , EntityCommandType commandType = EntityCommandType.Update
             , Dictionary<string, object> parameters = null)
         {
@@ -31,7 +29,7 @@ namespace SmartFlow.Core
                 {
                     var logRepository = new LogRepository(_connectionString);
                     var processRepository = new DefaultProcessRepository(_connectionString);
-                    var processStepManager = new DefaultProcessStepManager(processRepository, entityCreateHistory);
+                    var processStepManager = new DefaultProcessStepManager(processRepository);
                     ProcessStep processStep;
                     if (commandType == EntityCommandType.Create)
                     {

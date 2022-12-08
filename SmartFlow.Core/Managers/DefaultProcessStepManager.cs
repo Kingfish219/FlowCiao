@@ -1,7 +1,6 @@
 ﻿using System;
 using SmartFlow.Core.Db;
 using SmartFlow.Core.Exceptions;
-using SmartFlow.Core.Interfaces;
 using SmartFlow.Core.Models;
 
 namespace SmartFlow.Core
@@ -9,12 +8,10 @@ namespace SmartFlow.Core
     internal class DefaultProcessStepManager : IProcessStepManager
     {
         private readonly IProcessRepository _processRepository;
-        private readonly IEntityCreateHistory _entityCreateHistory;
 
-        internal DefaultProcessStepManager(IProcessRepository processRepository, IEntityCreateHistory entityCreateHistory)
+        internal DefaultProcessStepManager(IProcessRepository processRepository)
         {
             _processRepository = processRepository;
-            _entityCreateHistory = entityCreateHistory;
         }
 
         public ProcessStep GetActiveProcessStep(Guid userId, Entity entity)
@@ -77,8 +74,6 @@ namespace SmartFlow.Core
             }
 
             _processRepository.SetToHistory(processStep.Entity.Id).Wait();
-            var LastProcessStepHistoryItem = _processRepository.GetLastProcessStepHistoryItem(processStep.Entity.Id).Result;
-            _entityCreateHistory.Create(LastProcessStepHistoryItem).Wait();
             var result = _processRepository.RemoveActiveProcessStep(processStep.Entity).Result;
 
             return new ProcessResult
