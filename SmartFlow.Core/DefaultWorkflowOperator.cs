@@ -16,6 +16,10 @@ namespace SmartFlow.Core
             _connectionString = connectionString;
         }
 
+        public DefaultWorkflowOperator()
+        {
+        }
+
         public Task<ProcessResult> AdvanceAsync(Entity entity
             , ProcessUser user
             , ProcessStepInput input
@@ -80,6 +84,11 @@ namespace SmartFlow.Core
                     };
                 }
             });
+        }
+
+        public ProcessResult Start(Process process)
+        {
+            throw new NotImplementedException();
         }
     }
 }

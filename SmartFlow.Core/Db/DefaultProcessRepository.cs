@@ -292,14 +292,14 @@ namespace SmartFlow.Core.Db
             });
         }
 
-        public Task<Status> GetState(Guid stateId)
+        public Task<State> GetState(Guid stateId)
         {
             return Task.Run(() =>
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
-                    var result = connection.QueryFirstOrDefault<Status>($@"SELECT * FROM [Status] WHERE Id = '{stateId}'");
+                    var result = connection.QueryFirstOrDefault<State>($@"SELECT * FROM [Status] WHERE Id = '{stateId}'");
 
                     return result;
                 }
@@ -414,7 +414,7 @@ namespace SmartFlow.Core.Db
                 }
             });
         }
-        public Task<Status> GetStatusById(Guid statusId)
+        public Task<State> GetStatusById(Guid statusId)
         {
             return Task.Run(() =>
             {
@@ -423,7 +423,7 @@ namespace SmartFlow.Core.Db
                     using (var connection = new SqlConnection(_connectionString))
                     {
                         connection.Open();
-                        var result = connection.Query<Status>($@"select [Id] ,[Name] ,[RequestResponse],[ResponseController],[ResponseActions],[IsFinalResponse],[Number]  from Status where id = '{statusId}'").FirstOrDefault();
+                        var result = connection.Query<State>($@"select [Id] ,[Name] ,[RequestResponse],[ResponseController],[ResponseActions],[IsFinalResponse],[Number]  from Status where id = '{statusId}'").FirstOrDefault();
                         return result;
                     }
                 }

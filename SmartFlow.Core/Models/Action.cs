@@ -7,8 +7,19 @@ namespace SmartFlow.Core.Models
     [Table("Action")]
     public class Action
     {
+        public Action(int code)
+        {
+            Code = code;
+        }
+
+        public Action()
+        {
+
+        }
+
         [Key]
         public Guid Id { get; set; }
+        public int Code { get; set; }
         public string Name { get; set; }
         public int ActionTypeCode { get; set; }
         public Guid ProcessId { get; set; }

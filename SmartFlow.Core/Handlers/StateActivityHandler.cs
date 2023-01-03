@@ -50,7 +50,7 @@ namespace SmartFlow.Core.Handlers
                             continue;
                         }
 
-                        result = activity.Invoke();
+                        result = activity.Execute();
                         if (result.Status != ProcessResultStatus.Completed && result.Status != ProcessResultStatus.SetOwner)
                         {
                             throw new SmartFlowProcessException("Exception occured while invoking activities" + result.Message);

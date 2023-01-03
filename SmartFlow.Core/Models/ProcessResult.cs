@@ -5,12 +5,19 @@ namespace SmartFlow.Core.Models
     {
         public ProcessResultStatus Status { get; set; } = ProcessResultStatus.Completed;
         public string Message { get; set; }
+
+        public static ProcessResult SuccessResult()
+        {
+            return new ProcessResult
+            {
+                Status = ProcessResultStatus.Completed,
+                Message = "Success"
+            };
+        }
     }
 
-    public class ProcessResult<T>
+    public class ProcessResult<T> : ProcessResult
     {
-        public ProcessResultStatus Status { get; set; } = ProcessResultStatus.Completed;
-        public string Message { get; set; }
         public T Data { get; set; }
     }
 

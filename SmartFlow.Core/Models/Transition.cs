@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Dapper.Contrib.Extensions;
 using Dapper.FluentMap.Mapping;
 
@@ -13,6 +14,9 @@ namespace SmartFlow.Core.Models
         public Guid ProcessId { get; set; }
         public Guid CurrentStateId { get; set; }
         public Guid NextStateId { get; set; }
+        public State From { get; set; }
+        public State To { get; set; }
+        public List<IProcessActivity> Activities { get; set; }
     }
 
     internal class TransitionMap : EntityMap<Transition>

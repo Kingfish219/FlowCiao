@@ -7,6 +7,8 @@ namespace SmartFlow.Core
 {
     public interface IWorkflowOperator
     {
+        ProcessResult Start(Process process);
+
         Task<ProcessResult> AdvanceAsync(Entity entity,
                ProcessUser user,
                ProcessStepInput input,

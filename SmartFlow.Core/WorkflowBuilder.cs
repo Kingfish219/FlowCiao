@@ -2,22 +2,25 @@
 using SmartFlow.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SmartFlow.Core
 {
     public class WorkflowBuilder
     {
         private List<ProcessStepBuilder> ProcessStepBuilders { get; set; }
+        public string WorkflowKey { get; set; }
         private IProcessRepository _processRepository;
 
-        public WorkflowBuilder()
+        public WorkflowBuilder(string workflowKey)
         {
+            WorkflowKey = workflowKey;
             ProcessStepBuilders = new List<ProcessStepBuilder>();
         }
 
         public ProcessStepBuilder NewStep()
         {
-            var builder = new ProcessStepBuilder();
+            var builder = new ProcessStepBuilder(this);
             ProcessStepBuilders.Add(builder);
 
             return builder;
@@ -37,18 +40,28 @@ namespace SmartFlow.Core
             return this;
         }
 
-        public Guid Build()
+        public Process Build()
         {
             try
             {
-                //var process = _processRepository.Create();
-
-                foreach (var processStepBuilder in ProcessStepBuilders)
+                var process = new Process();
+                foreach (var builder in ProcessStepBuilders)
                 {
-                    processStepBuilder.Build();
+                    foreach (var allowedTransition in builder.AllowedTransitions)
+                    {
+                        process.Transitions.Add(new Transition
+                        {
+                            From = builder.InitialState,
+                            To = allowedTransition.Item1,
+                            //Activities = new List<IProcessActivity>
+                            //{
+                            //    ProcessStepBuilders.Where(x=>x.AllowedTransitions == allowedTransition.Item1.Code).Select(y=> y.)
+                            //}
+                        });
+                    }
                 }
 
-                return Guid.NewGuid();
+                return process;
             }
             catch (Exception)
             {

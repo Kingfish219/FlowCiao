@@ -24,7 +24,7 @@ namespace SmartFlow.Core.Db
         Task<ProcessStep> GetLastProcessStepHistoryItem(Guid ticketId);
         Task<bool> AddProcessStepHistoryActivity(ProcessStepHistoryActivity processStepHistoryActivity);
         Task<List<Activity>> GetTransitionActivities(Transition transition);
-        Task<Status> GetStatusById(Guid statusId);
+        Task<State> GetStatusById(Guid statusId);
         Task<FuncResult> RemoveEntireFlow(ProcessStep processStep);
         Task<bool> ProcessStepCommentRead(Entity entity);
         Task<FuncResult> ApplyProcessStepComment(Entity entity, ProcessUser processUser, string comment, List<Guid> attachmentIds = default);

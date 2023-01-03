@@ -5,15 +5,18 @@ namespace SmartFlow.Core.Models
 {
     public class ProcessStepBuilder
     {
-        public ProcessStepBuilder()
+        public WorkflowBuilder WorkflowBuilder { get; set; }
+
+        public ProcessStepBuilder(WorkflowBuilder workflowBuilder)
         {
+            WorkflowBuilder = workflowBuilder;
             AllowedTransitions = new List<(State, Action)>();
         }
 
         public State InitialState { get; set; }
         public List<(State, Action)> AllowedTransitions { get; private set; }
-        public System.Action OnEntryAction { get; set; }
-        public System.Action OnExitAction { get; set; }
+        public IProcessActivity OnEntryFunc { get; set; }
+        public IProcessActivity OnExitFunc { get; set; }
 
         public ProcessStepBuilder From(State state)
         {
@@ -29,32 +32,25 @@ namespace SmartFlow.Core.Models
             return this;
         }
 
-        public ProcessStepBuilder OnEntry(System.Action action)
+        public ProcessStepBuilder OnEntry<Activity>() where Activity : IProcessActivity, new()
         {
-            OnEntryAction = action;
+            OnEntryFunc = (Activity)Activator.CreateInstance(typeof(Activity));
 
             return this;
         }
 
-        public ProcessStepBuilder OnExit(System.Action action)
+        public ProcessStepBuilder OnExit<Activity>() where Activity : IProcessActivity, new()
         {
-            OnExitAction = action;
+            OnExitFunc = (Activity)Activator.CreateInstance(typeof(Activity));
 
             return this;
         }
 
-        public Guid Build()
+        public Process Build()
         {
             try
             {
-                //var process = _processRepository.Create();
-
-                //foreach (var processStepBuilder in ProcessStepBuilders)
-                //{
-                //    processStepBuilder.Build();
-                //}
-
-                return Guid.NewGuid();
+                return WorkflowBuilder.Build();
             }
             catch (Exception)
             {
@@ -62,6 +58,11 @@ namespace SmartFlow.Core.Models
 
                 throw;
             }
+        }
+
+        public ProcessStepBuilder NewStep()
+        {
+            return WorkflowBuilder.NewStep();
         }
 
         public void Rollback()

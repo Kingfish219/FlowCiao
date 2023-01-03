@@ -1,3 +1,4 @@
+using SampleWebApp.Activities;
 using SmartFlow.Core;
 using SmartFlow.Core.Models;
 using Action = SmartFlow.Core.Models.Action;
@@ -11,13 +12,21 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var workflowBuilder = new WorkflowBuilder();
-workflowBuilder.UseSqlServer("")
-               .NewStep().From(new State())
-                         .Allow(new State(), new Action())
+var workflowBuilder = new WorkflowBuilder("sample");
+var workflow = workflowBuilder.UseSqlServer("")
+               .NewStep().From(new State(1, "First"))
+                         .Allow(new State(2, "Second"), new Action(1))
+                         .Allow(new State(3, "Third"), new Action(2))
+                         .OnEntry<HelloWorld>()
+               .NewStep().From(new State(2, "Second"))
+                         .Allow(new State(4, "Fourth"), new Action(3))
+                         .Allow(new State(5, "Fifth"), new Action(4))
+                         .OnEntry<HelloWorld>()
+                         .OnExit<GoodbyeWorld>()
                .Build();
 
-workflowBuilder.Build();
+var defaultWorkflowOperator = new DefaultWorkflowOperator();
+defaultWorkflowOperator.Start(workflow);
 
 var app = builder.Build();
 
