@@ -1,5 +1,6 @@
 using SmartFlow.Core;
 using SmartFlow.Core.Models;
+using Action = SmartFlow.Core.Models.Action;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,9 +11,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var workflowBuilder = new WorkflowBuilder("");
-workflowBuilder.From(new State())
-               .Allow(new State());
+var workflowBuilder = new WorkflowBuilder();
+workflowBuilder.UseSqlServer("")
+               .NewStep().From(new State())
+                         .Allow(new State(), new Action())
+               .Build();
 
 workflowBuilder.Build();
 

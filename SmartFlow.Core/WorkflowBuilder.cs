@@ -8,19 +8,33 @@ namespace SmartFlow.Core
     public class WorkflowBuilder
     {
         private List<ProcessStepBuilder> ProcessStepBuilders { get; set; }
-        private readonly IProcessRepository _processRepository;
+        private IProcessRepository _processRepository;
 
-        public WorkflowBuilder(string connectionString)
+        public WorkflowBuilder()
         {
             ProcessStepBuilders = new List<ProcessStepBuilder>();
-            _processRepository = new DefaultProcessRepository(connectionString);
         }
 
-        public ProcessStepBuilder From(State state)
+        public ProcessStepBuilder NewStep()
         {
-            var processStepBuilder = new ProcessStepBuilder(state);
+            var builder = new ProcessStepBuilder();
+            ProcessStepBuilders.Add(builder);
 
-            return processStepBuilder;
+            return builder;
+        }
+
+        public ProcessStepBuilder NewStep(ProcessStepBuilder builder)
+        {
+            ProcessStepBuilders.Add(builder);
+
+            return builder;
+        }
+
+        public WorkflowBuilder UseSqlServer(string connectionString)
+        {
+            _processRepository = new DefaultProcessRepository(connectionString);
+
+            return this;
         }
 
         public Guid Build()
