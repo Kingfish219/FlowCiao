@@ -2,7 +2,7 @@
 
 namespace SmartFlow.Core.Models
 {
-    public class Entity
+    public class ProcessEntity
     {
         public Guid Id { get; set; }
         public Guid LastStatus { get; set; }

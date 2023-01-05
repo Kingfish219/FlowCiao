@@ -1,5 +1,5 @@
 ﻿using Dapper.Contrib.Extensions;
-using SmartFlow.Core.Interfaces;
+using SmartFlow.Core.Interfaces.Db;
 using SmartFlow.Core.Models;
 using System;
 using System.Data.SqlClient;

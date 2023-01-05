@@ -1,17 +1,16 @@
 ﻿using SmartFlow.Core.Db;
-using SmartFlow.Core.Handlers;
 using SmartFlow.Core.Models;
 using SmartFlow.Core.Repositories;
 using System.Collections.Generic;
 
-namespace SmartFlow.Core
+namespace SmartFlow.Core.Handlers
 {
-    internal static class WorkflowHandlerFactory
+    internal static class ProcessHandlerFactory
     {
         internal static Queue<WorkflowHandler> BuildHandlers(
             ProcessStepContext processStepContext,
             IProcessRepository processRepository,
-            IProcessStepManager processStepManager,
+            IProcessStepService processStepManager,
             IEntityRepository entityRepository,
             LogRepository logRepository,
             string connectionString
@@ -24,7 +23,7 @@ namespace SmartFlow.Core
         private static Queue<WorkflowHandler> BuildDefaultHandlers(
              ProcessStepContext processStepContext
             , IProcessRepository processRepository
-            , IProcessStepManager processStepManager
+            , IProcessStepService processStepManager
             , IEntityRepository entityRepository
             , LogRepository logRepository
             , string connectionString)

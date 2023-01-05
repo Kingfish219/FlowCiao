@@ -4,7 +4,7 @@ using SmartFlow.Core.Models;
 
 namespace SmartFlow.Core
 {
-    internal class DapperManager
+    internal class DapperHelper
     {
         internal static void EnsureMappings()
         {

@@ -2,7 +2,7 @@
 
 namespace SmartFlow.Core.Models
 {
-    public sealed class ActionType
+    public sealed class ProcessActionType
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

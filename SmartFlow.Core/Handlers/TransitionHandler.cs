@@ -11,7 +11,7 @@ namespace SmartFlow.Core.Handlers
         private readonly IEntityRepository _entityRepository;
 
         public TransitionHandler(IProcessRepository processRepository
-            , IProcessStepManager processStepManager
+            , IProcessStepService processStepManager
             , IEntityRepository entityRepository) : base(processRepository, processStepManager)
         {
             _entityRepository = entityRepository;
@@ -33,18 +33,18 @@ namespace SmartFlow.Core.Handlers
                 var transition = processStepContext.ProcessStep.TransitionActions.FirstOrDefault(x => x.Action.ActionTypeCode == processStepContext.ProcessStepInput.ActionCode).Transition;
                 if (transition is null)
                 {
-                    throw new SmartFlowProcessException("Exception occured while completing progress transition");
+                    throw new SmartFlowProcessExecutionException("Exception occured while completing progress transition");
                 }
 
                 if (!processStepContext.ProcessStep.IsCompleted)
                 {
-                    throw new SmartFlowProcessException("Exception occured while completing progress transition, process step action is not yet completed");
+                    throw new SmartFlowProcessExecutionException("Exception occured while completing progress transition, process step action is not yet completed");
                 }
 
                 var result = _entityRepository.ChangeState(processStepContext.ProcessStep.Entity, transition.NextStateId);
                 if (result.Status != ProcessResultStatus.Completed)
                 {
-                    throw new SmartFlowProcessException("Exception occured while changing entity state");
+                    throw new SmartFlowProcessExecutionException("Exception occured while changing entity state");
                 }
 
                 processStepContext.ProcessStep.Entity.LastStatus = transition.NextStateId;

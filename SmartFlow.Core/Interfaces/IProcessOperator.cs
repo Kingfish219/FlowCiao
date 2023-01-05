@@ -5,11 +5,11 @@ using SmartFlow.Core.Models;
 
 namespace SmartFlow.Core
 {
-    public interface IWorkflowOperator
+    public interface IProcessOperator
     {
         ProcessResult Start(Process process);
 
-        Task<ProcessResult> AdvanceAsync(Entity entity,
+        Task<ProcessResult> AdvanceAsync(ProcessEntity entity,
                ProcessUser user,
                ProcessStepInput input,
                IEntityRepository entityRepository,

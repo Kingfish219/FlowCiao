@@ -9,5 +9,6 @@ namespace SmartFlow.Core.Models
         public int ActivityTypeCode { get; set; }
         public Guid GroupId { get; set; }
         public string Name { get; set; }
+        public IProcessActivity ProcessActivityExecutor { get; set; }
     }
 }

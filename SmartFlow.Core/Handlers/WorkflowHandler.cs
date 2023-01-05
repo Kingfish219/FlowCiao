@@ -3,26 +3,26 @@ using SmartFlow.Core.Models;
 
 namespace SmartFlow.Core.Handlers
 {
-    internal abstract class WorkflowHandler : IWorkflowHandler
+    internal abstract class WorkflowHandler : IProcessHandler
     {
-        internal IWorkflowHandler NextHandler { get; private set; }
-        internal IWorkflowHandler PreviousHandler { get; private set; }
+        internal IProcessHandler NextHandler { get; private set; }
+        internal IProcessHandler PreviousHandler { get; private set; }
 
         protected readonly IProcessRepository ProcessRepository;
-        protected readonly IProcessStepManager ProcessStepManager;
+        protected readonly IProcessStepService ProcessStepManager;
 
-        internal WorkflowHandler(IProcessRepository processRepository, IProcessStepManager processStepManager)
+        internal WorkflowHandler(IProcessRepository processRepository, IProcessStepService processStepManager)
         {
             ProcessRepository = processRepository;
             ProcessStepManager = processStepManager;
         }
 
-        public void SetNextHandler(IWorkflowHandler handler)
+        public void SetNextHandler(IProcessHandler handler)
         {
             NextHandler = handler;
         }
 
-        public void SetPreviousHandler(IWorkflowHandler handler)
+        public void SetPreviousHandler(IProcessHandler handler)
         {
             PreviousHandler = handler;
         }

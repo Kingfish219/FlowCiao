@@ -7,7 +7,7 @@ namespace SmartFlow.Core.Handlers
     internal class ProcessAuthHandler : WorkflowHandler
     {
         public ProcessAuthHandler(IProcessRepository processRepository
-            , IProcessStepManager processStepManager) : base(processRepository, processStepManager)
+            , IProcessStepService processStepManager) : base(processRepository, processStepManager)
         {
         }
 

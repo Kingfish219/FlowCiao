@@ -7,11 +7,11 @@ namespace SmartFlow.Core.Handlers
 {
     internal class EntityHandler : WorkflowHandler
     {
-        private readonly Func<Entity, ProcessResult> _command;
+        private readonly Func<ProcessEntity, ProcessResult> _command;
 
         public EntityHandler(IProcessRepository processRepository
-            , IProcessStepManager processStepManager
-            , Func<Entity, ProcessResult> command) : base(processRepository, processStepManager)
+            , IProcessStepService processStepManager
+            , Func<ProcessEntity, ProcessResult> command) : base(processRepository, processStepManager)
         {
             _command = command;
         }

@@ -2,10 +2,10 @@
 
 namespace SmartFlow.Core
 {
-    internal interface IWorkflowHandler
+    internal interface IProcessHandler
     {
-        void SetNextHandler(IWorkflowHandler handler);
-        void SetPreviousHandler(IWorkflowHandler handler);
+        void SetNextHandler(IProcessHandler handler);
+        void SetPreviousHandler(IProcessHandler handler);
         ProcessResult Handle(ProcessStepContext processStepContext);
         ProcessResult RollBack(ProcessStepContext processStepContext);
     }

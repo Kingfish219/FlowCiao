@@ -9,7 +9,7 @@ namespace SmartFlow.Core.Handlers
     internal class TransitionActivityHandler : WorkflowHandler
     {
         public TransitionActivityHandler(IProcessRepository processRepository
-            , IProcessStepManager processStepManager) : base(processRepository, processStepManager)
+            , IProcessStepService processStepManager) : base(processRepository, processStepManager)
         {
         }
 
@@ -52,7 +52,7 @@ namespace SmartFlow.Core.Handlers
                         result = activity.Execute();
                         if (result.Status != ProcessResultStatus.Completed && result.Status != ProcessResultStatus.SetOwner)
                         {
-                            throw new SmartFlowProcessException("Exception occured while invoking activities" + result.Message);
+                            throw new SmartFlowProcessExecutionException("Exception occured while invoking activities" + result.Message);
                         }
 
                         //log to ProcessStepHistoryActivity

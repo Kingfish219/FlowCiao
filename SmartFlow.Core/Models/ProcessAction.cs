@@ -5,14 +5,14 @@ using Dapper.FluentMap.Mapping;
 namespace SmartFlow.Core.Models
 {
     [Table("Action")]
-    public class Action
+    public class ProcessAction
     {
-        public Action(int code)
+        public ProcessAction(int code)
         {
             Code = code;
         }
 
-        public Action()
+        public ProcessAction()
         {
 
         }
@@ -25,7 +25,7 @@ namespace SmartFlow.Core.Models
         public Guid ProcessId { get; set; }
     }
 
-    internal class ActionMap : EntityMap<Action>
+    internal class ActionMap : EntityMap<ProcessAction>
     {
         internal ActionMap()
         {

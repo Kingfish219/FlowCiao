@@ -1,26 +1,28 @@
 ﻿using SmartFlow.Core.Db;
+using SmartFlow.Core.Handlers;
 using SmartFlow.Core.Models;
 using SmartFlow.Core.Repositories;
+using SmartFlow.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SmartFlow.Core
 {
-    public class DefaultWorkflowOperator : IWorkflowOperator
+    public class DefaultProcessOperator : IProcessOperator
     {
         private readonly string _connectionString;
 
-        public DefaultWorkflowOperator(string connectionString)
+        public DefaultProcessOperator(string connectionString)
         {
             _connectionString = connectionString;
         }
 
-        public DefaultWorkflowOperator()
+        public DefaultProcessOperator()
         {
         }
 
-        public Task<ProcessResult> AdvanceAsync(Entity entity
+        public Task<ProcessResult> AdvanceAsync(ProcessEntity entity
             , ProcessUser user
             , ProcessStepInput input
             , IEntityRepository entityRepository
@@ -32,8 +34,8 @@ namespace SmartFlow.Core
                 try
                 {
                     var logRepository = new LogRepository(_connectionString);
-                    var processRepository = new DefaultProcessRepository(_connectionString);
-                    var processStepManager = new DefaultProcessStepManager(processRepository);
+                    var processRepository = new ProcessRepository(_connectionString);
+                    var processStepManager = new ProcessStepService(processRepository);
                     ProcessStep processStep;
                     if (commandType == EntityCommandType.Create)
                     {
@@ -62,7 +64,7 @@ namespace SmartFlow.Core
                         EntityCommandType = commandType,
                     };
 
-                    var handlers = WorkflowHandlerFactory.BuildHandlers(
+                    var handlers = ProcessHandlerFactory.BuildHandlers(
                         processStepContext,
                         processRepository,
                         processStepManager,

@@ -9,7 +9,7 @@ namespace SmartFlow.Core.Models
     {
         [Key]
         public Guid Id { get; set; }
-        public Action Action { get; set; }
+        public ProcessAction Action { get; set; }
         public Transition Transition { get; set; }
     }
 }

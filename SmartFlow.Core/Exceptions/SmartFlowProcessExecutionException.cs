@@ -4,13 +4,13 @@ using System;
 
 namespace SmartFlow.Core.Exceptions
 {
-    public class SmartFlowProcessException : Exception
+    public class SmartFlowProcessExecutionException : Exception
     {
-        public SmartFlowProcessException()
+        public SmartFlowProcessExecutionException()
         {
         }
 
-        public SmartFlowProcessException(string message, LogRepository logRepository, ProcessStep processStep, [System.Runtime.CompilerServices.CallerFilePath] string handlerName = "", [System.Runtime.CompilerServices.CallerLineNumber] int line = 0)
+        public SmartFlowProcessExecutionException(string message, LogRepository logRepository, ProcessStep processStep, [System.Runtime.CompilerServices.CallerFilePath] string handlerName = "", [System.Runtime.CompilerServices.CallerLineNumber] int line = 0)
             : base(message)
         {
             try
@@ -31,12 +31,12 @@ namespace SmartFlow.Core.Exceptions
             }
             catch (Exception) { }
         }
-        public SmartFlowProcessException(string message)
+        public SmartFlowProcessExecutionException(string message)
             : base(message)
         {
         }
 
-        public SmartFlowProcessException(string message, Exception inner)
+        public SmartFlowProcessExecutionException(string message, Exception inner)
             : base(message, inner)
         {
         }

@@ -10,7 +10,7 @@ namespace SmartFlow.Core.Models
         public List<TransitionAction> TransitionActions { get; set; }
         public Transition Transition { get; set; }
         public bool IsCompleted { get; set; }
-        public Entity Entity { get; set; }
+        public ProcessEntity Entity { get; set; }
         public int EntityType { get; set; }
     }
 }

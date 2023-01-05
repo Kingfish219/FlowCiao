@@ -3,18 +3,18 @@ using SmartFlow.Core.Db;
 using SmartFlow.Core.Exceptions;
 using SmartFlow.Core.Models;
 
-namespace SmartFlow.Core
+namespace SmartFlow.Core.Services
 {
-    internal class DefaultProcessStepManager : IProcessStepManager
+    internal class ProcessStepService : IProcessStepService
     {
         private readonly IProcessRepository _processRepository;
 
-        internal DefaultProcessStepManager(IProcessRepository processRepository)
+        internal ProcessStepService(IProcessRepository processRepository)
         {
             _processRepository = processRepository;
         }
 
-        public ProcessStep GetActiveProcessStep(Guid userId, Entity entity)
+        public ProcessStep GetActiveProcessStep(Guid userId, ProcessEntity entity)
         {
             var processStep = _processRepository.GetActiveProcessStep(entity).Result;
             if (processStep != null)
@@ -30,7 +30,7 @@ namespace SmartFlow.Core
         }
 
         //public ProcessStep InitializeActiveProcessStep(Guid userID)
-        public ProcessStep InitializeActiveProcessStep(Guid userId, Entity entity, bool initializeFromFirstState = false)
+        public ProcessStep InitializeActiveProcessStep(Guid userId, ProcessEntity entity, bool initializeFromFirstState = false)
         {
             var process = _processRepository.GetProcess(userId).Result;
             State state;
@@ -54,7 +54,7 @@ namespace SmartFlow.Core
             var result = _processRepository.CreateProcessStep(processStep).Result;
             if (!result)
             {
-                throw new SmartFlowProcessException("No process step found");
+                throw new SmartFlowProcessExecutionException("No process step found");
             }
 
             processStep = GetActiveProcessStep(userId, entity);

@@ -1,7 +1,6 @@
-﻿using SmartFlow.Core.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace SmartFlow.Core
+namespace SmartFlow.Core.Models
 {
     public class ProcessStepContext
     {
@@ -11,7 +10,7 @@ namespace SmartFlow.Core
         public EntityCommandType EntityCommandType { get; set; }
         public Dictionary<string, object> Data { get; set; }
 
-        public ProcessStepContext() 
+        public ProcessStepContext()
         {
             Data = new Dictionary<string, object>();
         }

@@ -6,7 +6,7 @@ namespace SmartFlow.Core.Db
 {
     public interface IEntityRepository
     {
-        ProcessResult Create(Entity entity);
-        ProcessResult ChangeState(Entity entity, Guid newStateId);
+        ProcessResult Create(ProcessEntity entity);
+        ProcessResult ChangeState(ProcessEntity entity, Guid newStateId);
     }
 }

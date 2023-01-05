@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using SmartFlow.Core.Db;
 using SmartFlow.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -6,22 +7,27 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
-using Action = SmartFlow.Core.Models.Action;
+using ProcessAction = SmartFlow.Core.Models.ProcessAction;
 
 
-namespace SmartFlow.Core.Db
+namespace SmartFlow.Core.Repositories
 {
-    public class DefaultProcessRepository : IProcessRepository
+    public class ProcessRepository : IProcessRepository
     {
         private readonly string _connectionString;
 
-        public DefaultProcessRepository(string connectionString)
+        public ProcessRepository(string connectionString)
         {
             _connectionString = connectionString;
-            DapperManager.EnsureMappings();
         }
 
-        public Task<bool> CompleteProgressAction(ProcessStep processStep, Action action)
+        public ProcessRepository(SmartFlowSettings settings)
+        {
+            _connectionString = settings.ConnectionString;
+            DapperHelper.EnsureMappings();
+        }
+
+        public Task<bool> CompleteProgressAction(ProcessStep processStep, ProcessAction action)
         {
             return Task.Run(() =>
             {
@@ -77,7 +83,7 @@ namespace SmartFlow.Core.Db
             });
         }
 
-        public Task<bool> RemoveActiveProcessStep(Entity entity)
+        public Task<bool> RemoveActiveProcessStep(ProcessEntity entity)
         {
             return Task.Run(() =>
             {
@@ -116,7 +122,7 @@ namespace SmartFlow.Core.Db
             });
         }
 
-        public Task<Process> GetProcess(Guid processId)
+        public Task<Process> GetProcess(Guid processId = default, string key = default)
         {
             return Task.Run(() =>
             {
@@ -124,16 +130,6 @@ namespace SmartFlow.Core.Db
                 {
                     connection.Open();
                     Process result = null;
-                    //if (ProcessId != null && ProcessId != new Guid())
-                    //{
-                    //    //یعنی روند غیر پیش فرض را در برمیگیرد
-                    //    result = connection.QueryFirstOrDefault<Process>($@"SELECT * FROM Process WHERE Id='{ProcessId}' and EntityType=1");
-                    //}
-                    //else
-                    //{
-                    //    result = connection.QueryFirstOrDefault<Process>(@"SELECT * FROM [Process] WHERE EntityType = 1 and IsDefultProccess=1");
-
-                    //}
 
                     result = connection.QueryFirstOrDefault<Process>($@"SELECT * FROM Process WHERE Id='{processId}' and EntityType=1");
 
@@ -142,7 +138,7 @@ namespace SmartFlow.Core.Db
             });
         }
 
-        public Task<ProcessStep> GetActiveProcessStep(Entity entity)
+        public Task<ProcessStep> GetActiveProcessStep(ProcessEntity entity)
         {
             return Task.Run(() =>
             {
@@ -164,7 +160,7 @@ namespace SmartFlow.Core.Db
         /// <param name="entity"></param>
         /// <param name="ProcessId"></param>
         /// <returns></returns>
-        public Task<List<TransitionAction>> GetActiveTransitions(Entity entity, Guid ProcessId)
+        public Task<List<TransitionAction>> GetActiveTransitions(ProcessEntity entity, Guid ProcessId)
         {
             return Task.Run(() =>
             {
@@ -172,7 +168,7 @@ namespace SmartFlow.Core.Db
                 {
                     connection.Open();
 
-                    var result = connection.Query<TransitionAction, Transition, Action, TransitionAction>($@"
+                    var result = connection.Query<TransitionAction, Transition, ProcessAction, TransitionAction>($@"
                             SELECT ta.[Id], ta.TransitionId AS [TransitionId], t.CurrentStateId, t.NextStateId, t.ProcessId, ta.ActionId  AS [ActionId], a.ActionTypeCode, a.[Name], a.ProcessId FROM [ActiveProcessStep] p
                             INNER JOIN [TransitionAction] ta ON ta.[ActionId] = p.ActionId and ta.TransitionId = p.TransitionId
                             INNER JOIN [Transition] t ON ta.TransitionId = t.Id AND t.ProcessId = '{ProcessId}'
@@ -246,7 +242,7 @@ namespace SmartFlow.Core.Db
                     //},
                     //    splitOn: "TransitionId,ActionId"
                     //).AsQueryable().ToList();
-                    var result = connection.Query<TransitionAction, Transition, Action, TransitionAction>($@"
+                    var result = connection.Query<TransitionAction, Transition, ProcessAction, TransitionAction>($@"
                             SELECT ta.[Id], t.[Id] AS [TransitionId], t.[NextStateId],t.[ProcessId],a.[ProcessId] ,t.[CurrentStateId], a.[Id] AS [ActionId], a.[Name], a.[ActionTypeCode] FROM [TransitionAction] ta
                             INNER JOIN [Transition] t ON ta.[TransitionId] = t.[Id]
                             INNER JOIN [Action] a ON ta.[ActionId] = a.[Id]           
@@ -273,7 +269,7 @@ namespace SmartFlow.Core.Db
                 {
                     connection.Open();
 
-                    var result = connection.Query<TransitionAction, Transition, Action, TransitionAction>($@"
+                    var result = connection.Query<TransitionAction, Transition, ProcessAction, TransitionAction>($@"
                             SELECT ta.[Id], t.[Id] AS [TransitionId], t.[NextStateId], t.[CurrentStateId], a.[Id] AS [ActionId], a.[Name], a.[ActionTypeCode] FROM [TransitionAction] ta
                             INNER JOIN [Transition] t ON ta.[TransitionId] = t.[Id]
                             INNER JOIN [Action] a ON ta.[ActionId] = a.[Id]           
@@ -463,7 +459,7 @@ namespace SmartFlow.Core.Db
             });
         }
 
-        public Task<bool> ProcessStepCommentRead(Entity entity)
+        public Task<bool> ProcessStepCommentRead(ProcessEntity entity)
         {
             return Task.Run(() =>
             {
@@ -490,7 +486,8 @@ namespace SmartFlow.Core.Db
 
         public Task<bool> ApplyProcessStepCommentAttachment(Guid processStepCommentId, Guid attachmentId)
         {
-            return Task.Run(() => {
+            return Task.Run(() =>
+            {
                 try
                 {
                     using (var connection = new SqlConnection(_connectionString))
@@ -513,7 +510,7 @@ namespace SmartFlow.Core.Db
             });
         }
 
-        public Task<FuncResult> ApplyProcessStepComment(Entity entity, ProcessUser processUser, string comment, List<Guid> attachmentIds = default)
+        public Task<FuncResult> ApplyProcessStepComment(ProcessEntity entity, ProcessUser processUser, string comment, List<Guid> attachmentIds = default)
         {
             return Task.Run(() =>
             {
@@ -582,7 +579,7 @@ namespace SmartFlow.Core.Db
                 }
             });
         }
-    
+
         public State GetStartState()
         {
             try
@@ -592,10 +589,16 @@ namespace SmartFlow.Core.Db
                 var result = connection.QueryFirstOrDefault<State>($@"SELECT * FROM [Status] WHERE IsStart = 1");
 
                 return result;
-            }catch(Exception)
+            }
+            catch (Exception)
             {
                 return null;
             }
+        }
+
+        public Task<Guid> Create(Process entity)
+        {
+            return Task.FromResult(Guid.Empty);
         }
     }
 }

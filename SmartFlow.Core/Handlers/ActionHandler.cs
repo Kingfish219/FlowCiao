@@ -9,7 +9,7 @@ namespace SmartFlow.Core.Handlers
     internal class ActionHandler : WorkflowHandler
     {
         public ActionHandler(IProcessRepository processRepository
-            , IProcessStepManager processStepManager) : base(processRepository, processStepManager)
+            , IProcessStepService processStepManager) : base(processRepository, processStepManager)
         {
         }
 
@@ -29,7 +29,7 @@ namespace SmartFlow.Core.Handlers
                     .Action).Result;
                 if (!result)
                 {
-                    throw new SmartFlowProcessException("Exception occured while completing progress action");
+                    throw new SmartFlowProcessExecutionException("Exception occured while completing progress action");
                 }
 
                 processStepContext.ProcessStep.IsCompleted = true;
