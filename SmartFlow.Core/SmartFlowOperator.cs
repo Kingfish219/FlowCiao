@@ -9,16 +9,16 @@ using System.Threading.Tasks;
 
 namespace SmartFlow.Core
 {
-    public class DefaultProcessOperator : IProcessOperator
+    public class SmartFlowOperator : ISmartOperator
     {
         private readonly string _connectionString;
 
-        public DefaultProcessOperator(string connectionString)
+        public SmartFlowOperator(string connectionString)
         {
             _connectionString = connectionString;
         }
 
-        public DefaultProcessOperator()
+        public SmartFlowOperator()
         {
         }
 

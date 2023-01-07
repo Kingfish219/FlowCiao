@@ -5,7 +5,7 @@ using SmartFlow.Core.Models;
 
 namespace SmartFlow.Core
 {
-    public interface IProcessOperator
+    public interface ISmartOperator
     {
         ProcessResult Start(Process process);
 

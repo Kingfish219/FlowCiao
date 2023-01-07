@@ -34,8 +34,6 @@ namespace SmartFlow.Core.Services
                 throw new SmartFlowPersistencyException();
             }
 
-            
-
             return processId;
         }
 

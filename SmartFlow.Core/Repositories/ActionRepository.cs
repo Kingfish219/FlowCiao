@@ -11,7 +11,6 @@ namespace SmartFlow.Core.Repositories
         public ActionRepository(SmartFlowSettings settings)
         {
             _connectionString = settings.ConnectionString;
-            DapperHelper.EnsureMappings();
         }
 
         public Task<Guid> Create(ProcessAction entity)

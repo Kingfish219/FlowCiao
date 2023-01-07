@@ -11,6 +11,8 @@ namespace SmartFlow.Core
     {
         public static IServiceCollection AddSmartFlow(this IServiceCollection services, Action<SmartFlowSettings> settings)
         {
+            DapperHelper.EnsureMappings();
+
             var smartFlowSettings = new SmartFlowSettings();
             settings.Invoke(smartFlowSettings);
 

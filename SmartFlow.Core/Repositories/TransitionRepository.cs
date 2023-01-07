@@ -12,7 +12,6 @@ namespace SmartFlow.Core.Repositories
         public TransitionRepository(SmartFlowSettings settings)
         {
             _connectionString = settings.ConnectionString;
-            DapperHelper.EnsureMappings();
         }
 
         public Task<Guid> Create(Transition entity)
