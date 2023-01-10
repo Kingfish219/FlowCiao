@@ -1,10 +1,13 @@
 ﻿
+using System;
+
 namespace SmartFlow.Core.Models
 {
     public class ProcessResult
     {
         public ProcessResultStatus Status { get; set; } = ProcessResultStatus.Completed;
         public string Message { get; set; }
+        public Guid InstanceId { get; set; }
 
         public static ProcessResult SuccessResult()
         {

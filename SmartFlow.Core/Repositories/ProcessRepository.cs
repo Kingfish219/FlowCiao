@@ -24,7 +24,6 @@ namespace SmartFlow.Core.Repositories
         public ProcessRepository(SmartFlowSettings settings)
         {
             _connectionString = settings.ConnectionString;
-            DapperHelper.EnsureMappings();
         }
 
         public Task<bool> CompleteProgressAction(ProcessStep processStep, ProcessAction action)

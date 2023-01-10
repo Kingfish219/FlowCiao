@@ -4,6 +4,7 @@ using SmartFlow.Core.Models;
 using SmartFlow.Core.Repositories;
 using SmartFlow.Core.Services;
 using System;
+using SmartFlow.Core.Builders;
 
 namespace SmartFlow.Core
 {
@@ -20,6 +21,8 @@ namespace SmartFlow.Core
             services.AddTransient<IProcessRepository, ProcessRepository>();
             services.AddTransient<ProcessService, ProcessService>();
             services.AddTransient<TransitionRepository, TransitionRepository>();
+            services.AddTransient<IStateMachineBuilder, StateMachineBuilder>();
+            services.AddTransient<ISmartFlowOperator, SmartFlowOperator>();
 
             return services;
         }
