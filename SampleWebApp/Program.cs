@@ -2,6 +2,7 @@ using SampleWebApp.Activities;
 using SampleWebApp.Flows;
 using SmartFlow.Core;
 using SmartFlow.Core.Builders;
+using SmartFlow.Core.Interfaces;
 using SmartFlow.Core.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,7 +33,9 @@ builder.Services.AddSmartFlow(settings =>
 //                            .OnExit<GoodbyeWorld>();
 //               });
 
-var app = builder.Build();
+var smartFlowOperator = (IStateMachineOperator)app.Services.GetService(typeof(IStateMachineOperator))!;
+smartFlowOperator.RegisterFlow<SampleStateMachine>();
+var executionResult = smartFlowOperator.Execute(stateMachine);
 
 var workflowBuilder = new StateMachineBuilder(null);
 var workflow = workflowBuilder.Build<SampleStateMachine>();

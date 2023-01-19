@@ -7,22 +7,33 @@ using SmartFlow.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SmartFlow.Core.Builders;
+using SmartFlow.Core.Interfaces;
 
 namespace SmartFlow.Core
 {
-    public class SmartFlowOperator : ISmartOperator
+    public class SmartFlowOperator : IStateMachineOperator
     {
-        private readonly SmartFlowSettings _smartFlowSettings;
-        private readonly string _connectionString;
+        private readonly IStateMachineBuilder _builder;
+        private readonly SmartFlowSettings _settings;
 
-        public SmartFlowOperator(SmartFlowSettings smartFlowSettings)
+        public SmartFlowOperator(SmartFlowSettings settings, IStateMachineBuilder builder)
         {
-            _smartFlowSettings = smartFlowSettings;
-            _connectionString = _smartFlowSettings.ConnectionString;
+            _settings = settings;
+            _builder = builder;
         }
 
-        public SmartFlowOperator()
+        public bool RegisterFlow<TFlow>() where TFlow : IStateMachine, new()
         {
+            var stateMachine = _builder
+                .Build<TFlow>();
+
+            return stateMachine != null;
+        }
+
+        public Task<ProcessResult> ExecuteAsync(IStateMachine process)
+        {
+            throw new NotImplementedException();
         }
 
         public Task<ProcessResult> AdvanceAsync(ProcessEntity entity
@@ -36,8 +47,8 @@ namespace SmartFlow.Core
             {
                 try
                 {
-                    var logRepository = new LogRepository(_connectionString);
-                    var processRepository = new ProcessRepository(_connectionString);
+                    var logRepository = new LogRepository(_settings.ConnectionString);
+                    var processRepository = new ProcessRepository(_settings.ConnectionString);
                     var processStepManager = new ProcessStepService(processRepository);
                     ProcessStep processStep;
                     if (commandType == EntityCommandType.Create)
@@ -73,7 +84,7 @@ namespace SmartFlow.Core
                         processStepManager,
                         entityRepository,
                         logRepository,
-                        _connectionString
+                        _settings.ConnectionString
                        );
 
                     var result = handlers.Peek().Handle(processStepContext);
@@ -91,7 +102,7 @@ namespace SmartFlow.Core
             });
         }
 
-        public ProcessResult Start(ISmartFlow process)
+        public ProcessResult Execute(IStateMachine stateMachine)
         {
             throw new NotImplementedException();
         }

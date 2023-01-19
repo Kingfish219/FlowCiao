@@ -38,6 +38,11 @@ namespace SmartFlow.Core.Builders
             try
             {
                 var stateMachine = (IStateMachine)Activator.CreateInstance(typeof(T));
+                if (stateMachine is null)
+                {
+                    throw new Exception();
+                }
+
                 stateMachine.Construct<T>(this);
 
                 var process = _processService.GetProcess(key: "").GetAwaiter().GetResult();
@@ -154,7 +159,7 @@ namespace SmartFlow.Core.Builders
 
         }
 
-        public ISmartFlow Build<T>(Action<ISmartFlowBuilder> action) where T : ISmartFlow, new()
+        public IStateMachine Build<T>(Action<ISmartFlowBuilder> action) where T : IStateMachine, new()
         {
             throw new NotImplementedException();
         }
