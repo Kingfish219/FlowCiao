@@ -20,6 +20,7 @@ namespace SmartFlow.Core
             services.AddTransient<IProcessRepository, ProcessRepository>();
             services.AddTransient<ProcessService, ProcessService>();
             services.AddTransient<TransitionRepository, TransitionRepository>();
+            services.AddSingleton<SmartFlowOperator, SmartFlowOperator>();
 
             return services;
         }

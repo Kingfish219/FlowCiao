@@ -1,5 +1,6 @@
 ﻿using SmartFlow.Core.Db;
 using SmartFlow.Core.Handlers;
+using SmartFlow.Core.Interfaces;
 using SmartFlow.Core.Models;
 using SmartFlow.Core.Repositories;
 using SmartFlow.Core.Services;
@@ -11,11 +12,13 @@ namespace SmartFlow.Core
 {
     public class SmartFlowOperator : ISmartOperator
     {
+        private readonly SmartFlowSettings _smartFlowSettings;
         private readonly string _connectionString;
 
-        public SmartFlowOperator(string connectionString)
+        public SmartFlowOperator(SmartFlowSettings smartFlowSettings)
         {
-            _connectionString = connectionString;
+            _smartFlowSettings = smartFlowSettings;
+            _connectionString = _smartFlowSettings.ConnectionString;
         }
 
         public SmartFlowOperator()
@@ -88,7 +91,7 @@ namespace SmartFlow.Core
             });
         }
 
-        public ProcessResult Start(Process process)
+        public ProcessResult Start(ISmartFlow process)
         {
             throw new NotImplementedException();
         }
