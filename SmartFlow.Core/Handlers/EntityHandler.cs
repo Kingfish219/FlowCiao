@@ -9,7 +9,7 @@ namespace SmartFlow.Core.Handlers
     {
         private readonly Func<ProcessEntity, ProcessResult> _command;
 
-        public EntityHandler(IProcessRepository processRepository
+        public EntityHandler(IStateMachineRepository processRepository
             , IProcessStepService processStepManager
             , Func<ProcessEntity, ProcessResult> command) : base(processRepository, processStepManager)
         {

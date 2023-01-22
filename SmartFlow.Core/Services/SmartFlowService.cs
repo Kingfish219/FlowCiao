@@ -1,5 +1,6 @@
 ﻿using SmartFlow.Core.Db;
 using SmartFlow.Core.Exceptions;
+using SmartFlow.Core.Interfaces;
 using SmartFlow.Core.Models;
 using SmartFlow.Core.Repositories;
 using System;
@@ -7,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace SmartFlow.Core.Services
 {
-    public class ProcessService
+    public class SmartFlowService
     {
-        private readonly IProcessRepository _processRepository;
+        private readonly ISmartFlowRepository _processRepository;
         private readonly TransitionRepository _transitionRepository;
         private readonly StateRepository _stateRepository;
         private readonly ActionRepository _actionRepository;
 
-        public ProcessService(IProcessRepository processRepository
+        public SmartFlowService(ISmartFlowRepository processRepository
             , TransitionRepository transitionRepository
             , StateRepository stateRepository
             , ActionRepository actionRepository
@@ -26,9 +27,9 @@ namespace SmartFlow.Core.Services
             _actionRepository = actionRepository;
         }
 
-        public async Task<Guid> Create(Process process)
+        public async Task<Guid> Create<T>(ISmartFlow smartFlow) where T : ISmartFlow
         {
-            var processId = await _processRepository.Create(process);
+            var processId = await _processRepository.Create<T>(smartFlow);
             if (processId == default)
             {
                 throw new SmartFlowPersistencyException();
@@ -37,9 +38,9 @@ namespace SmartFlow.Core.Services
             return processId;
         }
 
-        public async Task<Process> GetProcess(Guid processId = default, string key = default)
+        public async Task<ISmartFlow> GetProcess<T>(Guid processId = default, string key = default) where T : ISmartFlow
         {
-            return await _processRepository.GetProcess(processId, key);
+            return await _processRepository.GetProcess<T>(processId, key);
         }
     }
 }

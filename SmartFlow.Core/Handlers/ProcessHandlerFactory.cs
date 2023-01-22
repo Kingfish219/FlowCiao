@@ -9,7 +9,7 @@ namespace SmartFlow.Core.Handlers
     {
         internal static Queue<WorkflowHandler> BuildHandlers(
             ProcessStepContext processStepContext,
-            IProcessRepository processRepository,
+            IStateMachineRepository processRepository,
             IProcessStepService processStepManager,
             IEntityRepository entityRepository,
             LogRepository logRepository,
@@ -22,7 +22,7 @@ namespace SmartFlow.Core.Handlers
 
         private static Queue<WorkflowHandler> BuildDefaultHandlers(
              ProcessStepContext processStepContext
-            , IProcessRepository processRepository
+            , IStateMachineRepository processRepository
             , IProcessStepService processStepManager
             , IEntityRepository entityRepository
             , LogRepository logRepository

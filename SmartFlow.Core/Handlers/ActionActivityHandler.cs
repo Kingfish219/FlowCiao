@@ -6,7 +6,7 @@ namespace SmartFlow.Core.Handlers
 {
     internal class ActionActivityHandler : WorkflowHandler
     {
-        public ActionActivityHandler(IProcessRepository processRepository
+        public ActionActivityHandler(IStateMachineRepository processRepository
             , IProcessStepService processStepManager) : base(processRepository, processStepManager)
         {
         }

@@ -2,8 +2,7 @@ using SampleWebApp.Activities;
 using SampleWebApp.Flows;
 using SmartFlow.Core;
 using SmartFlow.Core.Builders;
-using SmartFlow.Core.Interfaces;
-using SmartFlow.Core.Models;
+using SmartFlow.Core.Operators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +16,8 @@ builder.Services.AddSmartFlow(settings =>
 {
     settings.UseSqlServer("Server=.;Database=SmartFlow;Trusted_Connection=True;");
 });
+
+var app = builder.Build();
 
 //var workflow = workflowBuilder
 //               .Build<SampleStateMachine>(builder =>
@@ -33,14 +34,14 @@ builder.Services.AddSmartFlow(settings =>
 //                            .OnExit<GoodbyeWorld>();
 //               });
 
-var smartFlowOperator = (IStateMachineOperator)app.Services.GetService(typeof(IStateMachineOperator))!;
-smartFlowOperator.RegisterFlow<SampleStateMachine>();
-var executionResult = smartFlowOperator.Execute(stateMachine);
+//var smartFlowOperator = (IStateMachineOperator)app.Services.GetService(typeof(IStateMachineOperator))!;
+//smartFlowOperator.RegisterFlow<SampleStateMachine>();
+//var executionResult = smartFlowOperator.Execute(stateMachine);
 
-var workflowBuilder = new StateMachineBuilder(null);
-var workflow = workflowBuilder.Build<SampleStateMachine>();
-var defaultWorkflowOperator = app.Services.GetService<SmartFlowOperator>();
-defaultWorkflowOperator?.Start(workflow);
+var stateMachineBuilder = app.Services.GetService<ISmartFlowBuilder>();
+var workflow = stateMachineBuilder?.Build<SampleStateMachine>();
+var defaultWorkflowOperator = app.Services.GetService<ISmartFlowOperator>();
+defaultWorkflowOperator?.Execute(workflow);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

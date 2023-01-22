@@ -5,13 +5,13 @@ using SmartFlow.Core.Models;
 
 namespace SampleWebApp.Flows
 {
-    public class SampleStateMachine : IStateMachine
+    public class SampleStateMachine : ISmartFlow
     {
         public Guid Id { get; set; }
         public string Key { get; set; }
         public List<Transition> Transitions { get; set; }
 
-        public IStateMachine Construct<T>(IStateMachineBuilder builder) where T : IStateMachine, new()
+        public ISmartFlow Construct<T>(ISmartFlowBuilder builder) where T : ISmartFlow, new()
         {
             builder.NewStep()
                       .From(new State(1, "First"))

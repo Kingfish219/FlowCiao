@@ -8,7 +8,7 @@ namespace SmartFlow.Core.Handlers
 {
     internal class StateActivityHandler : WorkflowHandler
     {
-        public StateActivityHandler(IProcessRepository processRepository, IProcessStepService processStepManager) : base(processRepository, processStepManager)
+        public StateActivityHandler(IStateMachineRepository processRepository, IProcessStepService processStepManager) : base(processRepository, processStepManager)
         {
         }
 

@@ -7,7 +7,7 @@ namespace SmartFlow.Core.Handlers
 {
     internal class ProcessStepFinalizerHandler : WorkflowHandler
     {
-        public ProcessStepFinalizerHandler(IProcessRepository processRepository
+        public ProcessStepFinalizerHandler(IStateMachineRepository processRepository
             , IProcessStepService processStepManager) : base(processRepository, processStepManager)
         {
         }

@@ -1,10 +1,12 @@
 ﻿using Dapper;
 using SmartFlow.Core.Db;
+using SmartFlow.Core.Interfaces;
 using SmartFlow.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using ProcessAction = SmartFlow.Core.Models.ProcessAction;
@@ -12,7 +14,7 @@ using ProcessAction = SmartFlow.Core.Models.ProcessAction;
 
 namespace SmartFlow.Core.Repositories
 {
-    public class ProcessRepository : IProcessRepository
+    public class ProcessRepository : ISmartFlowRepository
     {
         private readonly string _connectionString;
 
@@ -96,41 +98,41 @@ namespace SmartFlow.Core.Repositories
             });
         }
 
-        public Task<Process> GetProcess(Guid userId, Guid requestTypeId)
-        {
-            return Task.Run(() =>
-            {
-                using var connection = new SqlConnection(_connectionString);
-                connection.Open();
-                Process result = null;
-                var companyId = connection.Query<Guid>($@"select ap.CompanyId from AssignmentPosition as ap where UserId ='{userId}'").First();
-                var processId = connection.Query<Guid>($@"select cp.ProcessId from CompanyProcess as cp where CompanyId='{companyId}' and RequestTypeId='{requestTypeId}'").FirstOrDefault();
-                //var ProcessId = connection.Query<Guid>($@"select cp.ProcessId from CompanyProcess as cp where CompanyId='{CompanyId}'").FirstOrDefault();
-                if (processId != new Guid())
-                {
-                    //یعنی روند غیر پیش فرض را در برمیگیرد
-                    result = connection.QueryFirstOrDefault<Process>($@"SELECT * FROM Process WHERE Id='{processId}' and EntityType=1");
-                }
-                else
-                {
-                    result = connection.QueryFirstOrDefault<Process>(@"SELECT * FROM [Process] WHERE EntityType = 1 and IsDefultProccess=1");
+        //public Task<Process> GetProcess(Guid userId, Guid requestTypeId)
+        //{
+        //    return Task.Run(() =>
+        //    {
+        //        using var connection = new SqlConnection(_connectionString);
+        //        connection.Open();
+        //        Process result = null;
+        //        var companyId = connection.Query<Guid>($@"select ap.CompanyId from AssignmentPosition as ap where UserId ='{userId}'").First();
+        //        var processId = connection.Query<Guid>($@"select cp.ProcessId from CompanyProcess as cp where CompanyId='{companyId}' and RequestTypeId='{requestTypeId}'").FirstOrDefault();
+        //        //var ProcessId = connection.Query<Guid>($@"select cp.ProcessId from CompanyProcess as cp where CompanyId='{CompanyId}'").FirstOrDefault();
+        //        if (processId != new Guid())
+        //        {
+        //            //یعنی روند غیر پیش فرض را در برمیگیرد
+        //            result = connection.QueryFirstOrDefault<Process>($@"SELECT * FROM Process WHERE Id='{processId}' and EntityType=1");
+        //        }
+        //        else
+        //        {
+        //            result = connection.QueryFirstOrDefault<Process>(@"SELECT * FROM [Process] WHERE EntityType = 1 and IsDefultProccess=1");
 
-                }
+        //        }
 
-                return result;
-            });
-        }
+        //        return result;
+        //    });
+        //}
 
-        public Task<Process> GetProcess(Guid processId = default, string key = default)
+        public Task<ISmartFlow> GetProcess<T>(Guid processId = default, string key = default) where T : ISmartFlow
         {
             return Task.Run(() =>
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
-                    Process result = null;
-
-                    result = connection.QueryFirstOrDefault<Process>($@"SELECT * FROM Process WHERE Id='{processId}' and EntityType=1");
+                    var result = (ISmartFlow)connection.QueryFirstOrDefault<T>($@"SELECT * FROM Process WHERE'
+                                                                                ([Id] = @ProcessId OR ISNULL(@ProcessId, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER)) AND
+                                                                                ([FlowKey] = @FlowKey OR ISNULL(@FlowKey, '') = '')", new { ProcessId = processId, FlowKey = key });
 
                     return result;
                 }
@@ -595,7 +597,7 @@ namespace SmartFlow.Core.Repositories
             }
         }
 
-        public Task<Guid> Create(Process entity)
+        public Task<Guid> Create<T>(ISmartFlow entity) where T : ISmartFlow
         {
             return Task.FromResult(Guid.Empty);
         }

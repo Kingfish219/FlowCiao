@@ -5,11 +5,11 @@ using SmartFlow.Core.Models;
 
 namespace SmartFlow.Core.Services
 {
-    internal class ProcessStepService : IProcessStepService
+    public class ProcessStepService : IProcessStepService
     {
-        private readonly IProcessRepository _processRepository;
+        private readonly IStateMachineRepository _processRepository;
 
-        internal ProcessStepService(IProcessRepository processRepository)
+        public ProcessStepService(IStateMachineRepository processRepository)
         {
             _processRepository = processRepository;
         }

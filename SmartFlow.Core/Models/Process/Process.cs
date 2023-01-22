@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Dapper.Contrib.Extensions;
 using SmartFlow.Core.Builders;
 using SmartFlow.Core.Interfaces;
 
 namespace SmartFlow.Core.Models
 {
-    public class Process : IStateMachine
+    [Table("Process")]
+    public class Process : ISmartFlow
     {
         public Process()
         {

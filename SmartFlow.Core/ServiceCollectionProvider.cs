@@ -5,6 +5,7 @@ using SmartFlow.Core.Repositories;
 using SmartFlow.Core.Services;
 using System;
 using SmartFlow.Core.Builders;
+using SmartFlow.Core.Operators;
 
 namespace SmartFlow.Core
 {
@@ -18,11 +19,11 @@ namespace SmartFlow.Core
             settings.Invoke(smartFlowSettings);
 
             services.AddSingleton(settings);
-            services.AddTransient<IProcessRepository, ProcessRepository>();
-            services.AddTransient<ProcessService, ProcessService>();
+            services.AddTransient<ISmartFlowRepository, ProcessRepository>();
+            services.AddTransient<SmartFlowService, SmartFlowService>();
             services.AddTransient<TransitionRepository, TransitionRepository>();
-            services.AddTransient<IStateMachineBuilder, StateMachineBuilder>();
-            services.AddTransient<ISmartFlowOperator, SmartFlowOperator>();
+            services.AddTransient<ISmartFlowBuilder, SmartFlowBuilder>();
+            services.AddTransient<IStateMachineOperator, StateMachineOperator>();
 
             return services;
         }

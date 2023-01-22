@@ -10,7 +10,7 @@ namespace SmartFlow.Core.Handlers
     {
         private readonly IEntityRepository _entityRepository;
 
-        public TransitionHandler(IProcessRepository processRepository
+        public TransitionHandler(IStateMachineRepository processRepository
             , IProcessStepService processStepManager
             , IEntityRepository entityRepository) : base(processRepository, processStepManager)
         {

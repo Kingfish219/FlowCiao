@@ -1,72 +1,84 @@
-﻿using System;
-using System.Collections.Generic;
-using SmartFlow.Core.Models;
+﻿//using System;
+//using System.Collections.Generic;
+//using SmartFlow.Core.Models;
 
-namespace SmartFlow.Core.Builders
-{
-    public class StateMachineStepBuilder : IStateMachineStepBuilder
-    {
-        public IStateMachineBuilder ProcessBuilder { get; set; }
+//namespace SmartFlow.Core.Builders
+//{
+//    public class StateMachineStepBuilder : IStateMachineStepBuilder
+//    {
+//        public IStateMachineBuilder ProcessBuilder { get; set; }
 
-        public StateMachineStepBuilder(IStateMachineBuilder processBuilder)
-        {
-            ProcessBuilder = processBuilder;
-            AllowedTransitions = new List<(State, List<ProcessAction>)>();
-        }
+//        public StateMachineStepBuilder(IStateMachineBuilder processBuilder)
+//        {
+//            ProcessBuilder = processBuilder;
+//            AllowedTransitions = new List<(State, List<ProcessAction>)>();
+//        }
 
-        public State InitialState { get; set; }
-        public List<(State, List<ProcessAction>)> AllowedTransitions { get; set; }
-        public IProcessActivity OnEntryActivty { get; set; }
-        public IProcessActivity OnExitActivity { get; set; }
+//        public State InitialState { get; set; }
+//        public List<(State, List<ProcessAction>)> AllowedTransitions { get; set; }
+//        public IProcessActivity OnEntryActivty { get; set; }
+//        public IProcessActivity OnExitActivity { get; set; }
 
-        public StateMachineStepBuilder From(State state)
-        {
-            InitialState = state;
+//        public IStateMachineStepBuilder From(State state)
+//        {
+//            InitialState = state;
 
-            return this;
-        }
+//            return this;
+//        }
 
-        public StateMachineStepBuilder Allow(State state, List<ProcessAction> actions)
-        {
-            AllowedTransitions.Add((state, actions));
+//        public IStateMachineStepBuilder Allow(State state, List<ProcessAction> actions)
+//        {
+//            AllowedTransitions.Add((state, actions));
 
-            return this;
-        }
+//            return this;
+//        }
 
-        public StateMachineStepBuilder Allow(State state, ProcessAction action)
-        {
-            var actions = new List<ProcessAction>
-            {
-                action
-            };
+//        public IStateMachineStepBuilder Allow(State state, ProcessAction action)
+//        {
+//            var actions = new List<ProcessAction>
+//            {
+//                action
+//            };
 
-            AllowedTransitions.Add((state, actions));
+//            AllowedTransitions.Add((state, actions));
 
-            return this;
-        }
+//            return this;
+//        }
 
-        public StateMachineStepBuilder OnEntry<Activity>() where Activity : IProcessActivity, new()
-        {
-            OnEntryActivty = (Activity)Activator.CreateInstance(typeof(Activity));
+//        public IStateMachineStepBuilder AllowSelf(List<ProcessAction> actions)
+//        {
+//            throw new NotImplementedException();
+//        }
 
-            return this;
-        }
+//        public IStateMachineStepBuilder OnEntry<Activity>() where Activity : IProcessActivity, new()
+//        {
+//            OnEntryActivty = (Activity)Activator.CreateInstance(typeof(Activity));
 
-        public StateMachineStepBuilder OnExit<Activity>() where Activity : IProcessActivity, new()
-        {
-            OnExitActivity = (Activity)Activator.CreateInstance(typeof(Activity));
+//            return this;
+//        }
 
-            return this;
-        }
+//        public IStateMachineStepBuilder OnExit<Activity>() where Activity : IProcessActivity, new()
+//        {
+//            OnExitActivity = (Activity)Activator.CreateInstance(typeof(Activity));
 
-        public IStateMachineStepBuilder NewStep()
-        {
-            return ProcessBuilder.NewStep();
-        }
+//            return this;
+//        }
 
-        public void Rollback()
-        {
+//        public IStateMachineStepBuilder NewStep()
+//        {
+//            return ProcessBuilder.NewStep();
+//        }
 
-        }
-    }
-}
+//        public IStateMachineStepBuilder AssignToUser(Func<string> userId)
+//        {
+//            InitialState.OwnerId = userId();
+
+//            return this;
+//        }
+
+//        public void Rollback()
+//        {
+
+//        }
+//    }
+//}

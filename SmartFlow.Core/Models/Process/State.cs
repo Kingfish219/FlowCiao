@@ -24,6 +24,13 @@ namespace SmartFlow.Core.Models
         public Guid ProcessId { get; set; }
         public bool IsFinal { get; set; }
         public bool IsInitial { get; set; }
+        public string OwnerId { get; set; }
         public List<Activity> Activities { get; set; }
+    }
+
+    public class StateType
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
     }
 }
