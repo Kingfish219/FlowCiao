@@ -1,4 +1,3 @@
-using SampleWebApp.Activities;
 using SampleWebApp.Flows;
 using SmartFlow.Core;
 using SmartFlow.Core.Builders;
@@ -14,7 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSmartFlow(settings =>
 {
-    settings.UseSqlServer("Server=.;Database=SmartFlow;Trusted_Connection=True;");
+    settings.UseSqlServer("Password=Abc1234;TrustServerCertificate=True;Persist Security Info=True;User ID=sa;Initial Catalog=SmartFlow;Data Source=.\\mssql2019");
 });
 
 var app = builder.Build();
@@ -41,7 +40,7 @@ var app = builder.Build();
 var stateMachineBuilder = app.Services.GetService<ISmartFlowBuilder>();
 var workflow = stateMachineBuilder?.Build<SampleStateMachine>();
 var defaultWorkflowOperator = app.Services.GetService<ISmartFlowOperator>();
-defaultWorkflowOperator?.Execute(workflow);
+defaultWorkflowOperator?.ExecuteAsync(workflow);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

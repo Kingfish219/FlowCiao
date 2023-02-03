@@ -18,14 +18,29 @@ namespace SmartFlow.Core
             var smartFlowSettings = new SmartFlowSettings();
             settings.Invoke(smartFlowSettings);
 
-            services.AddSingleton(settings);
-            services.AddTransient<ISmartFlowRepository, ProcessRepository>();
-            services.AddTransient<SmartFlowService, SmartFlowService>();
-            services.AddTransient<TransitionRepository, TransitionRepository>();
+            services.AddSingleton(smartFlowSettings);
+            services.AddSingleton<ISmartFlowOperator, SmartFlowOperator>();
+            AddRepositories(services);
+            AddServices(services);
             services.AddTransient<ISmartFlowBuilder, SmartFlowBuilder>();
-            services.AddTransient<IStateMachineOperator, StateMachineOperator>();
+
+            var migration = new DbMigrationManager(smartFlowSettings);
+            migration.MigrateUp();
 
             return services;
+        }
+
+        private static void AddRepositories(IServiceCollection services)
+        {
+            services.AddTransient<TransitionRepository, TransitionRepository>();
+            services.AddTransient<StateRepository, StateRepository>();
+            services.AddTransient<ActionRepository, ActionRepository>();
+            services.AddTransient<ISmartFlowRepository, ProcessRepository>();
+        }
+
+        private static void AddServices(IServiceCollection services)
+        {
+            services.AddTransient<SmartFlowService, SmartFlowService>();
         }
     }
 }

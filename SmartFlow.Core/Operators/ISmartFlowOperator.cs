@@ -8,8 +8,7 @@ namespace SmartFlow.Core.Operators
 {
     public interface ISmartFlowOperator
     {
-        bool RegisterFlow<TFlow>() where TFlow : ISmartFlow, new();
-        ProcessResult Execute(ISmartFlow process);
+        Task<bool> RegisterFlow<TFlow>(TFlow smartFlow) where TFlow : ISmartFlow, new();
         Task<ProcessResult> ExecuteAsync(ISmartFlow process);
         Task<ProcessResult> AdvanceAsync(ProcessEntity entity,
             ProcessUser user,

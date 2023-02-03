@@ -19,7 +19,7 @@ namespace SmartFlow.Core.Services
             var processStep = _processRepository.GetActiveProcessStep(entity).Result;
             if (processStep != null)
             {
-                var process = _processRepository.GetProcess(processStep.Process.Id).Result;
+                var process = (Process)_processRepository.GetProcess(processStep.Process.Id).Result;
                 var transitionActions = _processRepository.GetActiveTransitions(entity, process.Id).Result;
                 processStep.Entity = entity;
                 processStep.TransitionActions = transitionActions;
@@ -32,7 +32,7 @@ namespace SmartFlow.Core.Services
         //public ProcessStep InitializeActiveProcessStep(Guid userID)
         public ProcessStep InitializeActiveProcessStep(Guid userId, ProcessEntity entity, bool initializeFromFirstState = false)
         {
-            var process = _processRepository.GetProcess(userId).Result;
+            var process = (Process)_processRepository.GetProcess(userId).Result;
             State state;
             if (initializeFromFirstState)
             {

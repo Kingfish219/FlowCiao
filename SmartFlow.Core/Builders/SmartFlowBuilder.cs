@@ -37,40 +37,41 @@ namespace SmartFlow.Core.Builders
         {
             try
             {
-                var stateMachine = Activator.CreateInstance<T>();
-                if (stateMachine is null)
+                var smartFlow = Activator.CreateInstance<T>();
+                if (smartFlow is null)
                 {
                     throw new Exception();
                 }
 
-                stateMachine.Construct<T>(this);
+                smartFlow.Construct<T>(this);
 
-                var process = _processService.GetProcess<T>(key: stateMachine.Key).GetAwaiter().GetResult();
+                var process = _processService.GetProcess<T>(key: smartFlow.Key).GetAwaiter().GetResult();
                 if (process != null)
                 {
                     return process;
                 }
 
-                process = new T();
                 foreach (var builder in StepBuilders)
                 {
                     builder.InitialState.Activities = new List<Activity>
                     {
-                        new Activity
+                        new()
                         {
                             ProcessActivityExecutor = builder.OnEntryActivty
                         }
                     };
 
+                    smartFlow.Transitions ??= new List<Transition>();
+
                     foreach (var allowedTransition in builder.AllowedTransitions)
                     {
-                        process.Transitions.Add(new Transition
+                        smartFlow.Transitions.Add(new Transition
                         {
                             From = builder.InitialState,
                             To = allowedTransition.Item1,
                             Activities = new List<Activity>
                             {
-                                new Activity
+                                new()
                                 {
                                     ProcessActivityExecutor = builder.OnExitActivity
                                 }
@@ -80,13 +81,13 @@ namespace SmartFlow.Core.Builders
                     }
                 }
 
-                var result = _processService.Create<T>(process).GetAwaiter().GetResult();
+                var result = _processService.Create(smartFlow).GetAwaiter().GetResult();
                 if (result == default)
                 {
                     throw new SmartFlowPersistencyException("Check your database connection!");
                 }
 
-                return process;
+                return smartFlow;
             }
             catch (Exception)
             {
@@ -100,14 +101,15 @@ namespace SmartFlow.Core.Builders
         {
             try
             {
-                var stateMachine = Activator.CreateInstance<T>();
+                var smartFlow = Activator.CreateInstance<T>();
                 constructor.Invoke(this);
 
-                var process = _processService.GetProcess<T>(key: stateMachine.Key).GetAwaiter().GetResult();
+                var process = _processService.GetProcess<T>(key: smartFlow.Key).GetAwaiter().GetResult();
                 if (process != null)
                 {
                     return process;
                 }
+
 
                 foreach (var builder in StepBuilders)
                 {
@@ -137,7 +139,7 @@ namespace SmartFlow.Core.Builders
                     }
                 }
 
-                var result = _processService.Create<T>(process).GetAwaiter().GetResult();
+                var result = _processService.Create(smartFlow).GetAwaiter().GetResult();
                 if (result == default)
                 {
                     throw new SmartFlowPersistencyException("Check your database connection!");

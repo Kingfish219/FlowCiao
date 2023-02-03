@@ -19,7 +19,7 @@ namespace SmartFlow.Core.Models
         public string Name { get; set; }
         public bool IsActive { get; set; }
         public List<Transition> Transitions { get; set; }
-        public IStateMachine Construct<T>(IStateMachineBuilder action) where T : IStateMachine, new()
+        public ISmartFlow Construct<T>(ISmartFlowBuilder action) where T : ISmartFlow, new()
         {
             throw new NotImplementedException();
         }

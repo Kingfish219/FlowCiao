@@ -1,7 +1,9 @@
-﻿
-using SmartFlow.Core.Models;
+﻿using SmartFlow.Core.Models;
 using System.Threading.Tasks;
 using System;
+using System.Data;
+using Dapper;
+using Microsoft.Data.SqlClient;
 
 namespace SmartFlow.Core.Repositories
 {
@@ -16,7 +18,23 @@ namespace SmartFlow.Core.Repositories
 
         public Task<Guid> Create(Transition entity)
         {
-            return Task.FromResult(Guid.Empty);
+            return Task.Run(() =>
+            {
+                var toInsert = new
+                {
+                    Id = entity.Id == default ? Guid.NewGuid() : entity.Id,
+                    entity.ProcessId,
+                    CurrentStateId = entity.From.Id,
+                    NextStateId = entity.To.Id
+                };
+
+                using var connection = new SqlConnection(_connectionString);
+                connection.Open();
+                connection.Execute("[SmartFlow].[usp_Transition_Insert]", toInsert, commandType: CommandType.StoredProcedure);
+                entity.Id = toInsert.Id;
+
+                return entity.Id;
+            });
         }
     }
 }

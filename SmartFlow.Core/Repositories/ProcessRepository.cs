@@ -6,10 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using ProcessAction = SmartFlow.Core.Models.ProcessAction;
+using Activity = SmartFlow.Core.Models.Activity;
+using Process = SmartFlow.Core.Models.Process;
 
 
 namespace SmartFlow.Core.Repositories
@@ -17,11 +17,6 @@ namespace SmartFlow.Core.Repositories
     public class ProcessRepository : ISmartFlowRepository
     {
         private readonly string _connectionString;
-
-        public ProcessRepository(string connectionString)
-        {
-            _connectionString = connectionString;
-        }
 
         public ProcessRepository(SmartFlowSettings settings)
         {
@@ -130,9 +125,10 @@ namespace SmartFlow.Core.Repositories
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
-                    var result = (ISmartFlow)connection.QueryFirstOrDefault<T>($@"SELECT * FROM Process WHERE'
-                                                                                ([Id] = @ProcessId OR ISNULL(@ProcessId, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER)) AND
-                                                                                ([FlowKey] = @FlowKey OR ISNULL(@FlowKey, '') = '')", new { ProcessId = processId, FlowKey = key });
+                    var result = (ISmartFlow)connection
+                        .QueryFirstOrDefault<T>(@"SELECT * FROM [SmartFlow].Process WHERE
+                                                  ([Id] = @ProcessId OR ISNULL(@ProcessId, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER)) AND
+                                                  ([FlowKey] = @FlowKey OR ISNULL(@FlowKey, '') = '')", new { ProcessId = processId, FlowKey = key });
 
                     return result;
                 }
@@ -600,6 +596,11 @@ namespace SmartFlow.Core.Repositories
         public Task<Guid> Create<T>(ISmartFlow entity) where T : ISmartFlow
         {
             return Task.FromResult(Guid.Empty);
+        }
+
+        public Task<Process> GetProcess(Guid userId, Guid requestTypeId)
+        {
+            throw new NotImplementedException();
         }
     }
 }
