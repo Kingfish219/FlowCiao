@@ -8,7 +8,7 @@ namespace SampleWebApp.Flows
     public class SampleStateMachine : ISmartFlow
     {
         public Guid Id { get; set; }
-        public string Key { get; set; } = "Test";
+        public string FlowKey { get; set; } = "Test";
         public List<Transition> Transitions { get; set; }
 
         public ISmartFlow Construct<T>(ISmartFlowBuilder builder) where T : ISmartFlow, new()

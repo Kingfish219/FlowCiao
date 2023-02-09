@@ -45,7 +45,7 @@ namespace SmartFlow.Core.Builders
 
                 smartFlow.Construct<T>(this);
 
-                var process = _processService.GetProcess<T>(key: smartFlow.Key).GetAwaiter().GetResult();
+                var process = _processService.GetProcess<T>(key: smartFlow.FlowKey).GetAwaiter().GetResult();
                 if (process != null)
                 {
                     return process;
@@ -104,7 +104,7 @@ namespace SmartFlow.Core.Builders
                 var smartFlow = Activator.CreateInstance<T>();
                 constructor.Invoke(this);
 
-                var process = _processService.GetProcess<T>(key: smartFlow.Key).GetAwaiter().GetResult();
+                var process = _processService.GetProcess<T>(key: smartFlow.FlowKey).GetAwaiter().GetResult();
                 if (process != null)
                 {
                     return process;

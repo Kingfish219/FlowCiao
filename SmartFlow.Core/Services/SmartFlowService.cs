@@ -34,18 +34,19 @@ namespace SmartFlow.Core.Services
         {
             await _smartFlowOperator.RegisterFlow(smartFlow);
 
-            smartFlow.Transitions.ForEach(transition =>
-            {
-                transition.From.Id = _stateRepository.Create(transition.From).GetAwaiter().GetResult();
-                transition.To.Id = _stateRepository.Create(transition.To).GetAwaiter().GetResult();
-                transition.Id = _transitionRepository.Create(transition).GetAwaiter().GetResult();
-            });
-
             var processId = await _processRepository.Create<T>(smartFlow);
             if (processId == default)
             {
                 throw new SmartFlowPersistencyException();
             }
+
+            smartFlow.Transitions.ForEach(transition =>
+            {
+                transition.ProcessId = processId;
+                transition.From.Id = _stateRepository.Create(transition.From).GetAwaiter().GetResult();
+                transition.To.Id = _stateRepository.Create(transition.To).GetAwaiter().GetResult();
+                transition.Id = _transitionRepository.Create(transition).GetAwaiter().GetResult();
+            });
 
             return processId;
         }

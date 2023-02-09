@@ -29,6 +29,7 @@ namespace SmartFlow.Core
 
                 config.AddMap(new ActionMap());
                 config.AddMap(new TransitionMap());
+                config.AddMap(new StateMap());
                 config.AddMap(new UserMap());
                 config.AddMap(new GroupMap());
             });

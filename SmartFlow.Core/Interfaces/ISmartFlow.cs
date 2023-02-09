@@ -8,7 +8,7 @@ namespace SmartFlow.Core.Interfaces
     public interface ISmartFlow
     {
         public Guid Id { get; set; }
-        public string Key { get; set; }
+        public string FlowKey { get; set; }
         public List<Transition> Transitions { get; set; }
         public ISmartFlow Construct<T>(ISmartFlowBuilder action) where T : ISmartFlow, new();
     }

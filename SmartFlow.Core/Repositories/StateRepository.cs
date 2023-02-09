@@ -4,6 +4,7 @@ using System;
 using System.Data;
 using Dapper;
 using Microsoft.Data.SqlClient;
+using SmartFlow.Core.Db.SqlServer;
 
 namespace SmartFlow.Core.Repositories
 {
@@ -28,7 +29,7 @@ namespace SmartFlow.Core.Repositories
 
                 using var connection = new SqlConnection(_connectionString);
                 connection.Open();
-                connection.Execute("[SmartFlow].[usp_State_Insert]", toInsert, commandType: CommandType.StoredProcedure);
+                connection.Execute(ConstantsProvider.Usp_State_Modify, toInsert, commandType: CommandType.StoredProcedure);
                 entity.Id = toInsert.Id;
 
                 return entity.Id;

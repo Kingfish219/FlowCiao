@@ -13,7 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSmartFlow(settings =>
 {
-    settings.UseSqlServer(configuration.GetConnectionString("SmratFlow"));
+    settings.UseSqlServer(configuration.GetConnectionString("SmartFlow"));
 });
 
 var app = builder.Build();

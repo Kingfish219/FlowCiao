@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Dapper.Contrib.Extensions;
+using Dapper.FluentMap.Mapping;
+using System;
 using System.Collections.Generic;
 
 namespace SmartFlow.Core.Models
 {
+    [Table("State")]
     public class State
     {
         public State(int code, string name)
@@ -16,6 +19,7 @@ namespace SmartFlow.Core.Models
 
         }
 
+        [Key]
         public Guid Id { get; set; }
         public int Code { get; set; }
         public string Name { get; set; }
@@ -32,5 +36,13 @@ namespace SmartFlow.Core.Models
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
+    }
+
+    internal class StateMap : EntityMap<State>
+    {
+        internal StateMap()
+        {
+            Map(x => x.Id).ToColumn("StateId");
+        }
     }
 }

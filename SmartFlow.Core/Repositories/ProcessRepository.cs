@@ -1,13 +1,18 @@
 ﻿using Dapper;
 using SmartFlow.Core.Db;
+using SmartFlow.Core.Db.SqlServer;
 using SmartFlow.Core.Interfaces;
 using SmartFlow.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
+using System.Diagnostics.Metrics;
 using System.Linq;
+using System.Threading.Channels;
 using System.Threading.Tasks;
+using static Dapper.SqlMapper;
 using Activity = SmartFlow.Core.Models.Activity;
 using Process = SmartFlow.Core.Models.Process;
 
@@ -120,15 +125,117 @@ namespace SmartFlow.Core.Repositories
 
         public Task<ISmartFlow> GetProcess<T>(Guid processId = default, string key = default) where T : ISmartFlow
         {
-            return Task.Run(() =>
+            return Task.Run(async () =>
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
-                    var result = (ISmartFlow)connection
-                        .QueryFirstOrDefault<T>(@"SELECT * FROM [SmartFlow].Process WHERE
-                                                  ([Id] = @ProcessId OR ISNULL(@ProcessId, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER)) AND
-                                                  ([FlowKey] = @FlowKey OR ISNULL(@FlowKey, '') = '')", new { ProcessId = processId, FlowKey = key });
+                    //var result = (ISmartFlow)connection
+                    //    .QueryFirstOrDefault<T>(@"SELECT p.*
+                    //                            , t.Id TransitiionId
+                    //                            , t.ProcessId
+                    //                            , t.CurrentStateId
+                    //                            , t.NextStateId
+                    //                            FROM [SmartFlow].Process p
+                    //                            JOIN SmartFlow.Transition t on p.Id = t.ProcessId
+                    //                            WHERE
+                    //                              (p.[Id] = @ProcessId OR ISNULL(@ProcessId, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER)) AND
+                    //                              (p.[FlowKey] = @FlowKey OR ISNULL(@FlowKey, '') = '')", new { ProcessId = processId, FlowKey = key });
+
+                    var sql = @"SELECT p.*
+                                , t.Id TransitionId
+                                , t.ProcessId
+                                , s.Id StateId
+                                , s.[Name]
+                                , s1.Id StateId
+                                , s1.[Name]
+                                FROM [SmartFlow].Process p
+                                JOIN SmartFlow.Transition t on p.Id = t.ProcessId
+                                JOIN SmartFlow.[State] s on s.Id = t.CurrentStateId
+                                JOIN SmartFlow.[State] s1 on s1.Id = t.NextStateId
+                                WHERE
+                                  (p.[Id] = @ProcessId OR ISNULL(@ProcessId, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER)) AND
+                                  (p.[FlowKey] = @FlowKey OR ISNULL(@FlowKey, '') = '')";
+
+
+                    var smartFlows = new List<ISmartFlow>();
+                    var result2 = connection.Query<Process, Transition, State, State, ISmartFlow>(sql,
+                        (process, transition, currentState, nextState) =>
+                        {
+                            if(!smartFlows.Exists(x=>x.Id == process.Id))
+                            {
+
+                            }
+
+                            if (process.Transitions is null)
+                            {
+                                process.Transitions = new List<Transition>();
+                            }
+
+                            transition.From = currentState;
+                            transition.To = currentState;
+
+                            process.Transitions.Add(transition);
+
+                            //if (_region.Countries == null)
+                            //{
+                            //    _region.Countries = new List<Country>();
+                            //}
+                            //if (countryalias != null)
+                            //{
+                            //    // begin <this line might be discarded>
+                            //    if (country.CountryAliases == null)
+                            //    {
+                            //        country.CountryAliases = new List<CountryAlias>();
+                            //    }
+                            //    // end
+                            //    country.CountryAliases.Add(countryalias);
+                            //}
+                            //_region.Countries.Add(country);
+
+                            return process;
+                        }, splitOn: "TransitionId, StateId, StateId", param: new { ProcessId = processId, FlowKey = key }).ToList();
+
+                    var final = result2.GroupBy(x => x.Id).Select(y => new Process
+                    {
+                        Id = y.Key
+                    }).ToList();
+
+                    var result1 = connection.Query<Process, Transition, ISmartFlow>(@"SELECT p.*
+                                                , t.Id TransitionId
+                                                , t.ProcessId
+                                                , t.CurrentStateId
+                                                , t.NextStateId
+                                                FROM [SmartFlow].Process p
+                                                JOIN SmartFlow.Transition t on p.Id = t.ProcessId
+                                                WHERE
+                                                  (p.[Id] = @ProcessId OR ISNULL(@ProcessId, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER)) AND
+                                                  (p.[FlowKey] = @FlowKey OR ISNULL(@FlowKey, '') = '')", param: new { ProcessId = processId, FlowKey = key }
+                                    , map: (a, s) =>
+                                    {
+                                        a.Transitions.Add(s);
+                                        return a;
+                                    },
+                        splitOn: "TransitionId"
+                        ).AsQueryable().ToList();
+
+                    var result = connection.Query<Process, Transition, ISmartFlow>(@"SELECT p.*
+                                                , t.Id TransitionId
+                                                , t.ProcessId
+                                                , t.CurrentStateId
+                                                , t.NextStateId
+                                                FROM [SmartFlow].Process p
+                                                JOIN SmartFlow.Transition t on p.Id = t.ProcessId
+                                                WHERE
+                                                  (p.[Id] = @ProcessId OR ISNULL(@ProcessId, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER)) AND
+                                                  (p.[FlowKey] = @FlowKey OR ISNULL(@FlowKey, '') = '')", param: new { ProcessId = processId, FlowKey = key }
+                                    , map: (a, s) =>
+                                    {
+                                        a.Transitions.Add(s);
+                                        return a;
+                                    },
+                        splitOn: "TransitionId"
+                        ).AsQueryable().FirstOrDefault();
 
                     return result;
                 }
@@ -595,7 +702,21 @@ namespace SmartFlow.Core.Repositories
 
         public Task<Guid> Create<T>(ISmartFlow entity) where T : ISmartFlow
         {
-            return Task.FromResult(Guid.Empty);
+            return Task.Run(() =>
+            {
+                var toInsert = new
+                {
+                    Id = entity.Id == default ? Guid.NewGuid() : entity.Id,
+                    entity.FlowKey
+                };
+
+                using var connection = new SqlConnection(_connectionString);
+                connection.Open();
+                connection.Execute(ConstantsProvider.Usp_Process_Modify, toInsert, commandType: CommandType.StoredProcedure);
+                entity.Id = toInsert.Id;
+
+                return entity.Id;
+            });
         }
 
         public Task<Process> GetProcess(Guid userId, Guid requestTypeId)

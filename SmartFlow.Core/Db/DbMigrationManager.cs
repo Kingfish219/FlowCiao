@@ -7,7 +7,7 @@ namespace SmartFlow.Core.Db
     public class DbMigrationManager
     {
         private readonly string _connectionString;
-        private const string ScriptsPath = @"SmartFlow.Core.Db.Migration";
+        private const string ScriptsPath = @"SmartFlow.Core.Db.SqlServer.Migration";
 
         public DbMigrationManager(SmartFlowSettings settings)
         {
