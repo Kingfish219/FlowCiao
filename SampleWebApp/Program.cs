@@ -5,15 +5,15 @@ using SmartFlow.Core.Operators;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+var configuration = builder.Configuration; // allows both to access and to set up the config
 
+// Add services to the container.
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSmartFlow(settings =>
 {
-    settings.UseSqlServer("Password=Abc1234;TrustServerCertificate=True;Persist Security Info=True;User ID=sa;Initial Catalog=SmartFlow;Data Source=.\\mssql2019");
+    settings.UseSqlServer(configuration.GetConnectionString("SmratFlow"));
 });
 
 var app = builder.Build();
