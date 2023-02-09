@@ -53,6 +53,8 @@ namespace SmartFlow.Core.Builders
         public ISmartFlowStepBuilder OnEntry<Activity>() where Activity : IProcessActivity, new()
         {
             OnEntryActivty = (Activity)Activator.CreateInstance(typeof(Activity));
+            InitialState.Activities ??= new List<IProcessActivity>();
+            InitialState.Activities.Add(OnEntryActivty);
 
             return this;
         }

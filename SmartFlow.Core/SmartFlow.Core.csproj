@@ -12,59 +12,59 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Db\SqlServer\Migration\00.Schemas\0000-Create SmartFlow-Up.sql" />
-    <None Remove="Db\SqlServer\Migration\01.Tables\0000-Create Action-UP.sql" />
-    <None Remove="Db\SqlServer\Migration\01.Tables\0001-Create ActionType-UP.sql" />
-    <None Remove="Db\SqlServer\Migration\01.Tables\0002-Create ActiveProcessStep-UP.sql" />
-    <None Remove="Db\SqlServer\Migration\01.Tables\0003-Create Activity-UP.sql" />
-    <None Remove="Db\SqlServer\Migration\01.Tables\0004-Create ActivityType-UP.sql" />
-    <None Remove="Db\SqlServer\Migration\01.Tables\0005-Create Process-UP.sql" />
-    <None Remove="Db\SqlServer\Migration\01.Tables\0006-Create ProcessStepComment-UP.sql" />
-    <None Remove="Db\SqlServer\Migration\01.Tables\0007-Create ProcessStepHistory-UP.sql" />
-    <None Remove="Db\SqlServer\Migration\01.Tables\0008-Create ProcessStepHistoryActivity-UP.sql" />
-    <None Remove="Db\SqlServer\Migration\01.Tables\0009-Create State-UP.sql" />
-    <None Remove="Db\SqlServer\Migration\01.Tables\0010-Create Transition-UP.sql" />
-    <None Remove="Db\SqlServer\Migration\01.Tables\0011-Create TransitionAction-UP.sql" />
-    <None Remove="Db\SqlServer\Migration\01.Tables\0012-Create TransitionActivity-UP.sql" />
-    <None Remove="Db\SqlServer\Migration\02.Stored Procedures\0000-Create usp_State_Modify-UP.sql" />
-    <None Remove="Db\SqlServer\Migration\02.Stored Procedures\0001-Create usp_Transition_Modify-UP.sql" />
-    <None Remove="Db\SqlServer\Migration\02.Stored Procedures\0002-Create usp_Process_Modify-UP.sql" />
+    <None Remove="Persistence\SqlServer\Migration\00.Schemas\0000-Create SmartFlow-Up.sql" />
+    <None Remove="Persistence\SqlServer\Migration\01.Tables\0000-Create Action-UP.sql" />
+    <None Remove="Persistence\SqlServer\Migration\01.Tables\0001-Create ActionType-UP.sql" />
+    <None Remove="Persistence\SqlServer\Migration\01.Tables\0002-Create ActiveProcessStep-UP.sql" />
+    <None Remove="Persistence\SqlServer\Migration\01.Tables\0003-Create Activity-UP.sql" />
+    <None Remove="Persistence\SqlServer\Migration\01.Tables\0004-Create ActivityType-UP.sql" />
+    <None Remove="Persistence\SqlServer\Migration\01.Tables\0005-Create Process-UP.sql" />
+    <None Remove="Persistence\SqlServer\Migration\01.Tables\0006-Create ProcessStepComment-UP.sql" />
+    <None Remove="Persistence\SqlServer\Migration\01.Tables\0007-Create ProcessStepHistory-UP.sql" />
+    <None Remove="Persistence\SqlServer\Migration\01.Tables\0008-Create ProcessStepHistoryActivity-UP.sql" />
+    <None Remove="Persistence\SqlServer\Migration\01.Tables\0009-Create State-UP.sql" />
+    <None Remove="Persistence\SqlServer\Migration\01.Tables\0010-Create Transition-UP.sql" />
+    <None Remove="Persistence\SqlServer\Migration\01.Tables\0011-Create TransitionAction-UP.sql" />
+    <None Remove="Persistence\SqlServer\Migration\01.Tables\0012-Create TransitionActivity-UP.sql" />
+    <None Remove="Persistence\SqlServer\Migration\02.Stored Procedures\0000-Create usp_State_Modify-UP.sql" />
+    <None Remove="Persistence\SqlServer\Migration\02.Stored Procedures\0001-Create usp_Transition_Modify-UP.sql" />
+    <None Remove="Persistence\SqlServer\Migration\02.Stored Procedures\0002-Create usp_Process_Modify-UP.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Db\SqlServer\Migration\01.Tables\0000-Create Action-UP.sql" />
-    <Resource Include="Db\SqlServer\Migration\01.Tables\0001-Create ActionType-UP.sql" />
-    <Resource Include="Db\SqlServer\Migration\01.Tables\0002-Create ActiveProcessStep-UP.sql" />
-    <Resource Include="Db\SqlServer\Migration\01.Tables\0003-Create Activity-UP.sql" />
-    <Resource Include="Db\SqlServer\Migration\01.Tables\0004-Create ActivityType-UP.sql" />
-    <Resource Include="Db\SqlServer\Migration\01.Tables\0005-Create Process-UP.sql" />
-    <Resource Include="Db\SqlServer\Migration\01.Tables\0006-Create ProcessStepComment-UP.sql" />
-    <Resource Include="Db\SqlServer\Migration\01.Tables\0007-Create ProcessStepHistory-UP.sql" />
-    <Resource Include="Db\SqlServer\Migration\01.Tables\0008-Create ProcessStepHistoryActivity-UP.sql" />
-    <Resource Include="Db\SqlServer\Migration\01.Tables\0009-Create State-UP.sql" />
-    <Resource Include="Db\SqlServer\Migration\01.Tables\0010-Create Transition-UP.sql" />
-    <Resource Include="Db\SqlServer\Migration\01.Tables\0011-Create TransitionAction-UP.sql" />
-    <Resource Include="Db\SqlServer\Migration\01.Tables\0012-Create TransitionActivity-UP.sql" />
+    <Resource Include="Persistence\SqlServer\Migration\01.Tables\0000-Create Action-UP.sql" />
+    <Resource Include="Persistence\SqlServer\Migration\01.Tables\0001-Create ActionType-UP.sql" />
+    <Resource Include="Persistence\SqlServer\Migration\01.Tables\0002-Create ActiveProcessStep-UP.sql" />
+    <Resource Include="Persistence\SqlServer\Migration\01.Tables\0003-Create Activity-UP.sql" />
+    <Resource Include="Persistence\SqlServer\Migration\01.Tables\0004-Create ActivityType-UP.sql" />
+    <Resource Include="Persistence\SqlServer\Migration\01.Tables\0005-Create Process-UP.sql" />
+    <Resource Include="Persistence\SqlServer\Migration\01.Tables\0006-Create ProcessStepComment-UP.sql" />
+    <Resource Include="Persistence\SqlServer\Migration\01.Tables\0007-Create ProcessStepHistory-UP.sql" />
+    <Resource Include="Persistence\SqlServer\Migration\01.Tables\0008-Create ProcessStepHistoryActivity-UP.sql" />
+    <Resource Include="Persistence\SqlServer\Migration\01.Tables\0009-Create State-UP.sql" />
+    <Resource Include="Persistence\SqlServer\Migration\01.Tables\0010-Create Transition-UP.sql" />
+    <Resource Include="Persistence\SqlServer\Migration\01.Tables\0011-Create TransitionAction-UP.sql" />
+    <Resource Include="Persistence\SqlServer\Migration\01.Tables\0012-Create TransitionActivity-UP.sql" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Db\SqlServer\Migration\00.Schemas\0000-Create SmartFlow-Up.sql" />
-    <EmbeddedResource Include="Db\SqlServer\Migration\01.Tables\0000-Create Action-UP.sql" />
-    <EmbeddedResource Include="Db\SqlServer\Migration\01.Tables\0001-Create ActionType-UP.sql" />
-    <EmbeddedResource Include="Db\SqlServer\Migration\01.Tables\0002-Create ActiveProcessStep-UP.sql" />
-    <EmbeddedResource Include="Db\SqlServer\Migration\01.Tables\0003-Create Activity-UP.sql" />
-    <EmbeddedResource Include="Db\SqlServer\Migration\01.Tables\0004-Create ActivityType-UP.sql" />
-    <EmbeddedResource Include="Db\SqlServer\Migration\01.Tables\0005-Create Process-UP.sql" />
-    <EmbeddedResource Include="Db\SqlServer\Migration\01.Tables\0006-Create ProcessStepComment-UP.sql" />
-    <EmbeddedResource Include="Db\SqlServer\Migration\01.Tables\0007-Create ProcessStepHistory-UP.sql" />
-    <EmbeddedResource Include="Db\SqlServer\Migration\01.Tables\0008-Create ProcessStepHistoryActivity-UP.sql" />
-    <EmbeddedResource Include="Db\SqlServer\Migration\01.Tables\0009-Create State-UP.sql" />
-    <EmbeddedResource Include="Db\SqlServer\Migration\01.Tables\0010-Create Transition-UP.sql" />
-    <EmbeddedResource Include="Db\SqlServer\Migration\01.Tables\0011-Create TransitionAction-UP.sql" />
-    <EmbeddedResource Include="Db\SqlServer\Migration\01.Tables\0012-Create TransitionActivity-UP.sql" />
-    <EmbeddedResource Include="Db\SqlServer\Migration\02.Stored Procedures\0000-Create usp_State_Modify-UP.sql" />
-    <EmbeddedResource Include="Db\SqlServer\Migration\02.Stored Procedures\0001-Create usp_Transition_Modify-UP.sql" />
-    <EmbeddedResource Include="Db\SqlServer\Migration\02.Stored Procedures\0002-Create usp_Process_Modify-UP.sql" />
+    <EmbeddedResource Include="Persistence\SqlServer\Migration\00.Schemas\0000-Create SmartFlow-Up.sql" />
+    <EmbeddedResource Include="Persistence\SqlServer\Migration\01.Tables\0000-Create Action-UP.sql" />
+    <EmbeddedResource Include="Persistence\SqlServer\Migration\01.Tables\0001-Create ActionType-UP.sql" />
+    <EmbeddedResource Include="Persistence\SqlServer\Migration\01.Tables\0002-Create ActiveProcessStep-UP.sql" />
+    <EmbeddedResource Include="Persistence\SqlServer\Migration\01.Tables\0003-Create Activity-UP.sql" />
+    <EmbeddedResource Include="Persistence\SqlServer\Migration\01.Tables\0004-Create ActivityType-UP.sql" />
+    <EmbeddedResource Include="Persistence\SqlServer\Migration\01.Tables\0005-Create Process-UP.sql" />
+    <EmbeddedResource Include="Persistence\SqlServer\Migration\01.Tables\0006-Create ProcessStepComment-UP.sql" />
+    <EmbeddedResource Include="Persistence\SqlServer\Migration\01.Tables\0007-Create ProcessStepHistory-UP.sql" />
+    <EmbeddedResource Include="Persistence\SqlServer\Migration\01.Tables\0008-Create ProcessStepHistoryActivity-UP.sql" />
+    <EmbeddedResource Include="Persistence\SqlServer\Migration\01.Tables\0009-Create State-UP.sql" />
+    <EmbeddedResource Include="Persistence\SqlServer\Migration\01.Tables\0010-Create Transition-UP.sql" />
+    <EmbeddedResource Include="Persistence\SqlServer\Migration\01.Tables\0011-Create TransitionAction-UP.sql" />
+    <EmbeddedResource Include="Persistence\SqlServer\Migration\01.Tables\0012-Create TransitionActivity-UP.sql" />
+    <EmbeddedResource Include="Persistence\SqlServer\Migration\02.Stored Procedures\0000-Create usp_State_Modify-UP.sql" />
+    <EmbeddedResource Include="Persistence\SqlServer\Migration\02.Stored Procedures\0001-Create usp_Transition_Modify-UP.sql" />
+    <EmbeddedResource Include="Persistence\SqlServer\Migration\02.Stored Procedures\0002-Create usp_Process_Modify-UP.sql" />
   </ItemGroup>
 
   <ItemGroup>

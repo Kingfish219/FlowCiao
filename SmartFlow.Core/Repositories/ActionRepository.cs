@@ -13,7 +13,7 @@ namespace SmartFlow.Core.Repositories
             _connectionString = settings.ConnectionString;
         }
 
-        public Task<Guid> Create(ProcessAction entity)
+        public Task<Guid> Modify(ProcessAction entity)
         {
             return Task.FromResult(Guid.Empty);
         }

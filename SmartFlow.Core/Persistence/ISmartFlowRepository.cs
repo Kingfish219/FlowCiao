@@ -13,7 +13,7 @@ namespace SmartFlow.Core.Db
         Task<List<Activity>> GetStateActivities(State state, Group group);
         Task<bool> RemoveActiveProcessStep(ProcessEntity entity);
         Task<Process> GetProcess(Guid userId, Guid requestTypeId);
-        Task<ISmartFlow> GetProcess<T>(Guid processId = default, string key = default) where T : ISmartFlow;
+        Task<List<ISmartFlow>> Get<T>(Guid processId = default, string key = default) where T : ISmartFlow;
         Task<Guid> Create<T>(ISmartFlow entity) where T : ISmartFlow;
         Task<bool> CreateProcessStep(ProcessStep entity);
         Task<bool> CompleteProgressAction(ProcessStep processStep, ProcessAction action);

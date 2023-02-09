@@ -12,7 +12,6 @@ namespace SmartFlow.Core.Services
         private readonly ActivityService _activityService;
 
         public StateService(StateRepository stateRepository
-                        , ActionRepository actionRepository
                         , ActivityService activityService
             )
         {
@@ -20,9 +19,9 @@ namespace SmartFlow.Core.Services
             _activityService = activityService;
         }
 
-        public async Task<Guid> Create(State state)
+        public async Task<Guid> Modify(State state)
         {
-            var stateId = await _stateRepository.Create(state).ConfigureAwait(false);
+            var stateId = await _stateRepository.Modify(state).ConfigureAwait(false);
             if (stateId == default)
             {
                 throw new SmartFlowPersistencyException("State");
@@ -30,7 +29,7 @@ namespace SmartFlow.Core.Services
 
             state.Activities.ForEach(async activity =>
             {
-                var result = await _activityService.Create(activity).ConfigureAwait(false);
+                var result = await _activityService.Modify(activity).ConfigureAwait(false);
                 if (result == default)
                 {
                     throw new SmartFlowPersistencyException("State Activity");

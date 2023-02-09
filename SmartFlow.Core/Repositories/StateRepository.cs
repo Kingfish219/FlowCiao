@@ -17,7 +17,7 @@ namespace SmartFlow.Core.Repositories
             _connectionString = settings.ConnectionString;
         }
 
-        public Task<Guid> Create(State entity)
+        public Task<Guid> Modify(State entity)
         {
             return Task.Run(() =>
             {

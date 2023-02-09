@@ -17,7 +17,7 @@ namespace SmartFlow.Core.Repositories
             _connectionString = settings.ConnectionString;
         }
 
-        public Task<Guid> Create(Transition entity)
+        public Task<Guid> Modify(Transition entity)
         {
             return Task.Run(() =>
             {
@@ -33,6 +33,25 @@ namespace SmartFlow.Core.Repositories
                 connection.Open();
                 connection.Execute(ConstantsProvider.Usp_Transition_Modify, toInsert, commandType: CommandType.StoredProcedure);
                 entity.Id = toInsert.Id;
+
+                return entity.Id;
+            });
+        }
+
+        public Task CreateActions(Transition entity, ProcessAction action)
+        {
+            return Task.Run(() =>
+            {
+                var toInsert = new
+                {
+                    TransitionId = entity.Id,
+                    ActionId = action.Id,
+                    action.Priority
+                };
+
+                using var connection = new SqlConnection(_connectionString);
+                connection.Open();
+                connection.Execute(ConstantsProvider.Usp_TransitionAction_Modify, toInsert, commandType: CommandType.StoredProcedure);
 
                 return entity.Id;
             });

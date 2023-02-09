@@ -29,7 +29,7 @@ namespace SmartFlow.Core.Models
         public bool IsFinal { get; set; }
         public bool IsInitial { get; set; }
         public string OwnerId { get; set; }
-        public List<Activity> Activities { get; set; }
+        public List<IProcessActivity> Activities { get; set; }
     }
 
     public class StateType

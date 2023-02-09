@@ -98,49 +98,13 @@ namespace SmartFlow.Core.Repositories
             });
         }
 
-        //public Task<Process> GetProcess(Guid userId, Guid requestTypeId)
-        //{
-        //    return Task.Run(() =>
-        //    {
-        //        using var connection = new SqlConnection(_connectionString);
-        //        connection.Open();
-        //        Process result = null;
-        //        var companyId = connection.Query<Guid>($@"select ap.CompanyId from AssignmentPosition as ap where UserId ='{userId}'").First();
-        //        var processId = connection.Query<Guid>($@"select cp.ProcessId from CompanyProcess as cp where CompanyId='{companyId}' and RequestTypeId='{requestTypeId}'").FirstOrDefault();
-        //        //var ProcessId = connection.Query<Guid>($@"select cp.ProcessId from CompanyProcess as cp where CompanyId='{CompanyId}'").FirstOrDefault();
-        //        if (processId != new Guid())
-        //        {
-        //            //یعنی روند غیر پیش فرض را در برمیگیرد
-        //            result = connection.QueryFirstOrDefault<Process>($@"SELECT * FROM Process WHERE Id='{processId}' and EntityType=1");
-        //        }
-        //        else
-        //        {
-        //            result = connection.QueryFirstOrDefault<Process>(@"SELECT * FROM [Process] WHERE EntityType = 1 and IsDefultProccess=1");
-
-        //        }
-
-        //        return result;
-        //    });
-        //}
-
-        public Task<ISmartFlow> GetProcess<T>(Guid processId = default, string key = default) where T : ISmartFlow
+        public Task<List<ISmartFlow>> Get<T>(Guid processId = default, string key = default) where T : ISmartFlow
         {
-            return Task.Run(async () =>
+            return Task.Run(() =>
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
-                    //var result = (ISmartFlow)connection
-                    //    .QueryFirstOrDefault<T>(@"SELECT p.*
-                    //                            , t.Id TransitiionId
-                    //                            , t.ProcessId
-                    //                            , t.CurrentStateId
-                    //                            , t.NextStateId
-                    //                            FROM [SmartFlow].Process p
-                    //                            JOIN SmartFlow.Transition t on p.Id = t.ProcessId
-                    //                            WHERE
-                    //                              (p.[Id] = @ProcessId OR ISNULL(@ProcessId, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER)) AND
-                    //                              (p.[FlowKey] = @FlowKey OR ISNULL(@FlowKey, '') = '')", new { ProcessId = processId, FlowKey = key });
 
                     var sql = @"SELECT p.*
                                 , t.Id TransitionId
@@ -157,87 +121,31 @@ namespace SmartFlow.Core.Repositories
                                   (p.[Id] = @ProcessId OR ISNULL(@ProcessId, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER)) AND
                                   (p.[FlowKey] = @FlowKey OR ISNULL(@FlowKey, '') = '')";
 
-
                     var smartFlows = new List<ISmartFlow>();
-                    var result2 = connection.Query<Process, Transition, State, State, ISmartFlow>(sql,
+                    connection.Query<Process, Transition, State, State, ISmartFlow>(sql,
                         (process, transition, currentState, nextState) =>
                         {
-                            if(!smartFlows.Exists(x=>x.Id == process.Id))
+                            var smartFlow = smartFlows.FirstOrDefault(x => x.Id == process.Id);
+                            if (smartFlow is null)
                             {
-
+                                smartFlow = process;
+                                smartFlows.Add(smartFlow);
                             }
 
-                            if (process.Transitions is null)
+                            if (smartFlow.Transitions is null)
                             {
-                                process.Transitions = new List<Transition>();
+                                smartFlow.Transitions = new List<Transition>();
                             }
 
                             transition.From = currentState;
-                            transition.To = currentState;
+                            transition.To = nextState;
 
-                            process.Transitions.Add(transition);
+                            smartFlow.Transitions.Add(transition);
 
-                            //if (_region.Countries == null)
-                            //{
-                            //    _region.Countries = new List<Country>();
-                            //}
-                            //if (countryalias != null)
-                            //{
-                            //    // begin <this line might be discarded>
-                            //    if (country.CountryAliases == null)
-                            //    {
-                            //        country.CountryAliases = new List<CountryAlias>();
-                            //    }
-                            //    // end
-                            //    country.CountryAliases.Add(countryalias);
-                            //}
-                            //_region.Countries.Add(country);
-
-                            return process;
+                            return smartFlow;
                         }, splitOn: "TransitionId, StateId, StateId", param: new { ProcessId = processId, FlowKey = key }).ToList();
 
-                    var final = result2.GroupBy(x => x.Id).Select(y => new Process
-                    {
-                        Id = y.Key
-                    }).ToList();
-
-                    var result1 = connection.Query<Process, Transition, ISmartFlow>(@"SELECT p.*
-                                                , t.Id TransitionId
-                                                , t.ProcessId
-                                                , t.CurrentStateId
-                                                , t.NextStateId
-                                                FROM [SmartFlow].Process p
-                                                JOIN SmartFlow.Transition t on p.Id = t.ProcessId
-                                                WHERE
-                                                  (p.[Id] = @ProcessId OR ISNULL(@ProcessId, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER)) AND
-                                                  (p.[FlowKey] = @FlowKey OR ISNULL(@FlowKey, '') = '')", param: new { ProcessId = processId, FlowKey = key }
-                                    , map: (a, s) =>
-                                    {
-                                        a.Transitions.Add(s);
-                                        return a;
-                                    },
-                        splitOn: "TransitionId"
-                        ).AsQueryable().ToList();
-
-                    var result = connection.Query<Process, Transition, ISmartFlow>(@"SELECT p.*
-                                                , t.Id TransitionId
-                                                , t.ProcessId
-                                                , t.CurrentStateId
-                                                , t.NextStateId
-                                                FROM [SmartFlow].Process p
-                                                JOIN SmartFlow.Transition t on p.Id = t.ProcessId
-                                                WHERE
-                                                  (p.[Id] = @ProcessId OR ISNULL(@ProcessId, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER)) AND
-                                                  (p.[FlowKey] = @FlowKey OR ISNULL(@FlowKey, '') = '')", param: new { ProcessId = processId, FlowKey = key }
-                                    , map: (a, s) =>
-                                    {
-                                        a.Transitions.Add(s);
-                                        return a;
-                                    },
-                        splitOn: "TransitionId"
-                        ).AsQueryable().FirstOrDefault();
-
-                    return result;
+                    return smartFlows;
                 }
             });
         }

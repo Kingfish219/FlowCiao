@@ -23,6 +23,7 @@ namespace SmartFlow.Core.Models
         public string Name { get; set; }
         public int ActionTypeCode { get; set; }
         public Guid ProcessId { get; set; }
+        public int Priority { get; set; }
     }
 
     internal class ActionMap : EntityMap<ProcessAction>

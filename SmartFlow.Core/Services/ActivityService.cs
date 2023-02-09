@@ -14,9 +14,9 @@ namespace SmartFlow.Core.Services
             _activityRepository = activityRepository;
         }
 
-        public async Task<Guid> Create(Activity activity)
+        public async Task<Guid> Modify(IProcessActivity activity)
         {
-            return await _activityRepository.Create(activity);
+            return await _activityRepository.Modify(activity);
         }
     }
 }
