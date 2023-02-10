@@ -7,16 +7,11 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Diagnostics;
-using System.Diagnostics.Metrics;
 using System.Linq;
-using System.Threading;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using static Dapper.SqlMapper;
 using Activity = SmartFlow.Core.Models.Activity;
 using Process = SmartFlow.Core.Models.Process;
-
 
 namespace SmartFlow.Core.Repositories
 {

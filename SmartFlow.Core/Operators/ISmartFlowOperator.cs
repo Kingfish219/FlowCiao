@@ -17,5 +17,8 @@ namespace SmartFlow.Core.Operators
             EntityCommandType commandType = EntityCommandType.Update,
             Dictionary<string, object> parameters = null
         );
+
+        ProcessResult Fire(ISmartFlow smartFlow, int action);
+        ProcessResult Fire(string smartFlowKey, int action, Dictionary<string, object> data);
     }
 }

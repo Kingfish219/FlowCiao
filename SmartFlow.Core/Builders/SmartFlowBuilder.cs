@@ -11,12 +11,20 @@ namespace SmartFlow.Core.Builders
     public class SmartFlowBuilder : ISmartFlowBuilder
     {
         public List<ISmartFlowStepBuilder> StepBuilders { get; set; }
+        public ISmartFlowStepBuilder InitialStepBuilder { get; set; }
         private readonly SmartFlowService _processService;
 
         public SmartFlowBuilder(SmartFlowService processService)
         {
             StepBuilders = new List<ISmartFlowStepBuilder>();
             _processService = processService;
+        }
+
+        public ISmartFlowStepBuilder Initial()
+        {
+            InitialStepBuilder = new SmartFlowStepBuilder(this);
+
+            return InitialStepBuilder;
         }
 
         public ISmartFlowStepBuilder NewStep()
@@ -52,9 +60,31 @@ namespace SmartFlow.Core.Builders
                     return process;
                 }
 
+                smartFlow.Transitions ??= new List<Transition>();
+
+                InitialStepBuilder.InitialState.IsInitial = true;
+                foreach (var allowedTransition in InitialStepBuilder.AllowedTransitions)
+                {
+                    var transition = new Transition
+                    {
+                        From = InitialStepBuilder.InitialState,
+                        To = allowedTransition.Item1,
+                        Activities = InitialStepBuilder.OnExitActivity != null ? new List<Activity>
+                            {
+                                new()
+                                {
+                                    ProcessActivityExecutor = InitialStepBuilder.OnExitActivity
+                                }
+                            } : new List<Activity>(),
+                        Actions = allowedTransition.Item2
+                    };
+
+                    smartFlow.Transitions.Add(transition);
+                }
+
                 foreach (var builder in StepBuilders)
                 {
-                    smartFlow.Transitions ??= new List<Transition>();
+                    builder.InitialState.IsInitial = false;
 
                     foreach (var allowedTransition in builder.AllowedTransitions)
                     {

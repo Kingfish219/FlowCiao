@@ -13,7 +13,7 @@ namespace SampleWebApp.Flows
 
         public ISmartFlow Construct<T>(ISmartFlowBuilder builder) where T : ISmartFlow, new()
         {
-            builder.NewStep()
+            builder.Initial()
                 .From(new State(1, "First"))
                 .Allow(new State(2, "Second"), new ProcessAction(1))
                 .Allow(new State(3, "Third"), new ProcessAction(2))

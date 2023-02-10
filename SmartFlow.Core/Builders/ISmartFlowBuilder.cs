@@ -8,6 +8,7 @@ namespace SmartFlow.Core.Builders
     public interface ISmartFlowBuilder
     {
         public List<ISmartFlowStepBuilder> StepBuilders { get; set; }
+        public ISmartFlowStepBuilder Initial();
         public ISmartFlowStepBuilder NewStep();
         public ISmartFlowStepBuilder NewStep(ISmartFlowStepBuilder builder);
         public ISmartFlow Build<T>(Action<ISmartFlowBuilder> action) where T : ISmartFlow, new();
