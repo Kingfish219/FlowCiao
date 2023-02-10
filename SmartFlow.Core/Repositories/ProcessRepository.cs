@@ -1,7 +1,5 @@
 ﻿using Dapper;
-using SmartFlow.Core.Db;
 using SmartFlow.Core.Db.SqlServer;
-using SmartFlow.Core.Interfaces;
 using SmartFlow.Core.Models;
 using System;
 using System.Collections.Generic;
@@ -15,7 +13,7 @@ using Process = SmartFlow.Core.Models.Process;
 
 namespace SmartFlow.Core.Repositories
 {
-    public class ProcessRepository : ISmartFlowRepository
+    public class ProcessRepository : IProcessRepository
     {
         private readonly string _connectionString;
 
@@ -94,7 +92,7 @@ namespace SmartFlow.Core.Repositories
             });
         }
 
-        public Task<List<ISmartFlow>> Get<T>(Guid processId = default, string key = default) where T : ISmartFlow
+        public Task<List<Process>> Get<T>(Guid processId = default, string key = default) where T : Process
         {
             return Task.Run(() =>
             {
@@ -117,8 +115,8 @@ namespace SmartFlow.Core.Repositories
                                   (p.[Id] = @ProcessId OR ISNULL(@ProcessId, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER)) AND
                                   (p.[FlowKey] = @FlowKey OR ISNULL(@FlowKey, '') = '')";
 
-                    var smartFlows = new List<ISmartFlow>();
-                    connection.Query<Process, Transition, State, State, ISmartFlow>(sql,
+                    var smartFlows = new List<Process>();
+                    connection.Query<Process, Transition, State, State, Process>(sql,
                         (process, transition, currentState, nextState) =>
                         {
                             var smartFlow = smartFlows.FirstOrDefault(x => x.Id == process.Id);
@@ -604,7 +602,7 @@ namespace SmartFlow.Core.Repositories
             }
         }
 
-        public Task<Guid> Create<T>(ISmartFlow entity) where T : ISmartFlow
+        public Task<Guid> Create<T>(Process entity) where T : Process
         {
             return Task.Run(() =>
             {

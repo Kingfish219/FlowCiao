@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SmartFlow.Core.Db;
 using SmartFlow.Core.Interfaces;
 using SmartFlow.Core.Models;
 using SmartFlow.Core.Repositories;
@@ -12,21 +11,21 @@ namespace SmartFlow.Core.Operators
 {
     public class SmartFlowOperator : ISmartFlowOperator
     {
-        private readonly List<ISmartFlow> _flows;
+        private readonly List<Process> _flows;
         private readonly LogRepository _logRepository;
-        private readonly ISmartFlowRepository _smartFlowRepository;
+        private readonly IProcessRepository _smartFlowRepository;
         private readonly ProcessStepService _processStepService;
 
         public SmartFlowOperator(LogRepository logRepository
-            , ISmartFlowRepository smartFlowRepository)
+            , IProcessRepository smartFlowRepository)
         {
-            _flows = new List<ISmartFlow>();
+            _flows = new List<Process>();
             _logRepository = logRepository;
             _smartFlowRepository = smartFlowRepository;
             _processStepService = new ProcessStepService(_smartFlowRepository);
         }
 
-        public Task<bool> RegisterFlow<TFlow>(TFlow smartFlow) where TFlow : ISmartFlow, new()
+        public Task<bool> RegisterFlow<TFlow>(TFlow smartFlow) where TFlow : Process, new()
         {
             return Task.Run(() =>
             {

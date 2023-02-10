@@ -1,15 +1,15 @@
 ﻿using System;
-using SmartFlow.Core.Db;
 using SmartFlow.Core.Exceptions;
 using SmartFlow.Core.Models;
+using SmartFlow.Core.Repositories;
 
 namespace SmartFlow.Core.Services
 {
     public class ProcessStepService : IProcessStepService
     {
-        private readonly ISmartFlowRepository _smartFlowRepository;
+        private readonly IProcessRepository _smartFlowRepository;
 
-        public ProcessStepService(ISmartFlowRepository smartFlowRepository)
+        public ProcessStepService(IProcessRepository smartFlowRepository)
         {
             _smartFlowRepository = smartFlowRepository;
         }
@@ -19,7 +19,7 @@ namespace SmartFlow.Core.Services
             var processStep = _smartFlowRepository.GetActiveProcessStep(entity).Result;
             if (processStep != null)
             {
-                var process = (Process)_smartFlowRepository.GetProcess(processStep.Process.Id).Result;
+                var process = _smartFlowRepository.GetProcess(processStep.Process.Id).Result;
                 var transitionActions = _smartFlowRepository.GetActiveTransitions(entity, process.Id).Result;
                 processStep.Entity = entity;
                 processStep.TransitionActions = transitionActions;
@@ -32,7 +32,7 @@ namespace SmartFlow.Core.Services
         //public ProcessStep InitializeActiveProcessStep(Guid userID)
         public ProcessStep InitializeActiveProcessStep(Guid userId, ProcessEntity entity, bool initializeFromFirstState = false)
         {
-            var process = (Process)_smartFlowRepository.GetProcess(userId).Result;
+            var process = _smartFlowRepository.GetProcess(userId).Result;
             State state;
             if (initializeFromFirstState)
             {

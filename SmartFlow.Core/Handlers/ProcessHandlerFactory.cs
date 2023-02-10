@@ -1,6 +1,6 @@
-﻿using SmartFlow.Core.Db;
-using SmartFlow.Core.Models;
+﻿using SmartFlow.Core.Models;
 using SmartFlow.Core.Repositories;
+using SmartFlow.Core.Repositories.Interfaces;
 using System.Collections.Generic;
 
 namespace SmartFlow.Core.Handlers

@@ -1,8 +1,8 @@
-﻿using SmartFlow.Core.Db;
-using SmartFlow.Core.Models;
+﻿using SmartFlow.Core.Models;
 using System;
 using System.Linq;
 using SmartFlow.Core.Exceptions;
+using SmartFlow.Core.Repositories.Interfaces;
 
 namespace SmartFlow.Core.Handlers
 {

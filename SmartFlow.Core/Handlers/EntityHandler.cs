@@ -1,5 +1,5 @@
-﻿using SmartFlow.Core.Db;
-using SmartFlow.Core.Models;
+﻿using SmartFlow.Core.Models;
+using SmartFlow.Core.Repositories.Interfaces;
 using System;
 using System.Linq;
 

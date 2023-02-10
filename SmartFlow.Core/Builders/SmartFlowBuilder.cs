@@ -1,5 +1,4 @@
 ﻿using SmartFlow.Core.Exceptions;
-using SmartFlow.Core.Interfaces;
 using SmartFlow.Core.Models;
 using SmartFlow.Core.Services;
 using System;
@@ -42,7 +41,7 @@ namespace SmartFlow.Core.Builders
             return builder;
         }
 
-        public ISmartFlow Build<T>() where T : ISmartFlow, new()
+        public Process Build<T>() where T : Process, new()
         {
             try
             {
@@ -122,7 +121,7 @@ namespace SmartFlow.Core.Builders
             }
         }
 
-        public ISmartFlow Build<T>(Action<ISmartFlowBuilder> constructor) where T : ISmartFlow, new()
+        public Process Build<T>(Action<ISmartFlowBuilder> constructor) where T : Process, new()
         {
             try
             {

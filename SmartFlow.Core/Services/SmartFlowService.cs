@@ -1,22 +1,23 @@
-﻿using SmartFlow.Core.Db;
-using SmartFlow.Core.Exceptions;
+﻿using SmartFlow.Core.Exceptions;
 using SmartFlow.Core.Interfaces;
 using System;
 using System.Threading.Tasks;
 using SmartFlow.Core.Operators;
 using System.Collections.Generic;
+using SmartFlow.Core.Models;
+using SmartFlow.Core.Repositories;
 
 namespace SmartFlow.Core.Services
 {
     public class SmartFlowService
     {
         private readonly ISmartFlowOperator _smartFlowOperator;
-        private readonly ISmartFlowRepository _processRepository;
+        private readonly IProcessRepository _processRepository;
         private readonly TransitionService _transitionService;
         private readonly StateService _stateService;
 
         public SmartFlowService(ISmartFlowOperator smartFlowOperator
-            , ISmartFlowRepository processRepository
+            , IProcessRepository processRepository
             , TransitionService transitionService
             , StateService stateService
             )
@@ -27,7 +28,7 @@ namespace SmartFlow.Core.Services
             _stateService = stateService;
         }
 
-        public async Task<Guid> Modify<T>(T smartFlow) where T : ISmartFlow, new()
+        public async Task<Guid> Modify<T>(T smartFlow) where T : Process, new()
         {
             await _smartFlowOperator.RegisterFlow(smartFlow);
 
@@ -48,7 +49,7 @@ namespace SmartFlow.Core.Services
             return processId;
         }
 
-        public async Task<List<ISmartFlow>> Get<T>(Guid processId = default, string key = default) where T : ISmartFlow
+        public async Task<List<Process>> Get<T>(Guid processId = default, string key = default) where T : Process
         {
             return await _processRepository.Get<T>(processId, key);
         }
