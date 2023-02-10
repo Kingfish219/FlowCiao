@@ -58,19 +58,21 @@ namespace SmartFlow.Core.Builders
 
                     foreach (var allowedTransition in builder.AllowedTransitions)
                     {
-                        smartFlow.Transitions.Add(new Transition
+                        var transition = new Transition
                         {
                             From = builder.InitialState,
                             To = allowedTransition.Item1,
-                            Activities = new List<Activity>
+                            Activities = builder.OnExitActivity != null ? new List<Activity>
                             {
                                 new()
                                 {
                                     ProcessActivityExecutor = builder.OnExitActivity
                                 }
-                            },
+                            } : new List<Activity>(),
                             Actions = allowedTransition.Item2
-                        });
+                        };
+
+                        smartFlow.Transitions.Add(transition);
                     }
                 }
 

@@ -2,8 +2,8 @@
 BEGIN
 
 CREATE TABLE [SmartFlow].[TransitionActivity](
-	[TransitionId] [uniqueidentifier] NULL,
-	[ActivityTypeCode] [int] NULL,
+	[TransitionId] [uniqueidentifier],
+	[ActivityId] [uniqueidentifier],
 	[Priority] [int] NULL
 ) ON [PRIMARY]
 

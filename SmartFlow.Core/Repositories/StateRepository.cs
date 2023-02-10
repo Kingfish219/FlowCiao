@@ -5,6 +5,7 @@ using System.Data;
 using Dapper;
 using Microsoft.Data.SqlClient;
 using SmartFlow.Core.Db.SqlServer;
+using System.Threading;
 
 namespace SmartFlow.Core.Repositories
 {
@@ -31,6 +32,24 @@ namespace SmartFlow.Core.Repositories
                 connection.Open();
                 connection.Execute(ConstantsProvider.Usp_State_Modify, toInsert, commandType: CommandType.StoredProcedure);
                 entity.Id = toInsert.Id;
+
+                return entity.Id;
+            });
+        }
+
+        public Task AssociateActivities(State entity, Activity activity)
+        {
+            return Task.Run(() =>
+            {
+                var toInsert = new
+                {
+                    StateId = entity.Id,
+                    ActivityId = activity.Id
+                };
+
+                using var connection = new SqlConnection(_connectionString);
+                connection.Open();
+                connection.Execute(ConstantsProvider.usp_StateActivity_Modify, toInsert, commandType: CommandType.StoredProcedure);
 
                 return entity.Id;
             });

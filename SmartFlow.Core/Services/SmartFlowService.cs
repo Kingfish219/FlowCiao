@@ -1,7 +1,6 @@
 ﻿using SmartFlow.Core.Db;
 using SmartFlow.Core.Exceptions;
 using SmartFlow.Core.Interfaces;
-using SmartFlow.Core.Repositories;
 using System;
 using System.Threading.Tasks;
 using SmartFlow.Core.Operators;
@@ -13,22 +12,19 @@ namespace SmartFlow.Core.Services
     {
         private readonly ISmartFlowOperator _smartFlowOperator;
         private readonly ISmartFlowRepository _processRepository;
-        private readonly TransitionRepository _transitionRepository;
-        private readonly StateRepository _stateRepository;
-        private readonly ActionRepository _actionRepository;
+        private readonly TransitionService _transitionService;
+        private readonly StateService _stateService;
 
         public SmartFlowService(ISmartFlowOperator smartFlowOperator
             , ISmartFlowRepository processRepository
-            , TransitionRepository transitionRepository
-            , StateRepository stateRepository
-            , ActionRepository actionRepository
+            , TransitionService transitionService
+            , StateService stateService
             )
         {
-            _processRepository = processRepository;
-            _transitionRepository = transitionRepository;
-            _stateRepository = stateRepository;
-            _actionRepository = actionRepository;
             _smartFlowOperator = smartFlowOperator;
+            _processRepository = processRepository;
+            _transitionService = transitionService;
+            _stateService = stateService;
         }
 
         public async Task<Guid> Modify<T>(T smartFlow) where T : ISmartFlow, new()
@@ -41,12 +37,12 @@ namespace SmartFlow.Core.Services
                 throw new SmartFlowPersistencyException();
             }
 
-            smartFlow.Transitions.ForEach(transition =>
+            smartFlow.Transitions?.ForEach(transition =>
             {
                 transition.ProcessId = processId;
-                transition.From.Id = _stateRepository.Modify(transition.From).GetAwaiter().GetResult();
-                transition.To.Id = _stateRepository.Modify(transition.To).GetAwaiter().GetResult();
-                transition.Id = _transitionRepository.Modify(transition).GetAwaiter().GetResult();
+                transition.From.Id = _stateService.Modify(transition.From).GetAwaiter().GetResult();
+                transition.To.Id = _stateService.Modify(transition.To).GetAwaiter().GetResult();
+                transition.Id = _transitionService.Modify(transition).GetAwaiter().GetResult();
             });
 
             return processId;

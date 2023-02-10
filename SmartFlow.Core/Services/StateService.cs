@@ -21,19 +21,21 @@ namespace SmartFlow.Core.Services
 
         public async Task<Guid> Modify(State state)
         {
-            var stateId = await _stateRepository.Modify(state).ConfigureAwait(false);
+            var stateId = await _stateRepository.Modify(state);
             if (stateId == default)
             {
                 throw new SmartFlowPersistencyException("State");
             }
 
-            state.Activities.ForEach(async activity =>
+            state.Activities?.ForEach(activity =>
             {
-                var result = await _activityService.Modify(activity).ConfigureAwait(false);
+                var result = _activityService.Modify(activity).GetAwaiter().GetResult();
                 if (result == default)
                 {
                     throw new SmartFlowPersistencyException("State Activity");
                 }
+
+                _stateRepository.AssociateActivities(state, activity).GetAwaiter().GetResult();
             });
 
             return stateId;

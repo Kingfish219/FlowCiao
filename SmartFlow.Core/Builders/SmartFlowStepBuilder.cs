@@ -50,18 +50,28 @@ namespace SmartFlow.Core.Builders
             throw new NotImplementedException();
         }
 
-        public ISmartFlowStepBuilder OnEntry<Activity>() where Activity : IProcessActivity, new()
+        public ISmartFlowStepBuilder OnEntry<A>() where A : IProcessActivity, new()
         {
-            OnEntryActivty = (Activity)Activator.CreateInstance(typeof(Activity));
-            InitialState.Activities ??= new List<IProcessActivity>();
-            InitialState.Activities.Add(OnEntryActivty);
+            OnEntryActivty = (A)Activator.CreateInstance(typeof(A));
+            var activity = new Activity
+            {
+                ProcessActivityExecutor = OnEntryActivty
+            };
+            InitialState.Activities ??= new List<Activity>();
+            InitialState.Activities.Add(activity);
 
             return this;
         }
 
-        public ISmartFlowStepBuilder OnExit<Activity>() where Activity : IProcessActivity, new()
+        public ISmartFlowStepBuilder OnExit<A>() where A : IProcessActivity, new()
         {
-            OnExitActivity = (Activity)Activator.CreateInstance(typeof(Activity));
+            //OnExitActivity = (A)Activator.CreateInstance(typeof(A));
+            //var activity = new Activity
+            //{
+            //    ProcessActivityExecutor = OnEntryActivty
+            //};
+            //InitialState.Activities ??= new List<Activity>();
+            //InitialState.Activities.Add(activity);
 
             return this;
         }

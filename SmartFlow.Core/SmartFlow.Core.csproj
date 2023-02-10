@@ -26,9 +26,15 @@
     <None Remove="Persistence\SqlServer\Migration\01.Tables\0010-Create Transition-UP.sql" />
     <None Remove="Persistence\SqlServer\Migration\01.Tables\0011-Create TransitionAction-UP.sql" />
     <None Remove="Persistence\SqlServer\Migration\01.Tables\0012-Create TransitionActivity-UP.sql" />
+    <None Remove="Persistence\SqlServer\Migration\01.Tables\0013-Create StateActivity-UP.sql" />
     <None Remove="Persistence\SqlServer\Migration\02.Stored Procedures\0000-Create usp_State_Modify-UP.sql" />
     <None Remove="Persistence\SqlServer\Migration\02.Stored Procedures\0001-Create usp_Transition_Modify-UP.sql" />
     <None Remove="Persistence\SqlServer\Migration\02.Stored Procedures\0002-Create usp_Process_Modify-UP.sql" />
+    <None Remove="Persistence\SqlServer\Migration\02.Stored Procedures\0003-Create usp_TransitionAction_Modify-UP.sql" />
+    <None Remove="Persistence\SqlServer\Migration\02.Stored Procedures\0004-Create usp_Action_Modify-UP.sql" />
+    <None Remove="Persistence\SqlServer\Migration\02.Stored Procedures\0005-Create usp_TransitionActivity_Modify-UP.sql" />
+    <None Remove="Persistence\SqlServer\Migration\02.Stored Procedures\0006-Create usp_StateActivity_Modify-UP.sql" />
+    <None Remove="Persistence\SqlServer\Migration\02.Stored Procedures\0007-Create usp_Activity_Modify-UP.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -62,9 +68,15 @@
     <EmbeddedResource Include="Persistence\SqlServer\Migration\01.Tables\0010-Create Transition-UP.sql" />
     <EmbeddedResource Include="Persistence\SqlServer\Migration\01.Tables\0011-Create TransitionAction-UP.sql" />
     <EmbeddedResource Include="Persistence\SqlServer\Migration\01.Tables\0012-Create TransitionActivity-UP.sql" />
+    <EmbeddedResource Include="Persistence\SqlServer\Migration\01.Tables\0013-Create StateActivity-UP.sql" />
     <EmbeddedResource Include="Persistence\SqlServer\Migration\02.Stored Procedures\0000-Create usp_State_Modify-UP.sql" />
     <EmbeddedResource Include="Persistence\SqlServer\Migration\02.Stored Procedures\0001-Create usp_Transition_Modify-UP.sql" />
     <EmbeddedResource Include="Persistence\SqlServer\Migration\02.Stored Procedures\0002-Create usp_Process_Modify-UP.sql" />
+    <EmbeddedResource Include="Persistence\SqlServer\Migration\02.Stored Procedures\0003-Create usp_TransitionAction_Modify-UP.sql" />
+    <EmbeddedResource Include="Persistence\SqlServer\Migration\02.Stored Procedures\0004-Create usp_Action_Modify-UP.sql" />
+    <EmbeddedResource Include="Persistence\SqlServer\Migration\02.Stored Procedures\0005-Create usp_TransitionActivity_Modify-UP.sql" />
+    <EmbeddedResource Include="Persistence\SqlServer\Migration\02.Stored Procedures\0007-Create usp_Activity_Modify-UP.sql" />
+    <EmbeddedResource Include="Persistence\SqlServer\Migration\02.Stored Procedures\0006-Create usp_StateActivity_Modify-UP.sql" />
   </ItemGroup>
 
   <ItemGroup>

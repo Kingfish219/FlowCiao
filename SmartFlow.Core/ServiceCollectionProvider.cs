@@ -6,6 +6,8 @@ using SmartFlow.Core.Services;
 using System;
 using SmartFlow.Core.Builders;
 using SmartFlow.Core.Operators;
+using SmartFlow.Core.Persistence.SqlServer;
+using SmartFlow.Core.Exceptions;
 
 namespace SmartFlow.Core
 {
@@ -25,22 +27,29 @@ namespace SmartFlow.Core
             services.AddTransient<ISmartFlowBuilder, SmartFlowBuilder>();
 
             var migration = new DbMigrationManager(smartFlowSettings);
-            migration.MigrateUp();
+            if (!migration.MigrateUp())
+            {
+                throw new SmartFlowPersistencyException("Migration failed");
+            }
 
             return services;
         }
 
         private static void AddRepositories(IServiceCollection services)
         {
-            services.AddTransient<TransitionRepository, TransitionRepository>();
-            services.AddTransient<StateRepository, StateRepository>();
-            services.AddTransient<ActionRepository, ActionRepository>();
+            services.AddTransient<TransitionRepository>();
+            services.AddTransient<StateRepository>();
+            services.AddTransient<ActionRepository>();
+            services.AddTransient<ActivityRepository>();
             services.AddTransient<ISmartFlowRepository, ProcessRepository>();
         }
 
         private static void AddServices(IServiceCollection services)
         {
-            services.AddTransient<SmartFlowService, SmartFlowService>();
+            services.AddTransient<SmartFlowService>();
+            services.AddTransient<ActivityService>();
+            services.AddTransient<TransitionService>();
+            services.AddTransient<StateService>();
         }
     }
 }

@@ -38,7 +38,7 @@ namespace SmartFlow.Core.Repositories
             });
         }
 
-        public Task CreateActions(Transition entity, ProcessAction action)
+        public Task AssociateActions(Transition entity, ProcessAction action)
         {
             return Task.Run(() =>
             {
@@ -52,6 +52,24 @@ namespace SmartFlow.Core.Repositories
                 using var connection = new SqlConnection(_connectionString);
                 connection.Open();
                 connection.Execute(ConstantsProvider.Usp_TransitionAction_Modify, toInsert, commandType: CommandType.StoredProcedure);
+
+                return entity.Id;
+            });
+        }
+
+        public Task AssociateActivities(Transition entity, Models.Activity activity)
+        {
+            return Task.Run(() =>
+            {
+                var toInsert = new
+                {
+                    TransitionId = entity.Id,
+                    ActivityId = activity.Id
+                };
+
+                using var connection = new SqlConnection(_connectionString);
+                connection.Open();
+                connection.Execute(ConstantsProvider.Usp_TransitionActivity_Modify, toInsert, commandType: CommandType.StoredProcedure);
 
                 return entity.Id;
             });

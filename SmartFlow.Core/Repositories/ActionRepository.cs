@@ -1,6 +1,10 @@
 ﻿using SmartFlow.Core.Models;
 using System.Threading.Tasks;
 using System;
+using SmartFlow.Core.Db.SqlServer;
+using System.Data;
+using Microsoft.Data.SqlClient;
+using Dapper;
 
 namespace SmartFlow.Core.Repositories
 {
@@ -15,7 +19,23 @@ namespace SmartFlow.Core.Repositories
 
         public Task<Guid> Modify(ProcessAction entity)
         {
-            return Task.FromResult(Guid.Empty);
+            return Task.Run(() =>
+            {
+                var toInsert = new
+                {
+                    Id = entity.Id == default ? Guid.NewGuid() : entity.Id,
+                    entity.Name,
+                    entity.ActionTypeCode,
+                    entity.ProcessId
+                };
+
+                using var connection = new SqlConnection(_connectionString);
+                connection.Open();
+                connection.Execute(ConstantsProvider.Usp_Action_Modify, toInsert, commandType: CommandType.StoredProcedure);
+                entity.Id = toInsert.Id;
+
+                return entity.Id;
+            });
         }
     }
 }

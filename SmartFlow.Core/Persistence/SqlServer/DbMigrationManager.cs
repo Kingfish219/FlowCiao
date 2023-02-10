@@ -1,13 +1,14 @@
 ﻿using System.Reflection;
 using DbUp;
+using DbUp.Helpers;
 using SmartFlow.Core.Models;
 
-namespace SmartFlow.Core.Db
+namespace SmartFlow.Core.Persistence.SqlServer
 {
     public class DbMigrationManager
     {
         private readonly string _connectionString;
-        private const string ScriptsPath = @"SmartFlow.Core.Db.SqlServer.Migration";
+        private const string ScriptsPath = @"SmartFlow.Core.Persistence.SqlServer.Migration";
 
         public DbMigrationManager(SmartFlowSettings settings)
         {
@@ -24,6 +25,7 @@ namespace SmartFlow.Core.Db
                     .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly()
                         , s => s.StartsWith(ScriptsPath))
                     .WithTransaction()
+                    .JournalTo(new NullJournal())
                     .LogToConsole()
                     .Build();
 
