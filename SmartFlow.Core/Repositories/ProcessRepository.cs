@@ -92,7 +92,7 @@ namespace SmartFlow.Core.Repositories
             });
         }
 
-        public Task<List<Process>> Get<T>(Guid processId = default, string key = default) where T : Process
+        public Task<List<Process>> Get(Guid processId = default, string key = default)
         {
             return Task.Run(() =>
             {

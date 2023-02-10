@@ -49,9 +49,9 @@ namespace SmartFlow.Core.Services
             return processId;
         }
 
-        public async Task<List<Process>> Get<T>(Guid processId = default, string key = default) where T : Process
+        public async Task<List<Process>> Get(Guid processId = default, string key = default)
         {
-            return await _processRepository.Get<T>(processId, key);
+            return await _processRepository.Get(processId, key);
         }
     }
 }

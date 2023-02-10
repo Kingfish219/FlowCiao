@@ -12,7 +12,7 @@ namespace SmartFlow.Core.Repositories
         Task<List<Activity>> GetStateActivities(State state, Group group);
         Task<bool> RemoveActiveProcessStep(ProcessEntity entity);
         Task<Process> GetProcess(Guid userId, Guid requestTypeId);
-        Task<List<Process>> Get<T>(Guid processId = default, string key = default) where T : Process;
+        Task<List<Process>> Get(Guid processId = default, string key = default);
         Task<Guid> Create<T>(Process entity) where T : Process;
         Task<bool> CreateProcessStep(ProcessStep entity);
         Task<bool> CompleteProgressAction(ProcessStep processStep, ProcessAction action);

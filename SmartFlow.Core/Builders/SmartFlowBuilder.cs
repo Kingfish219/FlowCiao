@@ -1,4 +1,5 @@
 ﻿using SmartFlow.Core.Exceptions;
+using SmartFlow.Core.Interfaces;
 using SmartFlow.Core.Models;
 using SmartFlow.Core.Services;
 using System;
@@ -41,7 +42,7 @@ namespace SmartFlow.Core.Builders
             return builder;
         }
 
-        public Process Build<T>() where T : Process, new()
+        public Process Build<T>() where T : ISmartFlow, new()
         {
             try
             {
@@ -51,15 +52,14 @@ namespace SmartFlow.Core.Builders
                     throw new Exception();
                 }
 
-                smartFlow.Construct<T>(this);
-
-                var process = _processService.Get<T>(key: smartFlow.FlowKey).GetAwaiter().GetResult().FirstOrDefault();
+                var process = _processService.Get(key: smartFlow.FlowKey).GetAwaiter().GetResult().FirstOrDefault();
                 if (process != null)
                 {
                     return process;
                 }
 
-                smartFlow.Transitions ??= new List<Transition>();
+                process = smartFlow.Construct<T>(this);
+                process.Transitions ??= new List<Transition>();
 
                 InitialStepBuilder.InitialState.IsInitial = true;
                 foreach (var allowedTransition in InitialStepBuilder.AllowedTransitions)
@@ -78,7 +78,7 @@ namespace SmartFlow.Core.Builders
                         Actions = allowedTransition.Item2
                     };
 
-                    smartFlow.Transitions.Add(transition);
+                    process.Transitions.Add(transition);
                 }
 
                 foreach (var builder in StepBuilders)
@@ -101,17 +101,17 @@ namespace SmartFlow.Core.Builders
                             Actions = allowedTransition.Item2
                         };
 
-                        smartFlow.Transitions.Add(transition);
+                        process.Transitions.Add(transition);
                     }
                 }
 
-                var result = _processService.Modify(smartFlow).GetAwaiter().GetResult();
+                var result = _processService.Modify(process).GetAwaiter().GetResult();
                 if (result == default)
                 {
                     throw new SmartFlowPersistencyException("Check your database connection!");
                 }
 
-                return smartFlow;
+                return process;
             }
             catch (Exception)
             {
@@ -121,19 +121,18 @@ namespace SmartFlow.Core.Builders
             }
         }
 
-        public Process Build<T>(Action<ISmartFlowBuilder> constructor) where T : Process, new()
+        public Process Build<T>(Action<ISmartFlowBuilder> constructor) where T : ISmartFlow, new()
         {
             try
             {
                 var smartFlow = Activator.CreateInstance<T>();
                 constructor.Invoke(this);
 
-                var process = _processService.Get<T>(key: smartFlow.FlowKey).GetAwaiter().GetResult().FirstOrDefault();
+                var process = _processService.Get(key: smartFlow.FlowKey).GetAwaiter().GetResult().FirstOrDefault();
                 if (process != null)
                 {
                     return process;
                 }
-
 
                 foreach (var builder in StepBuilders)
                 {
