@@ -9,14 +9,14 @@ using SmartFlow.Core.Repositories;
 
 namespace SmartFlow.Core.Services
 {
-    public class SmartFlowService
+    public class ProcessService
     {
         private readonly ISmartFlowOperator _smartFlowOperator;
         private readonly IProcessRepository _processRepository;
         private readonly TransitionService _transitionService;
         private readonly StateService _stateService;
 
-        public SmartFlowService(ISmartFlowOperator smartFlowOperator
+        public ProcessService(ISmartFlowOperator smartFlowOperator
             , IProcessRepository processRepository
             , TransitionService transitionService
             , StateService stateService
@@ -28,17 +28,17 @@ namespace SmartFlow.Core.Services
             _stateService = stateService;
         }
 
-        public async Task<Guid> Modify<T>(T smartFlow) where T : Process, new()
+        public async Task<Guid> Modify(Process process)
         {
-            await _smartFlowOperator.RegisterFlow(smartFlow);
+            await _smartFlowOperator.RegisterFlow(process);
 
-            var processId = await _processRepository.Create<T>(smartFlow);
+            var processId = await _processRepository.Create(process);
             if (processId == default)
             {
                 throw new SmartFlowPersistencyException();
             }
 
-            smartFlow.Transitions?.ForEach(transition =>
+            process.Transitions?.ForEach(transition =>
             {
                 transition.ProcessId = processId;
                 transition.From.Id = _stateService.Modify(transition.From).GetAwaiter().GetResult();

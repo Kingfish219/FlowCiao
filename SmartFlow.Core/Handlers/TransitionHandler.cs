@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 using SmartFlow.Core.Exceptions;
-using SmartFlow.Core.Repositories.Interfaces;
+using SmartFlow.Core.Repositories;
 
 namespace SmartFlow.Core.Handlers
 {
@@ -10,11 +10,10 @@ namespace SmartFlow.Core.Handlers
     {
         private readonly IEntityRepository _entityRepository;
 
-        public TransitionHandler(IStateMachineRepository processRepository
-            , IProcessStepService processStepManager
-            , IEntityRepository entityRepository) : base(processRepository, processStepManager)
+        public TransitionHandler(IProcessRepository processRepository
+            , IProcessStepService processStepManager) : base(processRepository, processStepManager)
         {
-            _entityRepository = entityRepository;
+            //_entityRepository = entityRepository;
         }
 
         //internal TransitionHandler(IProcessRepository processRepository, IEntityRepository entityRepository, int actionCode, string connectionString, LogRepository logRepository) : base(processRepository)
@@ -30,24 +29,24 @@ namespace SmartFlow.Core.Handlers
         {
             try
             {
-                var transition = processStepContext.ProcessStep.TransitionActions.FirstOrDefault(x => x.Action.ActionTypeCode == processStepContext.ProcessStepInput.ActionCode).Transition;
+                var transition = processStepContext.ProcessStepDetail.TransitionActions.FirstOrDefault(x => x.Action.ActionTypeCode == processStepContext.ProcessStepInput.ActionCode).Transition;
                 if (transition is null)
                 {
                     throw new SmartFlowProcessExecutionException("Exception occured while completing progress transition");
                 }
 
-                if (!processStepContext.ProcessStep.IsCompleted)
+                if (!processStepContext.ProcessStepDetail.IsCompleted)
                 {
                     throw new SmartFlowProcessExecutionException("Exception occured while completing progress transition, process step action is not yet completed");
                 }
 
-                var result = _entityRepository.ChangeState(processStepContext.ProcessStep.Entity, transition.NextStateId);
-                if (result.Status != ProcessResultStatus.Completed)
-                {
-                    throw new SmartFlowProcessExecutionException("Exception occured while changing entity state");
-                }
+                //var result = _entityRepository.ChangeState(processStepContext.ProcessStep.Entity, transition.NextStateId);
+                //if (result.Status != ProcessResultStatus.Completed)
+                //{
+                //    throw new SmartFlowProcessExecutionException("Exception occured while changing entity state");
+                //}
 
-                processStepContext.ProcessStep.Entity.LastStatus = transition.NextStateId;
+                //processStepContext.ProcessStep.Entity.LastStatus = transition.NextStateId;
 
                 return NextHandler.Handle(processStepContext);
             }

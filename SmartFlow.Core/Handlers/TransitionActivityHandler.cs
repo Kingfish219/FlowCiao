@@ -1,6 +1,6 @@
 ﻿using SmartFlow.Core.Exceptions;
 using SmartFlow.Core.Models;
-using SmartFlow.Core.Repositories.Interfaces;
+using SmartFlow.Core.Repositories;
 using System;
 using System.Linq;
 
@@ -8,7 +8,7 @@ namespace SmartFlow.Core.Handlers
 {
     internal class TransitionActivityHandler : WorkflowHandler
     {
-        public TransitionActivityHandler(IStateMachineRepository processRepository
+        public TransitionActivityHandler(IProcessRepository processRepository
             , IProcessStepService processStepManager) : base(processRepository, processStepManager)
         {
         }
@@ -32,7 +32,7 @@ namespace SmartFlow.Core.Handlers
                     Status = ProcessResultStatus.Completed
                 };
 
-                var currentTransition = processStepContext.ProcessStep.TransitionActions.FirstOrDefault().Transition;
+                var currentTransition = processStepContext.ProcessStepDetail.TransitionActions.FirstOrDefault().Transition;
                 var activities = ProcessRepository.GetTransitionActivities(currentTransition).Result;
 
                 if (activities.Count > 0)
@@ -55,10 +55,11 @@ namespace SmartFlow.Core.Handlers
                             throw new SmartFlowProcessExecutionException("Exception occured while invoking activities" + result.Message);
                         }
 
-                        //log to ProcessStepHistoryActivity
-                        var currentActivity = activities.Find(a => a.ActivityTypeCode == ((Activity)activity).ActivityTypeCode);
-                        Guid LastProcessStepHistoryItemId = ProcessRepository.GetLastProcessStepHistoryItem(processStepContext.ProcessStep.Entity.Id).Result.Id;
-                        ProcessRepository.AddProcessStepHistoryActivity(new ProcessStepHistoryActivity { ActivityId = currentActivity.Id, ActivityName = currentActivity.Name, StepType = 2, ProcessStepHistoryId = LastProcessStepHistoryItemId });
+                        /// log to ProcessStepHistoryActivity
+
+                        //var currentActivity = activities.Find(a => a.ActivityTypeCode == ((Activity)activity).ActivityTypeCode);
+                        //Guid LastProcessStepHistoryItemId = ProcessRepository.GetLastProcessStepHistoryItem(processStepContext.ProcessStepDetail.Entity.Id).Result.Id;
+                        //ProcessRepository.AddProcessStepHistoryActivity(new ProcessStepHistoryActivity { ActivityId = currentActivity.Id, ActivityName = currentActivity.Name, StepType = 2, ProcessStepHistoryId = LastProcessStepHistoryItemId });
                     }
                 }
 

@@ -1,5 +1,5 @@
 ﻿using SmartFlow.Core.Models;
-using SmartFlow.Core.Repositories.Interfaces;
+using SmartFlow.Core.Repositories;
 
 namespace SmartFlow.Core.Handlers
 {
@@ -8,10 +8,10 @@ namespace SmartFlow.Core.Handlers
         internal IProcessHandler NextHandler { get; private set; }
         internal IProcessHandler PreviousHandler { get; private set; }
 
-        protected readonly IStateMachineRepository ProcessRepository;
+        protected readonly IProcessRepository ProcessRepository;
         protected readonly IProcessStepService ProcessStepManager;
 
-        internal WorkflowHandler(IStateMachineRepository processRepository, IProcessStepService processStepManager)
+        internal WorkflowHandler(IProcessRepository processRepository, IProcessStepService processStepManager)
         {
             ProcessRepository = processRepository;
             ProcessStepManager = processStepManager;

@@ -14,7 +14,7 @@ namespace SmartFlow.Core.Services
             _smartFlowRepository = smartFlowRepository;
         }
 
-        public ProcessStep GetActiveProcessStep(Guid userId, ProcessEntity entity)
+        public ProcessExecutionStep GetActiveProcessStep(Guid userId, ProcessEntity entity)
         {
             var processStep = _smartFlowRepository.GetActiveProcessStep(entity).Result;
             if (processStep != null)
@@ -29,8 +29,23 @@ namespace SmartFlow.Core.Services
             return processStep;
         }
 
-        //public ProcessStep InitializeActiveProcessStep(Guid userID)
-        public ProcessStep InitializeActiveProcessStep(Guid userId, ProcessEntity entity, bool initializeFromFirstState = false)
+        public ProcessExecutionStep InitializeActiveProcessStep(Process process)
+        {
+            var processStep = new ProcessExecutionStep
+            {
+                Process = process
+            };
+
+            var result = _smartFlowRepository.CreateProcessStep(processStep).Result;
+            if (!result)
+            {
+                throw new SmartFlowProcessExecutionException("No process step found");
+            }
+
+            return processStep;
+        }
+
+        public ProcessExecutionStep InitializeActiveProcessStep(Guid userId, ProcessEntity entity, bool initializeFromFirstState = false)
         {
             var process = _smartFlowRepository.GetProcess(userId).Result;
             State state;
@@ -44,7 +59,7 @@ namespace SmartFlow.Core.Services
             }
 
             var transitionActions = _smartFlowRepository.GetStateTransitions(process, state).Result;
-            var processStep = new ProcessStep
+            var processStep = new ProcessExecutionStep
             {
                 Process = process,
                 TransitionActions = transitionActions,
@@ -62,7 +77,7 @@ namespace SmartFlow.Core.Services
             return processStep;
         }
 
-        public ProcessResult FinalizeActiveProcessStep(ProcessStep processStep)
+        public ProcessResult FinalizeActiveProcessStep(ProcessExecutionStep processStep)
         {
             if (processStep == null)
             {

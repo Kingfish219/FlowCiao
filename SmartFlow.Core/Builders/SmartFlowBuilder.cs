@@ -12,9 +12,9 @@ namespace SmartFlow.Core.Builders
     {
         public List<ISmartFlowStepBuilder> StepBuilders { get; set; }
         public ISmartFlowStepBuilder InitialStepBuilder { get; set; }
-        private readonly SmartFlowService _processService;
+        private readonly ProcessService _processService;
 
-        public SmartFlowBuilder(SmartFlowService processService)
+        public SmartFlowBuilder(ProcessService processService)
         {
             StepBuilders = new List<ISmartFlowStepBuilder>();
             _processService = processService;

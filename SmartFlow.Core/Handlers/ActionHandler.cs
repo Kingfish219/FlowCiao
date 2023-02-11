@@ -2,13 +2,13 @@
 using System;
 using System.Linq;
 using SmartFlow.Core.Exceptions;
-using SmartFlow.Core.Repositories.Interfaces;
+using SmartFlow.Core.Repositories;
 
 namespace SmartFlow.Core.Handlers
 {
     internal class ActionHandler : WorkflowHandler
     {
-        public ActionHandler(IStateMachineRepository processRepository
+        public ActionHandler(IProcessRepository processRepository
             , IProcessStepService processStepManager) : base(processRepository, processStepManager)
         {
         }
@@ -23,8 +23,8 @@ namespace SmartFlow.Core.Handlers
         {
             try
             {
-                var result = ProcessRepository.CompleteProgressAction(processStepContext.ProcessStep,
-                    processStepContext.ProcessStep.TransitionActions
+                var result = ProcessRepository.CompleteProgressAction(processStepContext.ProcessStepDetail,
+                    processStepContext.ProcessStepDetail.TransitionActions
                     .FirstOrDefault(x => x.Action.ActionTypeCode == processStepContext.ProcessStepInput.ActionCode)
                     .Action).Result;
                 if (!result)
@@ -32,7 +32,7 @@ namespace SmartFlow.Core.Handlers
                     throw new SmartFlowProcessExecutionException("Exception occured while completing progress action");
                 }
 
-                processStepContext.ProcessStep.IsCompleted = true;
+                processStepContext.ProcessStepDetail.IsCompleted = true;
 
                 return NextHandler.Handle(processStepContext);
             }

@@ -18,6 +18,5 @@ namespace SmartFlow.Core.Models
         public string Name { get; set; }
         public bool IsActive { get; set; }
         public List<Transition> Transitions { get; set; }
-        public List<ProcessStepHistory> MyProperty { get; set; }
     }
 }

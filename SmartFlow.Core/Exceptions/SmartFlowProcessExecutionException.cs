@@ -10,7 +10,7 @@ namespace SmartFlow.Core.Exceptions
         {
         }
 
-        public SmartFlowProcessExecutionException(string message, LogRepository logRepository, ProcessStep processStep, [System.Runtime.CompilerServices.CallerFilePath] string handlerName = "", [System.Runtime.CompilerServices.CallerLineNumber] int line = 0)
+        public SmartFlowProcessExecutionException(string message, LogRepository logRepository, ProcessExecutionStep processStep, [System.Runtime.CompilerServices.CallerFilePath] string handlerName = "", [System.Runtime.CompilerServices.CallerLineNumber] int line = 0)
             : base(message)
         {
             try

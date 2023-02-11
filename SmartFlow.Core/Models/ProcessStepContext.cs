@@ -4,7 +4,8 @@ namespace SmartFlow.Core.Models
 {
     public class ProcessStepContext
     {
-        public ProcessStep ProcessStep { get; set; }
+        public ProcessExecutionStep ProcessStep { get; set; }
+        public ProcessExecutionStepDetail ProcessStepDetail { get; set; }
         public ProcessUser ProcessUser { get; set; }
         public ProcessStepInput ProcessStepInput { get; set; }
         public EntityCommandType EntityCommandType { get; set; }

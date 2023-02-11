@@ -22,7 +22,7 @@ namespace SmartFlow.Core.Repositories
             _connectionString = settings.ConnectionString;
         }
 
-        public Task<bool> CompleteProgressAction(ProcessStep processStep, ProcessAction action)
+        public Task<bool> CompleteProgressAction(ProcessExecutionStep processStep, ProcessAction action)
         {
             return Task.Run(() =>
             {
@@ -37,7 +37,7 @@ namespace SmartFlow.Core.Repositories
             });
         }
 
-        public Task<bool> CreateProcessStep(ProcessStep entity)
+        public Task<bool> CreateProcessStep(ProcessExecutionStep entity)
         {
             return Task.Run(() =>
             {
@@ -144,14 +144,14 @@ namespace SmartFlow.Core.Repositories
             });
         }
 
-        public Task<ProcessStep> GetActiveProcessStep(ProcessEntity entity)
+        public Task<ProcessExecutionStep> GetActiveProcessStep(ProcessEntity entity)
         {
             return Task.Run(() =>
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
-                    var result = connection.QueryFirstOrDefault<ProcessStep>($"SELECT TOP 1 * FROM [ActiveProcessStep] WHERE [EntityId] = '{entity.Id}'");
+                    var result = connection.QueryFirstOrDefault<ProcessExecutionStep>($"SELECT TOP 1 * FROM [ActiveProcessStep] WHERE [EntityId] = '{entity.Id}'");
 
                     return result;
                 }
@@ -383,14 +383,14 @@ namespace SmartFlow.Core.Repositories
                 }
             });
         }
-        public Task<ProcessStep> GetLastProcessStepHistoryItem(Guid ticketId)
+        public Task<ProcessExecutionStep> GetLastProcessStepHistoryItem(Guid ticketId)
         {
             return Task.Run(() =>
             {
                 using (var connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
-                    var result = connection.Query<ProcessStep>($@"
+                    var result = connection.Query<ProcessExecutionStep>($@"
                          exec sp_ProcessStepHistory_GetLastProcessStepHistoryItem '{ticketId}'            
                     ").FirstOrDefault();
                     return result;
@@ -436,7 +436,7 @@ namespace SmartFlow.Core.Repositories
             });
         }
 
-        public Task<FuncResult> RemoveEntireFlow(ProcessStep processStep)
+        public Task<FuncResult> RemoveEntireFlow(ProcessExecutionStep processStep)
         {
             return Task.Run(() =>
             {
@@ -602,7 +602,7 @@ namespace SmartFlow.Core.Repositories
             }
         }
 
-        public Task<Guid> Create<T>(Process entity) where T : Process
+        public Task<Guid> Create(Process entity)
         {
             return Task.Run(() =>
             {

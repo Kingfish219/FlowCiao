@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SmartFlow.Core.Handlers;
 using SmartFlow.Core.Interfaces;
 using SmartFlow.Core.Models;
 using SmartFlow.Core.Repositories;
@@ -11,25 +12,29 @@ namespace SmartFlow.Core.Operators
 {
     public class SmartFlowOperator : ISmartFlowOperator
     {
-        private readonly List<Process> _flows;
+        private readonly List<Process> _flowHub;
         private readonly LogRepository _logRepository;
-        private readonly IProcessRepository _smartFlowRepository;
+        private readonly IProcessRepository _processRepository;
         private readonly ProcessStepService _processStepService;
+        private readonly ProcessHandlerFactory _processHandlerFactory;
 
         public SmartFlowOperator(LogRepository logRepository
-            , IProcessRepository smartFlowRepository)
+            , IProcessRepository smartFlowRepository
+            , ProcessHandlerFactory processHandlerFactory
+            , ProcessStepService processStepService)
         {
-            _flows = new List<Process>();
+            _flowHub = new List<Process>();
             _logRepository = logRepository;
-            _smartFlowRepository = smartFlowRepository;
-            _processStepService = new ProcessStepService(_smartFlowRepository);
+            _processRepository = smartFlowRepository;
+            _processStepService = processStepService;
+            _processHandlerFactory = processHandlerFactory;
         }
 
         public Task<bool> RegisterFlow<TFlow>(TFlow smartFlow) where TFlow : Process, new()
         {
             return Task.Run(() =>
             {
-                _flows.Add(smartFlow);
+                _flowHub.Add(smartFlow);
 
                 return true;
             });
@@ -53,25 +58,16 @@ namespace SmartFlow.Core.Operators
 
         public ProcessResult Fire(string smartFlowKey, int action, Dictionary<string, object> data)
         {
-            var smartFlow = _flows.Single(x => x.FlowKey.Equals(smartFlowKey));
+            var process = _flowHub.Single(x => x.FlowKey.Equals(smartFlowKey));
 
             try
             {
-                var logRepository = new LogRepository(_settings.ConnectionString);
-                var processRepository = new ProcessRepository(_settings.ConnectionString);
-                var processStepManager = new ProcessStepService(processRepository);
-                ProcessStep processStep;
-                if (commandType == EntityCommandType.Create)
+                if (process.ActiveProcessStep is null)
                 {
-                    processStep = processStepManager.InitializeActiveProcessStep(user.Id, entity, true);
-                    input.ActionCode = 1;
-                }
-                else
-                {
-                    processStep = processStepManager.GetActiveProcessStep(user.Id, entity);
+                    process.ActiveProcessStep = _processStepService.InitializeActiveProcessStep(process);
                 }
 
-                if (processStep is null)
+                if (process.ActiveProcessStep is null)
                 {
                     return new ProcessResult
                     {
@@ -81,20 +77,12 @@ namespace SmartFlow.Core.Operators
 
                 var processStepContext = new ProcessStepContext
                 {
-                    ProcessStep = processStep,
-                    ProcessUser = user,
-                    ProcessStepInput = input,
-                    Data = parameters,
-                    EntityCommandType = commandType,
+                    ProcessStepDetail = process.ActiveProcessStep,
+                    Data = data
                 };
 
-                var handlers = ProcessHandlerFactory.BuildHandlers(
-                    processStepContext,
-                    processRepository,
-                    processStepManager,
-                    entityRepository,
-                    logRepository,
-                    _settings.ConnectionString
+                var handlers = _processHandlerFactory.BuildHandlers(
+                    processStepContext
                    );
 
                 var result = handlers.Peek().Handle(processStepContext);

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
 using SmartFlow.Core.Models;
-using SmartFlow.Core.Repositories.Interfaces;
+using SmartFlow.Core.Repositories;
 
 namespace SmartFlow.Core.Handlers
 {
     internal class ProcessStepFinalizerHandler : WorkflowHandler
     {
-        public ProcessStepFinalizerHandler(IStateMachineRepository processRepository
+        public ProcessStepFinalizerHandler(IProcessRepository processRepository
             , IProcessStepService processStepManager) : base(processRepository, processStepManager)
         {
         }
@@ -25,7 +25,7 @@ namespace SmartFlow.Core.Handlers
         {
             try
             {
-                var result = ProcessStepManager.FinalizeActiveProcessStep(processStepContext.ProcessStep);
+                var result = ProcessStepManager.FinalizeActiveProcessStep(processStepContext.ProcessStepDetail);
                 if (result.Status == ProcessResultStatus.Failed)
                 {
                     return new ProcessResult
@@ -35,7 +35,7 @@ namespace SmartFlow.Core.Handlers
                     };
                 }
 
-                var state = ProcessRepository.GetState(processStepContext.ProcessStep.TransitionActions
+                var state = ProcessRepository.GetState(processStepContext.ProcessStepDetail.TransitionActions
                     .FirstOrDefault(x => x.Action.ActionTypeCode == processStepContext.ProcessStepInput.ActionCode)
                     .Transition.NextStateId).Result;
                 if (state.IsFinal)
@@ -46,11 +46,11 @@ namespace SmartFlow.Core.Handlers
                     };
                 }
 
-                processStepContext.ProcessStep = ProcessStepManager.InitializeActiveProcessStep(processStepContext.ProcessUser.Id
-                    , processStepContext.ProcessStep.Entity
+                processStepContext.ProcessStepDetail = ProcessStepManager.InitializeActiveProcessStep(processStepContext.ProcessUser.Id
+                    , processStepContext.ProcessStepDetail.Entity
                     , false);
 
-                if (processStepContext.ProcessStep == null)
+                if (processStepContext.ProcessStepDetail == null)
                 {
                     return new ProcessResult
                     {

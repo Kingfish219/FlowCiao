@@ -1,12 +1,12 @@
 ﻿using System;
 using SmartFlow.Core.Models;
-using SmartFlow.Core.Repositories.Interfaces;
+using SmartFlow.Core.Repositories;
 
 namespace SmartFlow.Core.Handlers
 {
     internal class ActionActivityHandler : WorkflowHandler
     {
-        public ActionActivityHandler(IStateMachineRepository processRepository
+        public ActionActivityHandler(IProcessRepository processRepository
             , IProcessStepService processStepManager) : base(processRepository, processStepManager)
         {
         }

@@ -4,10 +4,11 @@ using System;
 
 namespace SmartFlow.Core
 {
-    internal interface IProcessStepService
+    public interface IProcessStepService
     {
-        ProcessStep GetActiveProcessStep(Guid userId, ProcessEntity entity);
-        ProcessStep InitializeActiveProcessStep(Guid userId, ProcessEntity entity, bool initializeFromFirstState);
-        ProcessResult FinalizeActiveProcessStep(ProcessStep processStep);
+        ProcessExecutionStep GetActiveProcessStep(Guid userId, ProcessEntity entity);
+        ProcessExecutionStep InitializeActiveProcessStep(Process process);
+        ProcessExecutionStep InitializeActiveProcessStep(Guid userId, ProcessEntity entity, bool initializeFromFirstState);
+        ProcessResult FinalizeActiveProcessStep(ProcessExecutionStep processStep);
     }
 }

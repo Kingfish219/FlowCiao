@@ -46,7 +46,7 @@ namespace SmartFlow.Core
 
         private static void AddServices(IServiceCollection services)
         {
-            services.AddTransient<SmartFlowService>();
+            services.AddTransient<ProcessService>();
             services.AddTransient<ActivityService>();
             services.AddTransient<TransitionService>();
             services.AddTransient<StateService>();

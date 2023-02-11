@@ -1,7 +1,6 @@
 ﻿using SmartFlow.Core.Models;
-using SmartFlow.Core.Repositories.Interfaces;
+using SmartFlow.Core.Repositories;
 using System;
-using System.Linq;
 
 namespace SmartFlow.Core.Handlers
 {
@@ -9,7 +8,7 @@ namespace SmartFlow.Core.Handlers
     {
         private readonly Func<ProcessEntity, ProcessResult> _command;
 
-        public EntityHandler(IStateMachineRepository processRepository
+        public EntityHandler(IProcessRepository processRepository
             , IProcessStepService processStepManager
             , Func<ProcessEntity, ProcessResult> command) : base(processRepository, processStepManager)
         {
@@ -25,12 +24,12 @@ namespace SmartFlow.Core.Handlers
         {
             try
             {
-                processStepContext.ProcessStep.Entity.LastStatus = processStepContext.ProcessStep.TransitionActions.FirstOrDefault().Transition.CurrentStateId;
-                var result = _command(processStepContext.ProcessStep.Entity);
-                if (result.Status != ProcessResultStatus.Completed)
-                {
-                    return result;
-                }
+                //processStepContext.ProcessStep.Entity.LastStatus = processStepContext.ProcessStep.TransitionActions.FirstOrDefault().Transition.CurrentStateId;
+                //var result = _command(processStepContext.ProcessStep.Entity);
+                //if (result.Status != ProcessResultStatus.Completed)
+                //{
+                //    return result;
+                //}
 
                 return NextHandler.Handle(processStepContext);
             }

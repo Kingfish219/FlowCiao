@@ -2,13 +2,13 @@
 using System;
 using System.Linq;
 using SmartFlow.Core.Exceptions;
-using SmartFlow.Core.Repositories.Interfaces;
+using SmartFlow.Core.Repositories;
 
 namespace SmartFlow.Core.Handlers
 {
     internal class StateActivityHandler : WorkflowHandler
     {
-        public StateActivityHandler(IStateMachineRepository processRepository, IProcessStepService processStepManager) : base(processRepository, processStepManager)
+        public StateActivityHandler(IProcessRepository processRepository, IProcessStepService processStepManager) : base(processRepository, processStepManager)
         {
         }
 
@@ -32,7 +32,7 @@ namespace SmartFlow.Core.Handlers
 
                 var stateCurrent = new State
                 {
-                    Id = processStepContext.ProcessStep.TransitionActions.FirstOrDefault().Transition.CurrentStateId
+                    Id = processStepContext.ProcessStepDetail.TransitionActions.FirstOrDefault().Transition.CurrentStateId
                 };
 
                 var activities = ProcessRepository.GetStateActivities(stateCurrent, new Group()).Result;
@@ -58,7 +58,7 @@ namespace SmartFlow.Core.Handlers
 
                         //log to ProcessStepHistoryActivity
                         var currentActivity = activities.Find(a => a.ActivityTypeCode == ((Activity)activity).ActivityTypeCode);
-                        Guid LastProcessStepHistoryItemId = ProcessRepository.GetLastProcessStepHistoryItem(processStepContext.ProcessStep.Entity.Id).Result.Id;
+                        Guid LastProcessStepHistoryItemId = ProcessRepository.GetLastProcessStepHistoryItem(processStepContext.ProcessStepDetail.Entity.Id).Result.Id;
                         ProcessRepository.AddProcessStepHistoryActivity(new ProcessStepHistoryActivity { ActivityId = currentActivity.Id, ActivityName = currentActivity.Name, StepType = 1, ProcessStepHistoryId = LastProcessStepHistoryItemId });
                     }
                 }
@@ -84,7 +84,7 @@ namespace SmartFlow.Core.Handlers
         {
             try
             {
-                ProcessRepository.RemoveEntireFlow(processStepContext.ProcessStep).GetAwaiter().GetResult();
+                ProcessRepository.RemoveEntireFlow(processStepContext.ProcessStepDetail).GetAwaiter().GetResult();
 
                 return PreviousHandler?.RollBack(processStepContext) ?? new ProcessResult
                 {
