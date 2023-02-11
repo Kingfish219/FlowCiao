@@ -3,8 +3,9 @@ using System.Collections.Generic;
 
 namespace SmartFlow.Core.Models
 {
-    internal class ProcessExecution
+    public class ProcessExecution
     {
+        public Guid Id { get; set; }
         public Process Process { get; set; }
         public ProcessExecutionState State { get; set; }
         public List<ProcessExecutionStep> ProcessStepHistory { get; set; }

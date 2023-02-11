@@ -29,16 +29,16 @@ namespace SmartFlow.Core.Handlers
         {
             try
             {
-                var transition = processStepContext.ProcessStepDetail.TransitionActions.FirstOrDefault(x => x.Action.ActionTypeCode == processStepContext.ProcessStepInput.ActionCode).Transition;
-                if (transition is null)
-                {
-                    throw new SmartFlowProcessExecutionException("Exception occured while completing progress transition");
-                }
+                //var transition = processStepContext.ProcessStepDetail.Transition.Actions.FirstOrDefault(x => x.Action.ActionTypeCode == processStepContext.ProcessStepInput.ActionCode).Transition;
+                //if (transition is null)
+                //{
+                //    throw new SmartFlowProcessExecutionException("Exception occured while completing progress transition");
+                //}
 
-                if (!processStepContext.ProcessStepDetail.IsCompleted)
-                {
-                    throw new SmartFlowProcessExecutionException("Exception occured while completing progress transition, process step action is not yet completed");
-                }
+                //if (!processStepContext.ProcessStepDetail.IsCompleted)
+                //{
+                //    throw new SmartFlowProcessExecutionException("Exception occured while completing progress transition, process step action is not yet completed");
+                //}
 
                 //var result = _entityRepository.ChangeState(processStepContext.ProcessStep.Entity, transition.NextStateId);
                 //if (result.Status != ProcessResultStatus.Completed)

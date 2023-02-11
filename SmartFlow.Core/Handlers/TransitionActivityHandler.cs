@@ -32,41 +32,41 @@ namespace SmartFlow.Core.Handlers
                     Status = ProcessResultStatus.Completed
                 };
 
-                var currentTransition = processStepContext.ProcessStepDetail.TransitionActions.FirstOrDefault().Transition;
-                var activities = ProcessRepository.GetTransitionActivities(currentTransition).Result;
+                //var currentTransition = processStepContext.ProcessStepDetail.TransitionActions.FirstOrDefault().Transition;
+                //var activities = ProcessRepository.GetTransitionActivities(currentTransition).Result;
 
-                if (activities.Count > 0)
-                {
-                    var types = AppDomain.CurrentDomain.GetAssemblies()
-                        .SelectMany(type => type.GetTypes())
-                        .Where(p => typeof(Activity).IsAssignableFrom(p) && !p.IsInterface && !p.IsAbstract && p.BaseType == typeof(Activity));
+                //if (activities.Count > 0)
+                //{
+                //    var types = AppDomain.CurrentDomain.GetAssemblies()
+                //        .SelectMany(type => type.GetTypes())
+                //        .Where(p => typeof(Activity).IsAssignableFrom(p) && !p.IsInterface && !p.IsAbstract && p.BaseType == typeof(Activity));
 
-                    foreach (var type in types)
-                    {
-                        var activity = (IProcessActivity)Activator.CreateInstance(type, processStepContext);
-                        if (!activities.Exists(x => x.ActivityTypeCode == ((Activity)activity).ActivityTypeCode))
-                        {
-                            continue;
-                        }
+                //    foreach (var type in types)
+                //    {
+                //        var activity = (IProcessActivity)Activator.CreateInstance(type, processStepContext);
+                //        if (!activities.Exists(x => x.ActivityTypeCode == ((Activity)activity).ActivityTypeCode))
+                //        {
+                //            continue;
+                //        }
 
-                        result = activity.Execute();
-                        if (result.Status != ProcessResultStatus.Completed && result.Status != ProcessResultStatus.SetOwner)
-                        {
-                            throw new SmartFlowProcessExecutionException("Exception occured while invoking activities" + result.Message);
-                        }
+                //        result = activity.Execute();
+                //        if (result.Status != ProcessResultStatus.Completed && result.Status != ProcessResultStatus.SetOwner)
+                //        {
+                //            throw new SmartFlowProcessExecutionException("Exception occured while invoking activities" + result.Message);
+                //        }
 
-                        /// log to ProcessStepHistoryActivity
+                //        /// log to ProcessStepHistoryActivity
 
-                        //var currentActivity = activities.Find(a => a.ActivityTypeCode == ((Activity)activity).ActivityTypeCode);
-                        //Guid LastProcessStepHistoryItemId = ProcessRepository.GetLastProcessStepHistoryItem(processStepContext.ProcessStepDetail.Entity.Id).Result.Id;
-                        //ProcessRepository.AddProcessStepHistoryActivity(new ProcessStepHistoryActivity { ActivityId = currentActivity.Id, ActivityName = currentActivity.Name, StepType = 2, ProcessStepHistoryId = LastProcessStepHistoryItemId });
-                    }
-                }
+                //        //var currentActivity = activities.Find(a => a.ActivityTypeCode == ((Activity)activity).ActivityTypeCode);
+                //        //Guid LastProcessStepHistoryItemId = ProcessRepository.GetLastProcessStepHistoryItem(processStepContext.ProcessStepDetail.Entity.Id).Result.Id;
+                //        //ProcessRepository.AddProcessStepHistoryActivity(new ProcessStepHistoryActivity { ActivityId = currentActivity.Id, ActivityName = currentActivity.Name, StepType = 2, ProcessStepHistoryId = LastProcessStepHistoryItemId });
+                //    }
+                //}
 
-                if (NextHandler is null)
-                {
-                    return result;
-                }
+                //if (NextHandler is null)
+                //{
+                //    return result;
+                //}
 
                 return NextHandler.Handle(processStepContext);
             }

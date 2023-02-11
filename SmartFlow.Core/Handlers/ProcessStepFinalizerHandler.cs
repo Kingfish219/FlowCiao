@@ -25,39 +25,39 @@ namespace SmartFlow.Core.Handlers
         {
             try
             {
-                var result = ProcessStepManager.FinalizeActiveProcessStep(processStepContext.ProcessStepDetail);
-                if (result.Status == ProcessResultStatus.Failed)
-                {
-                    return new ProcessResult
-                    {
-                        Status = ProcessResultStatus.Failed,
-                        Message = "Finalizing process step failed"
-                    };
-                }
+                //var result = ProcessStepManager.FinalizeActiveProcessStep(processStepContext.ProcessStepDetail);
+                //if (result.Status == ProcessResultStatus.Failed)
+                //{
+                //    return new ProcessResult
+                //    {
+                //        Status = ProcessResultStatus.Failed,
+                //        Message = "Finalizing process step failed"
+                //    };
+                //}
 
-                var state = ProcessRepository.GetState(processStepContext.ProcessStepDetail.TransitionActions
-                    .FirstOrDefault(x => x.Action.ActionTypeCode == processStepContext.ProcessStepInput.ActionCode)
-                    .Transition.NextStateId).Result;
-                if (state.IsFinal)
-                {
-                    return new ProcessResult
-                    {
-                        Status = ProcessResultStatus.Completed
-                    };
-                }
+                //var state = ProcessRepository.GetState(processStepContext.ProcessStepDetail.TransitionActions
+                //    .FirstOrDefault(x => x.Action.ActionTypeCode == processStepContext.ProcessStepInput.ActionCode)
+                //    .Transition.NextStateId).Result;
+                //if (state.IsFinal)
+                //{
+                //    return new ProcessResult
+                //    {
+                //        Status = ProcessResultStatus.Completed
+                //    };
+                //}
 
-                processStepContext.ProcessStepDetail = ProcessStepManager.InitializeActiveProcessStep(processStepContext.ProcessUser.Id
-                    , processStepContext.ProcessStepDetail.Entity
-                    , false);
+                //processStepContext.ProcessStepDetail = ProcessStepManager.InitializeActiveProcessStep(processStepContext.ProcessUser.Id
+                //    , processStepContext.ProcessStepDetail.Entity
+                //    , false);
 
-                if (processStepContext.ProcessStepDetail == null)
-                {
-                    return new ProcessResult
-                    {
-                        Status = ProcessResultStatus.Failed,
-                        Message = "Initializing process step failed"
-                    };
-                }
+                //if (processStepContext.ProcessStepDetail == null)
+                //{
+                //    return new ProcessResult
+                //    {
+                //        Status = ProcessResultStatus.Failed,
+                //        Message = "Initializing process step failed"
+                //    };
+                //}
 
                 return NextHandler.Handle(processStepContext);
             }

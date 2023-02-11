@@ -9,7 +9,7 @@ namespace SampleWebApp.Flows
     {
         public string FlowKey { get; set; } = "Sample";
 
-        public ISmartFlow Construct<T>(ISmartFlowBuilder builder) where T : ISmartFlow, new()
+        public ISmartFlowBuilder Construct<T>(ISmartFlowBuilder builder) where T : ISmartFlow, new()
         {
             builder.Initial()
                 .From(new State(1, "First"))
@@ -23,7 +23,7 @@ namespace SampleWebApp.Flows
                 //  .OnExit<GoodbyeWorld>();
                 ;
 
-            return this;
+            return builder;
         }
     }
 }

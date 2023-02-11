@@ -7,7 +7,7 @@ using SmartFlow.Core.Builders;
 using SmartFlow.Core.Operators;
 using SmartFlow.Core.Persistence.SqlServer;
 using SmartFlow.Core.Exceptions;
-using SmartFlow.Core.Repositories.Interfaces;
+using SmartFlow.Core.Handlers;
 
 namespace SmartFlow.Core
 {
@@ -21,10 +21,10 @@ namespace SmartFlow.Core
             settings.Invoke(smartFlowSettings);
 
             services.AddSingleton(smartFlowSettings);
-            services.AddSingleton<ISmartFlowOperator, SmartFlowOperator>();
             AddRepositories(services);
             AddServices(services);
             services.AddTransient<ISmartFlowBuilder, SmartFlowBuilder>();
+            services.AddSingleton<ISmartFlowOperator, SmartFlowOperator>();
 
             var migration = new DbMigrationManager(smartFlowSettings);
             if (!migration.MigrateUp())
@@ -41,6 +41,7 @@ namespace SmartFlow.Core
             services.AddTransient<StateRepository>();
             services.AddTransient<ActionRepository>();
             services.AddTransient<ActivityRepository>();
+            services.AddTransient<LogRepository>();
             services.AddTransient<IProcessRepository, ProcessRepository>();
         }
 
@@ -50,6 +51,9 @@ namespace SmartFlow.Core
             services.AddTransient<ActivityService>();
             services.AddTransient<TransitionService>();
             services.AddTransient<StateService>();
+            services.AddTransient<IProcessStepService, ProcessStepService>();
+            services.AddTransient<ProcessHandlerFactory>();
+            services.AddTransient<ProcessExecutionService>();
         }
     }
 }

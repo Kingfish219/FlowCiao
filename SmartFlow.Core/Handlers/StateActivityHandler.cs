@@ -30,12 +30,12 @@ namespace SmartFlow.Core.Handlers
                     Status = ProcessResultStatus.Completed
                 };
 
-                var stateCurrent = new State
-                {
-                    Id = processStepContext.ProcessStepDetail.TransitionActions.FirstOrDefault().Transition.CurrentStateId
-                };
+                //var stateCurrent = new State
+                //{
+                //    Id = processStepContext.ProcessStepDetail.Transition.Actions.FirstOrDefault().Transition.CurrentStateId
+                //};
 
-                var activities = ProcessRepository.GetStateActivities(stateCurrent, new Group()).Result;
+                var activities = ProcessRepository.GetStateActivities(processStepContext.ProcessStepDetail.Transition.From, new Group()).Result;
                 if (activities.Count > 0)
                 {
                     var types = AppDomain.CurrentDomain.GetAssemblies()
@@ -57,9 +57,9 @@ namespace SmartFlow.Core.Handlers
                         }
 
                         //log to ProcessStepHistoryActivity
-                        var currentActivity = activities.Find(a => a.ActivityTypeCode == ((Activity)activity).ActivityTypeCode);
-                        Guid LastProcessStepHistoryItemId = ProcessRepository.GetLastProcessStepHistoryItem(processStepContext.ProcessStepDetail.Entity.Id).Result.Id;
-                        ProcessRepository.AddProcessStepHistoryActivity(new ProcessStepHistoryActivity { ActivityId = currentActivity.Id, ActivityName = currentActivity.Name, StepType = 1, ProcessStepHistoryId = LastProcessStepHistoryItemId });
+                        //var currentActivity = activities.Find(a => a.ActivityTypeCode == ((Activity)activity).ActivityTypeCode);
+                        //Guid LastProcessStepHistoryItemId = ProcessRepository.GetLastProcessStepHistoryItem(processStepContext.ProcessStepDetail.Entity.Id).Result.Id;
+                        //ProcessRepository.AddProcessStepHistoryActivity(new ProcessStepHistoryActivity { ActivityId = currentActivity.Id, ActivityName = currentActivity.Name, StepType = 1, ProcessStepHistoryId = LastProcessStepHistoryItemId });
                     }
                 }
 
@@ -84,7 +84,7 @@ namespace SmartFlow.Core.Handlers
         {
             try
             {
-                ProcessRepository.RemoveEntireFlow(processStepContext.ProcessStepDetail).GetAwaiter().GetResult();
+                //ProcessRepository.RemoveEntireFlow(processStepContext.ProcessStepDetail).GetAwaiter().GetResult();
 
                 return PreviousHandler?.RollBack(processStepContext) ?? new ProcessResult
                 {

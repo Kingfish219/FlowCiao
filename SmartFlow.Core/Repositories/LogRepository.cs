@@ -9,9 +9,9 @@ namespace SmartFlow.Core.Repositories
     public class LogRepository : ILogRepository
     {
         private readonly string _connectionString;
-        public LogRepository(string connectionString)
+        public LogRepository(SmartFlowSettings smartFlowSettings)
         {
-            _connectionString = connectionString;
+            _connectionString = smartFlowSettings.ConnectionString;
         }
 
         public Task<bool> Create(Log log)

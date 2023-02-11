@@ -22,61 +22,61 @@ namespace SmartFlow.Core.Repositories
             _connectionString = settings.ConnectionString;
         }
 
-        public Task<bool> CompleteProgressAction(ProcessExecutionStep processStep, ProcessAction action)
-        {
-            return Task.Run(() =>
-            {
-                using (var connection = new SqlConnection(_connectionString))
-                {
-                    connection.Open();
-                    var result = connection.Execute($@"UPDATE [ActiveProcessStep] SET [IsCompleted] = 1
-                                                       WHERE [EntityId] = '{processStep.Entity.Id}' AND [ActionId] = '{action.Id}'");
+        //public Task<bool> CompleteProgressAction(ProcessExecutionStep processStep, ProcessAction action)
+        //{
+        //    return Task.Run(() =>
+        //    {
+        //        using (var connection = new SqlConnection(_connectionString))
+        //        {
+        //            connection.Open();
+        //            var result = connection.Execute($@"UPDATE [ActiveProcessStep] SET [IsCompleted] = 1
+        //                                               WHERE [EntityId] = '{processStep.Entity.Id}' AND [ActionId] = '{action.Id}'");
 
-                    return result > 0;
-                }
-            });
-        }
+        //            return result > 0;
+        //        }
+        //    });
+        //}
 
-        public Task<bool> CreateProcessStep(ProcessExecutionStep entity)
-        {
-            return Task.Run(() =>
-            {
-                var result = false;
+        //public Task<bool> CreateProcessStep(ProcessExecutionStepDetail entity)
+        //{
+        //    return Task.Run(() =>
+        //    {
+        //        var result = false;
 
-                foreach (var transitionAction in entity.TransitionActions)
-                {
-                    using (var connection = new SqlConnection(_connectionString))
-                    {
-                        connection.Open();
-                        Guid userIdEmpty = Guid.Empty;
-                        var inserted = connection.Execute($@"
-                                    INSERT INTO [dbo].[ActiveProcessStep]
-                                               ([Id]
-                                               ,[ProcessId]
-                                               ,[EntityId]
-                                               ,[TransitionId]
-                                               ,[ActionId]
-                                               ,[IsCompleted]
-                                               ,[UserIdAction]
-                                               ,[EntityType])
-                                         VALUES
-                                               ('{Guid.NewGuid()}'
-                                               ,'{entity.Process.Id}'
-                                               ,'{entity.Entity.Id}'
-                                               ,'{transitionAction.Transition.Id}'
-                                               ,'{transitionAction.Action.Id}'
-                                               ,0
-                                               ,'{userIdEmpty}'
-                                               ,{entity.EntityType})
-                                    ");
+        //        foreach (var transitionAction in entity.Transition.Actions)
+        //        {
+        //            using (var connection = new SqlConnection(_connectionString))
+        //            {
+        //                connection.Open();
+        //                Guid userIdEmpty = Guid.Empty;
+        //                var inserted = connection.Execute($@"
+        //                            INSERT INTO [dbo].[ActiveProcessStep]
+        //                                       ([Id]
+        //                                       ,[ProcessId]
+        //                                       ,[EntityId]
+        //                                       ,[TransitionId]
+        //                                       ,[ActionId]
+        //                                       ,[IsCompleted]
+        //                                       ,[UserIdAction]
+        //                                       ,[EntityType])
+        //                                 VALUES
+        //                                       ('{Guid.NewGuid()}'
+        //                                       ,'{entity.Process.Id}'
+        //                                       ,'{entity.Entity.Id}'
+        //                                       ,'{transitionAction.Transition.Id}'
+        //                                       ,'{transitionAction.Action.Id}'
+        //                                       ,0
+        //                                       ,'{userIdEmpty}'
+        //                                       ,{entity.EntityType})
+        //                            ");
 
-                        result = inserted > 0;
-                    }
-                }
+        //                result = inserted > 0;
+        //            }
+        //        }
 
-                return result;
-            });
-        }
+        //        return result;
+        //    });
+        //}
 
         public Task<bool> RemoveActiveProcessStep(ProcessEntity entity)
         {
@@ -440,28 +440,33 @@ namespace SmartFlow.Core.Repositories
         {
             return Task.Run(() =>
             {
-                try
+                return new FuncResult
                 {
-                    using (var connection = new SqlConnection(_connectionString))
-                    {
-                        connection.Open();
+                    Success = true
+                };
 
-                        connection.Execute($@"exec [usp_ProcessStep_DeleteEntireFlow] '{processStep.Id}'");
+                //try
+                //{
+                //    using (var connection = new SqlConnection(_connectionString))
+                //    {
+                //        connection.Open();
 
-                        return new FuncResult
-                        {
-                            Success = true
-                        };
-                    }
-                }
-                catch (Exception e)
-                {
-                    return new FuncResult
-                    {
-                        Success = true,
-                        Message = e.Message
-                    };
-                }
+                //        connection.Execute($@"exec [usp_ProcessStep_DeleteEntireFlow] '{processStep.Id}'");
+
+                //        return new FuncResult
+                //        {
+                //            Success = true
+                //        };
+                //    }
+                //}
+                //catch (Exception e)
+                //{
+                //    return new FuncResult
+                //    {
+                //        Success = true,
+                //        Message = e.Message
+                //    };
+                //}
             });
         }
 

@@ -12,29 +12,34 @@ namespace SmartFlow.Core.Operators
 {
     public class SmartFlowOperator : ISmartFlowOperator
     {
-        private readonly List<Process> _flowHub;
+        private readonly List<Process> _processHub;
+        private readonly List<ProcessExecution> _processExecutionHub;
         private readonly LogRepository _logRepository;
         private readonly IProcessRepository _processRepository;
-        private readonly ProcessStepService _processStepService;
+        private readonly IProcessStepService _processStepService;
+        private readonly ProcessExecutionService _processExecutionService;
         private readonly ProcessHandlerFactory _processHandlerFactory;
 
         public SmartFlowOperator(LogRepository logRepository
             , IProcessRepository smartFlowRepository
             , ProcessHandlerFactory processHandlerFactory
-            , ProcessStepService processStepService)
+            , IProcessStepService processStepService
+            , ProcessExecutionService processExecutionService)
         {
-            _flowHub = new List<Process>();
             _logRepository = logRepository;
             _processRepository = smartFlowRepository;
             _processStepService = processStepService;
             _processHandlerFactory = processHandlerFactory;
+            _processHub = new List<Process>();
+            _processExecutionHub = new List<ProcessExecution>();
+            _processExecutionService = processExecutionService;
         }
 
         public Task<bool> RegisterFlow<TFlow>(TFlow smartFlow) where TFlow : Process, new()
         {
             return Task.Run(() =>
             {
-                _flowHub.Add(smartFlow);
+                _processHub.Add(smartFlow);
 
                 return true;
             });
@@ -58,16 +63,17 @@ namespace SmartFlow.Core.Operators
 
         public ProcessResult Fire(string smartFlowKey, int action, Dictionary<string, object> data)
         {
-            var process = _flowHub.Single(x => x.FlowKey.Equals(smartFlowKey));
+            var processExecution = _processExecutionHub.SingleOrDefault(x => x.Process.FlowKey.Equals(smartFlowKey));
 
             try
             {
-                if (process.ActiveProcessStep is null)
+                if (processExecution is null)
                 {
-                    process.ActiveProcessStep = _processStepService.InitializeActiveProcessStep(process);
+                    var process = _processHub.Single(x => x.FlowKey.Equals(smartFlowKey));
+                    processExecution = _processExecutionService.InitializeProcessExecution(process);
                 }
 
-                if (process.ActiveProcessStep is null)
+                if (processExecution.ActiveProcessStep is null)
                 {
                     return new ProcessResult
                     {
@@ -77,13 +83,11 @@ namespace SmartFlow.Core.Operators
 
                 var processStepContext = new ProcessStepContext
                 {
-                    ProcessStepDetail = process.ActiveProcessStep,
+                    ProcessStepDetail = processExecution.ActiveProcessStep.Details.Single(x=>x.Transition.Actions.FirstOrDefault().ActionTypeCode == action),
                     Data = data
                 };
 
-                var handlers = _processHandlerFactory.BuildHandlers(
-                    processStepContext
-                   );
+                var handlers = _processHandlerFactory.BuildHandlers(processStepContext);
 
                 var result = handlers.Peek().Handle(processStepContext);
 

@@ -15,18 +15,18 @@ namespace SmartFlow.Core.Exceptions
         {
             try
             {
-                   var handlerClassName = handlerName.Split('\\');
-                var log = new Log()
-                {
-                    Id = Guid.NewGuid(),
-                    ProcessStepId = processStep.Id,
-                    ProcessId = processStep.Process.Id,
-                    EntityId = processStep.Entity.Id,
-                    CreateDate = DateTime.Now,
-                    Type = 1,
-                    Data = message + "- Line: " + line,
-                    Handler = (handlerClassName.Length > 1 ? handlerClassName[handlerClassName.Length - 1] : handlerName)
-                };
+                //var handlerClassName = handlerName.Split('\\');
+                //var log = new Log()
+                //{
+                //    Id = Guid.NewGuid(),
+                //    ProcessStepId = processStep.Id,
+                //    ProcessId = processStep.Process.Id,
+                //    EntityId = processStep.Entity.Id,
+                //    CreateDate = DateTime.Now,
+                //    Type = 1,
+                //    Data = message + "- Line: " + line,
+                //    Handler = (handlerClassName.Length > 1 ? handlerClassName[handlerClassName.Length - 1] : handlerName)
+                //};
                 //logRepository.Create(log).GetAwaiter().GetResult();
             }
             catch (Exception) { }

@@ -23,14 +23,14 @@ namespace SmartFlow.Core.Handlers
         {
             try
             {
-                var result = ProcessRepository.CompleteProgressAction(processStepContext.ProcessStepDetail,
-                    processStepContext.ProcessStepDetail.TransitionActions
-                    .FirstOrDefault(x => x.Action.ActionTypeCode == processStepContext.ProcessStepInput.ActionCode)
-                    .Action).Result;
-                if (!result)
-                {
-                    throw new SmartFlowProcessExecutionException("Exception occured while completing progress action");
-                }
+                //var result = ProcessRepository.CompleteProgressAction(processStepContext.ProcessStepDetail,
+                //    processStepContext.ProcessStepDetail.TransitionActions
+                //    .FirstOrDefault(x => x.Action.ActionTypeCode == processStepContext.ProcessStepInput.ActionCode)
+                //    .Action).Result;
+                //if (!result)
+                //{
+                //    throw new SmartFlowProcessExecutionException("Exception occured while completing progress action");
+                //}
 
                 processStepContext.ProcessStepDetail.IsCompleted = true;
 

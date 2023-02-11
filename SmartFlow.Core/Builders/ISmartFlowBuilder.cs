@@ -7,11 +7,12 @@ namespace SmartFlow.Core.Builders
 {
     public interface ISmartFlowBuilder
     {
-        public List<ISmartFlowStepBuilder> StepBuilders { get; set; }
-        public ISmartFlowStepBuilder Initial();
-        public ISmartFlowStepBuilder NewStep();
-        public ISmartFlowStepBuilder NewStep(ISmartFlowStepBuilder builder);
-        public Process Build<T>(Action<ISmartFlowBuilder> action) where T : ISmartFlow, new();
-        public Process Build<T>() where T : ISmartFlow, new();
+        List<ISmartFlowStepBuilder> StepBuilders { get; set; }
+        ISmartFlowStepBuilder InitialStepBuilder { get; set; }
+        ISmartFlowStepBuilder Initial();
+        ISmartFlowStepBuilder NewStep();
+        ISmartFlowStepBuilder NewStep(ISmartFlowStepBuilder builder);
+        Process Build<T>(Action<ISmartFlowBuilder> action) where T : ISmartFlow, new();
+        Process Build<T>() where T : ISmartFlow, new();
     }
 }
