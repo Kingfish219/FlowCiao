@@ -18,7 +18,6 @@ namespace SmartFlow.Core.Operators
             Dictionary<string, object> parameters = null
         );
 
-        ProcessResult Fire(ISmartFlow smartFlow, int action);
-        ProcessResult Fire(string smartFlowKey, int action, Dictionary<string, object> data);
+        ProcessResult Fire(string smartFlowKey, int action, Dictionary<string, object> data = null);
     }
 }

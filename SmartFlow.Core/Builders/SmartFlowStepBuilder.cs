@@ -50,9 +50,9 @@ namespace SmartFlow.Core.Builders
             throw new NotImplementedException();
         }
 
-        public ISmartFlowStepBuilder OnEntry<A>() where A : IProcessActivity, new()
+        public ISmartFlowStepBuilder OnEntry<TA>() where TA : IProcessActivity, new()
         {
-            OnEntryActivty = (A)Activator.CreateInstance(typeof(A));
+            OnEntryActivty = (TA)Activator.CreateInstance(typeof(TA));
             var activity = new Activity
             {
                 ProcessActivityExecutor = OnEntryActivty
@@ -63,15 +63,15 @@ namespace SmartFlow.Core.Builders
             return this;
         }
 
-        public ISmartFlowStepBuilder OnExit<A>() where A : IProcessActivity, new()
+        public ISmartFlowStepBuilder OnExit<TA>() where TA : IProcessActivity, new()
         {
-            //OnExitActivity = (A)Activator.CreateInstance(typeof(A));
-            //var activity = new Activity
-            //{
-            //    ProcessActivityExecutor = OnEntryActivty
-            //};
-            //InitialState.Activities ??= new List<Activity>();
-            //InitialState.Activities.Add(activity);
+            OnExitActivity = (TA)Activator.CreateInstance(typeof(TA));
+            var activity = new Activity
+            {
+                ProcessActivityExecutor = OnExitActivity
+            };
+            InitialState.Activities ??= new List<Activity>();
+            InitialState.Activities.Add(activity);
 
             return this;
         }
@@ -90,7 +90,7 @@ namespace SmartFlow.Core.Builders
 
         public void Rollback()
         {
-
+            // ignored
         }
     }
 }

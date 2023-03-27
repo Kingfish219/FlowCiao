@@ -8,8 +8,7 @@ namespace SmartFlow.Core.Models
         public Guid Id { get; set; }
         public Process Process { get; set; }
         public ProcessExecutionState State { get; set; }
-        public List<ProcessExecutionStep> ProcessStepHistory { get; set; }
-        public ProcessExecutionStep ActiveProcessStep { get; set; }
+        public List<ProcessExecutionStep> ExecutionSteps { get; set; }
         public DateTime CreatedOn { get; set; }
 
         public enum ProcessExecutionState

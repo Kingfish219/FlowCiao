@@ -59,9 +59,11 @@ namespace SmartFlow.Core.Builders
                 }
 
                 var constructor = smartFlow.Construct<T>(this);
-                process = new Process();
+                process = new Process
+                {
+                    FlowKey = smartFlow.FlowKey
+                };
                 process.Transitions ??= new List<Transition>();
-
                 constructor.InitialStepBuilder.InitialState.IsInitial = true;
                 foreach (var allowedTransition in constructor.InitialStepBuilder.AllowedTransitions)
                 {

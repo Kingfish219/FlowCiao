@@ -13,6 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSmartFlow(settings =>
 {
+    settings.Persist();
     settings.UseSqlServer(configuration.GetConnectionString("SmartFlow"));
 });
 
@@ -39,8 +40,8 @@ var app = builder.Build();
 
 var stateMachineBuilder = app.Services.GetService<ISmartFlowBuilder>();
 var workflow = stateMachineBuilder?.Build<SampleStateMachine>();
-//var defaultWorkflowOperator = app.Services.GetService<ISmartFlowOperator>();
-//defaultWorkflowOperator?.ExecuteAsync(workflow);
+var defaultWorkflowOperator = app.Services.GetService<ISmartFlowOperator>();
+defaultWorkflowOperator?.Fire("Sample", 1);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

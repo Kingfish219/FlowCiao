@@ -56,12 +56,7 @@ namespace SmartFlow.Core.Operators
             throw new NotImplementedException();
         }
 
-        public ProcessResult Fire(ISmartFlow smartFlow, int action)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ProcessResult Fire(string smartFlowKey, int action, Dictionary<string, object> data)
+        public ProcessResult Fire(string smartFlowKey, int action, Dictionary<string, object> data = null)
         {
             var processExecution = _processExecutionHub.SingleOrDefault(x => x.Process.FlowKey.Equals(smartFlowKey));
 
@@ -73,7 +68,10 @@ namespace SmartFlow.Core.Operators
                     processExecution = _processExecutionService.InitializeProcessExecution(process);
                 }
 
-                if (processExecution.ActiveProcessStep is null)
+                var activeProcessStep = processExecution.ExecutionSteps
+                    .SingleOrDefault(x => !x.IsCompleted);
+
+                if (activeProcessStep is null)
                 {
                     return new ProcessResult
                     {
@@ -83,7 +81,7 @@ namespace SmartFlow.Core.Operators
 
                 var processStepContext = new ProcessStepContext
                 {
-                    ProcessStepDetail = processExecution.ActiveProcessStep.Details.Single(x=>x.Transition.Actions.FirstOrDefault().ActionTypeCode == action),
+                    ProcessStepDetail = activeProcessStep.Details.Single(x => x.Transition.Actions.FirstOrDefault().ActionTypeCode == action),
                     Data = data
                 };
 
