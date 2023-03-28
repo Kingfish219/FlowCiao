@@ -20,7 +20,6 @@ namespace SmartFlow.Core.Handlers
             ProcessStepContext processStepContext
             )
         {
-
             return BuildDefaultHandlers(processStepContext, _processRepository, _processStepService);
         }
 
@@ -33,8 +32,8 @@ namespace SmartFlow.Core.Handlers
             var actionActivityHandler = new ActionActivityHandler(processRepository, processStepManager);
             var transitionHandler = new TransitionHandler(processRepository, processStepManager);
             var transitionActivityHandler = new TransitionActivityHandler(processRepository, processStepManager);
-            var processStepFinalizerHandler = new ProcessStepFinalizerHandler(processRepository, processStepManager);
             var stateActivityHandler = new StateActivityHandler(processRepository, processStepManager);
+            var processStepFinalizerHandler = new ProcessStepFinalizerHandler(processRepository, processStepManager);
 
             actionHandler.SetNextHandler(actionActivityHandler);
 
@@ -47,25 +46,19 @@ namespace SmartFlow.Core.Handlers
             transitionActivityHandler.SetNextHandler(processStepFinalizerHandler);
             transitionActivityHandler.SetPreviousHandler(transitionHandler);
 
-            processStepFinalizerHandler.SetNextHandler(stateActivityHandler);
-            processStepFinalizerHandler.SetPreviousHandler(transitionActivityHandler);
+            stateActivityHandler.SetNextHandler(processStepFinalizerHandler);
+            stateActivityHandler.SetNextHandler(transitionActivityHandler);
+
+            processStepFinalizerHandler.SetPreviousHandler(stateActivityHandler);
 
             var queue = new Queue<WorkflowHandler>();
-
-            //if (processStepContext.EntityCommandType == EntityCommandType.Create)
-            //{
-            //    var entityCommandHandler = new EntityHandler(processRepository, processStepManager, entityRepository.Create);
-            //    entityCommandHandler.SetNextHandler(actionHandler);
-            //    actionHandler.SetPreviousHandler(entityCommandHandler);
-            //    queue.Enqueue(entityCommandHandler);
-            //}
 
             queue.Enqueue(actionHandler);
             queue.Enqueue(actionActivityHandler);
             queue.Enqueue(transitionHandler);
             queue.Enqueue(transitionActivityHandler);
-            queue.Enqueue(processStepFinalizerHandler);
             queue.Enqueue(stateActivityHandler);
+            queue.Enqueue(processStepFinalizerHandler);
 
             return queue;
         }

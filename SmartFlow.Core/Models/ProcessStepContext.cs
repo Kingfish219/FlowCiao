@@ -4,14 +4,14 @@ namespace SmartFlow.Core.Models
 {
     public class ProcessStepContext
     {
-        public ProcessExecutionStep ProcessStep { get; set; }
-        public ProcessExecutionStepDetail ProcessStepDetail { get; set; }
-        public ProcessUser ProcessUser { get; set; }
-        public ProcessStepInput ProcessStepInput { get; set; }
-        public ProcessEntity ProcessEntity { get; set; }
+        internal Process Process { get; set; }
+        internal ProcessExecutionStep ProcessStep { get; set; }
+        internal ProcessExecutionStepDetail ProcessStepDetail { get; set; }
+        internal ProcessUser ProcessUser { get; set; }
+        internal ProcessStepInput ProcessStepInput { get; set; }
         public Dictionary<string, object> Data { get; set; }
 
-        public ProcessStepContext()
+        internal ProcessStepContext()
         {
             Data = new Dictionary<string, object>();
         }

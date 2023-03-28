@@ -35,7 +35,7 @@ namespace SmartFlow.Core.Handlers
                 //    Id = processStepContext.ProcessStepDetail.Transition.Actions.FirstOrDefault().Transition.CurrentStateId
                 //};
 
-                var activities = ProcessRepository.GetStateActivities(processStepContext.ProcessStepDetail.Transition.From, new Group()).Result;
+                var activities = ProcessRepository.GetStateActivities(processStepContext.Process.State, new Group()).Result;
                 if (activities.Count > 0)
                 {
                     var types = AppDomain.CurrentDomain.GetAssemblies()
@@ -63,12 +63,7 @@ namespace SmartFlow.Core.Handlers
                     }
                 }
 
-                if (NextHandler is null)
-                {
-                    return result;
-                }
-
-                return NextHandler.Handle(processStepContext);
+                return NextHandler?.Handle(processStepContext) ?? result;
             }
             catch (Exception exception)
             {

@@ -11,21 +11,38 @@ namespace SmartFlow.Core.Services
     public class ProcessExecutionService
     {
         private readonly IProcessExecutionRepository _processExecutionRepository;
-        private readonly IProcessStepService _processStepService;
         private readonly SmartFlowSettings _smartFlowSettings;
 
         public ProcessExecutionService(IProcessExecutionRepository processExecutionRepository
-            , IProcessStepService processStepService
             , SmartFlowSettings smartFlowSettings)
         {
             _smartFlowSettings = smartFlowSettings;
-            _processStepService = processStepService;
             _processExecutionRepository = processExecutionRepository;
         }
 
         public async Task<List<ProcessExecution>> Get(Guid id = default, Guid processId = default)
         {
             return await _processExecutionRepository.Get(id, processId);
+        }
+
+        private ProcessExecutionStep GenerateProcessStep(Process process, State state)
+        {
+            var processStep = new ProcessExecutionStep
+            {
+                CreatedOn = DateTime.Now,
+                Details = process.Transitions.Where(x => x.From.Id.Equals(state.Id))
+                    .Select(transition =>
+                    {
+                        return new ProcessExecutionStepDetail
+                        {
+                            Id = Guid.NewGuid(),
+                            CreatedOn = DateTime.Now,
+                            Transition = transition
+                        };
+                    }).ToList()
+            };
+
+            return processStep;
         }
 
         public async Task<ProcessExecution> InitializeProcessExecution(Process process)
@@ -38,9 +55,31 @@ namespace SmartFlow.Core.Services
                 State = ProcessExecution.ProcessExecutionState.Initial,
                 ExecutionSteps = new List<ProcessExecutionStep>
                 {
-                    _processStepService
-                        .GenerateProcessStep(process,
+                    GenerateProcessStep(process,
                             process.Transitions.First(x => x.From.IsInitial).From)
+                }
+            };
+
+            if (_smartFlowSettings.Persist)
+            {
+                await Modify(processExecution);
+            }
+
+            return processExecution;
+        }
+
+        public async Task<ProcessExecution> FinalizeProcessExecutionStep(Process process)
+        {
+            var processExecution = new ProcessExecution
+            {
+                Id = Guid.NewGuid(),
+                Process = process,
+                CreatedOn = DateTime.Now,
+                State = ProcessExecution.ProcessExecutionState.Initial,
+                ExecutionSteps = new List<ProcessExecutionStep>
+                {
+                    GenerateProcessStep(process,
+                        process.Transitions.First(x => x.From.IsInitial).From)
                 }
             };
 

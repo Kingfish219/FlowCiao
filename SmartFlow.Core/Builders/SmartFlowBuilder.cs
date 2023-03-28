@@ -112,6 +112,7 @@ namespace SmartFlow.Core.Builders
                     }
                 }
 
+                process.State = constructor.InitialStepBuilder.InitialState;
                 _smartFlowOperator.RegisterFlow(process).GetAwaiter().GetResult();
                 var result = _processService.Modify(process).GetAwaiter().GetResult();
                 if (result == default)

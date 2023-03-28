@@ -58,7 +58,9 @@ namespace SmartFlow.Core.Operators
             throw new NotImplementedException();
         }
 
-        public ProcessResult Fire(string smartFlowKey, int action, Dictionary<string, object> data = null)
+        public ProcessResult Fire(string smartFlowKey,
+            int action,
+            Dictionary<string, object> data = null)
         {
             var processExecution = _processExecutionHub.SingleOrDefault(x => x.Process?.FlowKey?.Equals(smartFlowKey) ?? false);
 

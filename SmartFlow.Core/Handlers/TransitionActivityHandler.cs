@@ -1,5 +1,7 @@
 ﻿using SmartFlow.Core.Models;
 using System;
+using System.Linq;
+using SmartFlow.Core.Exceptions;
 using SmartFlow.Core.Persistence.Interfaces;
 
 namespace SmartFlow.Core.Handlers
@@ -11,55 +13,45 @@ namespace SmartFlow.Core.Handlers
         {
         }
 
-        //public TransitionActivityHandler(IProcessRepository processRepository, int actionCode
-        //    , string connectionString, LogRepository logRepository) 
-        //    : base(processRepository)
-        //{
-        //    _actionCode = actionCode;
-        //    _connectionString = connectionString;
-        //    _processRepository = processRepository;
-        //    _logRepository = logRepository;
-        //}
-
         public override ProcessResult Handle(ProcessStepContext processStepContext)
         {
             try
             {
-                var result = new ProcessResult
-                {
-                    Status = ProcessResultStatus.Completed
-                };
+                //var result = new ProcessResult
+                //{
+                //    Status = ProcessResultStatus.Completed
+                //};
 
                 //var currentTransition = processStepContext.ProcessStepDetail.TransitionActions.FirstOrDefault().Transition;
-                //var activities = ProcessRepository.GetTransitionActivities(currentTransition).Result;
+                var activities = ProcessRepository.GetTransitionActivities(processStepContext.ProcessStepDetail.Transition).Result;
+                if (activities.Count > 0)
+                {
+                    var types = AppDomain.CurrentDomain.GetAssemblies()
+                        .SelectMany(type => type.GetTypes())
+                        .Where(p => typeof(Activity).IsAssignableFrom(p) && !p.IsInterface && !p.IsAbstract && p.BaseType == typeof(Activity));
 
-                //if (activities.Count > 0)
-                //{
-                //    var types = AppDomain.CurrentDomain.GetAssemblies()
-                //        .SelectMany(type => type.GetTypes())
-                //        .Where(p => typeof(Activity).IsAssignableFrom(p) && !p.IsInterface && !p.IsAbstract && p.BaseType == typeof(Activity));
+                    foreach (var type in types)
+                    {
+                        var activity = (IProcessActivity)Activator.CreateInstance(type, processStepContext);
+                        if (activity is null ||
+                            !activities.Exists(x => x.ActivityTypeCode == ((Activity)activity).ActivityTypeCode))
+                        {
+                            continue;
+                        }
 
-                //    foreach (var type in types)
-                //    {
-                //        var activity = (IProcessActivity)Activator.CreateInstance(type, processStepContext);
-                //        if (!activities.Exists(x => x.ActivityTypeCode == ((Activity)activity).ActivityTypeCode))
-                //        {
-                //            continue;
-                //        }
+                        var result = activity.Execute();
+                        if (result.Status != ProcessResultStatus.Completed && result.Status != ProcessResultStatus.SetOwner)
+                        {
+                            throw new SmartFlowProcessExecutionException("Exception occured while invoking activities" + result.Message);
+                        }
 
-                //        result = activity.Execute();
-                //        if (result.Status != ProcessResultStatus.Completed && result.Status != ProcessResultStatus.SetOwner)
-                //        {
-                //            throw new SmartFlowProcessExecutionException("Exception occured while invoking activities" + result.Message);
-                //        }
+                        /// log to ProcessStepHistoryActivity
 
-                //        /// log to ProcessStepHistoryActivity
-
-                //        //var currentActivity = activities.Find(a => a.ActivityTypeCode == ((Activity)activity).ActivityTypeCode);
-                //        //Guid LastProcessStepHistoryItemId = ProcessRepository.GetLastProcessStepHistoryItem(processStepContext.ProcessStepDetail.Entity.Id).Result.Id;
-                //        //ProcessRepository.AddProcessStepHistoryActivity(new ProcessStepHistoryActivity { ActivityId = currentActivity.Id, ActivityName = currentActivity.Name, StepType = 2, ProcessStepHistoryId = LastProcessStepHistoryItemId });
-                //    }
-                //}
+                        //var currentActivity = activities.Find(a => a.ActivityTypeCode == ((Activity)activity).ActivityTypeCode);
+                        //Guid LastProcessStepHistoryItemId = ProcessRepository.GetLastProcessStepHistoryItem(processStepContext.ProcessStepDetail.Entity.Id).Result.Id;
+                        //ProcessRepository.AddProcessStepHistoryActivity(new ProcessStepHistoryActivity { ActivityId = currentActivity.Id, ActivityName = currentActivity.Name, StepType = 2, ProcessStepHistoryId = LastProcessStepHistoryItemId });
+                    }
+                }
 
                 //if (NextHandler is null)
                 //{
