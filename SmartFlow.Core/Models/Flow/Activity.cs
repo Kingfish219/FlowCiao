@@ -1,5 +1,6 @@
 ﻿
 using System;
+using Newtonsoft.Json;
 
 namespace SmartFlow.Core.Models
 {
@@ -9,6 +10,7 @@ namespace SmartFlow.Core.Models
         public int ActivityTypeCode { get; set; }
         public Guid GroupId { get; set; }
         public string Name { get; set; }
+        [JsonIgnore]
         public IProcessActivity ProcessActivityExecutor { get; set; }
     }
 

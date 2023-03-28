@@ -1,8 +1,8 @@
 ﻿using SmartFlow.Core.Exceptions;
-using SmartFlow.Core.Repositories;
 using System.Threading.Tasks;
 using System;
 using SmartFlow.Core.Models;
+using SmartFlow.Core.Persistence.SqlServer.Repositories;
 
 namespace SmartFlow.Core.Services
 {

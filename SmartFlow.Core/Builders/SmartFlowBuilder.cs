@@ -5,6 +5,7 @@ using SmartFlow.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SmartFlow.Core.Operators;
 
 namespace SmartFlow.Core.Builders
 {
@@ -13,11 +14,14 @@ namespace SmartFlow.Core.Builders
         public List<ISmartFlowStepBuilder> StepBuilders { get; set; }
         public ISmartFlowStepBuilder InitialStepBuilder { get; set; }
         private readonly ProcessService _processService;
+        private readonly ISmartFlowOperator _smartFlowOperator;
 
-        public SmartFlowBuilder(ProcessService processService)
+        public SmartFlowBuilder(ProcessService processService,
+            ISmartFlowOperator smartFlowOperator)
         {
             StepBuilders = new List<ISmartFlowStepBuilder>();
             _processService = processService;
+            _smartFlowOperator = smartFlowOperator;
         }
 
         public ISmartFlowStepBuilder Initial()
@@ -108,6 +112,7 @@ namespace SmartFlow.Core.Builders
                     }
                 }
 
+                _smartFlowOperator.RegisterFlow(process).GetAwaiter().GetResult();
                 var result = _processService.Modify(process).GetAwaiter().GetResult();
                 if (result == default)
                 {

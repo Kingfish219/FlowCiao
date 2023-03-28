@@ -8,7 +8,7 @@ namespace SmartFlow.Core.Models
         public ProcessExecutionStepDetail ProcessStepDetail { get; set; }
         public ProcessUser ProcessUser { get; set; }
         public ProcessStepInput ProcessStepInput { get; set; }
-        public EntityCommandType EntityCommandType { get; set; }
+        public ProcessEntity ProcessEntity { get; set; }
         public Dictionary<string, object> Data { get; set; }
 
         public ProcessStepContext()

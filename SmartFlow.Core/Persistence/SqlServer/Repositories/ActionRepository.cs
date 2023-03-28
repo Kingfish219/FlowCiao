@@ -1,35 +1,36 @@
-﻿using Dapper;
-using SmartFlow.Core.Db.SqlServer;
-using SmartFlow.Core.Models;
-using System;
+﻿using System;
 using System.Data;
-using System.Data.SqlClient;
 using System.Threading.Tasks;
+using Dapper;
+using Microsoft.Data.SqlClient;
+using SmartFlow.Core.Models;
 
-namespace SmartFlow.Core.Repositories
+namespace SmartFlow.Core.Persistence.SqlServer.Repositories
 {
-    public class ActivityRepository
+    public class ActionRepository
     {
         private readonly string _connectionString;
 
-        public ActivityRepository(SmartFlowSettings settings)
+        public ActionRepository(SmartFlowSettings settings)
         {
             _connectionString = settings.ConnectionString;
         }
 
-        public Task<Guid> Modify(Activity entity)
+        public Task<Guid> Modify(ProcessAction entity)
         {
             return Task.Run(() =>
             {
                 var toInsert = new
                 {
                     Id = entity.Id == default ? Guid.NewGuid() : entity.Id,
-                    Executor = entity.ProcessActivityExecutor.ToString()
+                    entity.Name,
+                    entity.ActionTypeCode,
+                    entity.ProcessId
                 };
 
                 using var connection = new SqlConnection(_connectionString);
                 connection.Open();
-                connection.Execute(ConstantsProvider.Usp_Activity_Modify, toInsert, commandType: CommandType.StoredProcedure);
+                connection.Execute(ConstantsProvider.Usp_Action_Modify, toInsert, commandType: CommandType.StoredProcedure);
                 entity.Id = toInsert.Id;
 
                 return entity.Id;

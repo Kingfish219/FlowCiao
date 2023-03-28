@@ -1,7 +1,7 @@
 ﻿using SmartFlow.Core.Models;
-using SmartFlow.Core.Repositories;
 using System.Threading.Tasks;
 using System;
+using SmartFlow.Core.Persistence.SqlServer.Repositories;
 
 namespace SmartFlow.Core.Services
 {

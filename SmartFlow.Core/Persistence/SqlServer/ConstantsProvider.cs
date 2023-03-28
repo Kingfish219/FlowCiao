@@ -1,5 +1,5 @@
 ﻿
-namespace SmartFlow.Core.Db.SqlServer
+namespace SmartFlow.Core.Persistence.SqlServer
 {
     internal class ConstantsProvider
     {
@@ -11,5 +11,6 @@ namespace SmartFlow.Core.Db.SqlServer
         public static readonly string Usp_TransitionActivity_Modify = "[SmartFlow].[usp_TransitionActivity_Modfiy]";
         public static readonly string Usp_Process_Modify = "[SmartFlow].[usp_Process_Modify]";
         public static readonly string Usp_Action_Modify = "[SmartFlow].[usp_Action_Modify]";
+        public static readonly string Usp_ProcessExecution_Modify = "[SmartFlow].[usp_ProcessExecution_Modify]";
     }
 }

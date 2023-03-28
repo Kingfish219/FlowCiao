@@ -28,8 +28,6 @@
     <None Remove="Persistence\SqlServer\Migration\01.Tables\0012-Create TransitionActivity-UP.sql" />
     <None Remove="Persistence\SqlServer\Migration\01.Tables\0013-Create StateActivity-UP.sql" />
     <None Remove="Persistence\SqlServer\Migration\01.Tables\0015-Create ProcessExecution-UP.sql" />
-    <None Remove="Persistence\SqlServer\Migration\01.Tables\0016-Create ProcessExecutionStep-UP.sql" />
-    <None Remove="Persistence\SqlServer\Migration\01.Tables\0017-Create ProcessExecutionStepDetail-UP.sql" />
     <None Remove="Persistence\SqlServer\Migration\02.Stored Procedures\0000-Create usp_State_Modify-UP.sql" />
     <None Remove="Persistence\SqlServer\Migration\02.Stored Procedures\0001-Create usp_Transition_Modify-UP.sql" />
     <None Remove="Persistence\SqlServer\Migration\02.Stored Procedures\0002-Create usp_Process_Modify-UP.sql" />
@@ -38,11 +36,7 @@
     <None Remove="Persistence\SqlServer\Migration\02.Stored Procedures\0005-Create usp_TransitionActivity_Modify-UP.sql" />
     <None Remove="Persistence\SqlServer\Migration\02.Stored Procedures\0006-Create usp_StateActivity_Modify-UP.sql" />
     <None Remove="Persistence\SqlServer\Migration\02.Stored Procedures\0007-Create usp_Activity_Modify-UP.sql" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Persistence\SqlServer\Migration\01.Tables\0016-Create ProcessExecutionStep-UP.sql" />
-    <EmbeddedResource Include="Persistence\SqlServer\Migration\01.Tables\0017-Create ProcessExecutionStepDetail-UP.sql" />
+    <None Remove="Persistence\SqlServer\Migration\02.Stored Procedures\0008-Create usp_ProcessExecution_Modify-UP.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -86,6 +80,7 @@
     <EmbeddedResource Include="Persistence\SqlServer\Migration\02.Stored Procedures\0005-Create usp_TransitionActivity_Modify-UP.sql" />
     <EmbeddedResource Include="Persistence\SqlServer\Migration\02.Stored Procedures\0007-Create usp_Activity_Modify-UP.sql" />
     <EmbeddedResource Include="Persistence\SqlServer\Migration\02.Stored Procedures\0006-Create usp_StateActivity_Modify-UP.sql" />
+    <EmbeddedResource Include="Persistence\SqlServer\Migration\02.Stored Procedures\0008-Create usp_ProcessExecution_Modify-UP.sql" />
   </ItemGroup>
 
   <ItemGroup>
@@ -95,6 +90,7 @@
     <PackageReference Include="dbup-core" Version="5.0.10" />
     <PackageReference Include="dbup-sqlserver" Version="5.0.8" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
   </ItemGroup>
 

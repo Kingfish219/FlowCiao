@@ -1,7 +1,7 @@
-﻿using SmartFlow.Core.Models;
-using System;
+﻿using System;
+using SmartFlow.Core.Models;
 
-namespace SmartFlow.Core.Repositories
+namespace SmartFlow.Core.Persistence.Interfaces
 {
     public interface IEntityRepository
     {

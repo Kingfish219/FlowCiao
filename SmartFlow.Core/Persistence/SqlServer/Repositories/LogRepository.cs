@@ -1,10 +1,11 @@
-﻿using Dapper.Contrib.Extensions;
-using SmartFlow.Core.Models;
-using System;
+﻿using System;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
+using Dapper.Contrib.Extensions;
+using SmartFlow.Core.Models;
+using SmartFlow.Core.Persistence.Interfaces;
 
-namespace SmartFlow.Core.Repositories
+namespace SmartFlow.Core.Persistence.SqlServer.Repositories
 {
     public class LogRepository : ILogRepository
     {

@@ -7,6 +7,7 @@ CREATE TABLE [SmartFlow].[ProcessExecution]
     [ProcessId] [UNIQUEIDENTIFIER] NOT NULL,
     [State] [INT] NULL,
     [CreatedOn] [DATETIME] NOT NULL,
+    [Progress] [NVARCHAR](MAX) NULL,
     CONSTRAINT [PK_ProcessExecution]
         PRIMARY KEY CLUSTERED ([Id] ASC)
 ) ON [PRIMARY]

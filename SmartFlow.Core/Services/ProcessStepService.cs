@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using SmartFlow.Core.Exceptions;
 using SmartFlow.Core.Models;
-using SmartFlow.Core.Repositories;
+using SmartFlow.Core.Persistence.Interfaces;
 
 namespace SmartFlow.Core.Services
 {
@@ -20,7 +18,6 @@ namespace SmartFlow.Core.Services
         {
             var processStep = new ProcessExecutionStep
             {
-                Process = process,
                 CreatedOn = DateTime.Now,
                 Details = process.Transitions.Where(x => x.From.Id.Equals(state.Id))
                     .Select(transition =>

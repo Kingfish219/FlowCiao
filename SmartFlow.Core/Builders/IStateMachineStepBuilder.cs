@@ -1,8 +1,4 @@
-﻿using SmartFlow.Core.Models;
-using System;
-using System.Collections.Generic;
-
-namespace SmartFlow.Core.Builders
+﻿namespace SmartFlow.Core.Builders
 {
     //public interface IStateMachineStepBuilder
     //{

@@ -5,7 +5,6 @@ namespace SmartFlow.Core.Models
 {
     public class ProcessExecutionStep
     {
-        public Process Process { get; set; }
         public List<ProcessExecutionStepDetail> Details { get; set; }
         public bool IsCompleted { get; set; }
         public DateTime CreatedOn { get; set; }

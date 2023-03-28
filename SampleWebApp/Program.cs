@@ -13,7 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSmartFlow(settings =>
 {
-    settings.Persist();
+    settings.PersistFlow();
     settings.UseSqlServer(configuration.GetConnectionString("SmartFlow"));
 });
 

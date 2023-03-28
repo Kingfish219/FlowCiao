@@ -1,9 +1,4 @@
-﻿
-using SmartFlow.Core.Interfaces;
-using System;
-using System.Collections.Generic;
-
-namespace SmartFlow.Core.Builders
+﻿namespace SmartFlow.Core.Builders
 {
     //public interface IStateMachineBuilder : ISmartFlowBuilder
     //{

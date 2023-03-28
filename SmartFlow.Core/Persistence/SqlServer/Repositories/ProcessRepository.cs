@@ -1,17 +1,16 @@
-﻿using Dapper;
-using SmartFlow.Core.Db.SqlServer;
-using SmartFlow.Core.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
-using static Dapper.SqlMapper;
+using Dapper;
+using SmartFlow.Core.Models;
+using SmartFlow.Core.Persistence.Interfaces;
 using Activity = SmartFlow.Core.Models.Activity;
 using Process = SmartFlow.Core.Models.Process;
 
-namespace SmartFlow.Core.Repositories
+namespace SmartFlow.Core.Persistence.SqlServer.Repositories
 {
     public class ProcessRepository : IProcessRepository
     {

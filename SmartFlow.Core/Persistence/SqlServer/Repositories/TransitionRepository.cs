@@ -1,12 +1,11 @@
-﻿using SmartFlow.Core.Models;
-using System.Threading.Tasks;
-using System;
+﻿using System;
 using System.Data;
+using System.Threading.Tasks;
 using Dapper;
 using Microsoft.Data.SqlClient;
-using SmartFlow.Core.Db.SqlServer;
+using SmartFlow.Core.Models;
 
-namespace SmartFlow.Core.Repositories
+namespace SmartFlow.Core.Persistence.SqlServer.Repositories
 {
     public class TransitionRepository
     {

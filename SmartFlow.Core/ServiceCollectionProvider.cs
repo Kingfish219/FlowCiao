@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SmartFlow.Core.Models;
-using SmartFlow.Core.Repositories;
 using SmartFlow.Core.Services;
 using System;
 using SmartFlow.Core.Builders;
@@ -8,6 +7,8 @@ using SmartFlow.Core.Operators;
 using SmartFlow.Core.Persistence.SqlServer;
 using SmartFlow.Core.Exceptions;
 using SmartFlow.Core.Handlers;
+using SmartFlow.Core.Persistence.Interfaces;
+using SmartFlow.Core.Persistence.SqlServer.Repositories;
 
 namespace SmartFlow.Core
 {
@@ -42,6 +43,7 @@ namespace SmartFlow.Core
             services.AddTransient<ActionRepository>();
             services.AddTransient<ActivityRepository>();
             services.AddTransient<LogRepository>();
+            services.AddTransient<IProcessExecutionRepository, ProcessExecutionRepository>();
             services.AddTransient<IProcessRepository, ProcessRepository>();
         }
 
@@ -52,6 +54,7 @@ namespace SmartFlow.Core
             services.AddTransient<TransitionService>();
             services.AddTransient<StateService>();
             services.AddTransient<IProcessStepService, ProcessStepService>();
+            services.AddTransient<ProcessExecutionService>();
             services.AddTransient<ProcessHandlerFactory>();
             services.AddTransient<ProcessExecutionService>();
         }

@@ -1,21 +1,23 @@
-﻿using SmartFlow.Core.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SmartFlow.Core.Interfaces;
+using SmartFlow.Core.Models;
+using ProcessAction = SmartFlow.Core.Models.ProcessAction;
 
-namespace SmartFlow.Core.Repositories
+namespace SmartFlow.Core.Persistence.Interfaces
 {
-    public interface IProcessRepository
+    public interface IStateMachineRepository
     {
         Task<List<TransitionAction>> GetStateTransitions(Process process, State state);
         Task<List<TransitionAction>> GetActiveTransitions(ProcessEntity entityp, Guid ProcessId);
         Task<List<Activity>> GetStateActivities(State state, Group group);
         Task<bool> RemoveActiveProcessStep(ProcessEntity entity);
         Task<Process> GetProcess(Guid userId, Guid requestTypeId);
-        Task<List<Process>> Get(Guid processId = default, string key = default);
+        Task<ISmartFlow> GetProcess(Guid processId = default, string key = default);
         Task<Guid> Create(Process entity);
-        //Task<bool> CreateProcessStep(ProcessExecutionStep entity);
-        //Task<bool> CompleteProgressAction(ProcessExecutionStepDetail processStep, ProcessAction action);
+        Task<bool> CreateProcessStep(ProcessExecutionStep entity);
+        Task<bool> CompleteProgressAction(ProcessExecutionStep processStep, ProcessAction action);
         Task<State> GetState(Guid stateId);
         Task<ProcessExecutionStep> GetActiveProcessStep(ProcessEntity entity);
         Task<bool> SetToHistory(Guid EntityId);

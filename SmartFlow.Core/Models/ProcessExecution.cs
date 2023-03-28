@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace SmartFlow.Core.Models
 {
@@ -10,9 +11,15 @@ namespace SmartFlow.Core.Models
         public ProcessExecutionState State { get; set; }
         public List<ProcessExecutionStep> ExecutionSteps { get; set; }
         public DateTime CreatedOn { get; set; }
+        public string Progress
+        {
+            get => JsonConvert.SerializeObject(ExecutionSteps);
+            set => ExecutionSteps = JsonConvert.DeserializeObject<List<ProcessExecutionStep>>(value);
+        }
 
         public enum ProcessExecutionState
         {
+            Initial,
             Pending,
             Running,
             Suspended,

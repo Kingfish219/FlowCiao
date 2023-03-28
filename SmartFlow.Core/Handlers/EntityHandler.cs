@@ -1,6 +1,6 @@
 ﻿using SmartFlow.Core.Models;
-using SmartFlow.Core.Repositories;
 using System;
+using SmartFlow.Core.Persistence.Interfaces;
 
 namespace SmartFlow.Core.Handlers
 {

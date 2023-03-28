@@ -1,8 +1,8 @@
 ﻿using SmartFlow.Core.Interfaces;
 using SmartFlow.Core.Models;
-using SmartFlow.Core.Repositories;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SmartFlow.Core.Persistence.Interfaces;
 
 namespace SmartFlow.Core.Operators
 {
