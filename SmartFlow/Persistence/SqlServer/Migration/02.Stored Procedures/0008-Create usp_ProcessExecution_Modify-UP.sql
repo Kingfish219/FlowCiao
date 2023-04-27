@@ -1,6 +1,6 @@
 ﻿CREATE OR ALTER PROCEDURE [SmartFlow].[usp_ProcessExecution_Modify]
 	@Id UNIQUEIDENTIFIER,
-	@State INT= NULL,
+	@ExecutionState INT= NULL,
 	@CreatedOn DATETIME= NULL,
 	@ProcessId UNIQUEIDENTIFIER= NULL,
 	@Progress NVARCHAR(MAX)= NULL
@@ -19,14 +19,14 @@ BEGIN
 		(
 		    [Id],
 		    [ProcessId],
-		    [State],
+		    [ExecutionState],
 		    [CreatedOn],
 		    [Progress]
 		)
 		VALUES
 		(   @Id,      -- Id - uniqueidentifier
 		    @ProcessId,      -- ProcessId - uniqueidentifier
-		    @State,         -- State - int
+		    @ExecutionState,         -- ExecutionState - int
 		    @CreatedOn, -- CreatedOn - datetime
 		    @Progress        -- Progress - nvarchar(max)
 		    )

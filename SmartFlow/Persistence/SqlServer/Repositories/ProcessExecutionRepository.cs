@@ -24,11 +24,10 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
         {
             return Task.Run(() =>
             {
-                using (var connection = new SqlConnection(_connectionString))
-                {
-                    connection.Open();
+                using var connection = new SqlConnection(_connectionString);
 
-                    var query = @"SELECT pe.*,
+                connection.Open();
+                var query = @"SELECT pe.*,
 	                                   p.Id ProcessId,
 	                                   p.FlowKey
                                 FROM [SmartFlow].ProcessExecution pe
@@ -36,18 +35,17 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
                                 WHERE
                                   (pe.[Id] = @Id OR ISNULL(@Id, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER)) AND
                                   (pe.[ProcessId] = @ProcessId OR ISNULL(@ProcessId, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER))";
+                var result = connection.Query<ProcessExecution, Process, ProcessExecution>(query,
+                    (processExecution, process) =>
+                    {
+                        processExecution.Process = process;
 
-                    var result = connection.Query<ProcessExecution, Process, ProcessExecution>(query,
-                        (processExecution, process) =>
-                        {
-                            processExecution.Process = process;
+                        return processExecution;
+                    },
+                    splitOn: "ProcessId",
+                    param: new { ProcessId = processId, Id = id }).ToList();
 
-                            return processExecution;
-                        },
-                        splitOn: "ProcessId",
-                        param: new { ProcessId = processId, Id = id }).ToList();
-                    return result;
-                }
+                return result;
             });
         }
 
@@ -55,6 +53,8 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
         {
             return Task.Run(() =>
             {
+                using var connection = new SqlConnection(_connectionString);
+
                 var toModify = new
                 {
                     Id = entity.Id == default ? Guid.NewGuid() : entity.Id,
@@ -64,7 +64,6 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
                     entity.Progress
                 };
 
-                using var connection = new SqlConnection(_connectionString);
                 connection.Open();
                 connection.Execute(ConstantsProvider.Usp_ProcessExecution_Modify, toModify, commandType: CommandType.StoredProcedure);
                 entity.Id = toModify.Id;

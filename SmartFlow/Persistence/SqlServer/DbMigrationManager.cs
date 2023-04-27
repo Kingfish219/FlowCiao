@@ -8,7 +8,7 @@ namespace SmartFlow.Persistence.SqlServer
     public class DbMigrationManager
     {
         private readonly string _connectionString;
-        private const string ScriptsPath = @"SmartFlow.Core.Persistence.SqlServer.Migration";
+        private const string ScriptsPath = @"SmartFlow.Persistence.SqlServer.Migration";
 
         public DbMigrationManager(SmartFlowSettings settings)
         {

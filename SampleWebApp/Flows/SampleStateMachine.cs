@@ -18,8 +18,6 @@ namespace SampleWebApp.Flows
                     .OnEntry<HelloWorld>()
                 .NewStep().From(new State(2, "Second"))
                     .Allow(new State(4, "Fourth"), new ProcessAction(3))
-                //  .Allow(new State(5, "Fifth"), new ProcessAction(4))
-                //  .OnEntry<HelloWorld>()
                     .OnExit<GoodbyeWorld>();
                 ;
 
