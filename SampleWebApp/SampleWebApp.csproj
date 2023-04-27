@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SmartFlow.Core\SmartFlow.Core.csproj" />
+    <ProjectReference Include="..\SmartFlow\SmartFlow.csproj" />
   </ItemGroup>
 
 </Project>

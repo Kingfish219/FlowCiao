@@ -1,5 +1,5 @@
-﻿using SmartFlow.Core;
-using SmartFlow.Core.Models;
+﻿using SmartFlow.Interfaces;
+using SmartFlow.Models;
 
 namespace SampleWebApp.Activities
 {

@@ -1,7 +1,7 @@
 ﻿using SampleWebApp.Activities;
-using SmartFlow.Core.Builders;
-using SmartFlow.Core.Interfaces;
-using SmartFlow.Core.Models;
+using SmartFlow.Builders;
+using SmartFlow.Interfaces;
+using SmartFlow.Models.Flow;
 
 namespace SampleWebApp.Flows
 {

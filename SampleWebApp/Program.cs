@@ -1,7 +1,7 @@
 using SampleWebApp.Flows;
-using SmartFlow.Core;
-using SmartFlow.Core.Builders;
-using SmartFlow.Core.Operators;
+using SmartFlow;
+using SmartFlow.Builders;
+using SmartFlow.Operators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +13,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSmartFlow(settings =>
 {
-    settings.PersistFlow();
+    settings.Persist();
     settings.UseSqlServer(configuration.GetConnectionString("SmartFlow"));
 });
 
