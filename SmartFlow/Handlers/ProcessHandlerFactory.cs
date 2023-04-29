@@ -8,33 +8,33 @@ namespace SmartFlow.Handlers
     public class ProcessHandlerFactory
     {
         private readonly IProcessRepository _processRepository;
-        private readonly IProcessStepService _processStepService;
+        private readonly IProcessService _processService;
 
         public ProcessHandlerFactory(IProcessRepository processRepository
-            , IProcessStepService processStepService)
+            , IProcessService processService)
         {
             _processRepository = processRepository;
-            _processStepService = processStepService;
+            _processService = processService;
         }
 
         internal Queue<WorkflowHandler> BuildHandlers(
             ProcessStepContext processStepContext
             )
         {
-            return BuildDefaultHandlers(processStepContext, _processRepository, _processStepService);
+            return BuildDefaultHandlers(processStepContext, _processRepository, _processService);
         }
 
         private Queue<WorkflowHandler> BuildDefaultHandlers(
              ProcessStepContext processStepContext
             , IProcessRepository processRepository
-            , IProcessStepService processStepManager)
+            , IProcessService processService)
         {
-            var actionHandler = new ActionHandler(processRepository, processStepManager);
-            var actionActivityHandler = new ActionActivityHandler(processRepository, processStepManager);
-            var transitionHandler = new TransitionHandler(processRepository, processStepManager);
-            var transitionActivityHandler = new TransitionActivityHandler(processRepository, processStepManager);
-            var stateActivityHandler = new StateActivityHandler(processRepository, processStepManager);
-            var processStepFinalizerHandler = new ProcessStepFinalizerHandler(processRepository, processStepManager);
+            var actionHandler = new ActionHandler(processRepository, processService);
+            var actionActivityHandler = new ActionActivityHandler(processRepository, processService);
+            var transitionHandler = new TransitionHandler(processRepository, processService);
+            var transitionActivityHandler = new TransitionActivityHandler(processRepository, processService);
+            var stateActivityHandler = new StateActivityHandler(processRepository, processService);
+            var processStepFinalizerHandler = new ProcessStepFinalizerHandler(processRepository, processService);
 
             actionHandler.SetNextHandler(actionActivityHandler);
 

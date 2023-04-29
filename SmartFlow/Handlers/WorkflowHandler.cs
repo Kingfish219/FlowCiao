@@ -10,12 +10,12 @@ namespace SmartFlow.Handlers
         internal IProcessHandler PreviousHandler { get; private set; }
 
         protected readonly IProcessRepository ProcessRepository;
-        protected readonly IProcessStepService ProcessStepManager;
+        protected readonly IProcessService ProcessService;
 
-        internal WorkflowHandler(IProcessRepository processRepository, IProcessStepService processStepManager)
+        internal WorkflowHandler(IProcessRepository processRepository, IProcessService processStepManager)
         {
             ProcessRepository = processRepository;
-            ProcessStepManager = processStepManager;
+            ProcessService = processStepManager;
         }
 
         public void SetNextHandler(IProcessHandler handler)

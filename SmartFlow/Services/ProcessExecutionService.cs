@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using SmartFlow.Exceptions;
 using SmartFlow.Models;
 using SmartFlow.Models.Flow;
 using SmartFlow.Persistence.Interfaces;
+using Process = SmartFlow.Models.Flow.Process;
 
 namespace SmartFlow.Services
 {
@@ -84,6 +86,19 @@ namespace SmartFlow.Services
                         process.Transitions.First(x => x.From.IsInitial).From)
                 }
             };
+
+            if (_smartFlowSettings.PersistFlow)
+            {
+                await Modify(processExecution);
+            }
+
+            return processExecution;
+        }
+
+        public async Task<ProcessExecution> Finalize(ProcessExecution processExecution)
+        {
+            processExecution.ExecutionSteps.Add(GenerateProcessStep(processExecution.Process,
+                        processExecution.Process.Transitions.First(x => x.From.IsInitial).From));
 
             if (_smartFlowSettings.PersistFlow)
             {

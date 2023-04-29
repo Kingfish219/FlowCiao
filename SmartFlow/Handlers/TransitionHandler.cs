@@ -9,7 +9,7 @@ namespace SmartFlow.Handlers
     internal class TransitionHandler : WorkflowHandler
     {
         public TransitionHandler(IProcessRepository processRepository
-            , IProcessStepService processStepManager) : base(processRepository, processStepManager)
+            , IProcessService processService) : base(processRepository, processService)
         {
         }
 

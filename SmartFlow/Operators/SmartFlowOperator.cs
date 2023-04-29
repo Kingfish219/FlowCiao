@@ -22,7 +22,7 @@ namespace SmartFlow.Operators
         public SmartFlowOperator(ProcessHandlerFactory processHandlerFactory,
             ProcessExecutionService processExecutionService,
             SmartFlowSettings smartFlowSettings,
-            ProcessService processService)
+            IProcessService processService)
         {
             _processHandlerFactory = processHandlerFactory;
             _processExecutionService = processExecutionService;

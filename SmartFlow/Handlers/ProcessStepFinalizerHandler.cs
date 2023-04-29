@@ -7,8 +7,7 @@ namespace SmartFlow.Handlers
 {
     internal class ProcessStepFinalizerHandler : WorkflowHandler
     {
-        public ProcessStepFinalizerHandler(IProcessRepository processRepository
-            , IProcessStepService processStepManager) : base(processRepository, processStepManager)
+        public ProcessStepFinalizerHandler(IProcessRepository processRepository, IProcessService processService) : base(processRepository, processService)
         {
         }
 
@@ -25,6 +24,9 @@ namespace SmartFlow.Handlers
         {
             try
             {
+                processStepContext.ProcessExecutionStep.IsCompleted = true;
+                processStepContext.ProcessExecution = ProcessService.Finalize(processStepContext.ProcessExecution)
+                    .GetAwaiter().GetResult();
                 //var result = ProcessStepManager.FinalizeActiveProcessStep(processStepContext.ProcessStepDetail);
                 //if (result.Status == ProcessResultStatus.Failed)
                 //{

@@ -13,10 +13,10 @@ namespace SmartFlow.Builders
     {
         public List<ISmartFlowStepBuilder> StepBuilders { get; set; }
         public ISmartFlowStepBuilder InitialStepBuilder { get; set; }
-        private readonly ProcessService _processService;
+        private readonly IProcessService _processService;
         private readonly ISmartFlowOperator _smartFlowOperator;
 
-        public SmartFlowBuilder(ProcessService processService,
+        public SmartFlowBuilder(IProcessService processService,
             ISmartFlowOperator smartFlowOperator)
         {
             StepBuilders = new List<ISmartFlowStepBuilder>();

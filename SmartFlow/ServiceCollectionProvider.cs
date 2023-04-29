@@ -50,11 +50,10 @@ namespace SmartFlow
 
         private static void AddServices(IServiceCollection services)
         {
-            services.AddTransient<ProcessService>();
             services.AddTransient<ActivityService>();
             services.AddTransient<TransitionService>();
             services.AddTransient<StateService>();
-            services.AddTransient<IProcessStepService, ProcessStepService>();
+            services.AddTransient<IProcessService, ProcessService>();
             services.AddTransient<ProcessExecutionService>();
             services.AddTransient<ProcessHandlerFactory>();
             services.AddTransient<ProcessExecutionService>();
