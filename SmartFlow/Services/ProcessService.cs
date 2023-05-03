@@ -6,6 +6,7 @@ using SmartFlow.Exceptions;
 using SmartFlow.Interfaces;
 using SmartFlow.Models;
 using SmartFlow.Models.Flow;
+using SmartFlow.Operators;
 using SmartFlow.Persistence.Interfaces;
 
 namespace SmartFlow.Services
@@ -15,15 +16,21 @@ namespace SmartFlow.Services
         private readonly IProcessRepository _processRepository;
         private readonly TransitionService _transitionService;
         private readonly StateService _stateService;
+        private readonly SmartFlowSettings _smartFlowSettings;
+        private readonly SmartFlowHub _smartFlowHub;
 
         public ProcessService(IProcessRepository processRepository
             , TransitionService transitionService
             , StateService stateService
+            , SmartFlowSettings smartFlowSettings
+            , SmartFlowHub smartFlowHub
             )
         {
             _processRepository = processRepository;
             _transitionService = transitionService;
             _stateService = stateService;
+            _smartFlowSettings = smartFlowSettings;
+            _smartFlowHub = smartFlowHub;
         }
 
         public async Task<Guid> Modify(Process process)
@@ -47,7 +54,7 @@ namespace SmartFlow.Services
 
         public async Task<List<Process>> Get(Guid processId = default, string key = default)
         {
-            return await _processRepository.Get(processId, key);
+            return await _smartFlowHub.RetreiveFlow(key);
         }
 
         public ProcessExecutionStep GenerateProcessStep(Process process, State state)

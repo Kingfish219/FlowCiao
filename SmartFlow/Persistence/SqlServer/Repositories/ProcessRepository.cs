@@ -126,10 +126,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
                                 smartFlows.Add(smartFlow);
                             }
 
-                            if (smartFlow.Transitions is null)
-                            {
-                                smartFlow.Transitions = new List<Transition>();
-                            }
+                            smartFlow.Transitions ??= new List<Transition>();
 
                             transition.From = currentState;
                             transition.To = nextState;
@@ -157,6 +154,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
                 }
             });
         }
+
         /// <summary>
         ///It tells us what transitions can be selected from the Transition table for the ticket according to its status and
         ///according to the process assigned to it.
@@ -209,6 +207,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
                 }
             });
         }
+
         public Task<List<Activity>> GetTransitionActivities(Transition transition)
         {
             return Task.Run(() =>
@@ -217,7 +216,12 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
                 {
                     connection.Open();
                     var result = connection.Query<Activity>($@"
-                          select [Id], [Name], [ActivityTypeCode], [Process] from Activity where 
+                          select Id,
+                               [Name],
+                               ActivityTypeCode,
+                               Process,
+                               Executor
+                          from Activity where 
                           ActivityTypeCode in 
 		                        (select ta.[ActivityTypeCode] from TransitionActivity ta where ta.[TransitionId]='{transition.Id}')
                     ").ToList();

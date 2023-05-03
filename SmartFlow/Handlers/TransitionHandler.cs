@@ -43,6 +43,7 @@ namespace SmartFlow.Handlers
                 //}
 
                 processStepContext.ProcessExecution.State = processStepContext.ProcessExecutionStepDetail.Transition.To;
+                processStepContext.ProcessExecutionStep.IsCompleted = true;
 
                 return NextHandler.Handle(processStepContext);
             }
