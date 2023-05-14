@@ -60,7 +60,8 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
                     Id = entity.Id == default ? Guid.NewGuid() : entity.Id,
                     entity.CreatedOn,
                     ProcessId = entity.Process.Id,
-                    entity.State,
+                    entity.ExecutionState,
+                    State = entity.State.Id,
                     entity.Progress
                 };
 

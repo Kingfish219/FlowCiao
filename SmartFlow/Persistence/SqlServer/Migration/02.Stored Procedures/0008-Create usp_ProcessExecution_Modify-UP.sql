@@ -2,6 +2,7 @@
 	@Id UNIQUEIDENTIFIER,
 	@ExecutionState INT= NULL,
 	@CreatedOn DATETIME= NULL,
+	@State UNIQUEIDENTIFIER= NULL,
 	@ProcessId UNIQUEIDENTIFIER= NULL,
 	@Progress NVARCHAR(MAX)= NULL
 AS
@@ -20,6 +21,7 @@ BEGIN
 		    [Id],
 		    [ProcessId],
 		    [ExecutionState],
+			[State],
 		    [CreatedOn],
 		    [Progress]
 		)
@@ -27,6 +29,7 @@ BEGIN
 		(   @Id,      -- Id - uniqueidentifier
 		    @ProcessId,      -- ProcessId - uniqueidentifier
 		    @ExecutionState,         -- ExecutionState - int
+			@State,
 		    @CreatedOn, -- CreatedOn - datetime
 		    @Progress        -- Progress - nvarchar(max)
 		    )

@@ -28,10 +28,13 @@ namespace SmartFlow
             services.AddTransient<ISmartFlowBuilder, SmartFlowBuilder>();
             services.AddSingleton<ISmartFlowOperator, SmartFlowOperator>();
 
-            var migration = new DbMigrationManager(smartFlowSettings);
-            if (!migration.MigrateUp())
+            if (smartFlowSettings.PersistFlow)
             {
-                throw new SmartFlowPersistencyException("Migration failed");
+                var migration = new DbMigrationManager(smartFlowSettings);
+                if (!migration.MigrateUp())
+                {
+                    throw new SmartFlowPersistencyException("Migration failed");
+                }
             }
 
             return services;

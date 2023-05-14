@@ -24,7 +24,7 @@ namespace SmartFlow.Handlers
                 //};
 
                 //var currentTransition = processStepContext.ProcessStepDetail.TransitionActions.FirstOrDefault().Transition;
-                var activities = ProcessRepository.GetTransitionActivities(processStepContext.ProcessExecutionStepDetail.Transition).Result;
+                var activities = processStepContext.ProcessExecutionStepDetail.Transition.Activities;
                 if (activities.Count > 0)
                 {
                     var types = AppDomain.CurrentDomain.GetAssemblies()
@@ -45,8 +45,6 @@ namespace SmartFlow.Handlers
                         {
                             throw new SmartFlowProcessExecutionException("Exception occured while invoking activities" + result.Message);
                         }
-
-                        /// log to ProcessStepHistoryActivity
 
                         //var currentActivity = activities.Find(a => a.ActivityTypeCode == ((Activity)activity).ActivityTypeCode);
                         //Guid LastProcessStepHistoryItemId = ProcessRepository.GetLastProcessStepHistoryItem(processStepContext.ProcessStepDetail.Entity.Id).Result.Id;

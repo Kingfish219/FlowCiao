@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SmartFlow.Exceptions;
 using SmartFlow.Interfaces;
+using SmartFlow.Models;
 using SmartFlow.Models.Flow;
 using SmartFlow.Operators;
 using SmartFlow.Services;
@@ -14,14 +15,17 @@ namespace SmartFlow.Builders
         public List<ISmartFlowStepBuilder> StepBuilders { get; set; }
         public ISmartFlowStepBuilder InitialStepBuilder { get; set; }
         private readonly IProcessService _processService;
-        private readonly ISmartFlowOperator _smartFlowOperator;
+        private readonly SmartFlowSettings _smartFlowSettings;
+        private readonly SmartFlowHub _smartFlowHub;
 
         public SmartFlowBuilder(IProcessService processService,
-            ISmartFlowOperator smartFlowOperator)
+            SmartFlowHub smartFlowHub,
+            SmartFlowSettings smartFlowSettings)
         {
             StepBuilders = new List<ISmartFlowStepBuilder>();
             _processService = processService;
-            _smartFlowOperator = smartFlowOperator;
+            _smartFlowHub = smartFlowHub;
+            _smartFlowSettings = smartFlowSettings;
         }
 
         public ISmartFlowStepBuilder Initial()
@@ -113,7 +117,8 @@ namespace SmartFlow.Builders
                 }
 
                 process.InitialState = constructor.InitialStepBuilder.InitialState;
-                _smartFlowOperator.RegisterFlow(process).GetAwaiter().GetResult();
+                _smartFlowHub.RegisterFlow(process).GetAwaiter().GetResult();
+
                 var result = _processService.Modify(process).GetAwaiter().GetResult();
                 if (result == default)
                 {
