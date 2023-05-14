@@ -38,10 +38,10 @@ var app = builder.Build();
 //smartFlowOperator.RegisterFlow<SampleStateMachine>();
 //var executionResult = smartFlowOperator.Execute(stateMachine);
 
-var stateMachineBuilder = app.Services.GetService<ISmartFlowBuilder>();
-var workflow = stateMachineBuilder?.Build<SampleStateMachine>();
-var defaultWorkflowOperator = app.Services.GetService<ISmartFlowOperator>();
-defaultWorkflowOperator?.Fire("Sample", 1);
+ var stateMachineBuilder = app.Services.GetService<ISmartFlowBuilder>();
+// var workflow = stateMachineBuilder?.Build<SampleStateMachine>();
+// var defaultWorkflowOperator = app.Services.GetService<ISmartFlowOperator>();
+// defaultWorkflowOperator?.Fire("Sample", 1);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

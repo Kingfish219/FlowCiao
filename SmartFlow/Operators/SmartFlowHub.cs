@@ -1,31 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SmartFlow.Interfaces;
 using SmartFlow.Models;
 using SmartFlow.Models.Flow;
-using SmartFlow.Services;
 
 namespace SmartFlow.Operators
 {
     public class SmartFlowHub
     {
-        private readonly List<Process> _processHub;
-        private readonly List<ProcessExecution> _processExecutionHub;
-        public SmartFlowHub(ProcessExecutionService processExecutionService,
-            SmartFlowSettings smartFlowSettings,
-            IProcessService processService)
+        private List<Process> _processHub;
+        private List<ProcessExecution> _processExecutionHub;
+
+        public async Task Initiate(List<Process> processes,
+            List<ProcessExecution> processExecutions)
         {
-            if (smartFlowSettings.PersistFlow)
-            {
-                _processHub = processService.Get().GetAwaiter().GetResult();
-                _processExecutionHub = processExecutionService.Get().GetAwaiter().GetResult();
-            }
-            else
-            {
-                _processExecutionHub = new List<ProcessExecution>();
-                _processHub = new List<Process>();
-            }
+            await Task.CompletedTask;
+            _processHub = processes;
+            _processExecutionHub = processExecutions;
         }
 
         public async Task RegisterFlow<TFlow>(TFlow smartFlow) where TFlow : Process

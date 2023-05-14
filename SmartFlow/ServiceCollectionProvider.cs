@@ -27,7 +27,8 @@ namespace SmartFlow
             AddServices(services);
             services.AddTransient<ISmartFlowBuilder, SmartFlowBuilder>();
             services.AddSingleton<ISmartFlowOperator, SmartFlowOperator>();
-
+            services.AddSingleton<SmartFlowHub>();
+            
             if (smartFlowSettings.PersistFlow)
             {
                 var migration = new DbMigrationManager(smartFlowSettings);

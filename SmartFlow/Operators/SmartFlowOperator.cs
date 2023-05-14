@@ -6,6 +6,7 @@ using SmartFlow.Exceptions;
 using SmartFlow.Handlers;
 using SmartFlow.Interfaces;
 using SmartFlow.Models;
+using SmartFlow.Models.Flow;
 using SmartFlow.Persistence.Interfaces;
 using SmartFlow.Services;
 
@@ -15,15 +16,27 @@ namespace SmartFlow.Operators
     {
         private readonly ProcessExecutionService _processExecutionService;
         private readonly ProcessHandlerFactory _processHandlerFactory;
-        private readonly SmartFlowHub _smartFlowHub;
+        private readonly IProcessService _processService;
 
         public SmartFlowOperator(ProcessHandlerFactory processHandlerFactory,
             ProcessExecutionService processExecutionService,
-            SmartFlowHub smartFlowHub)
+            SmartFlowSettings smartFlowSettings,
+            IProcessService processService)
         {
             _processHandlerFactory = processHandlerFactory;
             _processExecutionService = processExecutionService;
-            _smartFlowHub = smartFlowHub;
+            _processService = processService;
+
+            var processes = new List<Process>();
+            var processExecutions = new List<ProcessExecution>();
+            
+            if (smartFlowSettings.PersistFlow)
+            {
+                processes = processService.Get().GetAwaiter().GetResult();
+                processExecutions = processExecutionService.Get().GetAwaiter().GetResult();
+            }
+
+
         }
 
         public Task<ProcessResult> ExecuteAsync(ISmartFlow process)
@@ -41,13 +54,13 @@ namespace SmartFlow.Operators
             int action,
             Dictionary<string, object> data = null)
         {
-            var processExecution = _smartFlowHub.RetreiveFlowExecution(smartFlowKey).GetAwaiter().GetResult().SingleOrDefault();
+            var processExecution = _processExecutionService.Get().GetAwaiter().GetResult().SingleOrDefault();
 
             try
             {
                 if (processExecution is null)
                 {
-                    var process = _smartFlowHub.RetreiveFlow(smartFlowKey).GetAwaiter().GetResult().SingleOrDefault();
+                    var process = _processService.Get(key: smartFlowKey).GetAwaiter().GetResult().SingleOrDefault();
                     processExecution = _processExecutionService.InitializeProcessExecution(process).GetAwaiter().GetResult();
                 }
 

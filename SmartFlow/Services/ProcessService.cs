@@ -79,6 +79,8 @@ namespace SmartFlow.Services
 
         public async Task<ProcessExecution> Finalize(ProcessExecution processExecution)
         {
+            await Task.CompletedTask;
+            
             processExecution.ExecutionSteps.Add(GenerateProcessStep(processExecution.Process,
                         processExecution.Process.Transitions.First(x => x.From.IsInitial).From));
 
