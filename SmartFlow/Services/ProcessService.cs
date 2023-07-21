@@ -16,6 +16,7 @@ namespace SmartFlow.Services
         private readonly IProcessRepository _processRepository;
         private readonly TransitionService _transitionService;
         private readonly StateService _stateService;
+        private readonly ProcessExecutionService _processExecutionService;
         private readonly SmartFlowSettings _smartFlowSettings;
         private readonly SmartFlowHub _smartFlowHub;
 
@@ -23,14 +24,27 @@ namespace SmartFlow.Services
             , TransitionService transitionService
             , StateService stateService
             , SmartFlowSettings smartFlowSettings
+            , ProcessExecutionService processExecutionService
             , SmartFlowHub smartFlowHub
             )
         {
             _processRepository = processRepository;
             _transitionService = transitionService;
             _stateService = stateService;
+            _processExecutionService = processExecutionService;
             _smartFlowSettings = smartFlowSettings;
             _smartFlowHub = smartFlowHub;
+            if (!_smartFlowHub.IsInitiated)
+            {
+                InitiateFlowHub().GetAwaiter().GetResult();
+            }
+        }
+
+        private async Task InitiateFlowHub()
+        {
+            var processes = Get().GetAwaiter().GetResult();
+            var processExecutions = _processExecutionService.Get().GetAwaiter().GetResult();
+            await _smartFlowHub.Initiate(processes, processExecutions );
         }
 
         public async Task<Guid> Modify(Process process)
@@ -80,7 +94,7 @@ namespace SmartFlow.Services
         public async Task<ProcessExecution> Finalize(ProcessExecution processExecution)
         {
             await Task.CompletedTask;
-            
+
             processExecution.ExecutionSteps.Add(GenerateProcessStep(processExecution.Process,
                         processExecution.Process.Transitions.First(x => x.From.IsInitial).From));
 

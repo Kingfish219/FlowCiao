@@ -8,22 +8,24 @@ namespace SmartFlow.Operators
 {
     public class SmartFlowHub
     {
-        private List<Process> _processHub;
-        private List<ProcessExecution> _processExecutionHub;
+        private List<Process> ProcessHub { get; set; }
+        private List<ProcessExecution> ProcessExecutionHub { get; set; }
+        public bool IsInitiated { get; private set; }
 
         public async Task Initiate(List<Process> processes,
             List<ProcessExecution> processExecutions)
         {
             await Task.CompletedTask;
-            _processHub = processes;
-            _processExecutionHub = processExecutions;
+            ProcessHub = processes;
+            ProcessExecutionHub = processExecutions;
+            IsInitiated = true;
         }
 
         public async Task RegisterFlow<TFlow>(TFlow smartFlow) where TFlow : Process
         {
             await Task.Run(() =>
             {
-                _processHub.Add(smartFlow);
+                ProcessHub.Add(smartFlow);
             });
         }
 
@@ -31,7 +33,7 @@ namespace SmartFlow.Operators
         {
             await Task.Run(() =>
             {
-                _processExecutionHub.Add(processExecution);
+                ProcessExecutionHub.Add(processExecution);
             });
         }
 
@@ -39,7 +41,7 @@ namespace SmartFlow.Operators
         {
             return await Task.Run(() =>
             {
-                return _processHub
+                return ProcessHub
                     .Where(x => x.FlowKey.Equals(smartFlowKey))
                     .ToList();
             });
@@ -49,7 +51,7 @@ namespace SmartFlow.Operators
         {
             return await Task.Run(() =>
             {
-                return _processExecutionHub
+                return ProcessExecutionHub
                     .Where(x => x.Process?.FlowKey?.Equals(smartFlowKey) ?? false)
                     .ToList();
             });

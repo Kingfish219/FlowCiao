@@ -6,7 +6,6 @@ using SmartFlow.Exceptions;
 using SmartFlow.Handlers;
 using SmartFlow.Interfaces;
 using SmartFlow.Models;
-using SmartFlow.Models.Flow;
 using SmartFlow.Persistence.Interfaces;
 using SmartFlow.Services;
 
@@ -20,23 +19,11 @@ namespace SmartFlow.Operators
 
         public SmartFlowOperator(ProcessHandlerFactory processHandlerFactory,
             ProcessExecutionService processExecutionService,
-            SmartFlowSettings smartFlowSettings,
             IProcessService processService)
         {
             _processHandlerFactory = processHandlerFactory;
             _processExecutionService = processExecutionService;
             _processService = processService;
-
-            var processes = new List<Process>();
-            var processExecutions = new List<ProcessExecution>();
-            
-            if (smartFlowSettings.PersistFlow)
-            {
-                processes = processService.Get().GetAwaiter().GetResult();
-                processExecutions = processExecutionService.Get().GetAwaiter().GetResult();
-            }
-
-
         }
 
         public Task<ProcessResult> ExecuteAsync(ISmartFlow process)
@@ -60,37 +47,34 @@ namespace SmartFlow.Operators
             {
                 if (processExecution is null)
                 {
-                    var process = _processService.Get(key: smartFlowKey).GetAwaiter().GetResult().SingleOrDefault();
-                    processExecution = _processExecutionService.InitializeProcessExecution(process).GetAwaiter().GetResult();
+                    var process = _processService.Get(key: smartFlowKey)
+                        .GetAwaiter().GetResult()
+                        .SingleOrDefault();
+                    if (process is null)
+                    {
+                        throw new Exception("Invalid Smartflow key!");
+                    }
+
+                    processExecution = _processExecutionService.InitializeProcessExecution(process)
+                        .GetAwaiter().GetResult();
                 }
 
                 var activeProcessStep = processExecution.ExecutionSteps
                     .SingleOrDefault(x => !x.IsCompleted);
-
                 if (activeProcessStep is null)
                 {
-                    return new ProcessResult
-                    {
-                        Status = ProcessResultStatus.Completed
-                    };
+                    throw new SmartFlowProcessExecutionException("No active steps to fire");
                 }
 
                 if (activeProcessStep.Details
                         .SingleOrDefault(x => x.Transition.Actions.FirstOrDefault()!.Code == action) is null)
                 {
-                    throw new SmartFlowProcessExecutionException("Action not supported!");
+                    throw new SmartFlowProcessExecutionException("Action is invalid!");
                 }
 
-                var processStepContext = new ProcessStepContext
-                {
-                    ProcessExecution = processExecution,
-                    ProcessExecutionStep = activeProcessStep,
-                    ProcessExecutionStepDetail = activeProcessStep.Details.Single(x => x.Transition.Actions.FirstOrDefault().Code == action),
-                    Data = data
-                };
-
+                var processStepContext = InitiateContext(action, data, processExecution, activeProcessStep);
                 var handlers = _processHandlerFactory.BuildHandlers(processStepContext);
-
+                
                 var result = handlers.Peek().Handle(processStepContext);
 
                 return result;
@@ -103,6 +87,20 @@ namespace SmartFlow.Operators
                     Message = exception.Message
                 };
             }
+        }
+
+        private static ProcessStepContext InitiateContext(int action,
+            Dictionary<string, object> data,
+            ProcessExecution processExecution,
+            ProcessExecutionStep activeProcessStep)
+        {
+            return new ProcessStepContext
+            {
+                ProcessExecution = processExecution,
+                ProcessExecutionStep = activeProcessStep,
+                ProcessExecutionStepDetail = activeProcessStep.Details.Single(x => x.Transition.Actions.FirstOrDefault().Code == action),
+                Data = data
+            };
         }
     }
 }

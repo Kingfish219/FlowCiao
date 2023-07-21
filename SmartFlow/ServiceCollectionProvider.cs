@@ -25,7 +25,7 @@ namespace SmartFlow
             services.AddSingleton(smartFlowSettings);
             AddRepositories(services);
             AddServices(services);
-            services.AddTransient<ISmartFlowBuilder, SmartFlowBuilder>();
+            services.AddScoped<ISmartFlowBuilder, SmartFlowBuilder>();
             services.AddSingleton<ISmartFlowOperator, SmartFlowOperator>();
             services.AddSingleton<SmartFlowHub>();
             
@@ -43,24 +43,24 @@ namespace SmartFlow
 
         private static void AddRepositories(IServiceCollection services)
         {
-            services.AddTransient<TransitionRepository>();
-            services.AddTransient<StateRepository>();
-            services.AddTransient<ActionRepository>();
-            services.AddTransient<ActivityRepository>();
-            services.AddTransient<LogRepository>();
-            services.AddTransient<IProcessExecutionRepository, ProcessExecutionRepository>();
-            services.AddTransient<IProcessRepository, ProcessRepository>();
+            services.AddScoped<TransitionRepository>();
+            services.AddScoped<StateRepository>();
+            services.AddScoped<ActionRepository>();
+            services.AddScoped<ActivityRepository>();
+            services.AddScoped<LogRepository>();
+            services.AddScoped<IProcessExecutionRepository, ProcessExecutionRepository>();
+            services.AddScoped<IProcessRepository, ProcessRepository>();
         }
 
         private static void AddServices(IServiceCollection services)
         {
-            services.AddTransient<ActivityService>();
-            services.AddTransient<TransitionService>();
-            services.AddTransient<StateService>();
-            services.AddTransient<IProcessService, ProcessService>();
-            services.AddTransient<ProcessExecutionService>();
-            services.AddTransient<ProcessHandlerFactory>();
-            services.AddTransient<ProcessExecutionService>();
+            services.AddScoped<ActivityService>();
+            services.AddScoped<TransitionService>();
+            services.AddScoped<StateService>();
+            services.AddScoped<IProcessService, ProcessService>();
+            services.AddScoped<ProcessExecutionService>();
+            services.AddScoped<ProcessHandlerFactory>();
+            services.AddScoped<ProcessExecutionService>();
         }
     }
 }
