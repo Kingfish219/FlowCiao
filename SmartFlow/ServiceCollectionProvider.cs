@@ -1,4 +1,6 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SmartFlow.Builders;
 using SmartFlow.Exceptions;
@@ -6,6 +8,7 @@ using SmartFlow.Handlers;
 using SmartFlow.Interfaces;
 using SmartFlow.Models;
 using SmartFlow.Operators;
+using SmartFlow.Persistence;
 using SmartFlow.Persistence.Interfaces;
 using SmartFlow.Persistence.SqlServer;
 using SmartFlow.Persistence.SqlServer.Repositories;
@@ -15,14 +18,15 @@ namespace SmartFlow
 {
     public static class ServiceCollectionProvider
     {
-        public static IServiceCollection AddSmartFlow(this IServiceCollection services, Action<SmartFlowSettings> settings)
+        public static IServiceCollection AddSmartFlow(this IServiceCollection services,
+            Action<SmartFlowSettings> settings)
         {
             DapperHelper.EnsureMappings();
 
             var smartFlowSettings = new SmartFlowSettings();
             settings.Invoke(smartFlowSettings);
-
             services.AddSingleton(smartFlowSettings);
+
             AddRepositories(services);
             AddServices(services);
             services.AddScoped<ISmartFlowBuilder, SmartFlowBuilder>();
@@ -31,6 +35,10 @@ namespace SmartFlow
             
             if (smartFlowSettings.PersistFlow)
             {
+                services.AddDbContext<SmartFlowDbContext>(options =>
+                    options.UseSqlServer(smartFlowSettings.ConnectionString)
+                );
+
                 var migration = new DbMigrationManager(smartFlowSettings);
                 if (!migration.MigrateUp())
                 {
