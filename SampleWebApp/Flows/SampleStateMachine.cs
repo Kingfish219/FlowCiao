@@ -19,7 +19,6 @@ namespace SampleWebApp.Flows
                 .NewStep().From(new State(2, "Second"))
                     .Allow(new State(4, "Fourth"), new ProcessAction(3))
                     .OnExit<GoodbyeWorld>();
-                ;
 
             return builder;
         }
