@@ -2,20 +2,14 @@
 using System.Data;
 using System.Threading.Tasks;
 using Dapper;
-using Microsoft.Data.SqlClient;
 using SmartFlow.Models;
 using SmartFlow.Models.Flow;
 
 namespace SmartFlow.Persistence.SqlServer.Repositories
 {
-    public class TransitionRepository
+    public class TransitionRepository : SmartFlowRepository
     {
-        private readonly string _connectionString;
-
-        public TransitionRepository(SmartFlowSettings settings)
-        {
-            _connectionString = settings.ConnectionString;
-        }
+        public TransitionRepository(SmartFlowSettings settings) : base(settings) { }
 
         public Task<Guid> Modify(Transition entity)
         {
@@ -29,7 +23,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
                     NextStateId = entity.To.Id
                 };
 
-                using var connection = new SqlConnection(_connectionString);
+                using var connection = GetDbConnection();
                 connection.Open();
                 connection.Execute(ConstantsProvider.Usp_Transition_Modify, toInsert, commandType: CommandType.StoredProcedure);
                 entity.Id = toInsert.Id;
@@ -49,7 +43,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
                     action.Priority
                 };
 
-                using var connection = new SqlConnection(_connectionString);
+                using var connection = GetDbConnection();
                 connection.Open();
                 connection.Execute(ConstantsProvider.Usp_TransitionAction_Modify, toInsert, commandType: CommandType.StoredProcedure);
 
@@ -67,7 +61,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
                     ActivityId = activity.Id
                 };
 
-                using var connection = new SqlConnection(_connectionString);
+                using var connection = GetDbConnection();
                 connection.Open();
                 connection.Execute(ConstantsProvider.Usp_TransitionActivity_Modify, toInsert, commandType: CommandType.StoredProcedure);
 

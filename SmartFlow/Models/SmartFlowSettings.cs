@@ -1,4 +1,7 @@
 ﻿
+using Microsoft.Data.SqlClient;
+using System.Data;
+
 namespace SmartFlow.Models
 {
     public class SmartFlowSettings
@@ -21,6 +24,11 @@ namespace SmartFlow.Models
         public void UseSqlServer(string connectionString)
         {
             ConnectionString = connectionString;
+        }
+
+        public IDbConnection GetDbConnection()
+        {
+            return new SqlConnection(ConnectionString);
         }
     }
 }

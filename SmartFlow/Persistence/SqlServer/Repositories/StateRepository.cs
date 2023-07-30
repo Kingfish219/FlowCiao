@@ -2,20 +2,14 @@
 using System.Data;
 using System.Threading.Tasks;
 using Dapper;
-using Microsoft.Data.SqlClient;
 using SmartFlow.Models;
 using SmartFlow.Models.Flow;
 
 namespace SmartFlow.Persistence.SqlServer.Repositories
 {
-    public class StateRepository
+    public class StateRepository : SmartFlowRepository
     {
-        private readonly string _connectionString;
-
-        public StateRepository(SmartFlowSettings settings)
-        {
-            _connectionString = settings.ConnectionString;
-        }
+        public StateRepository(SmartFlowSettings settings) : base(settings) { }
 
         public Task<Guid> Modify(State entity)
         {
@@ -27,7 +21,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
                     entity.Name
                 };
 
-                using var connection = new SqlConnection(_connectionString);
+                using var connection = GetDbConnection();
                 connection.Open();
                 connection.Execute(ConstantsProvider.Usp_State_Modify, toInsert, commandType: CommandType.StoredProcedure);
                 entity.Id = toInsert.Id;
@@ -46,7 +40,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
                     ActivityId = activity.Id
                 };
 
-                using var connection = new SqlConnection(_connectionString);
+                using var connection = GetDbConnection();
                 connection.Open();
                 connection.Execute(ConstantsProvider.usp_StateActivity_Modify, toInsert, commandType: CommandType.StoredProcedure);
 

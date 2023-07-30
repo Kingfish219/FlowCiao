@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
@@ -11,20 +10,15 @@ using SmartFlow.Persistence.Interfaces;
 
 namespace SmartFlow.Persistence.SqlServer.Repositories
 {
-    public class ProcessExecutionRepository : IProcessExecutionRepository
+    public class ProcessExecutionRepository : SmartFlowRepository, IProcessExecutionRepository
     {
-        private readonly string _connectionString;
-
-        public ProcessExecutionRepository(SmartFlowSettings settings)
-        {
-            _connectionString = settings.ConnectionString;
-        }
+        public ProcessExecutionRepository(SmartFlowSettings settings) : base(settings) { }
 
         public Task<List<ProcessExecution>> Get(Guid id = default, Guid processId = default)
         {
             return Task.Run(() =>
             {
-                using var connection = new SqlConnection(_connectionString);
+                using var connection = GetDbConnection();
 
                 connection.Open();
                 var query = @"SELECT pe.*,
@@ -53,7 +47,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
         {
             return Task.Run(() =>
             {
-                using var connection = new SqlConnection(_connectionString);
+                using var connection = GetDbConnection();
 
                 var toModify = new
                 {

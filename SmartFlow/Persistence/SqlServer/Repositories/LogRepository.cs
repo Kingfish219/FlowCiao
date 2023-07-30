@@ -7,13 +7,9 @@ using SmartFlow.Persistence.Interfaces;
 
 namespace SmartFlow.Persistence.SqlServer.Repositories
 {
-    public class LogRepository : ILogRepository
+    public class LogRepository : SmartFlowRepository, ILogRepository
     {
-        private readonly string _connectionString;
-        public LogRepository(SmartFlowSettings smartFlowSettings)
-        {
-            _connectionString = smartFlowSettings.ConnectionString;
-        }
+        public LogRepository(SmartFlowSettings smartFlowSettings) : base(smartFlowSettings) { }
 
         public Task<bool> Create(Log log)
         {
@@ -21,7 +17,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
             {
                 try
                 {
-                    using var connection = new SqlConnection(_connectionString);
+                    using var connection = GetDbConnection();
                     connection.Open();
                     connection.Insert(log);
 

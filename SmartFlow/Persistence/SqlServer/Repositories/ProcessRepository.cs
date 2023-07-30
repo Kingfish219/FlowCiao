@@ -13,20 +13,15 @@ using Process = SmartFlow.Models.Flow.Process;
 
 namespace SmartFlow.Persistence.SqlServer.Repositories
 {
-    public class ProcessRepository : IProcessRepository
+    public class ProcessRepository : SmartFlowRepository, IProcessRepository
     {
-        private readonly string _connectionString;
-
-        public ProcessRepository(SmartFlowSettings settings)
-        {
-            _connectionString = settings.ConnectionString;
-        }
+        public ProcessRepository(SmartFlowSettings settings) : base(settings) { }
 
         //public Task<bool> CompleteProgressAction(ProcessExecutionStep processStep, ProcessAction action)
         //{
         //    return Task.Run(() =>
         //    {
-        //        using (var connection = new SqlConnection(_connectionString))
+        //        using (var connection = GetDbConnection())
         //        {
         //            connection.Open();
         //            var result = connection.Execute($@"UPDATE [ActiveProcessStep] SET [IsCompleted] = 1
@@ -45,7 +40,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
 
         //        foreach (var transitionAction in entity.Transition.Actions)
         //        {
-        //            using (var connection = new SqlConnection(_connectionString))
+        //            using (var connection = GetDbConnection())
         //            {
         //                connection.Open();
         //                Guid userIdEmpty = Guid.Empty;
@@ -82,7 +77,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
         {
             return Task.Run(() =>
             {
-                using var connection = new SqlConnection(_connectionString);
+                using var connection = GetDbConnection();
                 connection.Open();
                 var result = connection.Execute($@"DELETE FROM [dbo].[ActiveProcessStep]
                                                 WHERE [EntityId] = '{entity.Id}'
@@ -96,7 +91,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
         {
             return Task.Run(() =>
             {
-                using (var connection = new SqlConnection(_connectionString))
+                using (var connection = GetDbConnection())
                 {
                     connection.Open();
 
@@ -145,7 +140,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
         {
             return Task.Run(() =>
             {
-                using (var connection = new SqlConnection(_connectionString))
+                using (var connection = GetDbConnection())
                 {
                     connection.Open();
                     var result = connection.QueryFirstOrDefault<ProcessExecutionStep>($"SELECT TOP 1 * FROM [ActiveProcessStep] WHERE [EntityId] = '{entity.Id}'");
@@ -168,7 +163,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
         {
             return Task.Run(() =>
             {
-                using (var connection = new SqlConnection(_connectionString))
+                using (var connection = GetDbConnection())
                 {
                     connection.Open();
 
@@ -196,7 +191,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
         {
             return Task.Run(() =>
             {
-                using (var connection = new SqlConnection(_connectionString))
+                using (var connection = GetDbConnection())
                 {
                     connection.Open();
                     var result = connection.Query<Activity>($@"SELECT * FROM [Activity] A 
@@ -212,7 +207,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
         {
             return Task.Run(() =>
             {
-                using (var connection = new SqlConnection(_connectionString))
+                using (var connection = GetDbConnection())
                 {
                     connection.Open();
                     var result = connection.Query<Activity>($@"
@@ -235,7 +230,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
         {
             return Task.Run(() =>
             {
-                using (var connection = new SqlConnection(_connectionString))
+                using (var connection = GetDbConnection())
                 {
                     connection.Open();
 
@@ -275,7 +270,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
         {
             return Task.Run(() =>
             {
-                using (var connection = new SqlConnection(_connectionString))
+                using (var connection = GetDbConnection())
                 {
                     connection.Open();
 
@@ -302,7 +297,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
         {
             return Task.Run(() =>
             {
-                using (var connection = new SqlConnection(_connectionString))
+                using (var connection = GetDbConnection())
                 {
                     connection.Open();
                     var result = connection.QueryFirstOrDefault<State>($@"SELECT * FROM [Status] WHERE Id = '{stateId}'");
@@ -315,7 +310,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
         {
             try
             {
-                using (var connection = new SqlConnection(_connectionString))
+                using (var connection = GetDbConnection())
                 {
                     connection.Open();
                     var result = connection.QueryFirst<Guid>($@"exec SP_DefaultProcess_GetUserIdManger '{processId}','{userId}','{requestId}','{statusId}'");
@@ -335,7 +330,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
             {
                 try
                 {
-                    using var connection = new SqlConnection(_connectionString);
+                    using var connection = GetDbConnection();
                     connection.Open();
                     var result = connection.Execute($@"exec [dbo].[sp_DefaultProcess_UpdateActiveProcessStepUserActionId] '{entityId}','{userId}'");
                     return true;
@@ -353,7 +348,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
             {
                 try
                 {
-                    using var connection = new SqlConnection(_connectionString);
+                    using var connection = GetDbConnection();
                     connection.Open();
 
                     connection.Execute($@"exec sp_ProcessStepHistory_GetbyId '{entityId}'");
@@ -372,7 +367,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
             {
                 try
                 {
-                    using (var connection = new SqlConnection(_connectionString))
+                    using (var connection = GetDbConnection())
                     {
                         connection.Open();
 
@@ -391,7 +386,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
         {
             return Task.Run(() =>
             {
-                using (var connection = new SqlConnection(_connectionString))
+                using (var connection = GetDbConnection())
                 {
                     connection.Open();
                     var result = connection.Query<ProcessExecutionStep>($@"
@@ -407,7 +402,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
             {
                 try
                 {
-                    using (var connection = new SqlConnection(_connectionString))
+                    using (var connection = GetDbConnection())
                     {
                         connection.Open();
                         var result = connection.Query($@"exec sp_ProcessStepHistory_AddProcessStepHistoryActivity '{processStepHistoryActivity.ActivityId}',N'{processStepHistoryActivity.ActivityName}','{processStepHistoryActivity.StepType}','{processStepHistoryActivity.ProcessStepHistoryId}'");
@@ -426,7 +421,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
             {
                 try
                 {
-                    using (var connection = new SqlConnection(_connectionString))
+                    using (var connection = GetDbConnection())
                     {
                         connection.Open();
                         var result = connection.Query<State>($@"select [Id] ,[Name] ,[RequestResponse],[ResponseController],[ResponseActions],[IsFinalResponse],[Number]  from Status where id = '{statusId}'").FirstOrDefault();
@@ -451,7 +446,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
 
                 //try
                 //{
-                //    using (var connection = new SqlConnection(_connectionString))
+                //    using (var connection = GetDbConnection())
                 //    {
                 //        connection.Open();
 
@@ -480,7 +475,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
             {
                 try
                 {
-                    using (var connection = new SqlConnection(_connectionString))
+                    using (var connection = GetDbConnection())
                     {
                         var parameters = new DynamicParameters();
                         parameters.Add("@EntityId", entity.Id);
@@ -505,7 +500,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
             {
                 try
                 {
-                    using (var connection = new SqlConnection(_connectionString))
+                    using (var connection = GetDbConnection())
                     {
                         var parameters = new DynamicParameters();
                         parameters.Add("@AttachmentId", attachmentId);
@@ -531,8 +526,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
             {
                 try
                 {
-                    SqlConnection con = new SqlConnection(
-                        _connectionString);
+                    using var con = GetDbConnection() as SqlConnection;
                     con.Open();
                     SqlCommand cmd = new SqlCommand("[dbo].[usp_ProcessStep_ApplyComment]", con)
                     {
@@ -549,13 +543,14 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
                     cmd.ExecuteNonQuery();
                     var guid = (Guid)cmd.Parameters["@Id"].Value;
                     con.Close();
+
                     return new FuncResult
                     {
                         Success = true,
                         Message = guid.ToString()
                     };
 
-                    //using (var connection = new SqlConnection(_connectionString))
+                    //using (var connection = GetDbConnection())
                     //{
                     //    var parameters = new DynamicParameters();
                     //    parameters.Add("@Comment", comment);
@@ -599,7 +594,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
         {
             try
             {
-                using var connection = new SqlConnection(_connectionString);
+                using var connection = GetDbConnection();
                 connection.Open();
                 var result = connection.QueryFirstOrDefault<State>($@"SELECT * FROM [Status] WHERE IsStart = 1");
 
@@ -621,7 +616,7 @@ namespace SmartFlow.Persistence.SqlServer.Repositories
                     entity.FlowKey
                 };
 
-                using var connection = new SqlConnection(_connectionString);
+                using var connection = GetDbConnection();
                 connection.Open();
                 connection.Execute(ConstantsProvider.Usp_Process_Modify, toInsert, commandType: CommandType.StoredProcedure);
                 entity.Id = toInsert.Id;
