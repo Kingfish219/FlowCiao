@@ -38,31 +38,33 @@ namespace SmartFlow.Handlers
                 //};
 
                 var activities = ProcessRepository.GetStateActivities(processStepContext.ProcessExecution.State, new Group()).Result;
-                if (activities.Count > 0)
+                if (activities.Count == 0)
                 {
-                    var types = AppDomain.CurrentDomain.GetAssemblies()
-                        .SelectMany(type => type.GetTypes())
-                        .Where(p => typeof(Activity).IsAssignableFrom(p) && !p.IsInterface && !p.IsAbstract && p.BaseType == typeof(Activity));
+                    return NextHandler?.Handle(processStepContext) ?? result;
+                }
+                
+                var types = AppDomain.CurrentDomain.GetAssemblies()
+                    .SelectMany(type => type.GetTypes())
+                    .Where(p => typeof(Activity).IsAssignableFrom(p) && !p.IsInterface && !p.IsAbstract && p.BaseType == typeof(Activity));
 
-                    foreach (var type in types)
+                foreach (var type in types)
+                {
+                    var activity = (IProcessActivity)Activator.CreateInstance(type, processStepContext);
+                    if (!activities.Exists(x => x.ActivityTypeCode == ((Activity)activity).ActivityTypeCode))
                     {
-                        var activity = (IProcessActivity)Activator.CreateInstance(type, processStepContext);
-                        if (!activities.Exists(x => x.ActivityTypeCode == ((Activity)activity).ActivityTypeCode))
-                        {
-                            continue;
-                        }
-
-                        result = activity.Execute();
-                        if (result.Status != ProcessResultStatus.Completed && result.Status != ProcessResultStatus.SetOwner)
-                        {
-                            throw new SmartFlowProcessExecutionException("Exception occured while invoking activities" + result.Message);
-                        }
-
-                        //log to ProcessStepHistoryActivity
-                        //var currentActivity = activities.Find(a => a.ActivityTypeCode == ((Activity)activity).ActivityTypeCode);
-                        //Guid LastProcessStepHistoryItemId = ProcessRepository.GetLastProcessStepHistoryItem(processStepContext.ProcessStepDetail.Entity.Id).Result.Id;
-                        //ProcessRepository.AddProcessStepHistoryActivity(new ProcessStepHistoryActivity { ActivityId = currentActivity.Id, ActivityName = currentActivity.Name, StepType = 1, ProcessStepHistoryId = LastProcessStepHistoryItemId });
+                        continue;
                     }
+
+                    result = activity.Execute();
+                    if (result.Status != ProcessResultStatus.Completed && result.Status != ProcessResultStatus.SetOwner)
+                    {
+                        throw new SmartFlowProcessExecutionException("Exception occured while invoking activities" + result.Message);
+                    }
+
+                    //log to ProcessStepHistoryActivity
+                    //var currentActivity = activities.Find(a => a.ActivityTypeCode == ((Activity)activity).ActivityTypeCode);
+                    //Guid LastProcessStepHistoryItemId = ProcessRepository.GetLastProcessStepHistoryItem(processStepContext.ProcessStepDetail.Entity.Id).Result.Id;
+                    //ProcessRepository.AddProcessStepHistoryActivity(new ProcessStepHistoryActivity { ActivityId = currentActivity.Id, ActivityName = currentActivity.Name, StepType = 1, ProcessStepHistoryId = LastProcessStepHistoryItemId });
                 }
 
                 return NextHandler?.Handle(processStepContext) ?? result;
