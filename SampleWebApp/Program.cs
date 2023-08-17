@@ -12,8 +12,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSmartFlow(settings =>
 {
-    settings.Persist()
-        .UseSqlServer(configuration.GetConnectionString("SmartFlow"));
+    //settings.Persist()
+    //    .UseSqlServer(configuration.GetConnectionString("SmartFlow"));
 });
 
 var app = builder.Build();
@@ -34,7 +34,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseAuthorization();
+//app.UseAuthorization();
 
 app.MapControllers();
 

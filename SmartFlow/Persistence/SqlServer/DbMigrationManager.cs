@@ -12,7 +12,7 @@ namespace SmartFlow.Persistence.SqlServer
 
         public DbMigrationManager(SmartFlowSettings settings)
         {
-            _connectionString = settings.ConnectionString;
+            _connectionString = settings.PersistanceSettings.ConnectionString;
         }
 
         public bool MigrateUp()

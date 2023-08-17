@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SmartFlow.Models;
@@ -8,16 +9,16 @@ namespace SmartFlow.Operators
 {
     public class SmartFlowHub
     {
-        private List<Process> ProcessHub { get; set; }
-        private List<ProcessExecution> ProcessExecutionHub { get; set; }
+        public List<Process> Processes { get; set; }
+        public List<ProcessExecution> ProcessExecutions { get; set; }
         public bool IsInitiated { get; private set; }
 
         public async Task Initiate(List<Process> processes,
             List<ProcessExecution> processExecutions)
         {
             await Task.CompletedTask;
-            ProcessHub = processes;
-            ProcessExecutionHub = processExecutions;
+            Processes = processes;
+            ProcessExecutions = processExecutions;
             IsInitiated = true;
         }
 
@@ -25,7 +26,7 @@ namespace SmartFlow.Operators
         {
             await Task.Run(() =>
             {
-                ProcessHub.Add(smartFlow);
+                Processes.Add(smartFlow);
             });
         }
 
@@ -33,17 +34,22 @@ namespace SmartFlow.Operators
         {
             await Task.Run(() =>
             {
-                ProcessExecutionHub.Add(processExecution);
+                ProcessExecutions.Add(processExecution);
             });
         }
 
-        public async Task<List<Process>> RetreiveFlow(string smartFlowKey)
+        public async Task<List<Process>> RetreiveFlow(Guid processId = default, string key = null)
         {
             return await Task.Run(() =>
             {
-                return ProcessHub
+                return Processes?
                     .Where(x => x.FlowKey.Equals(smartFlowKey))
-                    .ToList();
+                    .ToList() ?? null;
+
+                var result = from o in Processes
+                             where (string.IsNullOrWhiteSpace(smartFlowKey) || o.FlowKey.Equals(smartFlowKey, System.StringComparison.InvariantCultureIgnoreCase))
+                             && (State == null || o.State == State)
+                             select o;
             });
         }
 
@@ -51,9 +57,9 @@ namespace SmartFlow.Operators
         {
             return await Task.Run(() =>
             {
-                return ProcessExecutionHub
+                return ProcessExecutions?
                     .Where(x => x.Process?.FlowKey?.Equals(smartFlowKey) ?? false)
-                    .ToList();
+                    .ToList() ?? null;
             });
         }
     }

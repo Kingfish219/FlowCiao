@@ -6,7 +6,6 @@ using SmartFlow.Exceptions;
 using SmartFlow.Interfaces;
 using SmartFlow.Models;
 using SmartFlow.Models.Flow;
-using SmartFlow.Operators;
 using SmartFlow.Persistence.Interfaces;
 
 namespace SmartFlow.Services
@@ -17,35 +16,30 @@ namespace SmartFlow.Services
         private readonly TransitionService _transitionService;
         private readonly StateService _stateService;
         private readonly ProcessExecutionService _processExecutionService;
-        private readonly SmartFlowSettings _smartFlowSettings;
-        private readonly SmartFlowHub _smartFlowHub;
 
         public ProcessService(IProcessRepository processRepository
             , TransitionService transitionService
             , StateService stateService
-            , SmartFlowSettings smartFlowSettings
             , ProcessExecutionService processExecutionService
-            , SmartFlowHub smartFlowHub
             )
         {
             _processRepository = processRepository;
             _transitionService = transitionService;
             _stateService = stateService;
             _processExecutionService = processExecutionService;
-            _smartFlowSettings = smartFlowSettings;
-            _smartFlowHub = smartFlowHub;
-            if (!_smartFlowHub.IsInitiated)
-            {
-                InitiateFlowHub().GetAwaiter().GetResult();
-            }
+            //_smartFlowHub = smartFlowHub;
+            //if (!_smartFlowHub.IsInitiated)
+            //{
+            //    InitiateFlowHub().GetAwaiter().GetResult();
+            //}
         }
 
-        private async Task InitiateFlowHub()
-        {
-            var processes = Get().GetAwaiter().GetResult();
-            var processExecutions = _processExecutionService.Get().GetAwaiter().GetResult();
-            await _smartFlowHub.Initiate(processes, processExecutions );
-        }
+        //private async Task InitiateFlowHub()
+        //{
+        //    var processes = await Get();
+        //    var processExecutions = await _processExecutionService.Get();
+        //    await _smartFlowHub.Initiate(processes, processExecutions);
+        //}
 
         public async Task<Guid> Modify(Process process)
         {
@@ -55,12 +49,12 @@ namespace SmartFlow.Services
                 throw new SmartFlowPersistencyException();
             }
 
-            process.Transitions?.ForEach(transition =>
+            process.Transitions?.ForEach(async transition =>
             {
                 transition.ProcessId = processId;
-                transition.From.Id = _stateService.Modify(transition.From).GetAwaiter().GetResult();
-                transition.To.Id = _stateService.Modify(transition.To).GetAwaiter().GetResult();
-                transition.Id = _transitionService.Modify(transition).GetAwaiter().GetResult();
+                transition.From.Id = await _stateService.Modify(transition.From);
+                transition.To.Id = await _stateService.Modify(transition.To);
+                transition.Id = await _transitionService.Modify(transition);
             });
 
             return processId;
@@ -68,7 +62,8 @@ namespace SmartFlow.Services
 
         public async Task<List<Process>> Get(Guid processId = default, string key = default)
         {
-            return await _smartFlowHub.RetreiveFlow(key);
+            return await _processRepository.Get(processId, key);
+            //return await _smartFlowHub.RetreiveFlow(key);
         }
 
         public ProcessExecutionStep GenerateProcessStep(Process process, State state)

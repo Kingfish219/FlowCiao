@@ -29,16 +29,12 @@ namespace SmartFlow
 
             AddRepositories(services);
             AddServices(services);
-            services.AddScoped<ISmartFlowBuilder, SmartFlowBuilder>();
+            services.AddTransient<ISmartFlowBuilder, SmartFlowBuilder>();
             services.AddSingleton<ISmartFlowOperator, SmartFlowOperator>();
             services.AddSingleton<SmartFlowHub>();
             
             if (smartFlowSettings.PersistFlow)
             {
-                services.AddDbContext<SmartFlowDbContext>(options =>
-                    options.UseSqlServer(smartFlowSettings.ConnectionString)
-                );
-
                 var migration = new DbMigrationManager(smartFlowSettings);
                 if (!migration.MigrateUp())
                 {
@@ -51,24 +47,24 @@ namespace SmartFlow
 
         private static void AddRepositories(IServiceCollection services)
         {
-            services.AddScoped<TransitionRepository>();
-            services.AddScoped<StateRepository>();
-            services.AddScoped<ActionRepository>();
-            services.AddScoped<ActivityRepository>();
-            services.AddScoped<LogRepository>();
-            services.AddScoped<IProcessExecutionRepository, ProcessExecutionRepository>();
-            services.AddScoped<IProcessRepository, ProcessRepository>();
+            services.AddTransient<TransitionRepository>();
+            services.AddTransient<StateRepository>();
+            services.AddTransient<ActionRepository>();
+            services.AddTransient<ActivityRepository>();
+            services.AddTransient<LogRepository>();
+            services.AddTransient<IProcessExecutionRepository, ProcessExecutionRepository>();
+            services.AddTransient<IProcessRepository, ProcessRepository>();
         }
 
         private static void AddServices(IServiceCollection services)
         {
-            services.AddScoped<ActivityService>();
-            services.AddScoped<TransitionService>();
-            services.AddScoped<StateService>();
-            services.AddScoped<IProcessService, ProcessService>();
-            services.AddScoped<ProcessExecutionService>();
-            services.AddScoped<ProcessHandlerFactory>();
-            services.AddScoped<ProcessExecutionService>();
+            services.AddTransient<ActivityService>();
+            services.AddTransient<TransitionService>();
+            services.AddTransient<StateService>();
+            services.AddTransient<IProcessService, ProcessService>();
+            services.AddTransient<ProcessExecutionService>();
+            services.AddTransient<ProcessHandlerFactory>();
+            services.AddTransient<ProcessExecutionService>();
         }
     }
 }
