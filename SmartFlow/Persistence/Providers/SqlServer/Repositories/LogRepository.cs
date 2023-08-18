@@ -1,17 +1,15 @@
 ﻿using System;
+using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Dapper.Contrib.Extensions;
 using SmartFlow.Models;
-using SmartFlow.Persistence.Cache;
 using SmartFlow.Persistence.Interfaces;
 
-namespace SmartFlow.Persistence.SqlServer.Repositories
+namespace SmartFlow.Persistence.Providers.SqlServer.Repositories
 {
-    public class LogCacheRepository : SmartFlowCacheRepository, ILogRepository
+    public class LogRepository : SmartFlowSqlServerRepository, ILogRepository
     {
-        public LogCacheRepository(SmartFlowHub smartFlowHub) : base(smartFlowHub)
-        {
-        }
+        public LogRepository(SmartFlowSettings smartFlowSettings) : base(smartFlowSettings) { }
 
         public Task<bool> Create(Log log)
         {

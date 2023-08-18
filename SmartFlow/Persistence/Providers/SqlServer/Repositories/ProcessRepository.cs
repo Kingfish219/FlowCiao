@@ -11,7 +11,7 @@ using SmartFlow.Persistence.Interfaces;
 using Activity = SmartFlow.Models.Flow.Activity;
 using Process = SmartFlow.Models.Flow.Process;
 
-namespace SmartFlow.Persistence.SqlServer.Repositories
+namespace SmartFlow.Persistence.Providers.SqlServer.Repositories
 {
     public class ProcessRepository : SmartFlowSqlServerRepository, IProcessRepository
     {

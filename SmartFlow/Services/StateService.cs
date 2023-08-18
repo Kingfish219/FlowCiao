@@ -2,16 +2,16 @@
 using System.Threading.Tasks;
 using SmartFlow.Exceptions;
 using SmartFlow.Models.Flow;
-using SmartFlow.Persistence.SqlServer.Repositories;
+using SmartFlow.Persistence.Interfaces;
 
 namespace SmartFlow.Services
 {
     public class StateService
     {
-        private readonly StateRepository _stateRepository;
+        private readonly IStateRepository _stateRepository;
         private readonly ActivityService _activityService;
 
-        public StateService(StateRepository stateRepository
+        public StateService(IStateRepository stateRepository
                         , ActivityService activityService
             )
         {

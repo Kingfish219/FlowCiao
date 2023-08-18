@@ -5,7 +5,7 @@ using SmartFlow.Exceptions;
 using SmartFlow.Interfaces;
 using SmartFlow.Models;
 using SmartFlow.Models.Flow;
-using SmartFlow.Persistence.Cache;
+using SmartFlow.Persistence.Providers.Cache;
 using SmartFlow.Services;
 
 namespace SmartFlow.Builders

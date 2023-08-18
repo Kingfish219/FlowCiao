@@ -6,11 +6,11 @@ using SmartFlow.Handlers;
 using SmartFlow.Interfaces;
 using SmartFlow.Models;
 using SmartFlow.Operators;
-using SmartFlow.Persistence.Cache;
-using SmartFlow.Persistence.Cache.Repositories;
 using SmartFlow.Persistence.Interfaces;
-using SmartFlow.Persistence.SqlServer;
-using SmartFlow.Persistence.SqlServer.Repositories;
+using SmartFlow.Persistence.Providers.Cache;
+using SmartFlow.Persistence.Providers.Cache.Repositories;
+using SmartFlow.Persistence.Providers.SqlServer;
+using SmartFlow.Persistence.Providers.SqlServer.Repositories;
 using SmartFlow.Services;
 
 namespace SmartFlow

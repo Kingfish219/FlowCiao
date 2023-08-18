@@ -1,5 +1,4 @@
-﻿
-namespace SmartFlow.Persistence.Cache
+﻿namespace SmartFlow.Persistence.Providers.Cache
 {
     public class SmartFlowCacheRepository
     {

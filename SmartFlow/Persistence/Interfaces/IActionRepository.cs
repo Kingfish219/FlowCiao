@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SmartFlow.Persistence.Interfaces
 {
-    internal interface IActionRepository
+    public interface IActionRepository
     {
         Task<Guid> Modify(ProcessAction entity);
     }

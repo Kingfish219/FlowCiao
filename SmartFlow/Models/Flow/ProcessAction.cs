@@ -26,14 +26,6 @@ namespace SmartFlow.Models.Flow
         public int Priority { get; set; }
     }
 
-    internal class ActionMap : EntityMap<ProcessAction>
-    {
-        internal ActionMap()
-        {
-            Map(x => x.Id).ToColumn("ActionId");
-        }
-    }
-
     public sealed class ProcessActionType
     {
         public Guid Id { get; set; }

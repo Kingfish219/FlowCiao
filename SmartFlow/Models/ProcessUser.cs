@@ -19,12 +19,4 @@ namespace SmartFlow.Models
             };
         }
     }
-
-    internal class UserMap : EntityMap<ProcessUser>
-    {
-        internal UserMap()
-        {
-            Map(x => x.Id).ToColumn("UserId");
-        }
-    }
 }

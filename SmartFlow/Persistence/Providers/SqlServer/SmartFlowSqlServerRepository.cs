@@ -1,7 +1,7 @@
 ﻿using SmartFlow.Models;
 using System.Data;
 
-namespace SmartFlow.Persistence.SqlServer
+namespace SmartFlow.Persistence.Providers.SqlServer
 {
     public class SmartFlowSqlServerRepository
     {

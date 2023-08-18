@@ -1,8 +1,7 @@
 ﻿using Dapper.FluentMap;
-using SmartFlow.Models;
-using SmartFlow.Models.Flow;
+using static SmartFlow.Persistence.Providers.SqlServer.ModelMappers.ModelMappers;
 
-namespace SmartFlow.Services
+namespace SmartFlow.Persistence.Providers.SqlServer
 {
     internal class DapperHelper
     {

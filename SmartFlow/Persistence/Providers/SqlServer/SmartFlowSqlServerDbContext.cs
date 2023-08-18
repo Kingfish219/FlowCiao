@@ -1,12 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace SmartFlow.Persistence
+namespace SmartFlow.Persistence.Providers.SqlServer
 {
-    internal class SmartFlowDbContext : DbContext
+    internal class SmartFlowSqlServerDbContext : DbContext
     {
         private readonly string _connectionString;
 
-        public SmartFlowDbContext(string connectionString)
+        public SmartFlowSqlServerDbContext(string connectionString)
         {
             _connectionString = connectionString;
         }

@@ -20,11 +20,4 @@ namespace SmartFlow.Models.Flow
         public List<Activity> Activities { get; set; }
     }
 
-    internal class TransitionMap : EntityMap<Transition>
-    {
-        internal TransitionMap()
-        {
-            Map(x => x.Id).ToColumn("TransitionId");
-        }
-    }
 }

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SmartFlow.Persistence.Cache.Repositories
+namespace SmartFlow.Persistence.Providers.Cache.Repositories
 {
     internal class ProcessExecutionCacheRepository : SmartFlowCacheRepository, IProcessExecutionRepository
     {

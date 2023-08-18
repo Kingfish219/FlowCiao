@@ -1,6 +1,6 @@
 ﻿using System;
 using SmartFlow.Models;
-using SmartFlow.Persistence.SqlServer.Repositories;
+using SmartFlow.Persistence.Providers.SqlServer.Repositories;
 
 namespace SmartFlow.Exceptions
 {

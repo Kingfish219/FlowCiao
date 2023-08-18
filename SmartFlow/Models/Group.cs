@@ -8,12 +8,4 @@ namespace SmartFlow.Models
         public Guid Id { get; set; }
         public string Name { get; set; }
     }
-
-    internal class GroupMap : EntityMap<Group>
-    {
-        internal GroupMap()
-        {
-            Map(x => x.Id).ToColumn("GroupId");
-        }
-    }
 }

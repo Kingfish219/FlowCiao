@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
 using SmartFlow.Models.Flow;
-using SmartFlow.Persistence.SqlServer.Repositories;
+using SmartFlow.Persistence.Interfaces;
 
 namespace SmartFlow.Services
 {
     public class ActivityService
     {
-        private readonly ActivityRepository _activityRepository;
+        private readonly IActivityRepository _activityRepository;
 
-        public ActivityService(ActivityRepository activityRepository)
+        public ActivityService(IActivityRepository activityRepository)
         {
             _activityRepository = activityRepository;
         }

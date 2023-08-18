@@ -37,12 +37,4 @@ namespace SmartFlow.Models.Flow
         public Guid Id { get; set; }
         public string Name { get; set; }
     }
-
-    internal class StateMap : EntityMap<State>
-    {
-        internal StateMap()
-        {
-            Map(x => x.Id).ToColumn("StateId");
-        }
-    }
 }

@@ -8,7 +8,7 @@ using SmartFlow.Models;
 using SmartFlow.Models.Flow;
 using SmartFlow.Persistence.Interfaces;
 
-namespace SmartFlow.Persistence.SqlServer.Repositories
+namespace SmartFlow.Persistence.Providers.SqlServer.Repositories
 {
     public class ProcessExecutionRepository : SmartFlowSqlServerRepository, IProcessExecutionRepository
     {

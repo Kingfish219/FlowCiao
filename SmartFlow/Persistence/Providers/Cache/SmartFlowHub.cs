@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using SmartFlow.Models;
 using SmartFlow.Models.Flow;
 
-namespace SmartFlow.Persistence.Cache
+namespace SmartFlow.Persistence.Providers.Cache
 {
     public class SmartFlowHub
     {

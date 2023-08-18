@@ -3,7 +3,7 @@ using DbUp;
 using DbUp.Helpers;
 using SmartFlow.Models;
 
-namespace SmartFlow.Persistence.SqlServer
+namespace SmartFlow.Persistence.Providers.SqlServer
 {
     public class DbMigrationManager
     {

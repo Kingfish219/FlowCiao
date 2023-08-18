@@ -21,12 +21,4 @@ namespace SmartFlow.Models.Flow
         public List<Transition> Transitions { get; set; }
         public State InitialState { get; set; }
     }
-
-    internal class ProcessMap : EntityMap<Process>
-    {
-        internal ProcessMap()
-        {
-            Map(x => x.Id).ToColumn("ProcessId");
-        }
-    }
 }

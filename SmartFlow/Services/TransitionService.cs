@@ -2,18 +2,18 @@
 using System.Threading.Tasks;
 using SmartFlow.Exceptions;
 using SmartFlow.Models.Flow;
-using SmartFlow.Persistence.SqlServer.Repositories;
+using SmartFlow.Persistence.Interfaces;
 
 namespace SmartFlow.Services
 {
     public class TransitionService
     {
-        private readonly TransitionRepository _transitionRepository;
-        private readonly ActionCacheRepository _actionRepository;
+        private readonly ITransitionRepository _transitionRepository;
+        private readonly IActionRepository _actionRepository;
         private readonly ActivityService _activityService;
 
-        public TransitionService(TransitionRepository transitionRepository
-                        , ActionCacheRepository actionRepository
+        public TransitionService(ITransitionRepository transitionRepository
+                        , IActionRepository actionRepository
                         , ActivityService activityService
             )
         {
