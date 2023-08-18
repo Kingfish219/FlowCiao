@@ -1,28 +1,17 @@
 ﻿using SmartFlow.Models;
 using SmartFlow.Models.Flow;
-using SmartFlow.Operators;
 using SmartFlow.Persistence.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Process = SmartFlow.Models.Flow.Process;
 
-namespace SmartFlow.Persistence.Cache
+namespace SmartFlow.Persistence.Cache.Repositories
 {
-    internal class ProcessCacheRepository : IProcessRepository
+    internal class ProcessCacheRepository : SmartFlowCacheRepository, IProcessRepository
     {
-        private readonly SmartFlowHub _smartFlowHub;
-
-        public ProcessCacheRepository(SmartFlowHub smartFlowHub)
+        public ProcessCacheRepository(SmartFlowHub smartFlowHub) : base(smartFlowHub)
         {
-            _smartFlowHub = smartFlowHub;
-            if (!_smartFlowHub.IsInitiated)
-            {
-                _smartFlowHub.Initiate(new List<Process>(), new List<ProcessExecution>())
-                    .GetAwaiter().GetResult();
-            }
         }
 
         public Task<bool> AddProcessStepHistoryActivity(ProcessStepHistoryActivity processStepHistoryActivity)
@@ -47,10 +36,11 @@ namespace SmartFlow.Persistence.Cache
 
         public async Task<List<Process>> Get(Guid processId = default, string key = null)
         {
-            var result = (from o in _smartFlowHub.Processes
-                         where (string.IsNullOrWhiteSpace(key) || o.FlowKey.Equals(key, StringComparison.InvariantCultureIgnoreCase))
-                         && (processId == default || o.Id .Equals(processId))
-                         select o).ToList();
+            var db = GetDbConnection();
+            var result = (from o in db.Processes
+                          where (string.IsNullOrWhiteSpace(key) || o.FlowKey.Equals(key, StringComparison.InvariantCultureIgnoreCase))
+                          && (processId == default || o.Id.Equals(processId))
+                          select o).ToList();
 
             return result;
         }

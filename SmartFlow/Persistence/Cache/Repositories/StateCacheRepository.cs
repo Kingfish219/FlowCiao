@@ -2,15 +2,17 @@
 using System.Data;
 using System.Threading.Tasks;
 using Dapper;
-using SmartFlow.Models;
 using SmartFlow.Models.Flow;
+using SmartFlow.Persistence.Cache;
 using SmartFlow.Persistence.Interfaces;
 
 namespace SmartFlow.Persistence.SqlServer.Repositories
 {
-    public class StateRepository : SmartFlowSqlServerRepository, IStateRepository
+    public class StateCacheRepository : SmartFlowCacheRepository, IStateRepository
     {
-        public StateRepository(SmartFlowSettings settings) : base(settings) { }
+        public StateCacheRepository(SmartFlowHub smartFlowHub) : base(smartFlowHub)
+        {
+        }
 
         public Task<Guid> Modify(State entity)
         {

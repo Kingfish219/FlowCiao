@@ -2,15 +2,17 @@
 using System.Data;
 using System.Threading.Tasks;
 using Dapper;
-using SmartFlow.Models;
 using SmartFlow.Models.Flow;
+using SmartFlow.Persistence.Cache;
 using SmartFlow.Persistence.Interfaces;
 
 namespace SmartFlow.Persistence.SqlServer.Repositories
 {
-    public class TransitionRepository : SmartFlowSqlServerRepository, ITransitionRepository
+    public class TransitionCacheRepository : SmartFlowCacheRepository, ITransitionRepository
     {
-        public TransitionRepository(SmartFlowSettings settings) : base(settings) { }
+        public TransitionCacheRepository(SmartFlowHub smartFlowHub) : base(smartFlowHub)
+        {
+        }
 
         public Task<Guid> Modify(Transition entity)
         {

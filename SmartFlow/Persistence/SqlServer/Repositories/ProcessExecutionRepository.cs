@@ -10,7 +10,7 @@ using SmartFlow.Persistence.Interfaces;
 
 namespace SmartFlow.Persistence.SqlServer.Repositories
 {
-    public class ProcessExecutionRepository : SmartFlowRepository, IProcessExecutionRepository
+    public class ProcessExecutionRepository : SmartFlowSqlServerRepository, IProcessExecutionRepository
     {
         public ProcessExecutionRepository(SmartFlowSettings settings) : base(settings) { }
 

@@ -4,10 +4,11 @@ using System.Threading.Tasks;
 using Dapper;
 using SmartFlow.Models;
 using SmartFlow.Models.Flow;
+using SmartFlow.Persistence.Interfaces;
 
 namespace SmartFlow.Persistence.SqlServer.Repositories
 {
-    public class ActionRepository : SmartFlowRepository
+    public class ActionRepository : SmartFlowSqlServerRepository, IActionRepository
     {
         public ActionRepository(SmartFlowSettings settings) : base(settings) { }
 

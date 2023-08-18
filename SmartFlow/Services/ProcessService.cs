@@ -27,19 +27,7 @@ namespace SmartFlow.Services
             _transitionService = transitionService;
             _stateService = stateService;
             _processExecutionService = processExecutionService;
-            //_smartFlowHub = smartFlowHub;
-            //if (!_smartFlowHub.IsInitiated)
-            //{
-            //    InitiateFlowHub().GetAwaiter().GetResult();
-            //}
         }
-
-        //private async Task InitiateFlowHub()
-        //{
-        //    var processes = await Get();
-        //    var processExecutions = await _processExecutionService.Get();
-        //    await _smartFlowHub.Initiate(processes, processExecutions);
-        //}
 
         public async Task<Guid> Modify(Process process)
         {
@@ -63,7 +51,6 @@ namespace SmartFlow.Services
         public async Task<List<Process>> Get(Guid processId = default, string key = default)
         {
             return await _processRepository.Get(processId, key);
-            //return await _smartFlowHub.RetreiveFlow(key);
         }
 
         public ProcessExecutionStep GenerateProcessStep(Process process, State state)

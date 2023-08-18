@@ -13,7 +13,7 @@ using Process = SmartFlow.Models.Flow.Process;
 
 namespace SmartFlow.Persistence.SqlServer.Repositories
 {
-    public class ProcessRepository : SmartFlowRepository, IProcessRepository
+    public class ProcessRepository : SmartFlowSqlServerRepository, IProcessRepository
     {
         public ProcessRepository(SmartFlowSettings settings) : base(settings) { }
 

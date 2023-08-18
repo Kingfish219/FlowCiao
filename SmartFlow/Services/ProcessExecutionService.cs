@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using SmartFlow.Exceptions;
 using SmartFlow.Models;
 using SmartFlow.Models.Flow;
-using SmartFlow.Operators;
 using SmartFlow.Persistence.Interfaces;
 using Process = SmartFlow.Models.Flow.Process;
 
@@ -16,16 +14,13 @@ namespace SmartFlow.Services
     {
         private readonly IProcessExecutionRepository _processExecutionRepository;
         private readonly SmartFlowSettings _smartFlowSettings;
-        private readonly SmartFlowHub _smartFlowHub;
 
         public ProcessExecutionService(IProcessExecutionRepository processExecutionRepository
             , SmartFlowSettings smartFlowSettings
-            , SmartFlowHub smartFlowHub
             )
         {
             _smartFlowSettings = smartFlowSettings;
             _processExecutionRepository = processExecutionRepository;
-            _smartFlowHub = smartFlowHub;
         }
 
         public async Task<List<ProcessExecution>> Get(Guid id = default, Guid processId = default)

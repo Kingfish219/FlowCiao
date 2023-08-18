@@ -4,15 +4,15 @@ using System.Threading.Tasks;
 using Dapper;
 using SmartFlow.Models;
 using SmartFlow.Models.Flow;
+using SmartFlow.Persistence.Cache;
 using SmartFlow.Persistence.Interfaces;
 
 namespace SmartFlow.Persistence.SqlServer.Repositories
 {
-    public class ActivityRepository : SmartFlowSqlServerRepository, IActivityRepository
+    public class ActivityCacheRepository : SmartFlowCacheRepository, IActivityRepository
     {
-        public ActivityRepository(SmartFlowSettings settings) : base(settings)
+        public ActivityCacheRepository(SmartFlowHub smartFlowHub) : base(smartFlowHub)
         {
-            
         }
 
         public Task<Guid> Modify(Activity entity)

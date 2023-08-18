@@ -9,11 +9,11 @@ namespace SmartFlow.Services
     public class TransitionService
     {
         private readonly TransitionRepository _transitionRepository;
-        private readonly ActionRepository _actionRepository;
+        private readonly ActionCacheRepository _actionRepository;
         private readonly ActivityService _activityService;
 
         public TransitionService(TransitionRepository transitionRepository
-                        , ActionRepository actionRepository
+                        , ActionCacheRepository actionRepository
                         , ActivityService activityService
             )
         {

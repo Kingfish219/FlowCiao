@@ -1,6 +1,4 @@
 ﻿using System;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SmartFlow.Builders;
 using SmartFlow.Exceptions;
@@ -8,7 +6,8 @@ using SmartFlow.Handlers;
 using SmartFlow.Interfaces;
 using SmartFlow.Models;
 using SmartFlow.Operators;
-using SmartFlow.Persistence;
+using SmartFlow.Persistence.Cache;
+using SmartFlow.Persistence.Cache.Repositories;
 using SmartFlow.Persistence.Interfaces;
 using SmartFlow.Persistence.SqlServer;
 using SmartFlow.Persistence.SqlServer.Repositories;
@@ -27,11 +26,10 @@ namespace SmartFlow
             settings.Invoke(smartFlowSettings);
             services.AddSingleton(smartFlowSettings);
 
-            AddRepositories(services);
+            AddCacheRepositories(services);
             AddServices(services);
             services.AddTransient<ISmartFlowBuilder, SmartFlowBuilder>();
             services.AddSingleton<ISmartFlowOperator, SmartFlowOperator>();
-            services.AddSingleton<SmartFlowHub>();
             
             if (smartFlowSettings.PersistFlow)
             {
@@ -45,13 +43,29 @@ namespace SmartFlow
             return services;
         }
 
-        private static void AddRepositories(IServiceCollection services)
+        private static void AddCacheRepositories(IServiceCollection services)
         {
-            services.AddTransient<TransitionRepository>();
-            services.AddTransient<StateRepository>();
-            services.AddTransient<ActionRepository>();
-            services.AddTransient<ActivityRepository>();
-            services.AddTransient<LogRepository>();
+            var smartFlowHub = new SmartFlowHub();
+            smartFlowHub.Initiate(new System.Collections.Generic.List<Models.Flow.Process>(),
+                new System.Collections.Generic.List<ProcessExecution>());
+
+            services.AddSingleton(smartFlowHub);
+            services.AddTransient<ITransitionRepository, TransitionCacheRepository>();
+            services.AddTransient<IStateRepository, StateCacheRepository>();
+            services.AddTransient<IActionRepository, ActionCacheRepository>();
+            services.AddTransient<IActivityRepository, ActivityCacheRepository>();
+            services.AddTransient<ILogRepository, LogCacheRepository>();
+            services.AddTransient<IProcessExecutionRepository, ProcessExecutionCacheRepository>();
+            services.AddTransient<IProcessRepository, ProcessCacheRepository>();
+        }
+
+        private static void AddSqlServerRepositories(IServiceCollection services)
+        {
+            services.AddTransient<ITransitionRepository, TransitionRepository>();
+            services.AddTransient<IStateRepository, StateRepository>();
+            services.AddTransient<IActionRepository, ActionRepository>();
+            services.AddTransient<IActivityRepository, ActivityRepository>();
+            services.AddTransient<ILogRepository, LogRepository>();
             services.AddTransient<IProcessExecutionRepository, ProcessExecutionRepository>();
             services.AddTransient<IProcessRepository, ProcessRepository>();
         }

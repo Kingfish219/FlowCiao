@@ -1,13 +1,13 @@
 ﻿using SmartFlow.Models;
 using System.Data;
 
-namespace SmartFlow.Persistence
+namespace SmartFlow.Persistence.SqlServer
 {
-    public class SmartFlowRepository
+    public class SmartFlowSqlServerRepository
     {
         private readonly SmartFlowPersistanceSettings _settings;
 
-        public SmartFlowRepository(SmartFlowSettings smartFlowSettings)
+        public SmartFlowSqlServerRepository(SmartFlowSettings smartFlowSettings)
         {
             _settings = smartFlowSettings.PersistanceSettings;
         }
