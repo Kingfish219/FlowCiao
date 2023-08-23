@@ -14,7 +14,7 @@ namespace SmartFlow.Persistence.Interfaces
         Task<bool> RemoveActiveProcessStep(ProcessEntity entity);
         Task<Process> GetProcess(Guid userId, Guid requestTypeId);
         Task<List<Process>> Get(Guid processId = default, string key = default);
-        Task<Guid> Create(Process entity);
+        Task<Guid> Modfiy(Process entity);
         //Task<bool> CreateProcessStep(ProcessExecutionStep entity);
         //Task<bool> CompleteProgressAction(ProcessExecutionStepDetail processStep, ProcessAction action);
         Task<State> GetState(Guid stateId);

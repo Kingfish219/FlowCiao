@@ -606,7 +606,7 @@ namespace SmartFlow.Persistence.Providers.SqlServer.Repositories
             }
         }
 
-        public Task<Guid> Create(Process entity)
+        public Task<Guid> Modfiy(Process entity)
         {
             return Task.Run(() =>
             {

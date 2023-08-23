@@ -2,16 +2,16 @@
 {
     public class SmartFlowCacheRepository
     {
-        private readonly SmartFlowHub _smartFlowHub;
+        protected readonly SmartFlowHub SmartFlowHub;
 
         public SmartFlowCacheRepository(SmartFlowHub smartFlowHub)
         {
-            _smartFlowHub = smartFlowHub;
+            SmartFlowHub = smartFlowHub;
         }
 
         protected SmartFlowHub GetDbConnection()
         {
-            return _smartFlowHub;
+            return SmartFlowHub;
         }
     }
 }

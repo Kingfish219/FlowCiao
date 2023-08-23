@@ -27,7 +27,7 @@ namespace SmartFlow.Services
 
         public async Task<Guid> Modify(Process process)
         {
-            var processId = await _processRepository.Create(process);
+            var processId = await _processRepository.Modfiy(process);
             if (processId == default)
             {
                 throw new SmartFlowPersistencyException();

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Data;
 using System.Threading.Tasks;
-using Dapper;
 using SmartFlow.Models.Flow;
 using SmartFlow.Persistence.Interfaces;
 
@@ -13,27 +11,16 @@ namespace SmartFlow.Persistence.Providers.Cache.Repositories
         {
         }
 
-        public Task<Guid> Modify(Transition entity)
+        public async Task<Guid> Modify(Transition entity)
         {
-            throw new NotImplementedException();
+            if (entity.Id == default)
+            {
+                entity.Id = Guid.NewGuid();
+            }
 
-            //return Task.Run(() =>
-            //{
-            //    var toInsert = new
-            //    {
-            //        Id = entity.Id == default ? Guid.NewGuid() : entity.Id,
-            //        entity.ProcessId,
-            //        CurrentStateId = entity.From.Id,
-            //        NextStateId = entity.To.Id
-            //    };
+            await SmartFlowHub.InsertTransition(entity);
 
-            //    using var connection = GetDbConnection();
-            //    connection.Open();
-            //    connection.Execute(ConstantsProvider.Usp_Transition_Modify, toInsert, commandType: CommandType.StoredProcedure);
-            //    entity.Id = toInsert.Id;
-
-            //    return entity.Id;
-            //});
+            return entity.Id;
         }
 
         public Task AssociateActions(Transition entity, ProcessAction action)
@@ -57,24 +44,9 @@ namespace SmartFlow.Persistence.Providers.Cache.Repositories
             //});
         }
 
-        public Task AssociateActivities(Transition entity, Activity activity)
+        public async Task AssociateActivities(Transition entity, Activity activity)
         {
-            throw new NotImplementedException();
 
-            //return Task.Run(() =>
-            //{
-            //    var toInsert = new
-            //    {
-            //        TransitionId = entity.Id,
-            //        ActivityId = activity.Id
-            //    };
-
-            //    using var connection = GetDbConnection();
-            //    connection.Open();
-            //    connection.Execute(ConstantsProvider.Usp_TransitionActivity_Modify, toInsert, commandType: CommandType.StoredProcedure);
-
-            //    return entity.Id;
-            //});
         }
     }
 }

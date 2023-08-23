@@ -29,20 +29,36 @@ namespace SmartFlow.Persistence.Providers.Cache.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Guid> Create(Process entity)
+        public async Task<Guid> Modfiy(Process entity)
         {
-            throw new NotImplementedException();
+            if (entity.Id == default)
+            {
+                entity.Id = Guid.NewGuid();
+            }
+
+            var process = await Get(entity.Id, entity.FlowKey);
+            if (process is not null)
+            {
+                await SmartFlowHub.DeleteProcess(entity);
+            }
+
+            await SmartFlowHub.InsertProcess(entity);
+
+            return entity.Id;
         }
 
         public async Task<List<Process>> Get(Guid processId = default, string key = null)
         {
-            var db = GetDbConnection();
-            var result = (from o in db.Processes
-                          where (string.IsNullOrWhiteSpace(key) || o.FlowKey.Equals(key, StringComparison.InvariantCultureIgnoreCase))
-                          && (processId == default || o.Id.Equals(processId))
-                          select o).ToList();
+            return await Task.Run(() =>
+            {
+                var db = GetDbConnection();
+                var result = (from o in db.Processes
+                              where (string.IsNullOrWhiteSpace(key) || o.FlowKey.Equals(key, StringComparison.InvariantCultureIgnoreCase))
+                              && (processId == default || o.Id.Equals(processId))
+                              select o).ToList();
 
-            return result;
+                return result;
+            });
         }
 
         public Task<ProcessExecutionStep> GetActiveProcessStep(ProcessEntity entity)

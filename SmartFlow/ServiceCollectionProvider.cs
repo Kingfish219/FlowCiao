@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using SmartFlow.Builders;
 using SmartFlow.Exceptions;
 using SmartFlow.Handlers;
-using SmartFlow.Interfaces;
 using SmartFlow.Models;
+using SmartFlow.Models.Flow;
 using SmartFlow.Operators;
 using SmartFlow.Persistence.Interfaces;
 using SmartFlow.Persistence.Providers.Cache;
@@ -47,8 +48,12 @@ namespace SmartFlow
         private static void AddCacheRepositories(IServiceCollection services)
         {
             var smartFlowHub = new SmartFlowHub();
-            smartFlowHub.Initiate(new System.Collections.Generic.List<Models.Flow.Process>(),
-                new System.Collections.Generic.List<ProcessExecution>());
+            smartFlowHub.Initiate(new List<Process>(),
+                new List<ProcessExecution>(),
+                new List<State>(),
+                new List<Transition>(),
+                new List<Activity>(),
+                new List<ProcessAction>());
 
             services.AddSingleton(smartFlowHub);
             services.AddTransient<ITransitionRepository, TransitionCacheRepository>();

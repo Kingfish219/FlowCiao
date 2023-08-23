@@ -15,13 +15,16 @@ namespace SmartFlow.Persistence.Providers.Cache.Repositories
 
         public async Task<List<ProcessExecution>> Get(Guid id = default, Guid processId = default)
         {
-            var db = GetDbConnection();
-            var result = (from o in db.ProcessExecutions
-                          where (processId == default || o.Process.Id.Equals(processId))
-                          && (id == default || o.Id.Equals(id))
-                          select o).ToList();
+            return await Task.Run(() =>
+            {
+                var db = GetDbConnection();
+                var result = (from o in db.ProcessExecutions
+                              where (processId == default || o.Process.Id.Equals(processId))
+                              && (id == default || o.Id.Equals(id))
+                              select o).ToList();
 
-            return result;
+                return result;
+            });
         }
 
         public Task<Guid> Modify(ProcessExecution entity)

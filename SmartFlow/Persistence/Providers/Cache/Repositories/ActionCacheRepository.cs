@@ -11,28 +11,16 @@ namespace SmartFlow.Persistence.Providers.Cache.Repositories
         {
         }
 
-        public Task<Guid> Modify(ProcessAction entity)
+        public async Task<Guid> Modify(ProcessAction entity)
         {
-            throw new NotImplementedException();
+            if (entity.Id == default)
+            {
+                entity.Id = Guid.NewGuid();
+            }
 
-            //return Task.Run(() =>
-            //{
-            //    var toInsert = new
-            //    {
-            //        Id = entity.Id == default ? Guid.NewGuid() : entity.Id,
-            //        entity.Name,
-            //        entity.ActionTypeCode,
-            //        entity.ProcessId
-            //    };
+            await SmartFlowHub.InsertAction(entity);
 
-            //    using var connection = GetDbConnection();
-            //    connection.Open();
-            //    connection.Execute(ConstantsProvider.Usp_Action_Modify, toInsert, commandType: CommandType.StoredProcedure);
-            //    entity.Id = toInsert.Id;
-
-            //    return entity.Id;
-
-            //});
+            return entity.Id;
         }
     }
 }
