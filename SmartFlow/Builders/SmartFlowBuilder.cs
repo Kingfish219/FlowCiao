@@ -15,17 +15,11 @@ namespace SmartFlow.Builders
         public List<ISmartFlowStepBuilder> StepBuilders { get; set; }
         public ISmartFlowStepBuilder InitialStepBuilder { get; set; }
         private readonly IProcessService _processService;
-        private readonly SmartFlowSettings _smartFlowSettings;
-        private readonly SmartFlowHub _smartFlowHub;
 
-        public SmartFlowBuilder(IProcessService processService,
-            SmartFlowHub smartFlowHub,
-            SmartFlowSettings smartFlowSettings)
+        public SmartFlowBuilder(IProcessService processService)
         {
             StepBuilders = new List<ISmartFlowStepBuilder>();
             _processService = processService;
-            _smartFlowHub = smartFlowHub;
-            _smartFlowSettings = smartFlowSettings;
         }
 
         public ISmartFlowStepBuilder Initial()
@@ -117,7 +111,6 @@ namespace SmartFlow.Builders
                 }
 
                 process.InitialState = constructor.InitialStepBuilder.InitialState;
-                _smartFlowHub.RegisterFlow(process).GetAwaiter().GetResult();
 
                 var result = _processService.Modify(process).GetAwaiter().GetResult();
                 if (result == default)

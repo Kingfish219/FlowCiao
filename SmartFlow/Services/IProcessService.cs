@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SmartFlow.Interfaces
+namespace SmartFlow.Services
 {
     public interface IProcessService
     {

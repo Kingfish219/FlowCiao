@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SmartFlow.Exceptions;
-using SmartFlow.Interfaces;
 using SmartFlow.Models;
 using SmartFlow.Models.Flow;
 using SmartFlow.Persistence.Interfaces;
@@ -15,18 +14,15 @@ namespace SmartFlow.Services
         private readonly IProcessRepository _processRepository;
         private readonly TransitionService _transitionService;
         private readonly StateService _stateService;
-        private readonly ProcessExecutionService _processExecutionService;
 
         public ProcessService(IProcessRepository processRepository
             , TransitionService transitionService
             , StateService stateService
-            , ProcessExecutionService processExecutionService
             )
         {
             _processRepository = processRepository;
             _transitionService = transitionService;
             _stateService = stateService;
-            _processExecutionService = processExecutionService;
         }
 
         public async Task<Guid> Modify(Process process)
@@ -79,11 +75,6 @@ namespace SmartFlow.Services
 
             processExecution.ExecutionSteps.Add(GenerateProcessStep(processExecution.Process,
                         processExecution.Process.Transitions.First(x => x.From.IsInitial).From));
-
-            //if (_smartFlowSettings.PersistFlow)
-            //{
-            //    await Modify(processExecution);
-            //}
 
             return processExecution;
         }

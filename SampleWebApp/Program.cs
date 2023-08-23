@@ -18,7 +18,6 @@ builder.Services.AddSmartFlow(settings =>
 
 var app = builder.Build();
 
-
 // Add SmartFlow
 var stateMachineBuilder = app.Services.GetService<ISmartFlowBuilder>();
 var workflow = stateMachineBuilder?.Build<SampleStateMachine>();

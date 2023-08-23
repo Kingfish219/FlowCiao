@@ -20,27 +20,28 @@ namespace SmartFlow
         public static IServiceCollection AddSmartFlow(this IServiceCollection services,
             Action<SmartFlowSettings> settings)
         {
-            DapperHelper.EnsureMappings();
-
             var smartFlowSettings = new SmartFlowSettings();
             settings.Invoke(smartFlowSettings);
             services.AddSingleton(smartFlowSettings);
 
-            AddCacheRepositories(services);
+            AddRepositories(services, smartFlowSettings);
             AddServices(services);
             services.AddTransient<ISmartFlowBuilder, SmartFlowBuilder>();
             services.AddSingleton<ISmartFlowOperator, SmartFlowOperator>();
             
+            return services;
+        }
+
+        private static void AddRepositories(IServiceCollection services, SmartFlowSettings smartFlowSettings)
+        {
             if (smartFlowSettings.PersistFlow)
             {
-                var migration = new DbMigrationManager(smartFlowSettings);
-                if (!migration.MigrateUp())
-                {
-                    throw new SmartFlowPersistencyException("Migration failed");
-                }
+                AddSqlServerRepositories(services, smartFlowSettings);
             }
-
-            return services;
+            else
+            {
+                AddCacheRepositories(services);
+            }
         }
 
         private static void AddCacheRepositories(IServiceCollection services)
@@ -59,8 +60,16 @@ namespace SmartFlow
             services.AddTransient<IProcessRepository, ProcessCacheRepository>();
         }
 
-        private static void AddSqlServerRepositories(IServiceCollection services)
+        private static void AddSqlServerRepositories(IServiceCollection services, SmartFlowSettings smartFlowSettings)
         {
+            DapperHelper.EnsureMappings();
+
+            var migration = new DbMigrationManager(smartFlowSettings);
+            if (!migration.MigrateUp())
+            {
+                throw new SmartFlowPersistencyException("Migration failed");
+            }
+
             services.AddTransient<ITransitionRepository, TransitionRepository>();
             services.AddTransient<IStateRepository, StateRepository>();
             services.AddTransient<IActionRepository, ActionRepository>();

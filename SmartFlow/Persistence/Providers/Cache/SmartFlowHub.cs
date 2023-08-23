@@ -19,7 +19,7 @@ namespace SmartFlow.Persistence.Providers.Cache
             IsInitiated = true;
         }
 
-        public async Task RegisterFlow<TFlow>(TFlow smartFlow) where TFlow : Process
+        public async Task RegisterProcess<TFlow>(TFlow smartFlow) where TFlow : Process
         {
             await Task.Run(() =>
             {
@@ -27,7 +27,7 @@ namespace SmartFlow.Persistence.Providers.Cache
             });
         }
 
-        public async Task RegisterFlowExecution<T>(T processExecution) where T : ProcessExecution
+        public async Task RegisterProcessExecution<T>(T processExecution) where T : ProcessExecution
         {
             await Task.Run(() =>
             {
