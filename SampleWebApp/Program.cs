@@ -24,7 +24,7 @@ var workflow = stateMachineBuilder?.Build<SampleStateMachine>();
 var defaultWorkflowOperator = app.Services.GetService<ISmartFlowOperator>();
 
 // Fire your Smart Flow
-defaultWorkflowOperator?.Fire("Sample", 1);
+var result = defaultWorkflowOperator?.Fire("Sample", 1);
 
 
 if (app.Environment.IsDevelopment())

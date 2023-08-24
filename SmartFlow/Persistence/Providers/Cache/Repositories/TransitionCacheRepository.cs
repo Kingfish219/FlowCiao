@@ -18,15 +18,13 @@ namespace SmartFlow.Persistence.Providers.Cache.Repositories
                 entity.Id = Guid.NewGuid();
             }
 
-            await SmartFlowHub.InsertTransition(entity);
+            await SmartFlowHub.ModifyTransition(entity);
 
             return entity.Id;
         }
 
-        public Task AssociateActions(Transition entity, ProcessAction action)
+        public async Task AssociateActions(Transition entity, ProcessAction action)
         {
-            throw new NotImplementedException();
-
             //return Task.Run(() =>
             //{
             //    var toInsert = new

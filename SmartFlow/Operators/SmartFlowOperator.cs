@@ -73,7 +73,7 @@ namespace SmartFlow.Operators
                 }
 
                 var processStepContext = InitiateContext(action, data, processExecution, activeProcessStep);
-                var handlers = _processHandlerFactory.BuildHandlers(processStepContext);
+                var handlers = _processHandlerFactory.BuildHandlers();
                 
                 var result = handlers.Peek().Handle(processStepContext);
 

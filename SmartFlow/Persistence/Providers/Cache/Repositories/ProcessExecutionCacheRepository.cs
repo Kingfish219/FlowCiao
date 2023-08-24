@@ -27,9 +27,16 @@ namespace SmartFlow.Persistence.Providers.Cache.Repositories
             });
         }
 
-        public Task<Guid> Modify(ProcessExecution entity)
+        public async Task<Guid> Modify(ProcessExecution entity)
         {
-            throw new NotImplementedException();
+            if (entity.Id == default)
+            {
+                entity.Id = Guid.NewGuid();
+            }
+
+            await SmartFlowHub.ModifyProcessExecution(entity);
+
+            return entity.Id;
         }
     }
 }

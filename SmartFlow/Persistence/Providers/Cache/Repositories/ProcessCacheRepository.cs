@@ -42,7 +42,7 @@ namespace SmartFlow.Persistence.Providers.Cache.Repositories
                 await SmartFlowHub.DeleteProcess(entity);
             }
 
-            await SmartFlowHub.InsertProcess(entity);
+            await SmartFlowHub.ModifyProcess(entity);
 
             return entity.Id;
         }

@@ -33,12 +33,12 @@ namespace SmartFlow.Services
                 throw new SmartFlowPersistencyException();
             }
 
-            process.Transitions?.ForEach(async transition =>
+            process.Transitions?.ForEach(transition =>
             {
                 transition.ProcessId = processId;
-                transition.From.Id = await _stateService.Modify(transition.From);
-                transition.To.Id = await _stateService.Modify(transition.To);
-                transition.Id = await _transitionService.Modify(transition);
+                transition.From.Id = _stateService.Modify(transition.From).GetAwaiter().GetResult();
+                transition.To.Id = _stateService.Modify(transition.To).GetAwaiter().GetResult();
+                transition.Id = _transitionService.Modify(transition).GetAwaiter().GetResult();
             });
 
             return processId;

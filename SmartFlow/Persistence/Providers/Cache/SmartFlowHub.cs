@@ -38,13 +38,13 @@ namespace SmartFlow.Persistence.Providers.Cache
             });
         }
 
-        public async Task InsertProcess(Process process)
+        public async Task ModifyProcess(Process process)
         {
             await Task.Run(() =>
             {
                 if (Processes.Exists(x => x.Id.Equals(process.Id)))
                 {
-                    throw new SmartFlowPersistencyException("");
+                    return;
                 }
 
                 Processes.Add(process);
@@ -59,26 +59,26 @@ namespace SmartFlow.Persistence.Providers.Cache
             });
         }
 
-        public async Task InsertProcessExecution(ProcessExecution processExecution)
+        public async Task ModifyProcessExecution(ProcessExecution processExecution)
         {
             await Task.Run(() =>
             {
                 if (ProcessExecutions.Exists(x => x.Id.Equals(processExecution.Id)))
                 {
-                    throw new SmartFlowPersistencyException("");
+                    return;
                 }
 
                 ProcessExecutions.Add(processExecution);
             });
         }
 
-        public async Task InsertState(State state)
+        public async Task ModifyState(State state)
         {
             await Task.Run(() =>
             {
                 if (States.Exists(x => x.Id.Equals(state.Id)))
                 {
-                    throw new SmartFlowPersistencyException("");
+                    return;
                 }
 
                 States.Add(state);
@@ -93,13 +93,13 @@ namespace SmartFlow.Persistence.Providers.Cache
             });
         }
 
-        public async Task InsertTransition(Transition transition)
+        public async Task ModifyTransition(Transition transition)
         {
             await Task.Run(() =>
             {
                 if (Transitions.Exists(x => x.Id.Equals(transition.Id)))
                 {
-                    throw new SmartFlowPersistencyException("");
+                    return;
                 }
 
                 Transitions.Add(transition);
@@ -114,13 +114,13 @@ namespace SmartFlow.Persistence.Providers.Cache
             });
         }
 
-        public async Task InsertActivity(Activity activity)
+        public async Task ModfiyActivity(Activity activity)
         {
             await Task.Run(() =>
             {
                 if (Activities.Exists(x => x.Id.Equals(activity.Id)))
                 {
-                    throw new SmartFlowPersistencyException("");
+                    return;
                 }
 
                 Activities.Add(activity);
@@ -135,13 +135,13 @@ namespace SmartFlow.Persistence.Providers.Cache
             });
         }
 
-        public async Task InsertAction(ProcessAction action)
+        public async Task ModifyAction(ProcessAction action)
         {
             await Task.Run(() =>
             {
                 if (Actions.Exists(x => x.Id.Equals(action.Id)))
                 {
-                    throw new SmartFlowPersistencyException("");
+                    return;
                 }
 
                 Actions.Add(action);

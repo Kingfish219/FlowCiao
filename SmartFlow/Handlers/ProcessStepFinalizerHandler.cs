@@ -7,8 +7,13 @@ namespace SmartFlow.Handlers
 {
     internal class ProcessStepFinalizerHandler : WorkflowHandler
     {
-        public ProcessStepFinalizerHandler(IProcessRepository processRepository, IProcessService processService) : base(processRepository, processService)
+        private readonly ProcessExecutionService _executionService;
+
+        public ProcessStepFinalizerHandler(IProcessRepository processRepository,
+            IProcessService processService,
+            ProcessExecutionService processExecutionService) : base(processRepository, processService)
         {
+            _executionService = processExecutionService;
         }
 
         //public ProcessStepFinalizerHandler(IProcessRepository processRepository, ProcessStepContext ProcessStepContext, IProcessStepManager processStepManager) : base(processRepository, ProcessStepContext)
@@ -61,7 +66,13 @@ namespace SmartFlow.Handlers
                 //    };
                 //}
 
-                return NextHandler.Handle(processStepContext);
+                _executionService.Modify(processStepContext.ProcessExecution).GetAwaiter().GetResult();
+
+                return NextHandler?.Handle(processStepContext) ?? new ProcessResult
+                {
+                    Status = ProcessResultStatus.Completed,
+                    InstanceId = processStepContext.ProcessExecution.Id
+                };
             }
             catch (Exception exception)
             {

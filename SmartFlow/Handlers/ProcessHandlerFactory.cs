@@ -9,32 +9,32 @@ namespace SmartFlow.Handlers
     {
         private readonly IProcessRepository _processRepository;
         private readonly IProcessService _processService;
+        private readonly ProcessExecutionService _processExecutionService;
 
         public ProcessHandlerFactory(IProcessRepository processRepository
-            , IProcessService processService)
+            , IProcessService processService,
+            ProcessExecutionService processExecutionService)
         {
             _processRepository = processRepository;
             _processService = processService;
+            _processExecutionService = processExecutionService;
         }
 
-        internal Queue<WorkflowHandler> BuildHandlers(
-            ProcessStepContext processStepContext
-            )
+        internal Queue<WorkflowHandler> BuildHandlers()
         {
-            return BuildDefaultHandlers(processStepContext, _processRepository, _processService);
+            return BuildDefaultHandlers(_processRepository, _processService, _processExecutionService);
         }
 
-        private Queue<WorkflowHandler> BuildDefaultHandlers(
-             ProcessStepContext processStepContext
-            , IProcessRepository processRepository
-            , IProcessService processService)
+        private Queue<WorkflowHandler> BuildDefaultHandlers(IProcessRepository processRepository,
+            IProcessService processService,
+            ProcessExecutionService processExecutionService)
         {
             var actionHandler = new ActionHandler(processRepository, processService);
             var actionActivityHandler = new ActionActivityHandler(processRepository, processService);
             var transitionHandler = new TransitionHandler(processRepository, processService);
             var transitionActivityHandler = new TransitionActivityHandler(processRepository, processService);
             var stateActivityHandler = new StateActivityHandler(processRepository, processService);
-            var processStepFinalizerHandler = new ProcessStepFinalizerHandler(processRepository, processService);
+            var processStepFinalizerHandler = new ProcessStepFinalizerHandler(processRepository, processService, processExecutionService);
 
             actionHandler.SetNextHandler(actionActivityHandler);
 

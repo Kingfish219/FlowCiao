@@ -18,7 +18,7 @@ namespace SmartFlow.Persistence.Providers.Cache.Repositories
                 entity.Id = Guid.NewGuid();
             }
 
-            await SmartFlowHub.InsertAction(entity);
+            await SmartFlowHub.ModifyAction(entity);
 
             return entity.Id;
         }
