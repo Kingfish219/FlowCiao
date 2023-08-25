@@ -27,26 +27,22 @@ namespace SmartFlow.Handlers
 
                 var types = AppDomain.CurrentDomain.GetAssemblies()
                     .SelectMany(type => type.GetTypes())
-                    .Where(p => typeof(Activity).IsAssignableFrom(p) && !p.IsInterface && !p.IsAbstract && p.BaseType == typeof(Activity));
+                    .Where(p => typeof(IProcessActivity).IsAssignableFrom(p) && !p.IsAbstract);
 
                 foreach (var type in types)
                 {
-                    var activity = (IProcessActivity)Activator.CreateInstance(type, processStepContext);
+                    var activity = (IProcessActivity)Activator.CreateInstance(type);
                     if (activity is null ||
-                        !activities.Exists(x => x.ActivityTypeCode == ((Activity)activity).ActivityTypeCode))
+                            !activities.Exists(x => x.ProcessActivityExecutor.GetType().Equals(activity.GetType())))
                     {
                         continue;
                     }
 
-                    var result = activity.Execute();
+                    var result = activity.Execute(processStepContext);
                     if (result.Status != ProcessResultStatus.Completed && result.Status != ProcessResultStatus.SetOwner)
                     {
                         throw new SmartFlowProcessExecutionException("Exception occured while invoking activities" + result.Message);
                     }
-
-                    //var currentActivity = activities.Find(a => a.ActivityTypeCode == ((Activity)activity).ActivityTypeCode);
-                    //Guid LastProcessStepHistoryItemId = ProcessRepository.GetLastProcessStepHistoryItem(processStepContext.ProcessStepDetail.Entity.Id).Result.Id;
-                    //ProcessRepository.AddProcessStepHistoryActivity(new ProcessStepHistoryActivity { ActivityId = currentActivity.Id, ActivityName = currentActivity.Name, StepType = 2, ProcessStepHistoryId = LastProcessStepHistoryItemId });
                 }
 
                 return NextHandler.Handle(processStepContext);

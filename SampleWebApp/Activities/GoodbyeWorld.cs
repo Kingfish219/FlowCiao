@@ -7,14 +7,9 @@ namespace SampleWebApp.Activities
     {
         public ProcessResult Execute(ProcessStepContext context)
         {
-            Console.WriteLine("Hello world");
+            Console.WriteLine("Goodbye world");
 
             return ProcessResult.SuccessResult();
-        }
-
-        public ProcessResult Execute()
-        {
-            throw new NotImplementedException();
         }
     }
 }

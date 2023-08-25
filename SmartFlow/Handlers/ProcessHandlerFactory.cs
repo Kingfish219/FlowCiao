@@ -44,7 +44,7 @@ namespace SmartFlow.Handlers
             transitionHandler.SetNextHandler(transitionActivityHandler);
             transitionHandler.SetPreviousHandler(actionActivityHandler);
 
-            transitionActivityHandler.SetNextHandler(processStepFinalizerHandler);
+            transitionActivityHandler.SetNextHandler(stateActivityHandler);
             transitionActivityHandler.SetPreviousHandler(transitionHandler);
 
             stateActivityHandler.SetNextHandler(processStepFinalizerHandler);

@@ -5,11 +5,13 @@ using SmartFlow.Operators;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var configuration = builder.Configuration; // allows both to access and to set up the config
+var configuration = builder.Configuration;
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Add SmartFlow to services
 builder.Services.AddSmartFlow(settings =>
 {
     //settings.Persist()
@@ -18,14 +20,12 @@ builder.Services.AddSmartFlow(settings =>
 
 var app = builder.Build();
 
-// Add SmartFlow
+// Build your custom flow and Fire!!!
 var stateMachineBuilder = app.Services.GetService<ISmartFlowBuilder>();
 var workflow = stateMachineBuilder?.Build<SampleStateMachine>();
 var defaultWorkflowOperator = app.Services.GetService<ISmartFlowOperator>();
-
-// Fire your Smart Flow
 var result = defaultWorkflowOperator?.Fire("Sample", 1);
-
+result = defaultWorkflowOperator?.Fire("Sample", 1);
 
 if (app.Environment.IsDevelopment())
 {

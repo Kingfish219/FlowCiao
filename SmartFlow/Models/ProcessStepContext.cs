@@ -10,7 +10,6 @@ namespace SmartFlow.Models
         internal ProcessExecutionStepDetail ProcessExecutionStepDetail { get; set; }
         internal ProcessUser ProcessUser { get; set; }
         internal ProcessStepInput ProcessStepInput { get; set; }
-        public ProcessAction Action { get; set; }
         public Dictionary<string, object> Data { get; set; }
 
         internal ProcessStepContext()

@@ -11,10 +11,5 @@ namespace SampleWebApp.Activities
 
             return ProcessResult.SuccessResult();
         }
-
-        public ProcessResult Execute()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

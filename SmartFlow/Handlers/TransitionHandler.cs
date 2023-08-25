@@ -13,15 +13,6 @@ namespace SmartFlow.Handlers
         {
         }
 
-        //internal TransitionHandler(IProcessRepository processRepository, IEntityRepository entityRepository, int actionCode, string connectionString, LogRepository logRepository) : base(processRepository)
-        //{
-        //    _processRepository = processRepository;
-        //    _entityRepository = entityRepository;
-        //    _actionCode = actionCode;
-        //    _connectionString = connectionString;
-        //    _logRepository = logRepository;
-        //}
-
         public override ProcessResult Handle(ProcessStepContext processStepContext)
         {
             try
@@ -43,7 +34,6 @@ namespace SmartFlow.Handlers
                 //}
 
                 processStepContext.ProcessExecution.State = processStepContext.ProcessExecutionStepDetail.Transition.To;
-                processStepContext.ProcessExecutionStep.IsCompleted = true;
 
                 return NextHandler.Handle(processStepContext);
             }

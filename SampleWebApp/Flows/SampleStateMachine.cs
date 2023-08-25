@@ -16,8 +16,10 @@ namespace SampleWebApp.Flows
                     .Allow(new State(2, "Second"), new ProcessAction(1))
                     .Allow(new State(3, "Third"), new ProcessAction(2))
                     .OnEntry<HelloWorld>()
+                    .OnExit<HelloWorld>()
                 .NewStep().From(new State(2, "Second"))
                     .Allow(new State(4, "Fourth"), new ProcessAction(3))
+                    .Allow(new State(1, "First"), new ProcessAction(1))
                     .OnExit<GoodbyeWorld>();
 
             return builder;
