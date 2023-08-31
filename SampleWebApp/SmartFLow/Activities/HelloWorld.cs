@@ -1,13 +1,13 @@
 ﻿using SmartFlow.Interfaces;
 using SmartFlow.Models;
 
-namespace SampleWebApp.Activities
+namespace SampleWebApp.SmartFLow.Activities
 {
-    public class GoodbyeWorld : IProcessActivity
+    public class HelloWorld : IProcessActivity
     {
         public ProcessResult Execute(ProcessStepContext context)
         {
-            Console.WriteLine("Goodbye world");
+            Console.WriteLine("Hello world");
 
             return ProcessResult.SuccessResult();
         }

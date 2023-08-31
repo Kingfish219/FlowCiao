@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Dapper.FluentMap.Mapping;
+using System.Linq;
 using Newtonsoft.Json;
 using SmartFlow.Models.Flow;
 
@@ -11,6 +11,7 @@ namespace SmartFlow.Models
         public Guid Id { get; set; }
         public Process Process { get; set; }
         public ProcessExecutionState ExecutionState { get; set; }
+        public ProcessExecutionStep ActiveExecutionStep => ExecutionSteps.SingleOrDefault(x => !x.IsCompleted);
         public List<ProcessExecutionStep> ExecutionSteps { get; set; }
         public DateTime CreatedOn { get; set; }
         public string Progress
@@ -27,14 +28,6 @@ namespace SmartFlow.Models
             Running,
             Suspended,
             Finished
-        }
-    }
-
-    internal class ProcessExecutionMap : EntityMap<ProcessExecution>
-    {
-        internal ProcessExecutionMap()
-        {
-            Map(x => x.State.Id).ToColumn("State");
         }
     }
 }

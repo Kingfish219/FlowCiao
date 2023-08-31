@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using SmartFlow.Interfaces;
 using SmartFlow.Models.Flow;
 
 namespace SmartFlow.Builders

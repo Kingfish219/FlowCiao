@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using SmartFlow.Exceptions;
-using SmartFlow.Interfaces;
-using SmartFlow.Models;
 using SmartFlow.Models.Flow;
-using SmartFlow.Persistence.Providers.Cache;
 using SmartFlow.Services;
 
 namespace SmartFlow.Builders
 {
-    public class SmartFlowBuilder : ISmartFlowBuilder
+    internal class SmartFlowBuilder : ISmartFlowBuilder
     {
         public List<ISmartFlowStepBuilder> StepBuilders { get; set; }
         public ISmartFlowStepBuilder InitialStepBuilder { get; set; }

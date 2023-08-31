@@ -8,14 +8,14 @@ namespace SmartFlow.Builders
     public interface ISmartFlowStepBuilder
     {
         public State InitialState { get; set; }
-        public List<(State, List<ProcessAction>)> AllowedTransitions { get; set; }
+        internal List<(State, List<ProcessAction>)> AllowedTransitions { get; set; }
         public IProcessActivity OnEntryActivty { get; set; }
         public IProcessActivity OnExitActivity { get; set; }
         public ISmartFlowStepBuilder NewStep();
         public ISmartFlowStepBuilder From(State state);
-        public ISmartFlowStepBuilder AllowSelf(List<ProcessAction> actions);
-        public ISmartFlowStepBuilder Allow(State state, List<ProcessAction> actions);
-        public ISmartFlowStepBuilder Allow(State state, ProcessAction action);
+        public ISmartFlowStepBuilder AllowSelf(List<int> actions);
+        public ISmartFlowStepBuilder Allow(State state, List<int> actions);
+        public ISmartFlowStepBuilder Allow(State state, int action);
         public ISmartFlowStepBuilder OnEntry<Activity>() where Activity : IProcessActivity, new();
         public ISmartFlowStepBuilder OnExit<Activity>() where Activity : IProcessActivity, new();
         public ISmartFlowStepBuilder AssignToUser(Func<string> userId);

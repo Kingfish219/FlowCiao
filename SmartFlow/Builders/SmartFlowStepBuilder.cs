@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SmartFlow.Interfaces;
 using SmartFlow.Models.Flow;
 
 namespace SmartFlow.Builders
 {
-    public class SmartFlowStepBuilder : ISmartFlowStepBuilder
+    internal class SmartFlowStepBuilder : ISmartFlowStepBuilder
     {
         public ISmartFlowBuilder SmartFlowBuilder { get; set; }
 
@@ -27,18 +28,18 @@ namespace SmartFlow.Builders
             return this;
         }
 
-        public ISmartFlowStepBuilder Allow(State state, List<ProcessAction> actions)
+        public ISmartFlowStepBuilder Allow(State state, List<int> actions)
         {
-            AllowedTransitions.Add((state, actions));
+            AllowedTransitions.Add((state, actions.Select(action => new ProcessAction(action)).ToList()));
 
             return this;
         }
 
-        public ISmartFlowStepBuilder Allow(State state, ProcessAction action)
+        public ISmartFlowStepBuilder Allow(State state, int action)
         {
             var actions = new List<ProcessAction>
             {
-                action
+                new ProcessAction(action)
             };
 
             AllowedTransitions.Add((state, actions));
@@ -46,7 +47,7 @@ namespace SmartFlow.Builders
             return this;
         }
 
-        public ISmartFlowStepBuilder AllowSelf(List<ProcessAction> actions)
+        public ISmartFlowStepBuilder AllowSelf(List<int> actions)
         {
             throw new NotImplementedException();
         }
@@ -67,12 +68,12 @@ namespace SmartFlow.Builders
         public ISmartFlowStepBuilder OnExit<TA>() where TA : IProcessActivity, new()
         {
             OnExitActivity = (TA)Activator.CreateInstance(typeof(TA));
-            var activity = new Activity
-            {
-                ProcessActivityExecutor = OnExitActivity
-            };
-            InitialState.Activities ??= new List<Activity>();
-            InitialState.Activities.Add(activity);
+            //var activity = new Activity
+            //{
+            //    ProcessActivityExecutor = OnExitActivity
+            //};
+            //InitialState.Activities ??= new List<Activity>();
+            //InitialState.Activities.Add(activity);
 
             return this;
         }

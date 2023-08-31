@@ -20,7 +20,7 @@ namespace SmartFlow.Handlers
             try
             {
                 var activities = processStepContext.ProcessExecutionStepDetail.Transition.Activities;
-                if (activities.Count == 0)
+                if (activities is null || activities.Count == 0)
                 {
                     return NextHandler.Handle(processStepContext);
                 }

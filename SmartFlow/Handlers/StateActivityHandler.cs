@@ -3,7 +3,6 @@ using System.Linq;
 using SmartFlow.Exceptions;
 using SmartFlow.Interfaces;
 using SmartFlow.Models;
-using SmartFlow.Models.Flow;
 using SmartFlow.Persistence.Interfaces;
 using SmartFlow.Services;
 
@@ -15,27 +14,12 @@ namespace SmartFlow.Handlers
         {
         }
 
-        //internal StateActivityHandler(IProcessRepository processRepository, int actionCode, string connectionString, LogRepository logRepository) 
-        //    : base(processRepository)
-        //{
-        //    _actionCode = actionCode;
-        //    _ProcessRepository = processRepository;
-        //    _connectionString = connectionString;
-        //    _LogRepository = logRepository;
-        //}
-
         public override ProcessResult Handle(ProcessStepContext processStepContext)
         {
             try
             {
-                //var stateCurrent = new State
-                //{
-                //    Id = processStepContext.ProcessStepDetail.Transition.Actions.FirstOrDefault().Transition.CurrentStateId
-                //};
-
-                //var activities = ProcessRepository.GetStateActivities(processStepContext.ProcessExecution.State, new Group()).Result;
-                var activities = processStepContext.ProcessExecutionStepDetail.Transition.From.Activities;
-                if (activities.Count == 0)
+                var activities = processStepContext.ProcessExecution.State.Activities;
+                if (activities is null || activities.Count == 0)
                 {
                     return NextHandler?.Handle(processStepContext);
                 }
@@ -76,8 +60,6 @@ namespace SmartFlow.Handlers
         {
             try
             {
-                //ProcessRepository.RemoveEntireFlow(processStepContext.ProcessStepDetail).GetAwaiter().GetResult();
-
                 return PreviousHandler?.RollBack(processStepContext) ?? new ProcessResult
                 {
                     Status = ProcessResultStatus.Failed

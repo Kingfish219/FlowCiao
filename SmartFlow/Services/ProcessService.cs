@@ -54,7 +54,7 @@ namespace SmartFlow.Services
             var processStep = new ProcessExecutionStep
             {
                 CreatedOn = DateTime.Now,
-                Details = process.Transitions.Where(x => x.From.Id.Equals(state.Id))
+                Details = process.Transitions.Where(x => x.From.Code.Equals(state.Code))
                     .Select(transition =>
                     {
                         return new ProcessExecutionStepDetail
@@ -73,8 +73,7 @@ namespace SmartFlow.Services
         {
             await Task.CompletedTask;
 
-            processExecution.ExecutionSteps.Add(GenerateProcessStep(processExecution.Process,
-                        processExecution.Process.Transitions.First(x => x.From.IsInitial).From));
+            processExecution.ExecutionSteps.Add(GenerateProcessStep(processExecution.Process, processExecution.State));
 
             return processExecution;
         }

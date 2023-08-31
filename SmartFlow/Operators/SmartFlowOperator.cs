@@ -4,9 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using SmartFlow.Exceptions;
 using SmartFlow.Handlers;
-using SmartFlow.Interfaces;
 using SmartFlow.Models;
-using SmartFlow.Persistence.Interfaces;
+using SmartFlow.Models.Flow;
 using SmartFlow.Services;
 
 namespace SmartFlow.Operators
@@ -26,41 +25,44 @@ namespace SmartFlow.Operators
             _processService = processService;
         }
 
-        public Task<ProcessResult> ExecuteAsync(ISmartFlow process)
+        private static ProcessStepContext InitiateContext(int action,
+            Dictionary<string, object> data,
+            ProcessExecution processExecution,
+            ProcessExecutionStep activeProcessStep)
         {
-            throw new NotImplementedException();
+            return new ProcessStepContext
+            {
+                ProcessExecution = processExecution,
+                ProcessExecutionStep = activeProcessStep,
+                ProcessExecutionStepDetail = activeProcessStep.Details.Single(x => x.Transition.Actions.FirstOrDefault().Code == action),
+                Data = data
+            };
         }
 
-        public Task<ProcessResult> AdvanceAsync(ProcessEntity entity, ProcessUser user, ProcessStepInput input, IEntityRepository entityRepository,
-            EntityCommandType commandType = EntityCommandType.Update, Dictionary<string, object> parameters = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ProcessResult Fire(string smartFlowKey,
+        public async Task<ProcessResult> Fire(string smartFlowKey,
             int action,
             Dictionary<string, object> data = null)
         {
-            var processExecution = _processExecutionService.Get().GetAwaiter().GetResult().SingleOrDefault();
+            var processExecution = (await _processExecutionService.Get()).SingleOrDefault();
 
             try
             {
                 if (processExecution is null)
                 {
-                    var process = _processService.Get(key: smartFlowKey)
-                        .GetAwaiter().GetResult()
+                    var process = (await _processService.Get(key: smartFlowKey))
                         .SingleOrDefault();
                     if (process is null)
                     {
                         throw new Exception("Invalid Smartflow key!");
                     }
 
-                    processExecution = _processExecutionService.InitializeProcessExecution(process)
-                        .GetAwaiter().GetResult();
+                    processExecution = await _processExecutionService.InitializeProcessExecution(process);
                 }
 
-                var activeProcessStep = processExecution.ExecutionSteps
-                    .SingleOrDefault(x => !x.IsCompleted);
+                //var activeProcessStep = processExecution.ExecutionSteps
+                //    .SingleOrDefault(x => !x.IsCompleted);
+
+                var activeProcessStep = processExecution.ActiveExecutionStep;
                 if (activeProcessStep is null)
                 {
                     throw new SmartFlowProcessExecutionException("No active steps to fire");
@@ -72,9 +74,9 @@ namespace SmartFlow.Operators
                     throw new SmartFlowProcessExecutionException("Action is invalid!");
                 }
 
-                var processStepContext = InitiateContext(action, data, processExecution, activeProcessStep);
+                var processStepContext = InitiateContext(action, data, processExecution, processExecution.ActiveExecutionStep);
                 var handlers = _processHandlerFactory.BuildHandlers();
-                
+
                 var result = handlers.Peek().Handle(processStepContext);
 
                 return result;
@@ -88,19 +90,23 @@ namespace SmartFlow.Operators
                 };
             }
         }
-
-        private static ProcessStepContext InitiateContext(int action,
-            Dictionary<string, object> data,
-            ProcessExecution processExecution,
-            ProcessExecutionStep activeProcessStep)
+        
+        public async Task<State> GetFLowState(string smartFlowKey)
         {
-            return new ProcessStepContext
+            var processExecution = (await _processExecutionService.Get()).SingleOrDefault();
+            if (processExecution is null)
             {
-                ProcessExecution = processExecution,
-                ProcessExecutionStep = activeProcessStep,
-                ProcessExecutionStepDetail = activeProcessStep.Details.Single(x => x.Transition.Actions.FirstOrDefault().Code == action),
-                Data = data
-            };
+                var process = (await _processService.Get(key: smartFlowKey))
+                        .SingleOrDefault();
+                if (process is null)
+                {
+                    throw new Exception("Invalid key!");
+                }
+
+                processExecution = await _processExecutionService.InitializeProcessExecution(process);
+            }
+
+            return processExecution.State;
         }
     }
 }

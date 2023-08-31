@@ -1,6 +1,5 @@
 ﻿using System;
 using Dapper.Contrib.Extensions;
-using Dapper.FluentMap.Mapping;
 
 namespace SmartFlow.Models.Flow
 {
@@ -10,11 +9,6 @@ namespace SmartFlow.Models.Flow
         public ProcessAction(int code)
         {
             Code = code;
-        }
-
-        public ProcessAction()
-        {
-
         }
 
         [Key]

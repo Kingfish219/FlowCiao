@@ -1,6 +1,6 @@
 ﻿using SmartFlow.Builders;
 
-namespace SmartFlow.Interfaces
+namespace SmartFlow.Models.Flow
 {
     public interface ISmartFlow
     {

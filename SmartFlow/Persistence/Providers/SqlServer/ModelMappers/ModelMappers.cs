@@ -22,6 +22,14 @@ namespace SmartFlow.Persistence.Providers.SqlServer.ModelMappers
             }
         }
 
+        internal class ProcessExecutionMap : EntityMap<ProcessExecution>
+        {
+            internal ProcessExecutionMap()
+            {
+                Map(x => x.State.Id).ToColumn("State");
+            }
+        }
+
         internal class ProcessMap : EntityMap<Process>
         {
             internal ProcessMap()

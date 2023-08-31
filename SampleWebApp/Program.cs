@@ -23,9 +23,9 @@ var app = builder.Build();
 // Build your custom flow and Fire!!!
 var stateMachineBuilder = app.Services.GetService<ISmartFlowBuilder>();
 var workflow = stateMachineBuilder?.Build<SampleStateMachine>();
-var defaultWorkflowOperator = app.Services.GetService<ISmartFlowOperator>();
-var result = defaultWorkflowOperator?.Fire("Sample", 1);
-result = defaultWorkflowOperator?.Fire("Sample", 1);
+//var defaultWorkflowOperator = app.Services.GetService<ISmartFlowOperator>();
+//var result = defaultWorkflowOperator?.Fire("Sample", 1);
+//result = defaultWorkflowOperator?.Fire("Sample", 1);
 
 if (app.Environment.IsDevelopment())
 {
