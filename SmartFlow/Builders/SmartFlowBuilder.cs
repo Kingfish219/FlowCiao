@@ -19,26 +19,21 @@ namespace SmartFlow.Builders
             _processService = processService;
         }
 
-        public ISmartFlowStepBuilder Initial()
+        public ISmartFlowBuilder Initial(Action<ISmartFlowStepBuilder> action)
         {
             InitialStepBuilder = new SmartFlowStepBuilder(this);
+            action(InitialStepBuilder);
 
-            return InitialStepBuilder;
+            return this;
         }
 
-        public ISmartFlowStepBuilder NewStep()
+        public ISmartFlowBuilder NewStep(Action<ISmartFlowStepBuilder> action)
         {
             var builder = new SmartFlowStepBuilder(this);
+            action(builder);
             StepBuilders.Add(builder);
 
-            return builder;
-        }
-
-        public ISmartFlowStepBuilder NewStep(ISmartFlowStepBuilder builder)
-        {
-            StepBuilders.Add(builder);
-
-            return builder;
+            return this;
         }
 
         public Process Build<T>() where T : ISmartFlow, new()
@@ -185,6 +180,11 @@ namespace SmartFlow.Builders
         public void Rollback()
         {
 
+        }
+
+        public ISmartFlowStepBuilder Initial(ISmartFlowStepBuilder builder)
+        {
+            throw new NotImplementedException();
         }
     }
 }

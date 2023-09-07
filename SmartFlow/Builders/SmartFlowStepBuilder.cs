@@ -78,11 +78,6 @@ namespace SmartFlow.Builders
             return this;
         }
 
-        public ISmartFlowStepBuilder NewStep()
-        {
-            return SmartFlowBuilder.NewStep();
-        }
-
         public ISmartFlowStepBuilder AssignToUser(Func<string> userId)
         {
             InitialState.OwnerId = userId();

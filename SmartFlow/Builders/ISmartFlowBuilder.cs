@@ -8,9 +8,8 @@ namespace SmartFlow.Builders
     {
         List<ISmartFlowStepBuilder> StepBuilders { get; set; }
         ISmartFlowStepBuilder InitialStepBuilder { get; set; }
-        ISmartFlowStepBuilder Initial();
-        ISmartFlowStepBuilder NewStep();
-        ISmartFlowStepBuilder NewStep(ISmartFlowStepBuilder builder);
+        ISmartFlowBuilder Initial(Action<ISmartFlowStepBuilder> action);
+        ISmartFlowBuilder NewStep(Action<ISmartFlowStepBuilder> action);
         Process Build<T>(Action<ISmartFlowBuilder> action) where T : ISmartFlow, new();
         Process Build<T>() where T : ISmartFlow, new();
     }

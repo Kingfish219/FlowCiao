@@ -11,7 +11,6 @@ namespace SmartFlow.Builders
         internal List<(State, List<ProcessAction>)> AllowedTransitions { get; set; }
         public IProcessActivity OnEntryActivty { get; set; }
         public IProcessActivity OnExitActivity { get; set; }
-        public ISmartFlowStepBuilder NewStep();
         public ISmartFlowStepBuilder From(State state);
         public ISmartFlowStepBuilder AllowSelf(List<int> actions);
         public ISmartFlowStepBuilder Allow(State state, List<int> actions);
