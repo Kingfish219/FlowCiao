@@ -96,59 +96,61 @@ namespace SmartFlow.Builders
 
         public Process Build<T>(Action<ISmartFlowBuilder> constructor) where T : ISmartFlow, new()
         {
-            try
-            {
-                var smartFlow = Activator.CreateInstance<T>();
-                constructor.Invoke(this);
+            throw new NotImplementedException();
 
-                var process = _processService.Get(key: smartFlow.FlowKey).GetAwaiter().GetResult().FirstOrDefault();
-                if (process != null)
-                {
-                    return process;
-                }
+            //try
+            //{
+            //    var smartFlow = Activator.CreateInstance<T>();
+            //    constructor.Invoke(this);
 
-                foreach (var builder in StepBuilders)
-                {
-                    builder.InitialState.Activities = new List<Activity>
-                    {
-                        new Activity
-                        {
-                            ProcessActivityExecutor = builder.OnEntryActivty
-                        }
-                    };
+            //    var process = _processService.Get(key: smartFlow.FlowKey).GetAwaiter().GetResult().FirstOrDefault();
+            //    if (process != null)
+            //    {
+            //        return process;
+            //    }
 
-                    foreach (var allowedTransition in builder.AllowedTransitions)
-                    {
-                        process.Transitions.Add(new Transition
-                        {
-                            From = builder.InitialState,
-                            To = allowedTransition.Item1,
-                            Activities = new List<Activity>
-                            {
-                                new Activity
-                                {
-                                    ProcessActivityExecutor = builder.OnExitActivity
-                                }
-                            },
-                            Actions = allowedTransition.Item2
-                        });
-                    }
-                }
+            //    foreach (var builder in StepBuilders)
+            //    {
+            //        builder.InitialState.Activities = new List<Activity>
+            //        {
+            //            new Activity
+            //            {
+            //                ProcessActivityExecutor = builder.OnEntryActivty
+            //            }
+            //        };
 
-                var result = _processService.Modify(process).GetAwaiter().GetResult();
-                if (result == default)
-                {
-                    throw new SmartFlowPersistencyException("Check your database connection!");
-                }
+            //        foreach (var allowedTransition in builder.AllowedTransitions)
+            //        {
+            //            process.Transitions.Add(new Transition
+            //            {
+            //                From = builder.InitialState,
+            //                To = allowedTransition.Item1,
+            //                Activities = new List<Activity>
+            //                {
+            //                    new Activity
+            //                    {
+            //                        ProcessActivityExecutor = builder.OnExitActivity
+            //                    }
+            //                },
+            //                Actions = allowedTransition.Item2
+            //            });
+            //        }
+            //    }
 
-                return process;
-            }
-            catch (Exception)
-            {
-                Rollback();
+            //    var result = _processService.Modify(process).GetAwaiter().GetResult();
+            //    if (result == default)
+            //    {
+            //        throw new SmartFlowPersistencyException("Check your database connection!");
+            //    }
 
-                throw;
-            }
+            //    return process;
+            //}
+            //catch (Exception)
+            //{
+            //    Rollback();
+
+            //    throw;
+            //}
         }
 
         public void Rollback()
