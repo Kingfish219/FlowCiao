@@ -21,8 +21,10 @@ namespace SmartFlow.Builders
 
         public ISmartFlowBuilder Initial(Action<ISmartFlowStepBuilder> action)
         {
-            InitialStepBuilder = new SmartFlowStepBuilder(this);
+            var builder = new SmartFlowStepBuilder(this);
+            InitialStepBuilder = builder;
             action(InitialStepBuilder);
+            StepBuilders.Add(builder);
 
             return this;
         }
@@ -53,56 +55,28 @@ namespace SmartFlow.Builders
                 }
 
                 var constructor = smartFlow.Construct<T>(this);
+                if(constructor.InitialStepBuilder is null)
+                {
+                    throw new Exception("Your flow should have an initial state, use Initial to declare one");
+                }
+
                 process = new Process
                 {
                     FlowKey = smartFlow.FlowKey
                 };
                 process.Transitions ??= new List<Transition>();
                 constructor.InitialStepBuilder.InitialState.IsInitial = true;
-                foreach (var allowedTransition in constructor.InitialStepBuilder.AllowedTransitions)
-                {
-                    var transition = new Transition
-                    {
-                        From = constructor.InitialStepBuilder.InitialState,
-                        To = allowedTransition.Item1,
-                        Activities = constructor.InitialStepBuilder.OnExitActivity != null ? new List<Activity>
-                            {
-                                new()
-                                {
-                                    ProcessActivityExecutor = constructor.InitialStepBuilder.OnExitActivity
-                                }
-                            } : new List<Activity>(),
-                        Actions = allowedTransition.Item2
-                    };
-
-                    process.Transitions.Add(transition);
-                }
+                process.InitialState = constructor.InitialStepBuilder.InitialState;
 
                 foreach (var builder in constructor.StepBuilders)
                 {
-                    builder.InitialState.IsInitial = false;
-
-                    foreach (var allowedTransition in builder.AllowedTransitions)
+                    foreach (var allowedTransition in builder.AllowedTransitionsBuilders)
                     {
-                        var transition = new Transition
-                        {
-                            From = builder.InitialState,
-                            To = allowedTransition.Item1,
-                            Activities = builder.OnExitActivity != null ? new List<Activity>
-                            {
-                                new()
-                                {
-                                    ProcessActivityExecutor = builder.OnExitActivity
-                                }
-                            } : new List<Activity>(),
-                            Actions = allowedTransition.Item2
-                        };
-
+                        var transition = new Transition();
+                        allowedTransition(transition);
                         process.Transitions.Add(transition);
                     }
                 }
-
-                process.InitialState = constructor.InitialStepBuilder.InitialState;
 
                 var result = _processService.Modify(process).GetAwaiter().GetResult();
                 if (result == default)

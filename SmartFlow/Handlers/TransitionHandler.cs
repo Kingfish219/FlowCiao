@@ -27,11 +27,14 @@ namespace SmartFlow.Handlers
                     throw new SmartFlowProcessExecutionException("Exception occured while completing progress transition, process step action is not yet completed");
                 }
 
-                //var result = _entityRepository.ChangeState(processStepContext.ProcessStep.Entity, transition.NextStateId);
-                //if (result.Status != ProcessResultStatus.Completed)
-                //{
-                //    throw new SmartFlowProcessExecutionException("Exception occured while changing entity state");
-                //}
+                var transition = processStepContext.ProcessExecutionStepDetail.Transition;
+                if (transition.Condition != null)
+                {
+                    if (!transition.Condition())
+                    {
+                        throw new SmartFlowProcessExecutionException("Exception occured while completing transition as transition condition did not meet");
+                    }
+                }
 
                 processStepContext.ProcessExecution.State = processStepContext.ProcessExecutionStepDetail.Transition.To;
 

@@ -1,7 +1,6 @@
 using SampleWebApp.Flows;
 using SmartFlow;
 using SmartFlow.Builders;
-using SmartFlow.Operators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,8 +23,8 @@ var app = builder.Build();
 var stateMachineBuilder = app.Services.GetService<ISmartFlowBuilder>();
 var workflow = stateMachineBuilder?.Build<PhoneStateMachine>();
 //var defaultWorkflowOperator = app.Services.GetService<ISmartFlowOperator>();
-//var result = defaultWorkflowOperator?.Fire("Sample", 1);
-//result = defaultWorkflowOperator?.Fire("Sample", 1);
+//var result = defaultWorkflowOperator?.Fire("phone", 1);
+//result = defaultWorkflowOperator?.Fire("phone", 1);
 
 if (app.Environment.IsDevelopment())
 {

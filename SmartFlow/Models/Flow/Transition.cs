@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Dapper.Contrib.Extensions;
-using Dapper.FluentMap.Mapping;
 
 namespace SmartFlow.Models.Flow
 {
@@ -14,10 +13,11 @@ namespace SmartFlow.Models.Flow
         public Guid ProcessId { get; set; }
         public Guid CurrentStateId { get; set; }
         public Guid NextStateId { get; set; }
-        public List<ProcessAction> Actions { get; set; }
         public State From { get; set; }
         public State To { get; set; }
+        public List<ProcessAction> Actions { get; set; }
         public List<Activity> Activities { get; set; }
+        public Func<bool> Condition { get; set; }
     }
 
 }

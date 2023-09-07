@@ -13,11 +13,11 @@ namespace SmartFlow.Builders
         public SmartFlowStepBuilder(ISmartFlowBuilder smartFlowBuilder)
         {
             SmartFlowBuilder = smartFlowBuilder;
-            AllowedTransitions = new List<(State, List<ProcessAction>)>();
+            AllowedTransitionsBuilders = new List<Action<Transition>>();
         }
 
         public State InitialState { get; set; }
-        public List<(State, List<ProcessAction>)> AllowedTransitions { get; set; }
+        public List<Action<Transition>> AllowedTransitionsBuilders { get; set; }
         public IProcessActivity OnEntryActivty { get; set; }
         public IProcessActivity OnExitActivity { get; set; }
 
@@ -30,20 +30,43 @@ namespace SmartFlow.Builders
 
         public ISmartFlowStepBuilder Allow(State state, List<int> actions)
         {
-            AllowedTransitions.Add((state, actions.Select(action => new ProcessAction(action)).ToList()));
+            AllowedTransitionsBuilders.Add((transition) =>
+            {
+                transition.From = InitialState;
+                transition.To = state;
+                transition.Activities = OnExitActivity != null ? new List<Activity>
+                            {
+                                new()
+                                {
+                                    ProcessActivityExecutor = OnExitActivity
+                                }
+                            } : new List<Activity>();
+                transition.Actions = actions.Select(action => new ProcessAction(action)).ToList();
+            });
 
             return this;
         }
 
-        public ISmartFlowStepBuilder Allow(State state, int action)
+        public ISmartFlowStepBuilder Allow(State state, int action, Func<bool> condition = null)
         {
-            var actions = new List<ProcessAction>
+            AllowedTransitionsBuilders.Add((transition) =>
             {
-                new ProcessAction(action)
-            };
-
-            AllowedTransitions.Add((state, actions));
-
+                transition.From = InitialState;
+                transition.To = state;
+                transition.Activities = OnExitActivity != null ? new List<Activity>
+                            {
+                                new()
+                                {
+                                    ProcessActivityExecutor = OnExitActivity
+                                }
+                            } : new List<Activity>();
+                transition.Actions = new List<ProcessAction>
+                                {
+                                    new ProcessAction(action)
+                                };
+                transition.Condition = condition;
+            });
+            
             return this;
         }
 
