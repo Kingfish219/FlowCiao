@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartFlow.Core", "SmartFlow.Core\SmartFlow.Core.csproj", "{9929243A-AF02-4CC1-9191-47F3AD2D74F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartFlow", "SmartFlow\SmartFlow.csproj", "{9929243A-AF02-4CC1-9191-47F3AD2D74F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleWebApp", "SampleWebApp\SampleWebApp.csproj", "{8CFA9933-905D-4EDD-8F65-B5EE81AFA4FD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleWebApp", "SampleWebApp\SampleWebApp.csproj", "{8CFA9933-905D-4EDD-8F65-B5EE81AFA4FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,8 +13,8 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9929243A-AF02-4CC1-9191-47F3AD2D74F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9929243A-AF02-4CC1-9191-47F3AD2D74F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9929243A-AF02-4CC1-9191-47F3AD2D74F7}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{9929243A-AF02-4CC1-9191-47F3AD2D74F7}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{9929243A-AF02-4CC1-9191-47F3AD2D74F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9929243A-AF02-4CC1-9191-47F3AD2D74F7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8CFA9933-905D-4EDD-8F65-B5EE81AFA4FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU

@@ -1,22 +1,38 @@
+using SampleWebApp.Flows;
+using SmartFlow;
+using SmartFlow.Builders;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+var configuration = builder.Configuration;
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Add SmartFlow to services
+builder.Services.AddSmartFlow(settings =>
+{
+    //settings.Persist()
+    //    .UseSqlServer(configuration.GetConnectionString("SmartFlow"));
+});
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Build your custom flow and Fire!!!
+var stateMachineBuilder = app.Services.GetService<ISmartFlowBuilder>();
+var workflow = stateMachineBuilder?.Build<PhoneStateMachine>();
+//var defaultWorkflowOperator = app.Services.GetService<ISmartFlowOperator>();
+//var result = defaultWorkflowOperator?.Fire("phone", 1);
+//result = defaultWorkflowOperator?.Fire("phone", 1);
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-app.UseAuthorization();
+//app.UseAuthorization();
 
 app.MapControllers();
 
