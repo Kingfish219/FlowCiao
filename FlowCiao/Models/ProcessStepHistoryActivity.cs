@@ -1,0 +1,13 @@
+﻿using System;
+
+namespace FlowCiao.Models
+{
+    public class ProcessStepHistoryActivity
+    {
+        public Guid Id { get; set; }
+        public Guid ActivityId { get; set; }
+        public string ActivityName { get; set; }
+        public int StepType { get; set; }
+        public Guid ProcessStepHistoryId { get; set; }
+    }
+}

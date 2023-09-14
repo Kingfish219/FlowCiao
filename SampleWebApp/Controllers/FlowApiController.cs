@@ -1,5 +1,5 @@
+using FlowCiao.Operators;
 using Microsoft.AspNetCore.Mvc;
-using SmartFlow.Operators;
 
 namespace SampleWebApp.Controllers
 {
@@ -8,29 +8,29 @@ namespace SampleWebApp.Controllers
     public class FlowApiController : ControllerBase
     {
         private readonly ILogger<FlowApiController> _logger;
-        private readonly ISmartFlowOperator _operator;
+        private readonly IFlowOperator _operator;
 
         public FlowApiController(ILogger<FlowApiController> logger,
-            ISmartFlowOperator smartFlowOperator)
+            IFlowOperator flowOperator)
         {
             _logger = logger;
-            _operator = smartFlowOperator;
+            _operator = flowOperator;
         }
 
         [HttpGet]
-        [Route("{smartFlowKey}/state")]
-        public async Task<IActionResult> GetFLowState([FromRoute] string smartFlowKey)
+        [Route("{flowKey}/state")]
+        public async Task<IActionResult> GetFLowState([FromRoute] string flowKey)
         {
-            var state = await _operator.GetFLowState(smartFlowKey);
+            var state = await _operator.GetFLowState(flowKey);
 
             return Ok(state);
         }
 
         [HttpPost]
-        [Route("{smartFlowKey}/fire")]
-        public async Task<IActionResult> Fire([FromRoute] string smartFlowKey, int action)
+        [Route("{flowKey}/fire")]
+        public async Task<IActionResult> Fire([FromRoute] string flowKey, int action)
         {
-            var result = await _operator.Fire(smartFlowKey, action);
+            var result = await _operator.Fire(flowKey, action);
 
             return Ok(result);
         }
