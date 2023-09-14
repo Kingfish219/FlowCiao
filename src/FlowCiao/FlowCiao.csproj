@@ -11,21 +11,16 @@
 		<TargetFramework>net6</TargetFramework>
 		<Title>FlowCiao</Title>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<Description>
-			A lightweight .NET state machine workflow.
-			FlowCiao is a user-friendly and extensible .NET state machine library that simplifies the creation and management of state machines in your applications.
-			With FlowCiao, you can effortlessly define and control the flow of your application's logic, making it an ideal choice for managing complex workflows and state-driven processes.
-			Start building robust and efficient state machines with ease using FlowCiao.
-		</Description>
+		<Description>A Lightweight .NET State Machine Workflow. FlowCiao is a user-friendly and extensible .NET state machine library that simplifies the creation and management of state machines in your applications. With FlowCiao, you can effortlessly define and control the flow of your application's logic, making it an ideal choice for managing complex workflows and state-driven processes. Start building robust and efficient state machines with ease using FlowCiao.</Description>
 		<RepositoryUrl>https://github.com/Kingfish219/SmartFlow</RepositoryUrl>
 		<PackageTags>workflow;state;machine;flow;ciao;</PackageTags>
 		<PackAsTool>True</PackAsTool>
 		<Authors>Kingfish</Authors>
 		<PackageId>FlowCiao</PackageId>
 		<PackageIcon>Resources/FlowCiao.png</PackageIcon>
-		<AssemblyVersion>1.0.1</AssemblyVersion>
-		<FileVersion>1.0.1</FileVersion>
-		<VersionPrefix>1.0.1</VersionPrefix>
+		<AssemblyVersion>1.0.2</AssemblyVersion>
+		<FileVersion>1.0.2</FileVersion>
+		<VersionPrefix>1.0.2</VersionPrefix>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
