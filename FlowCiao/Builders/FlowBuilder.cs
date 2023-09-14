@@ -45,7 +45,7 @@ namespace FlowCiao.Builders
                 var smartFlow = Activator.CreateInstance<T>();
                 if (smartFlow is null)
                 {
-                    throw new Exception();
+                    throw new FlowCiaoException();
                 }
 
                 var process = _processService.Get(key: smartFlow.FlowKey).GetAwaiter().GetResult().FirstOrDefault();
@@ -57,7 +57,7 @@ namespace FlowCiao.Builders
                 var constructor = smartFlow.Construct<T>(this);
                 if(constructor.InitialStepBuilder is null)
                 {
-                    throw new Exception("Your flow should have an initial state, use Initial to declare one");
+                    throw new FlowCiaoException("Your flow should have an initial state, use Initial to declare one");
                 }
 
                 process = new Process

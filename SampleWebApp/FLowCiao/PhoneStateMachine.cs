@@ -29,10 +29,7 @@ namespace SampleWebApp.FLowCiao
                 {
                     stepBuilder
                         .From(idle)
-                        .Allow(ringing, (int)Actions.Ring, () =>
-                        {
-                            return false;
-                        })
+                        .Allow(ringing, (int)Actions.Ring)
                         .Allow(busy, (int)Actions.Call)
                         .Allow(offline, (int)Actions.PowerOff)
                         .OnEntry<HelloWorld>()

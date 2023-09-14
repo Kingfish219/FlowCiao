@@ -39,7 +39,7 @@ namespace FlowCiao.Operators
             };
         }
 
-        public async Task<ProcessResult> Fire(string smartFlowKey,
+        public async Task<ProcessResult> Fire(string flowKey,
             int action,
             Dictionary<string, object> data = null)
         {
@@ -49,11 +49,11 @@ namespace FlowCiao.Operators
             {
                 if (processExecution is null)
                 {
-                    var process = (await _processService.Get(key: smartFlowKey))
+                    var process = (await _processService.Get(key: flowKey))
                         .SingleOrDefault();
                     if (process is null)
                     {
-                        throw new Exception("Invalid Smartflow key!");
+                        throw new FlowCiaoException("Invalid Smartflow key!");
                     }
 
                     processExecution = await _processExecutionService.InitializeProcessExecution(process);
@@ -91,16 +91,16 @@ namespace FlowCiao.Operators
             }
         }
         
-        public async Task<State> GetFLowState(string smartFlowKey)
+        public async Task<State> GetFLowState(string flowKey)
         {
             var processExecution = (await _processExecutionService.Get()).SingleOrDefault();
             if (processExecution is null)
             {
-                var process = (await _processService.Get(key: smartFlowKey))
+                var process = (await _processService.Get(key: flowKey))
                         .SingleOrDefault();
                 if (process is null)
                 {
-                    throw new Exception("Invalid key!");
+                    throw new FlowCiaoException("Invalid key!");
                 }
 
                 processExecution = await _processExecutionService.InitializeProcessExecution(process);

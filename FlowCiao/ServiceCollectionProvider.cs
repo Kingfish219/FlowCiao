@@ -21,11 +21,11 @@ namespace FlowCiao
         public static IServiceCollection AddFlowCiao(this IServiceCollection services,
             Action<FlowSettings> settings)
         {
-            var smartFlowSettings = new FlowSettings();
-            settings.Invoke(smartFlowSettings);
-            services.AddSingleton(smartFlowSettings);
+            var flowSettings = new FlowSettings();
+            settings.Invoke(flowSettings);
+            services.AddSingleton(flowSettings);
 
-            AddRepositories(services, smartFlowSettings);
+            AddRepositories(services, flowSettings);
             AddServices(services);
             services.AddTransient<IFlowBuilder, FlowBuilder>();
             services.AddSingleton<IFlowOperator, FlowOperator>();
