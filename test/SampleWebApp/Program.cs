@@ -1,5 +1,6 @@
 using FlowCiao;
 using FlowCiao.Builders;
+using FlowCiao.Operators;
 using SampleWebApp.FLowCiao;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,18 +14,18 @@ builder.Services.AddSwaggerGen();
 // Add FlowCiao to services
 builder.Services.AddFlowCiao(settings =>
 {
-    //settings.Persist()
-    //    .UseSqlServer(configuration.GetConnectionString("SmartFlow"));
+    //settings
+    //  .Persist()
+    //    .UseSqlServer(configuration.GetConnectionString("FlowCiao"));
 });
 
 var app = builder.Build();
 
 // Build your custom flow and Fire!!!
 var stateMachineBuilder = app.Services.GetService<IFlowBuilder>();
-var workflow = stateMachineBuilder?.Build<PhoneStateMachine>();
-//var defaultWorkflowOperator = app.Services.GetService<IFlowOperator>();
-//var result = defaultWorkflowOperator?.Fire("phone", 1);
-//result = defaultWorkflowOperator?.Fire("phone", 1);
+stateMachineBuilder?.Build<PhoneStateMachine>();
+//var defaultFlowOperator = app.Services.GetService<IFlowOperator>();
+//var result = defaultFlowOperator?.Fire("phone", 1);
 
 if (app.Environment.IsDevelopment())
 {
