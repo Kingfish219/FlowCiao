@@ -1,7 +1,6 @@
 ﻿using System;
-using Dapper.FluentMap.Mapping;
 
-namespace SmartFlow.Models
+namespace FlowCiao.Models
 {
     public class ProcessUser
     {

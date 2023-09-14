@@ -1,6 +1,6 @@
-﻿using SmartFlow.Models;
+﻿using FlowCiao.Models;
 
-namespace SmartFlow.Interfaces
+namespace FlowCiao.Interfaces
 {
     internal interface IProcessHandler
     {

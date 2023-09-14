@@ -1,10 +1,10 @@
-﻿using SmartFlow.Builders;
+﻿using FlowCiao.Builders;
 
-namespace SmartFlow.Models.Flow
+namespace FlowCiao.Models.Flow
 {
-    public interface ISmartFlow
+    public interface IFlow
     {
         public string FlowKey { get; set; }
-        public ISmartFlowBuilder Construct<T>(ISmartFlowBuilder action) where T : ISmartFlow, new();
+        public IFlowBuilder Construct<T>(IFlowBuilder action) where T : IFlow, new();
     }
 }

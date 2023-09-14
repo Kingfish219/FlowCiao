@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Dapper.Contrib.Extensions;
 
-namespace SmartFlow.Models.Flow
+namespace FlowCiao.Models.Flow
 {
     [Table("Transition")]
     public class Transition

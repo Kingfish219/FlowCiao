@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SmartFlow.Models;
+using FlowCiao.Models;
 
-namespace SmartFlow.Persistence.Interfaces
+namespace FlowCiao.Persistence.Interfaces
 {
     public interface IProcessExecutionRepository
     {

@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using SmartFlow.Exceptions;
-using SmartFlow.Models;
-using SmartFlow.Models.Flow;
+using FlowCiao.Models;
+using FlowCiao.Models.Flow;
 
-namespace SmartFlow.Persistence.Providers.Cache
+namespace FlowCiao.Persistence.Providers.Cache
 {
-    public class SmartFlowHub
+    public class FlowHub
     {
         public List<Process> Processes { get; set; }
         public List<ProcessExecution> ProcessExecutions { get; set; }

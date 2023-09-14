@@ -1,7 +1,7 @@
-﻿IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[SmartFlow].[ProcessExecution]') AND type in (N'U'))
+﻿IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[FlowCiao].[ProcessExecution]') AND type in (N'U'))
 BEGIN
 
-CREATE TABLE [SmartFlow].[ProcessExecution]
+CREATE TABLE [FlowCiao].[ProcessExecution]
 (
     [Id] [UNIQUEIDENTIFIER] NOT NULL,
     [ProcessId] [UNIQUEIDENTIFIER] NOT NULL,

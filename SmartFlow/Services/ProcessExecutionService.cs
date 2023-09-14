@@ -2,21 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SmartFlow.Exceptions;
-using SmartFlow.Models;
-using SmartFlow.Models.Flow;
-using SmartFlow.Persistence.Interfaces;
-using Process = SmartFlow.Models.Flow.Process;
+using FlowCiao.Exceptions;
+using FlowCiao.Models;
+using FlowCiao.Models.Flow;
+using FlowCiao.Persistence.Interfaces;
+using Process = FlowCiao.Models.Flow.Process;
 
-namespace SmartFlow.Services
+namespace FlowCiao.Services
 {
     public class ProcessExecutionService
     {
         private readonly IProcessExecutionRepository _processExecutionRepository;
-        private readonly SmartFlowSettings _smartFlowSettings;
+        private readonly FlowSettings _smartFlowSettings;
 
         public ProcessExecutionService(IProcessExecutionRepository processExecutionRepository
-            , SmartFlowSettings smartFlowSettings
+            , FlowSettings smartFlowSettings
             )
         {
             _smartFlowSettings = smartFlowSettings;
@@ -113,7 +113,7 @@ namespace SmartFlow.Services
             var processId = await _processExecutionRepository.Modify(entity);
             if (processId == default)
             {
-                throw new SmartFlowPersistencyException();
+                throw new FlowCiaoPersistencyException();
             }
 
             return processId;

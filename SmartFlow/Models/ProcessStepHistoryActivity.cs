@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SmartFlow.Models
+namespace FlowCiao.Models
 {
     public class ProcessStepHistoryActivity
     {

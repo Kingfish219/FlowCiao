@@ -9,11 +9,11 @@
 
   <PropertyGroup>
     <TargetFramework>net6</TargetFramework>
-    <Title>SmartFlow</Title>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>FlowCiao</Title>
+    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     <Description>A lightweight state machine workflow for .NET</Description>
     <RepositoryUrl>https://github.com/Kingfish219/SmartFlow</RepositoryUrl>
-    <PackageTags>workflow;state;machine;smart;flow;</PackageTags>
+    <PackageTags>workflow;state;machine;smart;flow;ciao;</PackageTags>
     <PackAsTool>True</PackAsTool>
     <Authors>Kingfish</Authors>
     <PackageId>FlowState</PackageId>

@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SmartFlow.Interfaces;
-using SmartFlow.Models.Flow;
+using FlowCiao.Interfaces;
+using FlowCiao.Models.Flow;
 
-namespace SmartFlow.Builders
+namespace FlowCiao.Builders
 {
-    internal class SmartFlowStepBuilder : ISmartFlowStepBuilder
+    internal class FlowStepBuilder : IFlowStepBuilder
     {
-        public ISmartFlowBuilder SmartFlowBuilder { get; set; }
+        public IFlowBuilder SmartFlowBuilder { get; set; }
 
-        public SmartFlowStepBuilder(ISmartFlowBuilder smartFlowBuilder)
+        public FlowStepBuilder(IFlowBuilder smartFlowBuilder)
         {
             SmartFlowBuilder = smartFlowBuilder;
             AllowedTransitionsBuilders = new List<Action<Transition>>();
@@ -21,14 +21,14 @@ namespace SmartFlow.Builders
         public IProcessActivity OnEntryActivty { get; set; }
         public IProcessActivity OnExitActivity { get; set; }
 
-        public ISmartFlowStepBuilder From(State state)
+        public IFlowStepBuilder From(State state)
         {
             InitialState = state;
 
             return this;
         }
 
-        public ISmartFlowStepBuilder Allow(State state, List<int> actions)
+        public IFlowStepBuilder Allow(State state, List<int> actions)
         {
             AllowedTransitionsBuilders.Add((transition) =>
             {
@@ -47,7 +47,7 @@ namespace SmartFlow.Builders
             return this;
         }
 
-        public ISmartFlowStepBuilder Allow(State state, int action, Func<bool> condition = null)
+        public IFlowStepBuilder Allow(State state, int action, Func<bool> condition = null)
         {
             AllowedTransitionsBuilders.Add((transition) =>
             {
@@ -70,12 +70,12 @@ namespace SmartFlow.Builders
             return this;
         }
 
-        public ISmartFlowStepBuilder AllowSelf(List<int> actions)
+        public IFlowStepBuilder AllowSelf(List<int> actions)
         {
             throw new NotImplementedException();
         }
 
-        public ISmartFlowStepBuilder OnEntry<TA>() where TA : IProcessActivity, new()
+        public IFlowStepBuilder OnEntry<TA>() where TA : IProcessActivity, new()
         {
             OnEntryActivty = (TA)Activator.CreateInstance(typeof(TA));
             var activity = new Activity
@@ -88,7 +88,7 @@ namespace SmartFlow.Builders
             return this;
         }
 
-        public ISmartFlowStepBuilder OnExit<TA>() where TA : IProcessActivity, new()
+        public IFlowStepBuilder OnExit<TA>() where TA : IProcessActivity, new()
         {
             OnExitActivity = (TA)Activator.CreateInstance(typeof(TA));
             //var activity = new Activity
@@ -101,7 +101,7 @@ namespace SmartFlow.Builders
             return this;
         }
 
-        public ISmartFlowStepBuilder AssignToUser(Func<string> userId)
+        public IFlowStepBuilder AssignToUser(Func<string> userId)
         {
             InitialState.OwnerId = userId();
 

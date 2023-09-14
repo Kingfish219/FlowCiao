@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Dapper.Contrib.Extensions;
-using SmartFlow.Models;
-using SmartFlow.Persistence.Interfaces;
+using FlowCiao.Models;
+using FlowCiao.Persistence.Interfaces;
 
-namespace SmartFlow.Persistence.Providers.Cache.Repositories
+namespace FlowCiao.Persistence.Providers.Cache.Repositories
 {
-    public class LogCacheRepository : SmartFlowCacheRepository, ILogRepository
+    public class LogCacheRepository : FlowCacheRepository, ILogRepository
     {
-        public LogCacheRepository(SmartFlowHub smartFlowHub) : base(smartFlowHub)
+        public LogCacheRepository(FlowHub smartFlowHub) : base(smartFlowHub)
         {
         }
 

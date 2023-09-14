@@ -1,20 +1,20 @@
-﻿CREATE OR ALTER PROCEDURE [SmartFlow].[usp_TransitionAction_Modify]
+﻿CREATE OR ALTER PROCEDURE [FlowCiao].[usp_TransitionAction_Modify]
 	@TransitionId UNIQUEIDENTIFIER,
 	@ActionId UNIQUEIDENTIFIER,
 	@Priority INT = NULL
 AS
 BEGIN
-	IF EXISTS (SELECT 1 FROM [SmartFlow].[TransitionAction] 
+	IF EXISTS (SELECT 1 FROM [FlowCiao].[TransitionAction] 
 				WHERE [TransitionId] = @TransitionId AND [ActionId] = @ActionId)
 	BEGIN
-		UPDATE SmartFlow.[TransitionAction]
+		UPDATE FlowCiao.[TransitionAction]
 		SET
 			[Priority] = @Priority
 		WHERE [TransitionId] = @TransitionId AND [ActionId] = @ActionId
 	END
 	ELSE
 	BEGIN
-		INSERT INTO [SmartFlow].[TransitionAction]
+		INSERT INTO [FlowCiao].[TransitionAction]
 			   ([Id]
 			   ,[ActionId]
 			   ,[TransitionId]

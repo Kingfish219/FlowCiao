@@ -1,8 +1,8 @@
-﻿using SmartFlow.Models.Flow;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using FlowCiao.Models.Flow;
 
-namespace SmartFlow.Persistence.Interfaces
+namespace FlowCiao.Persistence.Interfaces
 {
     public interface ITransitionRepository
     {

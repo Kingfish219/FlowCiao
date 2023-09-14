@@ -1,10 +1,10 @@
 ﻿using System;
-using SmartFlow.Exceptions;
-using SmartFlow.Models;
-using SmartFlow.Persistence.Interfaces;
-using SmartFlow.Services;
+using FlowCiao.Exceptions;
+using FlowCiao.Models;
+using FlowCiao.Persistence.Interfaces;
+using FlowCiao.Services;
 
-namespace SmartFlow.Handlers
+namespace FlowCiao.Handlers
 {
     internal class TransitionHandler : WorkflowHandler
     {
@@ -19,12 +19,12 @@ namespace SmartFlow.Handlers
             {
                 if (processStepContext.ProcessExecutionStepDetail is null)
                 {
-                    throw new SmartFlowProcessExecutionException("Exception occured while completing progress transition");
+                    throw new FlowCiaoProcessExecutionException("Exception occured while completing progress transition");
                 }
 
                 if (!processStepContext.ProcessExecutionStepDetail.IsCompleted)
                 {
-                    throw new SmartFlowProcessExecutionException("Exception occured while completing progress transition, process step action is not yet completed");
+                    throw new FlowCiaoProcessExecutionException("Exception occured while completing progress transition, process step action is not yet completed");
                 }
 
                 var transition = processStepContext.ProcessExecutionStepDetail.Transition;
@@ -32,7 +32,7 @@ namespace SmartFlow.Handlers
                 {
                     if (!transition.Condition())
                     {
-                        throw new SmartFlowProcessExecutionException("Exception occured while completing transition as transition condition did not meet");
+                        throw new FlowCiaoProcessExecutionException("Exception occured while completing transition as transition condition did not meet");
                     }
                 }
 

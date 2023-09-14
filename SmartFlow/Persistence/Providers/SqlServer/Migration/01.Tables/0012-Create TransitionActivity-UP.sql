@@ -1,7 +1,7 @@
-﻿IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[SmartFlow].[TransitionActivity]') AND type in (N'U'))
+﻿IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[FlowCiao].[TransitionActivity]') AND type in (N'U'))
 BEGIN
 
-CREATE TABLE [SmartFlow].[TransitionActivity](
+CREATE TABLE [FlowCiao].[TransitionActivity](
 	[TransitionId] [uniqueidentifier],
 	[ActivityId] [uniqueidentifier],
 	[Priority] [int] NULL

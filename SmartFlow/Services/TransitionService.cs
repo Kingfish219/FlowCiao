@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
-using SmartFlow.Exceptions;
-using SmartFlow.Models.Flow;
-using SmartFlow.Persistence.Interfaces;
+using FlowCiao.Exceptions;
+using FlowCiao.Models.Flow;
+using FlowCiao.Persistence.Interfaces;
 
-namespace SmartFlow.Services
+namespace FlowCiao.Services
 {
     public class TransitionService
     {
@@ -27,7 +27,7 @@ namespace SmartFlow.Services
             transition.Id = await _transitionRepository.Modify(transition);
             if (transition.Id == default)
             {
-                throw new SmartFlowPersistencyException();
+                throw new FlowCiaoPersistencyException();
             }
 
             transition.Activities?.ForEach(activity =>
@@ -35,7 +35,7 @@ namespace SmartFlow.Services
                 var result = _activityService.Modify(activity).GetAwaiter().GetResult();
                 if (result == default)
                 {
-                    throw new SmartFlowPersistencyException("State Activity");
+                    throw new FlowCiaoPersistencyException("State Activity");
                 }
 
                 _transitionRepository.AssociateActivities(transition, activity).GetAwaiter().GetResult();
@@ -46,7 +46,7 @@ namespace SmartFlow.Services
                 var result = _actionRepository.Modify(action).GetAwaiter().GetResult();
                 if (result == default)
                 {
-                    throw new SmartFlowPersistencyException("State Activity");
+                    throw new FlowCiaoPersistencyException("State Activity");
                 }
 
                 _transitionRepository.AssociateActions(transition, action).GetAwaiter().GetResult();

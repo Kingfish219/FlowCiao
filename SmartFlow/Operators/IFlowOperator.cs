@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using SmartFlow.Models;
-using SmartFlow.Models.Flow;
+using FlowCiao.Models;
+using FlowCiao.Models.Flow;
 
-namespace SmartFlow.Operators
+namespace FlowCiao.Operators
 {
-    public interface ISmartFlowOperator
+    public interface IFlowOperator
     {
         Task<ProcessResult> Fire(string smartFlowKey, int action, Dictionary<string, object> data = null);
         Task<State> GetFLowState(string smartFlowKey);

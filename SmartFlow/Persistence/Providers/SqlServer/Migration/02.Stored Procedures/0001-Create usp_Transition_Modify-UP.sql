@@ -1,13 +1,13 @@
-﻿CREATE OR ALTER PROCEDURE [SmartFlow].[usp_Transition_Modify]
+﻿CREATE OR ALTER PROCEDURE [FlowCiao].[usp_Transition_Modify]
 	@Id UNIQUEIDENTIFIER = NULL,
 	@ProcessId UNIQUEIDENTIFIER= NULL,
 	@CurrentStateId UNIQUEIDENTIFIER= NULL,
 	@NextStateId UNIQUEIDENTIFIER= NULL
 AS
 BEGIN
-	IF EXISTS (SELECT 1 FROM [SmartFlow].Transition WHERE Id = @Id)
+	IF EXISTS (SELECT 1 FROM [FlowCiao].Transition WHERE Id = @Id)
 	BEGIN
-		UPDATE SmartFlow.Transition
+		UPDATE FlowCiao.Transition
 		SET
 			ProcessId = @ProcessId,
 			CurrentStateId = @CurrentStateId,
@@ -16,7 +16,7 @@ BEGIN
 	END
 	ELSE
 	BEGIN
-		INSERT INTO SmartFlow.Transition
+		INSERT INTO FlowCiao.Transition
 		(
 			Id,
 			ProcessId,

@@ -1,4 +1,4 @@
-﻿namespace SmartFlow.Persistence.Providers.SqlServer
+﻿namespace FlowCiao.Persistence.Providers.SqlServer
 {
     internal class ConstantsProvider
     {

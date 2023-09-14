@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using SmartFlow.Models.Flow;
 
-namespace SmartFlow.Models
+namespace FlowCiao.Models
 {
     public class ProcessStepContext
     {

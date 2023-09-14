@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using SmartFlow.Models;
-using SmartFlow.Models.Flow;
+using FlowCiao.Models;
+using FlowCiao.Models.Flow;
 
-namespace SmartFlow.Persistence.Interfaces
+namespace FlowCiao.Persistence.Interfaces
 {
     public interface IProcessRepository
     {

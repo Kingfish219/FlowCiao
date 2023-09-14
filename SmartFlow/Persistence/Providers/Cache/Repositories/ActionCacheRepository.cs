@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
-using SmartFlow.Models.Flow;
-using SmartFlow.Persistence.Interfaces;
+using FlowCiao.Models.Flow;
+using FlowCiao.Persistence.Interfaces;
 
-namespace SmartFlow.Persistence.Providers.Cache.Repositories
+namespace FlowCiao.Persistence.Providers.Cache.Repositories
 {
-    public class ActionCacheRepository : SmartFlowCacheRepository, IActionRepository
+    public class ActionCacheRepository : FlowCacheRepository, IActionRepository
     {
-        public ActionCacheRepository(SmartFlowHub smartFlowHub) : base(smartFlowHub)
+        public ActionCacheRepository(FlowHub smartFlowHub) : base(smartFlowHub)
         {
         }
 
@@ -18,7 +18,7 @@ namespace SmartFlow.Persistence.Providers.Cache.Repositories
                 entity.Id = Guid.NewGuid();
             }
 
-            await SmartFlowHub.ModifyAction(entity);
+            await FlowHub.ModifyAction(entity);
 
             return entity.Id;
         }

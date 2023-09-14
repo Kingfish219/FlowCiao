@@ -1,4 +1,4 @@
-﻿CREATE OR ALTER PROCEDURE [SmartFlow].[usp_ProcessExecution_Modify]
+﻿CREATE OR ALTER PROCEDURE [FlowCiao].[usp_ProcessExecution_Modify]
 	@Id UNIQUEIDENTIFIER,
 	@ExecutionState INT= NULL,
 	@CreatedOn DATETIME= NULL,
@@ -7,16 +7,16 @@
 	@Progress NVARCHAR(MAX)= NULL
 AS
 BEGIN
-	IF EXISTS (SELECT 1 FROM [SmartFlow].[ProcessExecution] WHERE Id = @Id)
+	IF EXISTS (SELECT 1 FROM [FlowCiao].[ProcessExecution] WHERE Id = @Id)
 	BEGIN
-		UPDATE SmartFlow.[ProcessExecution]
+		UPDATE FlowCiao.[ProcessExecution]
 		SET
 			[Progress] = @Progress
 		WHERE Id = @Id
 	END
 	ELSE
 	BEGIN
-		INSERT INTO [SmartFlow].[ProcessExecution]
+		INSERT INTO [FlowCiao].[ProcessExecution]
 		(
 		    [Id],
 		    [ProcessId],

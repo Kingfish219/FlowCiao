@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using SmartFlow.Models.Flow;
-using SmartFlow.Persistence.Interfaces;
+using FlowCiao.Models.Flow;
+using FlowCiao.Persistence.Interfaces;
 
-namespace SmartFlow.Services
+namespace FlowCiao.Services
 {
     public class ActivityService
     {

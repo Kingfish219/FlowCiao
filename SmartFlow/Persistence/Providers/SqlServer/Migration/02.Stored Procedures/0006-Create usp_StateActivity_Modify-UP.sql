@@ -1,20 +1,20 @@
-﻿CREATE OR ALTER PROCEDURE [SmartFlow].[usp_StateActivity_Modify]
+﻿CREATE OR ALTER PROCEDURE [FlowCiao].[usp_StateActivity_Modify]
 	@StateId UNIQUEIDENTIFIER,
 	@ActivityId UNIQUEIDENTIFIER,
 	@Priority INT = NULL
 AS
 BEGIN
-	IF EXISTS (SELECT 1 FROM [SmartFlow].StateActivity 
+	IF EXISTS (SELECT 1 FROM [FlowCiao].StateActivity 
 				WHERE [StateId] = @StateId AND ActivityId = @ActivityId)
 	BEGIN
-		UPDATE SmartFlow.StateActivity
+		UPDATE FlowCiao.StateActivity
 		SET
 			[Priority] = @Priority
 		WHERE [StateId] = @StateId AND ActivityId = @ActivityId
 	END
 	ELSE
 	BEGIN
-		INSERT INTO [SmartFlow].[StateActivity]
+		INSERT INTO [FlowCiao].[StateActivity]
 			   ([StateId]
 			   ,ActivityId
 			   ,[Priority])

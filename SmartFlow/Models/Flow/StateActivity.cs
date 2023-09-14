@@ -1,4 +1,4 @@
-﻿namespace SmartFlow.Models.Flow
+﻿namespace FlowCiao.Models.Flow
 {
     internal class StateActivity
     {

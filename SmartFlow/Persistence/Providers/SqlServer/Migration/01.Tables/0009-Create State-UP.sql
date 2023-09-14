@@ -1,7 +1,7 @@
-﻿IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[SmartFlow].[State]') AND type in (N'U'))
+﻿IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[FlowCiao].[State]') AND type in (N'U'))
 BEGIN
 
-CREATE TABLE [SmartFlow].[State](
+CREATE TABLE [FlowCiao].[State](
 	[Id] [uniqueidentifier] NOT NULL,
 	[Name] [nvarchar](100) NULL,
 	[RequestResponse] [bit] NULL,
@@ -18,10 +18,10 @@ CREATE TABLE [SmartFlow].[State](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 
-ALTER TABLE [SmartFlow].[State] ADD  CONSTRAINT [DF_State_Id]  DEFAULT (NEWID()) FOR [Id]
+ALTER TABLE [FlowCiao].[State] ADD  CONSTRAINT [DF_State_Id]  DEFAULT (NEWID()) FOR [Id]
 
-ALTER TABLE [SmartFlow].[State] ADD  DEFAULT ((1)) FOR [IsVisible]
+ALTER TABLE [FlowCiao].[State] ADD  DEFAULT ((1)) FOR [IsVisible]
 
-ALTER TABLE [SmartFlow].[State] ADD  DEFAULT ((0)) FOR [IsStart]
+ALTER TABLE [FlowCiao].[State] ADD  DEFAULT ((0)) FOR [IsStart]
 
 END

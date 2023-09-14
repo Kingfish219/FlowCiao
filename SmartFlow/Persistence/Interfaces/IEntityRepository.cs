@@ -1,7 +1,7 @@
 ﻿using System;
-using SmartFlow.Models;
+using FlowCiao.Models;
 
-namespace SmartFlow.Persistence.Interfaces
+namespace FlowCiao.Persistence.Interfaces
 {
     public interface IEntityRepository
     {

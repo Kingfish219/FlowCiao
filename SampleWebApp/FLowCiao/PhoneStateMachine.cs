@@ -1,10 +1,10 @@
-﻿using SampleWebApp.SmartFLow.Activities;
-using SmartFlow.Builders;
-using SmartFlow.Models.Flow;
+﻿using FlowCiao.Builders;
+using FlowCiao.Models.Flow;
+using SampleWebApp.SmartFLow.Activities;
 
-namespace SampleWebApp.Flows
+namespace SampleWebApp.FLowCiao
 {
-    public class PhoneStateMachine : ISmartFlow
+    public class PhoneStateMachine : IFlow
     {
         public string FlowKey { get; set; } = "phone";
 
@@ -17,7 +17,7 @@ namespace SampleWebApp.Flows
             PowerOff = 5
         }
 
-        public ISmartFlowBuilder Construct<T>(ISmartFlowBuilder builder) where T : ISmartFlow, new()
+        public IFlowBuilder Construct<T>(IFlowBuilder builder) where T : IFlow, new()
         {
             var idle = new State(1, "idle");
             var ringing = new State(2, "ringing");

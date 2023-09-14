@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Data.SqlClient;
 using System.Threading.Tasks;
 using Dapper.Contrib.Extensions;
-using SmartFlow.Models;
-using SmartFlow.Persistence.Interfaces;
+using FlowCiao.Models;
+using FlowCiao.Persistence.Interfaces;
 
-namespace SmartFlow.Persistence.Providers.SqlServer.Repositories
+namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
 {
-    public class LogRepository : SmartFlowSqlServerRepository, ILogRepository
+    public class LogRepository : FlowSqlServerRepository, ILogRepository
     {
-        public LogRepository(SmartFlowSettings smartFlowSettings) : base(smartFlowSettings) { }
+        public LogRepository(FlowSettings smartFlowSettings) : base(smartFlowSettings) { }
 
         public Task<bool> Create(Log log)
         {

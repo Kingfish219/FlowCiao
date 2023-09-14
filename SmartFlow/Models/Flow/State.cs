@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Dapper.Contrib.Extensions;
-using Dapper.FluentMap.Mapping;
 
-namespace SmartFlow.Models.Flow
+namespace FlowCiao.Models.Flow
 {
     [Table("State")]
     public class State

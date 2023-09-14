@@ -1,16 +1,16 @@
 ﻿using System.Reflection;
 using DbUp;
 using DbUp.Helpers;
-using SmartFlow.Models;
+using FlowCiao.Models;
 
-namespace SmartFlow.Persistence.Providers.SqlServer
+namespace FlowCiao.Persistence.Providers.SqlServer
 {
     public class DbMigrationManager
     {
         private readonly string _connectionString;
         private const string ScriptsPath = @"SmartFlow.Persistence.SqlServer.Migration";
 
-        public DbMigrationManager(SmartFlowSettings settings)
+        public DbMigrationManager(FlowSettings settings)
         {
             _connectionString = settings.PersistanceSettings.ConnectionString;
         }

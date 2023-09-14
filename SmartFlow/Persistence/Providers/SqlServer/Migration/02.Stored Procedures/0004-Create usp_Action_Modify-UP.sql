@@ -1,13 +1,13 @@
-﻿CREATE OR ALTER PROCEDURE [SmartFlow].[usp_Action_Modify]
+﻿CREATE OR ALTER PROCEDURE [FlowCiao].[usp_Action_Modify]
 	@Id UNIQUEIDENTIFIER,
 	@Name NVARCHAR(400)= NULL,
 	@ActionTypeCode INT= NULL,
 	@ProcessId UNIQUEIDENTIFIER= NULL
 AS
 BEGIN
-	IF EXISTS (SELECT 1 FROM [SmartFlow].[Action] WHERE Id = @Id)
+	IF EXISTS (SELECT 1 FROM [FlowCiao].[Action] WHERE Id = @Id)
 	BEGIN
-		UPDATE SmartFlow.[Action]
+		UPDATE FlowCiao.[Action]
 		SET
 			[Name] = @Name,
 			[ActionTypeCode] = @ActionTypeCode,
@@ -16,7 +16,7 @@ BEGIN
 	END
 	ELSE
 	BEGIN
-		INSERT INTO [SmartFlow].[Action]
+		INSERT INTO [FlowCiao].[Action]
 				   ([Id]
 				   ,[Name]
 				   ,[ActionTypeCode]

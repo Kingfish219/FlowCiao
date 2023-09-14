@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SmartFlow.Exceptions;
-using SmartFlow.Models;
-using SmartFlow.Models.Flow;
-using SmartFlow.Persistence.Interfaces;
+using FlowCiao.Exceptions;
+using FlowCiao.Models;
+using FlowCiao.Models.Flow;
+using FlowCiao.Persistence.Interfaces;
 
-namespace SmartFlow.Services
+namespace FlowCiao.Services
 {
     public class ProcessService : IProcessService
     {
@@ -30,7 +30,7 @@ namespace SmartFlow.Services
             var processId = await _processRepository.Modfiy(process);
             if (processId == default)
             {
-                throw new SmartFlowPersistencyException();
+                throw new FlowCiaoPersistencyException();
             }
 
             process.Transitions?.ForEach(transition =>

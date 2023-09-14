@@ -1,4 +1,4 @@
-﻿CREATE OR ALTER PROCEDURE [SmartFlow].[usp_State_Modify]
+﻿CREATE OR ALTER PROCEDURE [FlowCiao].[usp_State_Modify]
 	@Id UNIQUEIDENTIFIER = NULL,
 	@Name NVARCHAR(100)= NULL,
 	@RequestResponse BIT= NULL,
@@ -11,9 +11,9 @@
 	@IsStart BIT= NULL
 AS
 BEGIN
-	IF EXISTS (SELECT 1 FROM [SmartFlow].[State] WHERE Id = @Id)
+	IF EXISTS (SELECT 1 FROM [FlowCiao].[State] WHERE Id = @Id)
 	BEGIN
-		UPDATE SmartFlow.[State]
+		UPDATE FlowCiao.[State]
 		SET
 			[Name] = @Name,
 			RequestResponse = @RequestResponse,
@@ -28,7 +28,7 @@ BEGIN
 	END
 	ELSE
 	BEGIN
-		INSERT INTO SmartFlow.[State]
+		INSERT INTO FlowCiao.[State]
 		(
 			Id,
 			[Name],

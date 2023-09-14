@@ -2,21 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SmartFlow.Exceptions;
-using SmartFlow.Handlers;
-using SmartFlow.Models;
-using SmartFlow.Models.Flow;
-using SmartFlow.Services;
+using FlowCiao.Exceptions;
+using FlowCiao.Handlers;
+using FlowCiao.Models;
+using FlowCiao.Models.Flow;
+using FlowCiao.Services;
 
-namespace SmartFlow.Operators
+namespace FlowCiao.Operators
 {
-    public class SmartFlowOperator : ISmartFlowOperator
+    public class FlowOperator : IFlowOperator
     {
         private readonly ProcessExecutionService _processExecutionService;
         private readonly ProcessHandlerFactory _processHandlerFactory;
         private readonly IProcessService _processService;
 
-        public SmartFlowOperator(ProcessHandlerFactory processHandlerFactory,
+        public FlowOperator(ProcessHandlerFactory processHandlerFactory,
             ProcessExecutionService processExecutionService,
             IProcessService processService)
         {
@@ -65,13 +65,13 @@ namespace SmartFlow.Operators
                 var activeProcessStep = processExecution.ActiveExecutionStep;
                 if (activeProcessStep is null)
                 {
-                    throw new SmartFlowProcessExecutionException("No active steps to fire");
+                    throw new FlowCiaoProcessExecutionException("No active steps to fire");
                 }
 
                 if (activeProcessStep.Details
                         .SingleOrDefault(x => x.Transition.Actions.FirstOrDefault()!.Code == action) is null)
                 {
-                    throw new SmartFlowProcessExecutionException("Action is invalid!");
+                    throw new FlowCiaoProcessExecutionException("Action is invalid!");
                 }
 
                 var processStepContext = InitiateContext(action, data, processExecution, processExecution.ActiveExecutionStep);

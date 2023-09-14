@@ -1,7 +1,7 @@
-﻿IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[SmartFlow].[ActivityType]') AND type in (N'U'))
+﻿IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[FlowCiao].[ActivityType]') AND type in (N'U'))
 BEGIN
 
-CREATE TABLE [SmartFlow].[ActivityType](
+CREATE TABLE [FlowCiao].[ActivityType](
 	[Id] [uniqueidentifier] NOT NULL,
 	[Name] [nvarchar](400) NULL,
 	[TypeCode] [int] NULL,
@@ -11,6 +11,6 @@ CREATE TABLE [SmartFlow].[ActivityType](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 
-ALTER TABLE [SmartFlow].[ActivityType] ADD  CONSTRAINT [DF_ActivityType_Id]  DEFAULT (NEWID()) FOR [Id]
+ALTER TABLE [FlowCiao].[ActivityType] ADD  CONSTRAINT [DF_ActivityType_Id]  DEFAULT (NEWID()) FOR [Id]
 
 END

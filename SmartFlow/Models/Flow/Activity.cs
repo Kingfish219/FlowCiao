@@ -1,8 +1,8 @@
 ﻿using System;
+using FlowCiao.Interfaces;
 using Newtonsoft.Json;
-using SmartFlow.Interfaces;
 
-namespace SmartFlow.Models.Flow
+namespace FlowCiao.Models.Flow
 {
     public class Activity
     {

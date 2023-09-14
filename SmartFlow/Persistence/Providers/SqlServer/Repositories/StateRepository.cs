@@ -2,15 +2,15 @@
 using System.Data;
 using System.Threading.Tasks;
 using Dapper;
-using SmartFlow.Models;
-using SmartFlow.Models.Flow;
-using SmartFlow.Persistence.Interfaces;
+using FlowCiao.Models;
+using FlowCiao.Models.Flow;
+using FlowCiao.Persistence.Interfaces;
 
-namespace SmartFlow.Persistence.Providers.SqlServer.Repositories
+namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
 {
-    public class StateRepository : SmartFlowSqlServerRepository, IStateRepository
+    public class StateRepository : FlowSqlServerRepository, IStateRepository
     {
-        public StateRepository(SmartFlowSettings settings) : base(settings) { }
+        public StateRepository(FlowSettings settings) : base(settings) { }
 
         public Task<Guid> Modify(State entity)
         {

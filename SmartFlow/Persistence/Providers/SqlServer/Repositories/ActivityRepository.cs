@@ -2,15 +2,15 @@
 using System.Data;
 using System.Threading.Tasks;
 using Dapper;
-using SmartFlow.Models;
-using SmartFlow.Models.Flow;
-using SmartFlow.Persistence.Interfaces;
+using FlowCiao.Models;
+using FlowCiao.Models.Flow;
+using FlowCiao.Persistence.Interfaces;
 
-namespace SmartFlow.Persistence.Providers.SqlServer.Repositories
+namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
 {
-    public class ActivityRepository : SmartFlowSqlServerRepository, IActivityRepository
+    public class ActivityRepository : FlowSqlServerRepository, IActivityRepository
     {
-        public ActivityRepository(SmartFlowSettings settings) : base(settings)
+        public ActivityRepository(FlowSettings settings) : base(settings)
         {
 
         }

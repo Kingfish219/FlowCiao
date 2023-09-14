@@ -1,7 +1,7 @@
 ﻿using System;
 using Dapper.Contrib.Extensions;
 
-namespace SmartFlow.Models.Flow
+namespace FlowCiao.Models.Flow
 {
     [Table("Action")]
     public class ProcessAction

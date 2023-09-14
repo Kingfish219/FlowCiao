@@ -1,7 +1,7 @@
 ﻿using System;
 using Dapper.Contrib.Extensions;
 
-namespace SmartFlow.Models
+namespace FlowCiao.Models
 {
     [Table("Log")]
     public class Log

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Linq;
-using SmartFlow.Exceptions;
-using SmartFlow.Interfaces;
-using SmartFlow.Models;
-using SmartFlow.Persistence.Interfaces;
-using SmartFlow.Services;
+using FlowCiao.Exceptions;
+using FlowCiao.Interfaces;
+using FlowCiao.Models;
+using FlowCiao.Persistence.Interfaces;
+using FlowCiao.Services;
 
-namespace SmartFlow.Handlers
+namespace FlowCiao.Handlers
 {
     internal class StateActivityHandler : WorkflowHandler
     {
@@ -40,7 +40,7 @@ namespace SmartFlow.Handlers
                     var result = activity.Execute(processStepContext);
                     if (result.Status != ProcessResultStatus.Completed && result.Status != ProcessResultStatus.SetOwner)
                     {
-                        throw new SmartFlowProcessExecutionException("Exception occured while invoking activities" + result.Message);
+                        throw new FlowCiaoProcessExecutionException("Exception occured while invoking activities" + result.Message);
                     }
                 }
 

@@ -4,15 +4,15 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
-using SmartFlow.Models;
-using SmartFlow.Models.Flow;
-using SmartFlow.Persistence.Interfaces;
+using FlowCiao.Models;
+using FlowCiao.Models.Flow;
+using FlowCiao.Persistence.Interfaces;
 
-namespace SmartFlow.Persistence.Providers.SqlServer.Repositories
+namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
 {
-    public class ProcessExecutionRepository : SmartFlowSqlServerRepository, IProcessExecutionRepository
+    public class ProcessExecutionRepository : FlowSqlServerRepository, IProcessExecutionRepository
     {
-        public ProcessExecutionRepository(SmartFlowSettings settings) : base(settings) { }
+        public ProcessExecutionRepository(FlowSettings settings) : base(settings) { }
 
         public Task<List<ProcessExecution>> Get(Guid id = default, Guid processId = default)
         {
@@ -24,8 +24,8 @@ namespace SmartFlow.Persistence.Providers.SqlServer.Repositories
                 var query = @"SELECT pe.*,
 	                                   p.Id ProcessId,
 	                                   p.FlowKey
-                                FROM [SmartFlow].ProcessExecution pe
-                                JOIN SmartFlow.Process p ON p.Id = pe.ProcessId
+                                FROM [FlowCiao].ProcessExecution pe
+                                JOIN FlowCiao.Process p ON p.Id = pe.ProcessId
                                 WHERE
                                   (pe.[Id] = @Id OR ISNULL(@Id, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER)) AND
                                   (pe.[ProcessId] = @ProcessId OR ISNULL(@ProcessId, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER))";

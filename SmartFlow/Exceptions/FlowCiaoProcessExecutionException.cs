@@ -1,16 +1,16 @@
 ﻿using System;
-using SmartFlow.Models;
-using SmartFlow.Persistence.Providers.SqlServer.Repositories;
+using FlowCiao.Models;
+using FlowCiao.Persistence.Providers.SqlServer.Repositories;
 
-namespace SmartFlow.Exceptions
+namespace FlowCiao.Exceptions
 {
-    public class SmartFlowProcessExecutionException : Exception
+    public class FlowCiaoProcessExecutionException : Exception
     {
-        public SmartFlowProcessExecutionException()
+        public FlowCiaoProcessExecutionException()
         {
         }
 
-        public SmartFlowProcessExecutionException(string message, LogRepository logRepository, ProcessExecutionStep processStep, [System.Runtime.CompilerServices.CallerFilePath] string handlerName = "", [System.Runtime.CompilerServices.CallerLineNumber] int line = 0)
+        public FlowCiaoProcessExecutionException(string message, LogRepository logRepository, ProcessExecutionStep processStep, [System.Runtime.CompilerServices.CallerFilePath] string handlerName = "", [System.Runtime.CompilerServices.CallerLineNumber] int line = 0)
             : base(message)
         {
             try
@@ -31,12 +31,12 @@ namespace SmartFlow.Exceptions
             }
             catch (Exception) { }
         }
-        public SmartFlowProcessExecutionException(string message)
+        public FlowCiaoProcessExecutionException(string message)
             : base(message)
         {
         }
 
-        public SmartFlowProcessExecutionException(string message, Exception inner)
+        public FlowCiaoProcessExecutionException(string message, Exception inner)
             : base(message, inner)
         {
         }

@@ -5,17 +5,17 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
-using SmartFlow.Models;
-using SmartFlow.Models.Flow;
-using SmartFlow.Persistence.Interfaces;
-using Activity = SmartFlow.Models.Flow.Activity;
-using Process = SmartFlow.Models.Flow.Process;
+using FlowCiao.Models;
+using FlowCiao.Models.Flow;
+using FlowCiao.Persistence.Interfaces;
+using Activity = FlowCiao.Models.Flow.Activity;
+using Process = FlowCiao.Models.Flow.Process;
 
-namespace SmartFlow.Persistence.Providers.SqlServer.Repositories
+namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
 {
-    public class ProcessRepository : SmartFlowSqlServerRepository, IProcessRepository
+    public class ProcessRepository : FlowSqlServerRepository, IProcessRepository
     {
-        public ProcessRepository(SmartFlowSettings settings) : base(settings) { }
+        public ProcessRepository(FlowSettings settings) : base(settings) { }
 
         //public Task<bool> CompleteProgressAction(ProcessExecutionStep processStep, ProcessAction action)
         //{
@@ -102,10 +102,10 @@ namespace SmartFlow.Persistence.Providers.SqlServer.Repositories
                                 , s.[Name]
                                 , s1.Id StateId
                                 , s1.[Name]
-                                FROM [SmartFlow].Process p
-                                JOIN SmartFlow.Transition t on p.Id = t.ProcessId
-                                JOIN SmartFlow.[State] s on s.Id = t.CurrentStateId
-                                JOIN SmartFlow.[State] s1 on s1.Id = t.NextStateId
+                                FROM [FlowCiao].Process p
+                                JOIN FlowCiao.Transition t on p.Id = t.ProcessId
+                                JOIN FlowCiao.[State] s on s.Id = t.CurrentStateId
+                                JOIN FlowCiao.[State] s1 on s1.Id = t.NextStateId
                                 WHERE
                                   (p.[Id] = @ProcessId OR ISNULL(@ProcessId, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER)) AND
                                   (p.[FlowKey] = @FlowKey OR ISNULL(@FlowKey, '') = '')";

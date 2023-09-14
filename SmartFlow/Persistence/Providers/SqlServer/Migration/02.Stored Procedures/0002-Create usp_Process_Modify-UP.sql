@@ -1,4 +1,4 @@
-﻿CREATE OR ALTER   PROCEDURE [SmartFlow].[usp_Process_Modify]
+﻿CREATE OR ALTER   PROCEDURE [FlowCiao].[usp_Process_Modify]
 	@Id UNIQUEIDENTIFIER,
 	@IsActive BIT= NULL,
 	@IsDefultProccess BIT= NULL,
@@ -8,9 +8,9 @@
 	@EntityType INT= NULL
 AS
 BEGIN
-	IF EXISTS (SELECT 1 FROM [SmartFlow].Process WHERE Id = @Id)
+	IF EXISTS (SELECT 1 FROM [FlowCiao].Process WHERE Id = @Id)
 	BEGIN
-		UPDATE SmartFlow.Process
+		UPDATE FlowCiao.Process
 		SET
 			IsActive = @IsActive,
 			IsDefultProccess= @IsDefultProccess,
@@ -22,7 +22,7 @@ BEGIN
 	END
 	ELSE
 	BEGIN
-		INSERT INTO SmartFlow.Process
+		INSERT INTO FlowCiao.Process
 		(
 			Id,
 			IsActive,

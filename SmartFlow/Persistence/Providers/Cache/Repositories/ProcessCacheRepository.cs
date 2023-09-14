@@ -1,16 +1,16 @@
-﻿using SmartFlow.Models;
-using SmartFlow.Models.Flow;
-using SmartFlow.Persistence.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FlowCiao.Models;
+using FlowCiao.Models.Flow;
+using FlowCiao.Persistence.Interfaces;
 
-namespace SmartFlow.Persistence.Providers.Cache.Repositories
+namespace FlowCiao.Persistence.Providers.Cache.Repositories
 {
-    internal class ProcessCacheRepository : SmartFlowCacheRepository, IProcessRepository
+    internal class ProcessCacheRepository : FlowCacheRepository, IProcessRepository
     {
-        public ProcessCacheRepository(SmartFlowHub smartFlowHub) : base(smartFlowHub)
+        public ProcessCacheRepository(FlowHub smartFlowHub) : base(smartFlowHub)
         {
         }
 
@@ -39,10 +39,10 @@ namespace SmartFlow.Persistence.Providers.Cache.Repositories
             var process = await Get(entity.Id, entity.FlowKey);
             if (process is not null)
             {
-                await SmartFlowHub.DeleteProcess(entity);
+                await FlowHub.DeleteProcess(entity);
             }
 
-            await SmartFlowHub.ModifyProcess(entity);
+            await FlowHub.ModifyProcess(entity);
 
             return entity.Id;
         }

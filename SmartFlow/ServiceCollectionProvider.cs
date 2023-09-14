@@ -1,43 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
+using FlowCiao.Builders;
+using FlowCiao.Exceptions;
+using FlowCiao.Handlers;
+using FlowCiao.Models;
+using FlowCiao.Models.Flow;
+using FlowCiao.Operators;
+using FlowCiao.Persistence.Interfaces;
+using FlowCiao.Persistence.Providers.Cache;
+using FlowCiao.Persistence.Providers.Cache.Repositories;
+using FlowCiao.Persistence.Providers.SqlServer;
+using FlowCiao.Persistence.Providers.SqlServer.Repositories;
+using FlowCiao.Services;
 using Microsoft.Extensions.DependencyInjection;
-using SmartFlow.Builders;
-using SmartFlow.Exceptions;
-using SmartFlow.Handlers;
-using SmartFlow.Models;
-using SmartFlow.Models.Flow;
-using SmartFlow.Operators;
-using SmartFlow.Persistence.Interfaces;
-using SmartFlow.Persistence.Providers.Cache;
-using SmartFlow.Persistence.Providers.Cache.Repositories;
-using SmartFlow.Persistence.Providers.SqlServer;
-using SmartFlow.Persistence.Providers.SqlServer.Repositories;
-using SmartFlow.Services;
 
-namespace SmartFlow
+namespace FlowCiao
 {
     public static class ServiceCollectionProvider
     {
-        public static IServiceCollection AddSmartFlow(this IServiceCollection services,
-            Action<SmartFlowSettings> settings)
+        public static IServiceCollection AddFlowCiao(this IServiceCollection services,
+            Action<FlowSettings> settings)
         {
-            var smartFlowSettings = new SmartFlowSettings();
+            var smartFlowSettings = new FlowSettings();
             settings.Invoke(smartFlowSettings);
             services.AddSingleton(smartFlowSettings);
 
             AddRepositories(services, smartFlowSettings);
             AddServices(services);
-            services.AddTransient<ISmartFlowBuilder, SmartFlowBuilder>();
-            services.AddSingleton<ISmartFlowOperator, SmartFlowOperator>();
+            services.AddTransient<IFlowBuilder, FlowBuilder>();
+            services.AddSingleton<IFlowOperator, FlowOperator>();
             
             return services;
         }
 
-        private static void AddRepositories(IServiceCollection services, SmartFlowSettings smartFlowSettings)
+        private static void AddRepositories(IServiceCollection services, FlowSettings flowSettings)
         {
-            if (smartFlowSettings.PersistFlow)
+            if (flowSettings.PersistFlow)
             {
-                AddSqlServerRepositories(services, smartFlowSettings);
+                AddSqlServerRepositories(services, flowSettings);
             }
             else
             {
@@ -47,15 +47,15 @@ namespace SmartFlow
 
         private static void AddCacheRepositories(IServiceCollection services)
         {
-            var smartFlowHub = new SmartFlowHub();
-            smartFlowHub.Initiate(new List<Process>(),
+            var flowHub = new FlowHub();
+            flowHub.Initiate(new List<Process>(),
                 new List<ProcessExecution>(),
                 new List<State>(),
                 new List<Transition>(),
                 new List<Activity>(),
                 new List<ProcessAction>());
 
-            services.AddSingleton(smartFlowHub);
+            services.AddSingleton(flowHub);
             services.AddTransient<ITransitionRepository, TransitionCacheRepository>();
             services.AddTransient<IStateRepository, StateCacheRepository>();
             services.AddTransient<IActionRepository, ActionCacheRepository>();
@@ -65,14 +65,14 @@ namespace SmartFlow
             services.AddTransient<IProcessRepository, ProcessCacheRepository>();
         }
 
-        private static void AddSqlServerRepositories(IServiceCollection services, SmartFlowSettings smartFlowSettings)
+        private static void AddSqlServerRepositories(IServiceCollection services, FlowSettings flowSettings)
         {
             DapperHelper.EnsureMappings();
 
-            var migration = new DbMigrationManager(smartFlowSettings);
+            var migration = new DbMigrationManager(flowSettings);
             if (!migration.MigrateUp())
             {
-                throw new SmartFlowPersistencyException("Migration failed");
+                throw new FlowCiaoPersistencyException("Migration failed");
             }
 
             services.AddTransient<ITransitionRepository, TransitionRepository>();

@@ -1,27 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SmartFlow.Exceptions;
-using SmartFlow.Models.Flow;
-using SmartFlow.Services;
+using FlowCiao.Exceptions;
+using FlowCiao.Models.Flow;
+using FlowCiao.Services;
 
-namespace SmartFlow.Builders
+namespace FlowCiao.Builders
 {
-    internal class SmartFlowBuilder : ISmartFlowBuilder
+    internal class FlowBuilder : IFlowBuilder
     {
-        public List<ISmartFlowStepBuilder> StepBuilders { get; set; }
-        public ISmartFlowStepBuilder InitialStepBuilder { get; set; }
+        public List<IFlowStepBuilder> StepBuilders { get; set; }
+        public IFlowStepBuilder InitialStepBuilder { get; set; }
         private readonly IProcessService _processService;
 
-        public SmartFlowBuilder(IProcessService processService)
+        public FlowBuilder(IProcessService processService)
         {
-            StepBuilders = new List<ISmartFlowStepBuilder>();
+            StepBuilders = new List<IFlowStepBuilder>();
             _processService = processService;
         }
 
-        public ISmartFlowBuilder Initial(Action<ISmartFlowStepBuilder> action)
+        public IFlowBuilder Initial(Action<IFlowStepBuilder> action)
         {
-            var builder = new SmartFlowStepBuilder(this);
+            var builder = new FlowStepBuilder(this);
             InitialStepBuilder = builder;
             action(InitialStepBuilder);
             StepBuilders.Add(builder);
@@ -29,16 +29,16 @@ namespace SmartFlow.Builders
             return this;
         }
 
-        public ISmartFlowBuilder NewStep(Action<ISmartFlowStepBuilder> action)
+        public IFlowBuilder NewStep(Action<IFlowStepBuilder> action)
         {
-            var builder = new SmartFlowStepBuilder(this);
+            var builder = new FlowStepBuilder(this);
             action(builder);
             StepBuilders.Add(builder);
 
             return this;
         }
 
-        public Process Build<T>() where T : ISmartFlow, new()
+        public Process Build<T>() where T : IFlow, new()
         {
             try
             {
@@ -81,7 +81,7 @@ namespace SmartFlow.Builders
                 var result = _processService.Modify(process).GetAwaiter().GetResult();
                 if (result == default)
                 {
-                    throw new SmartFlowPersistencyException("Check your database connection!");
+                    throw new FlowCiaoPersistencyException("Check your database connection!");
                 }
 
                 return process;
@@ -94,7 +94,7 @@ namespace SmartFlow.Builders
             }
         }
 
-        public Process Build<T>(Action<ISmartFlowBuilder> constructor) where T : ISmartFlow, new()
+        public Process Build<T>(Action<IFlowBuilder> constructor) where T : IFlow, new()
         {
             throw new NotImplementedException();
 
@@ -158,7 +158,7 @@ namespace SmartFlow.Builders
 
         }
 
-        public ISmartFlowStepBuilder Initial(ISmartFlowStepBuilder builder)
+        public IFlowStepBuilder Initial(IFlowStepBuilder builder)
         {
             throw new NotImplementedException();
         }
