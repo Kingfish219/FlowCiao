@@ -14,8 +14,7 @@ FlowCiao is a A lightweight .NET state machine workflow. It is a user-friendly a
 Define your state machine using an Easy-to-use and Fluent Api
 
 ```csharp
-phone
-    .From(idle)
+phone.From(idle)
     .Allow(ringing, (int)Actions.Ring)
     .Allow(busy, (int)Actions.Call)
     .OnEntry<HelloWorld>()
@@ -99,7 +98,11 @@ var result = defaultFlowOperator?.Fire("phone", 1);
 
 And that's it!
 
-## And also Persistency
+## And also Persistency if required
+
+If there is a need to persist your state machines for long-running processes, you can connect FlowCiao to Sql Server (and other providers very soon!).
+Otherwise, as long as your application is running, We track the status and data of all of your running state machines. So no wories:)
+
 ```csharp
 builder.Services.AddFlowCiao(settings =>
 {
