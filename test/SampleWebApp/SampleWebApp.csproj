@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FlowCiao\FlowCiao.csproj" />
+    <ProjectReference Include="..\..\src\FlowCiao\FlowCiao.csproj" />
   </ItemGroup>
 
 </Project>
