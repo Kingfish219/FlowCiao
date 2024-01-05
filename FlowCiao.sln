@@ -5,11 +5,15 @@ VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlowCiao", "src\FlowCiao\FlowCiao.csproj", "{9929243A-AF02-4CC1-9191-47F3AD2D74F7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleWebApp", "test\SampleWebApp\SampleWebApp.csproj", "{8CFA9933-905D-4EDD-8F65-B5EE81AFA4FD}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1B986D1B-26FA-4E2D-B924-3BB9B335B56C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{159ABEC6-9C1D-4991-8EA2-4D358CAD3D84}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowCiao.Copilot", "src\FlowCiao.Copilot\FlowCiao.Copilot.csproj", "{706FC053-D43F-4535-9B52-03AE5EBD7197}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{DF03484B-6E7A-45E8-A689-A9988D5C6E79}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowCiao.Samples.Phone", "samples\FlowCiao.Samples.Phone\FlowCiao.Samples.Phone.csproj", "{4067470F-1EEE-4260-B0CC-442EC3E125BC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,17 +25,22 @@ Global
 		{9929243A-AF02-4CC1-9191-47F3AD2D74F7}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{9929243A-AF02-4CC1-9191-47F3AD2D74F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9929243A-AF02-4CC1-9191-47F3AD2D74F7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8CFA9933-905D-4EDD-8F65-B5EE81AFA4FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8CFA9933-905D-4EDD-8F65-B5EE81AFA4FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8CFA9933-905D-4EDD-8F65-B5EE81AFA4FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8CFA9933-905D-4EDD-8F65-B5EE81AFA4FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{706FC053-D43F-4535-9B52-03AE5EBD7197}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{706FC053-D43F-4535-9B52-03AE5EBD7197}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{706FC053-D43F-4535-9B52-03AE5EBD7197}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{706FC053-D43F-4535-9B52-03AE5EBD7197}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4067470F-1EEE-4260-B0CC-442EC3E125BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4067470F-1EEE-4260-B0CC-442EC3E125BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4067470F-1EEE-4260-B0CC-442EC3E125BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4067470F-1EEE-4260-B0CC-442EC3E125BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{9929243A-AF02-4CC1-9191-47F3AD2D74F7} = {1B986D1B-26FA-4E2D-B924-3BB9B335B56C}
-		{8CFA9933-905D-4EDD-8F65-B5EE81AFA4FD} = {159ABEC6-9C1D-4991-8EA2-4D358CAD3D84}
+		{706FC053-D43F-4535-9B52-03AE5EBD7197} = {1B986D1B-26FA-4E2D-B924-3BB9B335B56C}
+		{4067470F-1EEE-4260-B0CC-442EC3E125BC} = {DF03484B-6E7A-45E8-A689-A9988D5C6E79}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A929E70D-0BAD-4033-98B5-87473E6069C6}

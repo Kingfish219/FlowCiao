@@ -9,7 +9,7 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
 {
     internal class ProcessExecutionCacheRepository : FlowCacheRepository, IProcessExecutionRepository
     {
-        public ProcessExecutionCacheRepository(FlowHub smartFlowHub) : base(smartFlowHub)
+        public ProcessExecutionCacheRepository(FlowHub flowHub) : base(flowHub)
         {
         }
 

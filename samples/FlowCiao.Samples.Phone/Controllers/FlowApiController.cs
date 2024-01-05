@@ -1,7 +1,7 @@
 using FlowCiao.Operators;
 using Microsoft.AspNetCore.Mvc;
 
-namespace SampleWebApp.Controllers
+namespace FlowCiao.Samples.Phone.Controllers
 {
     [ApiController]
     [Route("api/flows")]

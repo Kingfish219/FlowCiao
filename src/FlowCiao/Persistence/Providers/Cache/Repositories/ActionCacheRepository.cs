@@ -7,7 +7,7 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
 {
     public class ActionCacheRepository : FlowCacheRepository, IActionRepository
     {
-        public ActionCacheRepository(FlowHub smartFlowHub) : base(smartFlowHub)
+        public ActionCacheRepository(FlowHub flowHub) : base(flowHub)
         {
         }
 

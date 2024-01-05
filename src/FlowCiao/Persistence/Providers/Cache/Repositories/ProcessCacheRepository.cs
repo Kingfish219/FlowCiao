@@ -10,7 +10,7 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
 {
     internal class ProcessCacheRepository : FlowCacheRepository, IProcessRepository
     {
-        public ProcessCacheRepository(FlowHub smartFlowHub) : base(smartFlowHub)
+        public ProcessCacheRepository(FlowHub flowHub) : base(flowHub)
         {
         }
 
@@ -36,7 +36,7 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
                 entity.Id = Guid.NewGuid();
             }
 
-            var process = await Get(entity.Id, entity.FlowKey);
+            var process = await Get(entity.Id, entity.Key);
             if (process is not null)
             {
                 await FlowHub.DeleteProcess(entity);
@@ -53,7 +53,7 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
             {
                 var db = GetDbConnection();
                 var result = (from o in db.Processes
-                              where (string.IsNullOrWhiteSpace(key) || o.FlowKey.Equals(key, StringComparison.InvariantCultureIgnoreCase))
+                              where (string.IsNullOrWhiteSpace(key) || o.Key.Equals(key, StringComparison.InvariantCultureIgnoreCase))
                               && (processId == default || o.Id.Equals(processId))
                               select o).ToList();
 

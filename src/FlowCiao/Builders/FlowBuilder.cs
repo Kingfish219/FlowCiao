@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FlowCiao.Exceptions;
+using FlowCiao.Models.Builder.Json;
 using FlowCiao.Models.Flow;
 using FlowCiao.Services;
 
@@ -28,7 +30,7 @@ namespace FlowCiao.Builders
 
             return this;
         }
-
+        
         public IFlowBuilder NewStep(Action<IFlowStepBuilder> action)
         {
             var builder = new FlowStepBuilder(this);
@@ -37,24 +39,24 @@ namespace FlowCiao.Builders
 
             return this;
         }
-
+        
         public Process Build<T>() where T : IFlow, new()
         {
             try
             {
-                var smartFlow = Activator.CreateInstance<T>();
-                if (smartFlow is null)
+                var flow = Activator.CreateInstance<T>();
+                if (flow is null)
                 {
                     throw new FlowCiaoException();
                 }
 
-                var process = _processService.Get(key: smartFlow.FlowKey).GetAwaiter().GetResult().FirstOrDefault();
+                var process = _processService.Get(key: flow.Key).GetAwaiter().GetResult().FirstOrDefault();
                 if (process != null)
                 {
                     return process;
                 }
 
-                var constructor = smartFlow.Construct<T>(this);
+                var constructor = flow.Construct<T>(this);
                 if(constructor.InitialStepBuilder is null)
                 {
                     throw new FlowCiaoException("Your flow should have an initial state, use Initial to declare one");
@@ -62,7 +64,7 @@ namespace FlowCiao.Builders
 
                 process = new Process
                 {
-                    FlowKey = smartFlow.FlowKey
+                    Key = flow.Key
                 };
                 process.Transitions ??= new List<Transition>();
                 constructor.InitialStepBuilder.InitialState.IsInitial = true;
@@ -94,16 +96,74 @@ namespace FlowCiao.Builders
             }
         }
 
+        public async Task<Process> Build(JsonFlow jsonFlow)
+        {
+            try
+            {
+                var process = (await _processService.Get(key: jsonFlow.Key)).FirstOrDefault();
+                if (process != null)
+                {
+                    return process;
+                }
+
+                var states = jsonFlow.States.Select(jsonState => new State(jsonState.Code, jsonState.Name)).ToList();
+            
+                var builder = new FlowStepBuilder(this);
+                InitialStepBuilder = builder;
+                InitialStepBuilder.Build(states, jsonFlow.Initial);
+                StepBuilders.Add(builder);
+            
+                jsonFlow.Steps.ForEach(jsonStep =>
+                {
+                    var stepBuilder = new FlowStepBuilder(this);
+                    stepBuilder.Build(states, jsonStep);
+                    StepBuilders.Add(stepBuilder);
+                });
+                
+                process = new Process
+                {
+                    Key = jsonFlow.Key
+                };
+                process.Transitions ??= new List<Transition>();
+                InitialStepBuilder.InitialState.IsInitial = true;
+                process.InitialState = InitialStepBuilder.InitialState;
+
+                foreach (var stepBuilder in StepBuilders)
+                {
+                    foreach (var allowedTransition in stepBuilder.AllowedTransitionsBuilders)
+                    {
+                        var transition = new Transition();
+                        allowedTransition(transition);
+                        process.Transitions.Add(transition);
+                    }
+                }
+
+                var result = await _processService.Modify(process);
+                if (result == default)
+                {
+                    throw new FlowCiaoPersistencyException("Check your database connection!");
+                }
+
+                return process;
+            }
+            catch (Exception)
+            {
+                Rollback();
+
+                throw;
+            }
+        }
+
         public Process Build<T>(Action<IFlowBuilder> constructor) where T : IFlow, new()
         {
             throw new NotImplementedException();
 
             //try
             //{
-            //    var smartFlow = Activator.CreateInstance<T>();
+            //    var flow = Activator.CreateInstance<T>();
             //    constructor.Invoke(this);
 
-            //    var process = _processService.Get(key: smartFlow.FlowKey).GetAwaiter().GetResult().FirstOrDefault();
+            //    var process = _processService.Get(key: flow.Key).GetAwaiter().GetResult().FirstOrDefault();
             //    if (process != null)
             //    {
             //        return process;
@@ -115,7 +175,7 @@ namespace FlowCiao.Builders
             //        {
             //            new Activity
             //            {
-            //                ProcessActivityExecutor = builder.OnEntryActivty
+            //                ProcessActivityExecutor = builder.OnEntryActivity
             //            }
             //        };
 
@@ -140,7 +200,7 @@ namespace FlowCiao.Builders
             //    var result = _processService.Modify(process).GetAwaiter().GetResult();
             //    if (result == default)
             //    {
-            //        throw new SmartFlowPersistencyException("Check your database connection!");
+            //        throw new FlowCiaoPersistancyException("Check your database connection!");
             //    }
 
             //    return process;
@@ -155,7 +215,7 @@ namespace FlowCiao.Builders
 
         public void Rollback()
         {
-
+            throw new NotImplementedException();
         }
 
         public IFlowStepBuilder Initial(IFlowStepBuilder builder)

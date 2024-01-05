@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using FlowCiao.Interfaces;
+using FlowCiao.Models.Builder.Json;
 using FlowCiao.Models.Flow;
 
 namespace FlowCiao.Builders
@@ -34,13 +35,15 @@ namespace FlowCiao.Builders
             {
                 transition.From = InitialState;
                 transition.To = state;
-                transition.Activities = OnExitActivity != null ? new List<Activity>
-                            {
-                                new()
-                                {
-                                    ProcessActivityExecutor = OnExitActivity
-                                }
-                            } : new List<Activity>();
+                transition.Activities = OnExitActivity != null
+                    ? new List<Activity>
+                    {
+                        new()
+                        {
+                            ProcessActivityExecutor = OnExitActivity
+                        }
+                    }
+                    : new List<Activity>();
                 transition.Actions = actions.Select(action => new ProcessAction(action)).ToList();
             });
 
@@ -53,20 +56,22 @@ namespace FlowCiao.Builders
             {
                 transition.From = InitialState;
                 transition.To = state;
-                transition.Activities = OnExitActivity != null ? new List<Activity>
-                            {
-                                new()
-                                {
-                                    ProcessActivityExecutor = OnExitActivity
-                                }
-                            } : new List<Activity>();
+                transition.Activities = OnExitActivity != null
+                    ? new List<Activity>
+                    {
+                        new()
+                        {
+                            ProcessActivityExecutor = OnExitActivity
+                        }
+                    }
+                    : new List<Activity>();
                 transition.Actions = new List<ProcessAction>
-                                {
-                                    new ProcessAction(action)
-                                };
+                {
+                    new ProcessAction(action)
+                };
                 transition.Condition = condition;
             });
-            
+
             return this;
         }
 
@@ -104,6 +109,28 @@ namespace FlowCiao.Builders
         public IFlowStepBuilder AssignToUser(Func<string> userId)
         {
             InitialState.OwnerId = userId();
+
+            return this;
+        }
+
+        public IFlowStepBuilder Build(List<State> states, JsonStep jsonStep)
+        {
+            var fromState = states.Single(state => state.Code == jsonStep.From.Code);
+            var allowedList = states
+                .Where(state => jsonStep.Allows.Exists(allowed => allowed.Item1.Code == state.Code))
+                .Select(state => new
+                {
+                    AllowedState = state,
+                    AllowedAction = jsonStep.Allows.Single(x => x.Item1.Code == state.Code).Item2
+                })
+                .ToList();
+
+            From(fromState);
+
+            allowedList.ForEach(allowed =>
+            {
+                Allow(allowed.AllowedState, allowed.AllowedAction);
+            });
 
             return this;
         }

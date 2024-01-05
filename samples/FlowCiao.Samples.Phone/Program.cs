@@ -1,11 +1,9 @@
 using FlowCiao;
 using FlowCiao.Builders;
 using FlowCiao.Operators;
-using SampleWebApp.FLowCiao;
+using FlowCiao.Samples.Phone.FLowCiao;
 
 var builder = WebApplication.CreateBuilder(args);
-
-var configuration = builder.Configuration;
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -16,7 +14,7 @@ builder.Services.AddFlowCiao(settings =>
 {
     //settings
     //  .Persist()
-    //    .UseSqlServer(configuration.GetConnectionString("FlowCiao"));
+    //    .UseSqlServer(builder.Configuration.GetConnectionString("FlowCiao"));
 });
 
 var app = builder.Build();

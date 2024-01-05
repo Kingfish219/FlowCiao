@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FlowCiao.Interfaces;
+using FlowCiao.Models.Builder.Json;
 using FlowCiao.Models.Flow;
 
 namespace FlowCiao.Builders
@@ -18,5 +19,6 @@ namespace FlowCiao.Builders
         public IFlowStepBuilder OnEntry<Activity>() where Activity : IProcessActivity, new();
         public IFlowStepBuilder OnExit<Activity>() where Activity : IProcessActivity, new();
         public IFlowStepBuilder AssignToUser(Func<string> userId);
+        public IFlowStepBuilder Build(List<State> states, JsonStep jsonStep);
     }
 }

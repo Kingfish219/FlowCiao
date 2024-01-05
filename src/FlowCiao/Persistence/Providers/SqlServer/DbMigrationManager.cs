@@ -8,7 +8,7 @@ namespace FlowCiao.Persistence.Providers.SqlServer
     public class DbMigrationManager
     {
         private readonly string _connectionString;
-        private const string ScriptsPath = @"SmartFlow.Persistence.SqlServer.Migration";
+        private const string ScriptsPath = "FlowCiao.Persistence.SqlServer.Migration";
 
         public DbMigrationManager(FlowSettings settings)
         {
@@ -22,8 +22,9 @@ namespace FlowCiao.Persistence.Providers.SqlServer
             var upgrader =
                 DeployChanges.To
                     .SqlDatabase(_connectionString)
-                    .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly()
-                        , s => s.StartsWith(ScriptsPath))
+                    // .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly()
+                    //     , s => s.StartsWith(ScriptsPath))
+                    .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
                     .WithTransaction()
                     .JournalTo(new NullJournal())
                     .LogToConsole()

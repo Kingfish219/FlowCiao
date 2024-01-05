@@ -3,7 +3,7 @@
 	@IsActive BIT= NULL,
 	@IsDefultProccess BIT= NULL,
 	@Name NVARCHAR(400)= NULL,
-	@FlowKey NVARCHAR(200)= NULL,
+	@Key NVARCHAR(200)= NULL,
 	@Owner UNIQUEIDENTIFIER= NULL,
 	@EntityType INT= NULL
 AS
@@ -15,7 +15,7 @@ BEGIN
 			IsActive = @IsActive,
 			IsDefultProccess= @IsDefultProccess,
 			[Name]= @IsActive,
-			FlowKey= @FlowKey,
+			[Key]= @Key,
 			[Owner]= @Owner,
 			EntityType= @EntityType
 		WHERE Id = @Id
@@ -28,7 +28,7 @@ BEGIN
 			IsActive,
 			IsDefultProccess,
 			[Name],
-			FlowKey,
+			[Key],
 			[Owner],
 			EntityType
 		)
@@ -38,7 +38,7 @@ BEGIN
 			ISNULL(@IsActive, 1),
 			ISNULL(@IsDefultProccess, 0),
 			@Name,
-			@FlowKey,
+			@Key,
 			@Owner,
 			@EntityType
 		)

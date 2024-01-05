@@ -12,7 +12,7 @@
 		<Title>FlowCiao</Title>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Description>A Lightweight .NET State Machine Workflow. FlowCiao is a user-friendly and extensible .NET state machine library that simplifies the creation and management of state machines in your applications. With FlowCiao, you can effortlessly define and control the flow of your application's logic, making it an ideal choice for managing complex workflows and state-driven processes. Start building robust and efficient state machines with ease using FlowCiao.</Description>
-		<RepositoryUrl>https://github.com/Kingfish219/SmartFlow</RepositoryUrl>
+		<RepositoryUrl>https://github.com/Kingfish219/FlowCiao</RepositoryUrl>
 		<PackageTags>workflow;state;machine;flow;ciao;</PackageTags>
 		<PackAsTool>True</PackAsTool>
 		<Authors>Kingfish</Authors>
@@ -113,7 +113,7 @@
 		<PackageReference Include="dbup-sqlserver" Version="5.0.8" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
 	</ItemGroup>
 
 	<ItemGroup>

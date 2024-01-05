@@ -7,9 +7,9 @@ namespace FlowCiao.Persistence.Providers.SqlServer
     {
         private readonly FlowPersistanceSettings _settings;
 
-        public FlowSqlServerRepository(FlowSettings smartFlowSettings)
+        public FlowSqlServerRepository(FlowSettings flowSettings)
         {
-            _settings = smartFlowSettings.PersistanceSettings;
+            _settings = flowSettings.PersistanceSettings;
         }
 
         protected IDbConnection GetDbConnection()

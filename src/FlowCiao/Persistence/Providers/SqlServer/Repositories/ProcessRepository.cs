@@ -108,17 +108,17 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
                                 JOIN FlowCiao.[State] s1 on s1.Id = t.NextStateId
                                 WHERE
                                   (p.[Id] = @ProcessId OR ISNULL(@ProcessId, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER)) AND
-                                  (p.[FlowKey] = @FlowKey OR ISNULL(@FlowKey, '') = '')";
+                                  (p.[Key] = @Key OR ISNULL(@Key, '') = '')";
 
-                    var smartFlows = new List<Process>();
+                    var processes = new List<Process>();
                     connection.Query<Process, Transition, State, State, Process>(sql,
                         (process, transition, currentState, nextState) =>
                         {
-                            var smartFlow = smartFlows.FirstOrDefault(x => x.Id == process.Id);
+                            var smartFlow = processes.FirstOrDefault(x => x.Id == process.Id);
                             if (smartFlow is null)
                             {
                                 smartFlow = process;
-                                smartFlows.Add(smartFlow);
+                                processes.Add(smartFlow);
                             }
 
                             smartFlow.Transitions ??= new List<Transition>();
@@ -129,9 +129,9 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
                             smartFlow.Transitions.Add(transition);
 
                             return smartFlow;
-                        }, splitOn: "TransitionId, StateId, StateId", param: new { ProcessId = processId, FlowKey = key }).ToList();
+                        }, splitOn: "TransitionId, StateId, StateId", param: new { ProcessId = processId, Key = key }).ToList();
 
-                    return smartFlows;
+                    return processes;
                 }
             });
         }
@@ -612,8 +612,7 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
             {
                 var toInsert = new
                 {
-                    Id = entity.Id == default ? Guid.NewGuid() : entity.Id,
-                    entity.FlowKey
+                    Id = entity.Id == default ? Guid.NewGuid() : entity.Id, Key = entity.Key
                 };
 
                 using var connection = GetDbConnection();
