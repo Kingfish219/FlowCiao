@@ -1,6 +1,6 @@
 ﻿using FlowCiao.Builders;
 using FlowCiao.Models.Flow;
-using FlowCiao.Samples.Phone.SmartFLow.Activities;
+using FlowCiao.Samples.Phone.FLowCiao.Activities;
 
 namespace FlowCiao.Samples.Phone.FLowCiao
 {

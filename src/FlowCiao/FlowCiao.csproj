@@ -28,7 +28,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="Persistence\Providers\SqlServer\Migration\00.Schemas\0000-Create SmartFlow-Up.sql" />
+		<None Remove="Persistence\Providers\SqlServer\Migration\00.Schemas\0000-Create FlowCiao-Up.sql" />
 		<None Remove="Persistence\Providers\SqlServer\Migration\01.Tables\0000-Create Action-UP.sql" />
 		<None Remove="Persistence\Providers\SqlServer\Migration\01.Tables\0001-Create ActionType-UP.sql" />
 		<None Remove="Persistence\Providers\SqlServer\Migration\01.Tables\0002-Create ActiveProcessStep-UP.sql" />
@@ -75,7 +75,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\00.Schemas\0000-Create SmartFlow-Up.sql" />
 		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0000-Create Action-UP.sql" />
 		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0001-Create ActionType-UP.sql" />
 		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0002-Create ActiveProcessStep-UP.sql" />

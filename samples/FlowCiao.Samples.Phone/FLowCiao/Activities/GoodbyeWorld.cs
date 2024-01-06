@@ -1,7 +1,7 @@
 ﻿using FlowCiao.Interfaces;
 using FlowCiao.Models;
 
-namespace FlowCiao.Samples.Phone.SmartFLow.Activities
+namespace FlowCiao.Samples.Phone.FLowCiao.Activities
 {
     public class GoodbyeWorld : IProcessActivity
     {

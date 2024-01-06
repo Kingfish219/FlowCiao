@@ -114,21 +114,21 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
                     connection.Query<Process, Transition, State, State, Process>(sql,
                         (process, transition, currentState, nextState) =>
                         {
-                            var smartFlow = processes.FirstOrDefault(x => x.Id == process.Id);
-                            if (smartFlow is null)
+                            var selectedProcess = processes.FirstOrDefault(x => x.Id == process.Id);
+                            if (selectedProcess is null)
                             {
-                                smartFlow = process;
-                                processes.Add(smartFlow);
+                                selectedProcess = process;
+                                processes.Add(selectedProcess);
                             }
 
-                            smartFlow.Transitions ??= new List<Transition>();
+                            selectedProcess.Transitions ??= new List<Transition>();
 
                             transition.From = currentState;
                             transition.To = nextState;
 
-                            smartFlow.Transitions.Add(transition);
+                            selectedProcess.Transitions.Add(transition);
 
-                            return smartFlow;
+                            return selectedProcess;
                         }, splitOn: "TransitionId, StateId, StateId", param: new { ProcessId = processId, Key = key }).ToList();
 
                     return processes;

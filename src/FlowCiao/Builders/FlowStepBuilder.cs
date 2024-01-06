@@ -9,11 +9,11 @@ namespace FlowCiao.Builders
 {
     internal class FlowStepBuilder : IFlowStepBuilder
     {
-        public IFlowBuilder SmartFlowBuilder { get; set; }
+        public IFlowBuilder FlowBuilder { get; set; }
 
-        public FlowStepBuilder(IFlowBuilder smartFlowBuilder)
+        public FlowStepBuilder(IFlowBuilder flowBuilder)
         {
-            SmartFlowBuilder = smartFlowBuilder;
+            FlowBuilder = flowBuilder;
             AllowedTransitionsBuilders = new List<Action<Transition>>();
         }
 
