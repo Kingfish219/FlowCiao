@@ -18,7 +18,7 @@ namespace FlowCiao.Copilot.Controllers
             _flowBuilder = flowBuilder;
         }
 
-        [HttpPost(Name = "json")]
+        [HttpPost, Route("json")]
         public async Task<IActionResult> BuildFromJson(JsonFlow jsonFlow)
         {
             var process = await _flowBuilder.Build(jsonFlow);

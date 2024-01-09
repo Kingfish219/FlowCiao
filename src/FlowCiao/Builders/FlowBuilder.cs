@@ -107,7 +107,7 @@ namespace FlowCiao.Builders
                 }
 
                 var states = jsonFlow.States.Select(jsonState => new State(jsonState.Code, jsonState.Name)).ToList();
-            
+                
                 var builder = new FlowStepBuilder(this);
                 InitialStepBuilder = builder;
                 InitialStepBuilder.Build(states, jsonFlow.Initial);

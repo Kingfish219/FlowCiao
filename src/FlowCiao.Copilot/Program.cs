@@ -8,9 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
     
     builder.Services.AddFlowCiao(settings =>
     {
-        settings
-          .Persist()
-            .UseSqlServer(builder.Configuration.GetConnectionString("FlowCiao"));
+        // settings
+        //   .Persist()
+            // .UseSqlServer(builder.Configuration.GetConnectionString("FlowCiao"));
     });
 }
 
