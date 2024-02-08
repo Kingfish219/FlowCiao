@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
 using FlowCiao.Models.Builder.Json;
 using FlowCiao.Models.Flow;
+using FlowCiao.Utils;
 
 namespace FlowCiao.Builders
 {
@@ -19,7 +21,7 @@ namespace FlowCiao.Builders
 
         public State InitialState { get; set; }
         public List<Action<Transition>> AllowedTransitionsBuilders { get; set; }
-        public IProcessActivity OnEntryActivty { get; set; }
+        public IProcessActivity OnEntryActivity { get; set; }
         public IProcessActivity OnExitActivity { get; set; }
 
         public IFlowStepBuilder From(State state)
@@ -82,10 +84,30 @@ namespace FlowCiao.Builders
 
         public IFlowStepBuilder OnEntry<TA>() where TA : IProcessActivity, new()
         {
-            OnEntryActivty = (TA)Activator.CreateInstance(typeof(TA));
+            OnEntryActivity = (TA)Activator.CreateInstance(typeof(TA));
             var activity = new Activity
             {
-                ProcessActivityExecutor = OnEntryActivty
+                ProcessActivityExecutor = OnEntryActivity
+            };
+            InitialState.Activities ??= new List<Activity>();
+            InitialState.Activities.Add(activity);
+
+            return this;
+        }
+
+        public IFlowStepBuilder OnEntry(string activityName)
+        {
+            var activityType = GeneralUtils.FindType(activityName, typeof(IProcessActivity));
+            if (activityType is null)
+            {
+                throw new FlowCiaoException(
+                    $"Error in finding OnEntry activity. No type matches activity name {activityName} or the type is not derived from {nameof(IProcessActivity)}");
+            }
+
+            OnEntryActivity = (IProcessActivity)Activator.CreateInstance(activityType);
+            var activity = new Activity
+            {
+                ProcessActivityExecutor = OnEntryActivity
             };
             InitialState.Activities ??= new List<Activity>();
             InitialState.Activities.Add(activity);
@@ -96,12 +118,20 @@ namespace FlowCiao.Builders
         public IFlowStepBuilder OnExit<TA>() where TA : IProcessActivity, new()
         {
             OnExitActivity = (TA)Activator.CreateInstance(typeof(TA));
-            //var activity = new Activity
-            //{
-            //    ProcessActivityExecutor = OnExitActivity
-            //};
-            //InitialState.Activities ??= new List<Activity>();
-            //InitialState.Activities.Add(activity);
+
+            return this;
+        }
+
+        public IFlowStepBuilder OnExit(string activityName)
+        {
+            var activityType = GeneralUtils.FindType(activityName, typeof(IProcessActivity));
+            if (activityType is null)
+            {
+                throw new FlowCiaoException(
+                    $"Error in finding OnExit activity. No type matches activity name {activityName} or the type is not derived from {nameof(IProcessActivity)}");
+            }
+
+            OnExitActivity = (IProcessActivity)Activator.CreateInstance(activityType);
 
             return this;
         }
@@ -115,13 +145,13 @@ namespace FlowCiao.Builders
 
         public IFlowStepBuilder Build(List<State> states, JsonStep jsonStep)
         {
-            var fromState = states.Single(state => state.Code == jsonStep.From.Code);
+            var fromState = states.Single(state => state.Code == jsonStep.FromStateCode);
             var allowedList = states
-                .Where(state => jsonStep.Allows.Exists(allowed => allowed.Item1.Code == state.Code))
+                .Where(state => jsonStep.Allows.Exists(allowed => allowed.AllowedStateCode == state.Code))
                 .Select(state => new
                 {
                     AllowedState = state,
-                    AllowedAction = jsonStep.Allows.Single(x => x.Item1.Code == state.Code).Item2
+                    AllowedAction = jsonStep.Allows.Single(x => x.AllowedStateCode == state.Code).ActionCode
                 })
                 .ToList();
 
@@ -131,6 +161,16 @@ namespace FlowCiao.Builders
             {
                 Allow(allowed.AllowedState, allowed.AllowedAction);
             });
+
+            if (jsonStep.OnEntry != null)
+            {
+                OnEntry(jsonStep.OnEntry.Name);
+            }
+
+            if (jsonStep.OnExit != null)
+            {
+                OnExit(jsonStep.OnExit.Name);
+            }
 
             return this;
         }

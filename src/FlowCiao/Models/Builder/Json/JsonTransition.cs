@@ -2,7 +2,6 @@ namespace FlowCiao.Models.Builder.Json;
 
 public class JsonTransition
 {
-    public JsonState From { get; set; }
-    public JsonState To { get; set; }
-    public JsonAction Action { get; set; }
+    public int AllowedStateCode { get; set; }
+    public int ActionCode { get; set; }
 }

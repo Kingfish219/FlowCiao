@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using FlowCiao;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,9 +9,23 @@ var builder = WebApplication.CreateBuilder(args);
     
     builder.Services.AddFlowCiao(settings =>
     {
-        // settings
-        //   .Persist()
-            // .UseSqlServer(builder.Configuration.GetConnectionString("FlowCiao"));
+        settings
+          .Persist()
+            .UseSqlServer(builder.Configuration.GetConnectionString("FlowCiao"));
+    });
+    
+    builder.Services.AddApiVersioning(options =>
+    {
+        options.DefaultApiVersion = new ApiVersion(1);
+        options.ReportApiVersions = true;
+        options.AssumeDefaultVersionWhenUnspecified = true;
+        options.ApiVersionReader = ApiVersionReader.Combine(
+            new UrlSegmentApiVersionReader(),
+            new HeaderApiVersionReader("X-Api-Version"));
+    }).AddApiExplorer(options =>
+    {
+        options.GroupNameFormat = "'v'V";
+        options.SubstituteApiVersionInUrl = true;
     });
 }
 

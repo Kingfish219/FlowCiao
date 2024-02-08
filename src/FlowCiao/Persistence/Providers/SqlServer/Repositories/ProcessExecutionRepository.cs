@@ -23,7 +23,7 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
                 connection.Open();
                 var query = @"SELECT pe.*,
 	                                   p.Id ProcessId,
-	                                   p.Key
+	                                   p.[Key]
                                 FROM [FlowCiao].ProcessExecution pe
                                 JOIN FlowCiao.Process p ON p.Id = pe.ProcessId
                                 WHERE

@@ -122,4 +122,8 @@
 		</None>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\00.Schemas\0000-Create FlowCiao-Up.sql" />
+	</ItemGroup>
+
 </Project>

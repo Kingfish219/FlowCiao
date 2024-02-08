@@ -106,20 +106,15 @@ namespace FlowCiao.Builders
                     return process;
                 }
 
-                var states = jsonFlow.States.Select(jsonState => new State(jsonState.Code, jsonState.Name)).ToList();
+                var states = jsonFlow.States
+                    .Select(jsonState => new State(jsonState.Code, jsonState.Name))
+                    .ToList();
                 
                 var builder = new FlowStepBuilder(this);
                 InitialStepBuilder = builder;
                 InitialStepBuilder.Build(states, jsonFlow.Initial);
                 StepBuilders.Add(builder);
             
-                jsonFlow.Steps.ForEach(jsonStep =>
-                {
-                    var stepBuilder = new FlowStepBuilder(this);
-                    stepBuilder.Build(states, jsonStep);
-                    StepBuilders.Add(stepBuilder);
-                });
-                
                 process = new Process
                 {
                     Key = jsonFlow.Key
@@ -128,13 +123,30 @@ namespace FlowCiao.Builders
                 InitialStepBuilder.InitialState.IsInitial = true;
                 process.InitialState = InitialStepBuilder.InitialState;
 
-                foreach (var stepBuilder in StepBuilders)
+                InitialStepBuilder.AllowedTransitionsBuilders.ForEach(allowedTransition =>
                 {
-                    foreach (var allowedTransition in stepBuilder.AllowedTransitionsBuilders)
+                    var transition = new Transition();
+                    allowedTransition(transition);
+                    process.Transitions.Add(transition);
+                });
+                
+                if (jsonFlow.Steps is { Count: > 0 })
+                {
+                    jsonFlow.Steps.ForEach(jsonStep =>
                     {
-                        var transition = new Transition();
-                        allowedTransition(transition);
-                        process.Transitions.Add(transition);
+                        var stepBuilder = new FlowStepBuilder(this);
+                        stepBuilder.Build(states, jsonStep);
+                        StepBuilders.Add(stepBuilder);
+                    });
+
+                    foreach (var stepBuilder in StepBuilders)
+                    {
+                        foreach (var allowedTransition in stepBuilder.AllowedTransitionsBuilders)
+                        {
+                            var transition = new Transition();
+                            allowedTransition(transition);
+                            process.Transitions.Add(transition);
+                        }
                     }
                 }
 

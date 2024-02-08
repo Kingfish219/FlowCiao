@@ -1,10 +1,11 @@
-using System;
 using System.Collections.Generic;
 
 namespace FlowCiao.Models.Builder.Json;
 
 public class JsonStep
 {
-    public JsonState From { get; set; }
-    public List<Tuple<JsonState, int>> Allows { get; set; }
+    public int FromStateCode { get; set; }
+    public List<JsonTransition> Allows { get; set; }
+    public JsonActivity OnEntry { get; set; }
+    public JsonActivity OnExit { get; set; }
 }

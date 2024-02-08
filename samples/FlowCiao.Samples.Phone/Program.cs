@@ -12,9 +12,9 @@ builder.Services.AddSwaggerGen();
 // Add FlowCiao to services
 builder.Services.AddFlowCiao(settings =>
 {
-    //settings
-    //  .Persist()
-    //    .UseSqlServer(builder.Configuration.GetConnectionString("FlowCiao"));
+    settings
+      .Persist()
+        .UseSqlServer(builder.Configuration.GetConnectionString("FlowCiao"));
 });
 
 var app = builder.Build();
