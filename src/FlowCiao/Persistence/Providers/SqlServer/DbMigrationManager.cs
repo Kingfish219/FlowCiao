@@ -12,7 +12,7 @@ namespace FlowCiao.Persistence.Providers.SqlServer
 
         public DbMigrationManager(FlowSettings settings)
         {
-            _connectionString = settings.PersistanceSettings.ConnectionString;
+            _connectionString = settings.PersistenceSettings.ConnectionString;
         }
 
         public bool MigrateUp()

@@ -1,6 +1,6 @@
 using FlowCiao;
 using FlowCiao.Builders;
-using FlowCiao.Operators;
+using FlowCiao.Copilot;
 using FlowCiao.Samples.Phone.FLowCiao;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,8 +13,11 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddFlowCiao(settings =>
 {
     settings
-      .Persist()
-        .UseSqlServer(builder.Configuration.GetConnectionString("FlowCiao"));
+        .Persist(persistenceSettings =>
+        {
+            persistenceSettings.UseSqlServer(builder.Configuration.GetConnectionString("FlowCiao"));
+        })
+        .UseCopilot(builder.Configuration);
 });
 
 var app = builder.Build();

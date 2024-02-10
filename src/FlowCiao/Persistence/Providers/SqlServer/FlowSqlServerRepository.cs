@@ -5,11 +5,11 @@ namespace FlowCiao.Persistence.Providers.SqlServer
 {
     public class FlowSqlServerRepository
     {
-        private readonly FlowPersistanceSettings _settings;
+        private readonly FlowPersistenceSettings _settings;
 
         public FlowSqlServerRepository(FlowSettings flowSettings)
         {
-            _settings = flowSettings.PersistanceSettings;
+            _settings = flowSettings.PersistenceSettings;
         }
 
         protected IDbConnection GetDbConnection()

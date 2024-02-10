@@ -10,8 +10,10 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddFlowCiao(settings =>
     {
         settings
-          .Persist()
-            .UseSqlServer(builder.Configuration.GetConnectionString("FlowCiao"));
+            .Persist(persistenceSettings =>
+            {
+                persistenceSettings.UseSqlServer(builder.Configuration.GetConnectionString("FlowCiao"));
+            });
     });
     
     builder.Services.AddApiVersioning(options =>
