@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FlowCiao.Copilot.Controllers
 {
     [ApiController]
-    [Route("api/flows")]
+    [Route("flowciao/api/flows")]
     public class FlowController : ControllerBase
     {
         private readonly ILogger<FlowController> _logger;

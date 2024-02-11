@@ -5,9 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FlowCiao.Copilot.Controllers
 {
-    [ApiController]
-    [Route("api/builder")]
-    public class BuilderController : ControllerBase
+    [Route("flowciao/api/builder")]
+    public class BuilderController : FlowCiaoApiControllerBase
     {
         private readonly ILogger<BuilderController> _logger;
         private readonly IFlowBuilder _flowBuilder;
