@@ -36,7 +36,7 @@ const nodeTypes = { idleNode: IdleNode, StartNode: StartNode };
 
 const edgeTypes = { "custom-edge": CustomEdge };
 
-let id = 2;
+let id = 3;
 const getId = () => `${id++}`;
 
 const Flow = forwardRef((props, ref) => {
@@ -100,13 +100,13 @@ const Flow = forwardRef((props, ref) => {
   };
 
   const initialEdges = [
-    { id: "1", source: "0", target: "1", type: "custom-edge" , data:{Name: "start"}},
+    { id: "2", source: "1", target: "2", type: "custom-edge" , data:{Name: ""}},
   ];
   const [edges, setEdges] = useEdgesState(initialEdges);
 
   const initialNodes = [
     {
-      id: "0",
+      id: "1",
       type: "StartNode",
       position: { x: 0, y: 0 },
       data: {
@@ -114,7 +114,7 @@ const Flow = forwardRef((props, ref) => {
       },
     },
     {
-      id: "1",
+      id: "2",
       type: "idleNode",
       data: {
         AddIdleNodeFunc: onAddIdleNodeFunc,
@@ -134,10 +134,33 @@ const Flow = forwardRef((props, ref) => {
 
   const exportFlowAsJSON = () => {
     const flowData = {
-      elements: [...nodes, ...edges],
+      nodes: [...nodes],
+      trigers: [...edges]
     };
+    const flow = {
+        Key: props.workflowName,
+        Name: props.workflowName,
+        States: nodes.filter(x => x.id !== "1").map((node) => ({Code: node.id, Name: node.data.Name})),
+        Actions:edges.filter(x => x.id !== "2").map((edge) => ({Code : edge.id, Name: edge.data.Name})),
+        Initial: {
+            fromStateCode : 2,
+            allows:edges.filter((edge) => edge.source === "2").map((item) => ({aLLowedStateCode: item.target, actionCode: item.id})),
+            onEntry: nodes.find(x => x.id=== "2").data.onEntry,
+            onExit:nodes.find(x => x.id=== "2").data.onExit,
+        },
+        Steps:edges.filter(x => x.source !== "1" && x.source !== "2").map(item => 
+            ({
+                fromStateCode: item.source,
+                allows: edges.filter((edge) => edge.source === item.source).map((item2) => ({aLLowedStateCode: item2.target, actionCode: item2.id})),
+                onEntry: nodes.find(x => x.id=== item.source).data.onEntry,
+                onExit:nodes.find(x => x.id=== item.source).data.onExit,
+            })
+        )
+
+    }
     const jsonFlow = JSON.stringify(flowData, null);
     console.log("Exported JSON:", jsonFlow);
+    console.log("Exported JSON22: ", JSON.stringify(flow, null));
   };
   const onNodesChange = useCallback(
     (changes) => {

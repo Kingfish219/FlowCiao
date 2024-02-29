@@ -105,7 +105,7 @@ function App() {
           </Header>
           <Content className="main-content">
             <div>
-              <Flow ref={flowDesignerRef} resetFlowCalled={resetFlow} onResetFlowClick={resetFlowClick}/>
+              <Flow ref={flowDesignerRef} resetFlowCalled={resetFlow} onResetFlowClick={resetFlowClick} workflowName={workflowName}/>
             </div>
           </Content>
         </Layout>
