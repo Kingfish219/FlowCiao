@@ -9,11 +9,8 @@
   <ItemGroup>
     <PackageReference Include="Asp.Versioning.Http" Version="6.5.0" />
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="6.4.0" />
+    <PackageReference Include="FlowCiao" Version="1.0.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\FlowCiao\FlowCiao.csproj" />
   </ItemGroup>
 
   <ItemGroup>

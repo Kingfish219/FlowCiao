@@ -5,6 +5,7 @@
 		<SccProvider>SAK</SccProvider>
 		<SccAuxPath>SAK</SccAuxPath>
 		<SccLocalPath>SAK</SccLocalPath>
+		<Version>1.0.4</Version>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -14,7 +15,7 @@
 		<Description>A Lightweight .NET State Machine Workflow. FlowCiao is a user-friendly and extensible .NET state machine library that simplifies the creation and management of state machines in your applications. With FlowCiao, you can effortlessly define and control the flow of your application's logic, making it an ideal choice for managing complex workflows and state-driven processes. Start building robust and efficient state machines with ease using FlowCiao.</Description>
 		<RepositoryUrl>https://github.com/Kingfish219/FlowCiao</RepositoryUrl>
 		<PackageTags>workflow;state;machine;flow;ciao;</PackageTags>
-		<PackAsTool>True</PackAsTool>
+		<PackAsTool>False</PackAsTool>
 		<Authors>Kingfish</Authors>
 		<PackageId>FlowCiao</PackageId>
 		<PackageIcon>Resources/FlowCiao.png</PackageIcon>
