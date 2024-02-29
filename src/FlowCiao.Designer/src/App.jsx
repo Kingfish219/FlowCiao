@@ -1,9 +1,7 @@
 import { useState, useRef } from "react";
 import Flow from "./Components/Flow";
 import {
-  ArrowUpOutlined,
-  ArrowDownOutlined,
-  PlusOutlined,
+  ExclamationCircleFilled
 } from "@ant-design/icons";
 import {
   ConfigProvider,
@@ -12,6 +10,7 @@ import {
   Input,
   Button,
   ColorPicker,
+  Modal
 } from "antd";
 import "./App.css";
 import plusImg from "./Assets/plus.svg";
@@ -21,6 +20,7 @@ import paintImg from "./Assets/paint.svg";
 import publishImg from "./Assets/publish.svg";
 import ThemeContext from "./Store/ThemeContext";
 const { Header, Footer, Sider, Content } = Layout;
+const { confirm } = Modal;
 
 function App() {
   const flowDesignerRef = useRef();
@@ -46,9 +46,24 @@ function App() {
   };
   const [resetFlow, setResetFlow] = useState(false);
   const resetFlowClick = (isCleared = true) =>{
-    setWorkflowName("")
-      setResetFlow(isCleared)
+    if(isCleared) {
+      showConfirm();
+    }else{
+      setResetFlow(false)
+    }
   }
+  const showConfirm = () => {
+    confirm({
+      title: 'Do you want to delete flow?',
+      icon: <ExclamationCircleFilled />,
+      // content: 'Some descriptions',
+      onOk() {
+        setWorkflowName("")
+      setResetFlow(true)
+      }
+    });
+  };
+
   const workflowNameOnChange = (event) => {
     setWorkflowName(event.target.value);
   }

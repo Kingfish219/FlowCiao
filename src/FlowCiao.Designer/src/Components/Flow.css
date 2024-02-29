@@ -155,7 +155,8 @@
   cursor: pointer;
 }
 .start-node .add-node-btn{
-  top: unset;
+  top: -1px;
+    right: -6px;
 }
 .add-node-function-btn {
   background: transparent;

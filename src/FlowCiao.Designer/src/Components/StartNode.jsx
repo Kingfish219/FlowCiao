@@ -24,10 +24,11 @@ const StartNode = (node) => {
   }
 
   return (
-    <div className="start-node" onMouseEnter={onNodeHoverFunc}
-    onMouseLeave={onNodeLoseHoverFunc}
+    <div className="start-node"
+    //  onMouseEnter={onNodeHoverFunc}
+    // onMouseLeave={onNodeLoseHoverFunc}
   >
-    <button
+    {/* <button
       id="addIdleNode"
       className="add-node-btn"
       onClick={onAddIdleNodeClick}
@@ -37,10 +38,11 @@ const StartNode = (node) => {
       ) : (
         <img src={dotImg}/>
       )}
-    </button>
+    </button> */}
+     <div className="add-node-btn"><img src={dotImg}/></div>
       <Handle
         type="source"
-        isConnectable={true}
+        isConnectable={false}
         className="node-handle"
         position={Position.Right}
         id="s1"
