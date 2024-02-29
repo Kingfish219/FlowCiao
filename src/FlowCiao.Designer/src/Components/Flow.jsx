@@ -70,6 +70,9 @@ const Flow = forwardRef((props, ref) => {
       type: "idleNode",
       data: {
         AddIdleNodeFunc: onAddIdleNodeFunc,
+        Name: "",
+        onEntry: "",
+        onExit: ""
       },
       origin: [0.5, 0.0],
     };
@@ -80,6 +83,9 @@ const Flow = forwardRef((props, ref) => {
         source: currentNode.id,
         target: id,
         type: "custom-edge",
+        data:{
+            Name: ""
+        }
       })
     );
   };
@@ -94,7 +100,7 @@ const Flow = forwardRef((props, ref) => {
   };
 
   const initialEdges = [
-    { id: "1", source: "0", target: "1", type: "custom-edge" },
+    { id: "1", source: "0", target: "1", type: "custom-edge" , data:{Name: "start"}},
   ];
   const [edges, setEdges] = useEdgesState(initialEdges);
 
@@ -112,9 +118,12 @@ const Flow = forwardRef((props, ref) => {
       type: "idleNode",
       data: {
         AddIdleNodeFunc: onAddIdleNodeFunc,
+        Name: "",
+        onEntry: "",
+        onExit: ""
       },
       origin: [0.5, 0.0],
-      position: { x: 100, y: 0 },
+      position: { x: 200, y: 0 },
     },
   ];
   const [nodes, setNodes] = useNodesState(initialNodes);
@@ -172,7 +181,7 @@ const Flow = forwardRef((props, ref) => {
 
   const onConnect = useCallback(
     (connection) => {
-      const edge = { ...connection, type: "custom-edge" };
+      const edge ={id: getId(), source:connection.source,target:connection.target,type:"custom-edge",data:{Name:""}} //{ ...connection, type: "custom-edge" };
 
       setEdges((eds) => addEdge(edge, eds));
     },

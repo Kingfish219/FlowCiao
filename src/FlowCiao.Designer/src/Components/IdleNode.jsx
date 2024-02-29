@@ -30,9 +30,12 @@ const IdleNode = (node) => {
     node.data.AddIdleNodeFunc(node);
   };
 
+  const onNodeNameChange = (e) => {
+    node.data.Name = e.target.value;
+  }
   const [isEntryActionSelected, setIsEntryActionSelected] = useState(false);
   const [isExitActionSelected, setIsExitActionSelected] = useState(false);
-  const items = [
+  var items = [
     {
       key: "entryAction",
       label: (
@@ -43,7 +46,7 @@ const IdleNode = (node) => {
           </span>
         </span>
       ),
-      disabled: isEntryActionSelected,
+      // disabled: isEntryActionSelected,
     },
     {
       type: "divider",
@@ -58,9 +61,44 @@ const IdleNode = (node) => {
           </span>
         </span>
       ),
-      disabled: isExitActionSelected,
+      // disabled: isExitActionSelected,
+      
     },
   ];
+
+  if(isEntryActionSelected){
+   items = [
+      {
+        key: "exitAction",
+        label: (
+          <span>
+            <img src={exitActionImg} />
+            <span className="node-action-btn">
+              On Exit
+            </span>
+          </span>
+        ),
+        disabled: isExitActionSelected,
+        
+      },
+    ];
+  }
+  if(isExitActionSelected){
+    items = [
+      {
+        key: "entryAction",
+        label: (
+          <span>
+            <img src={entryActionImg} />
+            <span className="node-action-btn">
+              On Entry
+            </span>
+          </span>
+        ),
+        disabled: isEntryActionSelected,
+      },
+    ];
+  }
 
   const chooseActionHandler = ( {key}) => {
     if (key == "entryAction") {
@@ -69,11 +107,19 @@ const IdleNode = (node) => {
       setIsExitActionSelected(true);
     }
   };
+  const onNodeEntryFuncChange = (e) => {
+    node.data.onEntry = e.target.value;
+  }
+  const onNodeExitFuncChange = (e) => {
+    node.data.onExit = e.target.value;
+  }
   const removeEntryActionHandler = () => {
     setIsEntryActionSelected(false);
+    node.data.onEntry = "";
   };
   const removeExitActionHandler = () => {
     setIsExitActionSelected(false);
+    node.data.onExit = "";
   };
   return (
     <div
@@ -140,6 +186,9 @@ const IdleNode = (node) => {
       >
         {isHoverNode ? <img src={plusImg} /> : <img src={dotImg} />}
       </button>
+      {
+        !isHoverNode || (isEntryActionSelected && isExitActionSelected) ? <></>
+:
       <Dropdown
         menu={{
           items,
@@ -153,11 +202,13 @@ const IdleNode = (node) => {
           <img src={threeDotImg} />
         </button>
       </Dropdown>
+      }
       <input
       className="node-name"
         type="text"
         placeholder="Pending"
          defaultValue={"Pending"}
+         onChange={onNodeNameChange}
       />
       {(isEntryActionSelected || isExitActionSelected) && (
         <div className="func-container">
@@ -173,6 +224,7 @@ const IdleNode = (node) => {
               <input className="action-func-name"
                 placeholder="Custom Act"
                 defaultValue={"Custom Act"}
+                onChange={onNodeEntryFuncChange}
               />
               <button
                 className="func-action-remove-btn"
@@ -193,6 +245,7 @@ const IdleNode = (node) => {
                 className="action-func-name"
                 placeholder="Custom Act"
                 defaultValue={"Custom Act"}
+                onChange={onNodeExitFuncChange}
               />
               <button
                 className="func-action-remove-btn"

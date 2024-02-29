@@ -20,6 +20,10 @@ const CustomEdge = ({
     targetPosition,
   });
 
+  const onEdgeNameChange = (e) => {
+    data.Name = e.target.value;
+  }
+
   return (
     <>
       <BaseEdge id={id} path={edgePath} />
@@ -30,7 +34,7 @@ const CustomEdge = ({
             transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
           }}
         >
-          <input className="custom-edge-input" placeholder="some action" defaultValue={"some action"}/>
+          <input className="custom-edge-input" placeholder="some action" defaultValue={"some action"} onChange={onEdgeNameChange}/>
         </div>
       </EdgeLabelRenderer>
     </>
