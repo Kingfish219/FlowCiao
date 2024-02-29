@@ -8,7 +8,7 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
 {
     public class LogRepository : FlowSqlServerRepository, ILogRepository
     {
-        public LogRepository(FlowSettings smartFlowSettings) : base(smartFlowSettings) { }
+        public LogRepository(FlowSettings flowSettings) : base(flowSettings) { }
 
         public Task<bool> Create(Log log)
         {

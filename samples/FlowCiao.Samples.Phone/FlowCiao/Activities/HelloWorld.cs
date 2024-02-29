@@ -1,13 +1,13 @@
 ﻿using FlowCiao.Interfaces;
 using FlowCiao.Models;
 
-namespace SampleWebApp.SmartFLow.Activities
+namespace FlowCiao.Samples.Phone.FLowCiao.Activities
 {
-    public class GoodbyeWorld : IProcessActivity
+    public class HelloWorld : IProcessActivity
     {
         public ProcessResult Execute(ProcessStepContext context)
         {
-            Console.WriteLine("Goodbye world");
+            Console.WriteLine("Hello world");
 
             return ProcessResult.SuccessResult();
         }

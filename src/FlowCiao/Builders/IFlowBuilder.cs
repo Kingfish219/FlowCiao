@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using FlowCiao.Models.Builder.Json;
 using FlowCiao.Models.Flow;
 
 namespace FlowCiao.Builders
@@ -12,5 +14,6 @@ namespace FlowCiao.Builders
         IFlowBuilder NewStep(Action<IFlowStepBuilder> action);
         Process Build<T>(Action<IFlowBuilder> action) where T : IFlow, new();
         Process Build<T>() where T : IFlow, new();
+        Task<Process> Build(JsonFlow jsonFlow);
     }
 }

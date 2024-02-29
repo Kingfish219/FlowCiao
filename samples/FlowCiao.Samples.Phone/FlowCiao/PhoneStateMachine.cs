@@ -1,14 +1,13 @@
 ﻿using FlowCiao.Builders;
 using FlowCiao.Models.Flow;
-using SampleWebApp.SmartFLow.Activities;
+using FlowCiao.Samples.Phone.FLowCiao.Activities;
 
-namespace SampleWebApp.FLowCiao
+namespace FlowCiao.Samples.Phone.FLowCiao
 {
     public class PhoneStateMachine : IFlow
     {
-        public string FlowKey { get; set; } = "phone";
-
-        public enum Actions
+        public string Key { get; set; } = "phone";
+        private enum Actions
         {
             Ring = 1,
             Call = 2,

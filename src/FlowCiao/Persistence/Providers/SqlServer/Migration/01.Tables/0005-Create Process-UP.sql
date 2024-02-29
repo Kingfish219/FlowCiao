@@ -4,7 +4,7 @@ BEGIN
 CREATE TABLE [FlowCiao].[Process](
 	[Id] [uniqueidentifier] NOT NULL,
 	[Name] [nvarchar](400) NULL,
-	[FlowKey] [nvarchar](200) NULL,
+	[Key] [nvarchar](200) NULL,
 	[Owner] [uniqueidentifier] NULL,
 	[EntityType] [int] NULL,
 	[IsActive] [bit] NOT NULL,

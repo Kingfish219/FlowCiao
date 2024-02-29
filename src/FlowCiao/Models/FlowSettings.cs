@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using Microsoft.Data.SqlClient;
 
 namespace FlowCiao.Models
@@ -6,18 +7,27 @@ namespace FlowCiao.Models
     public class FlowSettings
     {
         public bool PersistFlow { get; private set; }
-        public FlowPersistanceSettings PersistanceSettings { get; set; }
+        public FlowPersistenceSettings PersistenceSettings { get; set; }
 
-        public FlowPersistanceSettings Persist()
+        public FlowSettings Persist(Action<FlowPersistenceSettings> settings)
         {
             PersistFlow = true;
-            PersistanceSettings = new FlowPersistanceSettings();
-
-            return PersistanceSettings;
+            PersistenceSettings = new FlowPersistenceSettings();
+            settings(PersistenceSettings);
+            
+            return this;
         }
+        
+        // public FlowPersistenceSettings Persist()
+        // {
+        //     PersistFlow = true;
+        //     PersistenceSettings = new FlowPersistenceSettings();
+        //
+        //     return PersistenceSettings;
+        // }
     }
 
-    public class FlowPersistanceSettings
+    public class FlowPersistenceSettings
     {
         public string ConnectionString { get; private set; }
         public void UseSqlServer(string connectionString)

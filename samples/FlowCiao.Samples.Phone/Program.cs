@@ -1,11 +1,9 @@
 using FlowCiao;
 using FlowCiao.Builders;
-using FlowCiao.Operators;
-using SampleWebApp.FLowCiao;
+using FlowCiao.Copilot.Extensions;
+using FlowCiao.Samples.Phone.FLowCiao;
 
 var builder = WebApplication.CreateBuilder(args);
-
-var configuration = builder.Configuration;
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -14,9 +12,12 @@ builder.Services.AddSwaggerGen();
 // Add FlowCiao to services
 builder.Services.AddFlowCiao(settings =>
 {
-    //settings
-    //  .Persist()
-    //    .UseSqlServer(configuration.GetConnectionString("FlowCiao"));
+    settings
+        .Persist(persistenceSettings =>
+        {
+            persistenceSettings.UseSqlServer(builder.Configuration.GetConnectionString("FlowCiao"));
+        })
+        .UseCopilot(builder.Services);
 });
 
 var app = builder.Build();
@@ -33,8 +34,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseAuthorization();
-
+app.UseCopilot();
 app.MapControllers();
 
 app.Run();

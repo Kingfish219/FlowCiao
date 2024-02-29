@@ -7,10 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\FlowCiao.Copilot\FlowCiao.Copilot.csproj" />
     <ProjectReference Include="..\..\src\FlowCiao\FlowCiao.csproj" />
   </ItemGroup>
 

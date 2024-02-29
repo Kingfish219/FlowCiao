@@ -13,13 +13,13 @@ namespace FlowCiao.Services
     public class ProcessExecutionService
     {
         private readonly IProcessExecutionRepository _processExecutionRepository;
-        private readonly FlowSettings _smartFlowSettings;
+        private readonly FlowSettings _flowSettings;
 
         public ProcessExecutionService(IProcessExecutionRepository processExecutionRepository
-            , FlowSettings smartFlowSettings
+            , FlowSettings flowSettings
             )
         {
-            _smartFlowSettings = smartFlowSettings;
+            _flowSettings = flowSettings;
             _processExecutionRepository = processExecutionRepository;
         }
 
@@ -64,7 +64,7 @@ namespace FlowCiao.Services
                 State = process.InitialState
             };
 
-            if (_smartFlowSettings.PersistFlow)
+            if (_flowSettings.PersistFlow)
             {
                 await Modify(processExecution);
             }
@@ -87,7 +87,7 @@ namespace FlowCiao.Services
                 }
             };
 
-            if (_smartFlowSettings.PersistFlow)
+            if (_flowSettings.PersistFlow)
             {
                 await Modify(processExecution);
             }
@@ -100,7 +100,7 @@ namespace FlowCiao.Services
             processExecution.ExecutionSteps.Add(GenerateProcessStep(processExecution.Process,
                         processExecution.Process.Transitions.First(x => x.From.IsInitial).From));
 
-            if (_smartFlowSettings.PersistFlow)
+            if (_flowSettings.PersistFlow)
             {
                 await Modify(processExecution);
             }

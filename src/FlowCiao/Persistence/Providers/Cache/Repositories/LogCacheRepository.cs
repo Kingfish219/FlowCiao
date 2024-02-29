@@ -7,7 +7,7 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
 {
     public class LogCacheRepository : FlowCacheRepository, ILogRepository
     {
-        public LogCacheRepository(FlowHub smartFlowHub) : base(smartFlowHub)
+        public LogCacheRepository(FlowHub flowHub) : base(flowHub)
         {
         }
 
