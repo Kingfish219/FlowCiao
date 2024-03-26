@@ -72,7 +72,7 @@ const Flow = forwardRef((props, ref) => {
         AddIdleNodeFunc: onAddIdleNodeFunc,
         Name: "",
         onEntry: "",
-        onExit: ""
+        onExit: "",
       },
       origin: [0.5, 0.0],
     };
@@ -83,9 +83,9 @@ const Flow = forwardRef((props, ref) => {
         source: currentNode.id,
         target: id,
         type: "custom-edge",
-        data:{
-            Name: ""
-        }
+        data: {
+          Name: "",
+        },
       })
     );
   };
@@ -100,7 +100,13 @@ const Flow = forwardRef((props, ref) => {
   };
 
   const initialEdges = [
-    { id: "2", source: "1", target: "2", type: "custom-edge" , data:{Name: ""}},
+    {
+      id: "2",
+      source: "1",
+      target: "2",
+      type: "custom-edge",
+      data: { Name: "" },
+    },
   ];
   const [edges, setEdges] = useEdgesState(initialEdges);
 
@@ -120,7 +126,7 @@ const Flow = forwardRef((props, ref) => {
         AddIdleNodeFunc: onAddIdleNodeFunc,
         Name: "",
         onEntry: "",
-        onExit: ""
+        onExit: "",
       },
       origin: [0.5, 0.0],
       position: { x: 200, y: 0 },
@@ -135,33 +141,70 @@ const Flow = forwardRef((props, ref) => {
   const exportFlowAsJSON = () => {
     const flowData = {
       nodes: [...nodes],
-      trigers: [...edges]
+      trigers: [...edges],
     };
     const flow = {
-        Key: props.workflowName,
-        Name: props.workflowName,
-        States: nodes.filter(x => x.id !== "1").map((node) => ({Code: node.id, Name: node.data.Name})),
-        Actions:edges.filter(x => x.id !== "2").map((edge) => ({Code : edge.id, Name: edge.data.Name})),
-        Initial: {
-            fromStateCode : 2,
-            allows:edges.filter((edge) => edge.source === "2").map((item) => ({aLLowedStateCode: item.target, actionCode: item.id})),
-            onEntry: nodes.find(x => x.id=== "2").data.onEntry,
-            onExit:nodes.find(x => x.id=== "2").data.onExit,
-        },
-        Steps:edges.filter(x => x.source !== "1" && x.source !== "2").map(item => 
-            ({
-                fromStateCode: item.source,
-                allows: edges.filter((edge) => edge.source === item.source).map((item2) => ({aLLowedStateCode: item2.target, actionCode: item2.id})),
-                onEntry: nodes.find(x => x.id=== item.source).data.onEntry,
-                onExit:nodes.find(x => x.id=== item.source).data.onExit,
-            })
-        )
-
-    }
+      Key: props.workflowName,
+      Name: props.workflowName,
+      States: nodes
+        .filter((x) => x.id !== "1")
+        .map((node) => ({ Code: node.id, Name: node.data.Name })),
+      Actions: edges
+        .filter((x) => x.id !== "2")
+        .map((edge) => ({ Code: edge.id, Name: edge.data.Name })),
+      Initial: {
+        fromStateCode: 2,
+        allows: edges
+          .filter((edge) => edge.source === "2")
+          .map((item) => ({
+            aLLowedStateCode: item.target,
+            actionCode: item.id,
+          })),
+        onEntry: nodes.find((x) => x.id === "2").data.onEntry,
+        onExit: nodes.find((x) => x.id === "2").data.onExit,
+      },
+      Steps: edges
+        .filter((x) => x.source !== "1" && x.source !== "2")
+        .map((item) => ({
+          fromStateCode: item.source,
+          allows: edges
+            .filter((edge) => edge.source === item.source)
+            .map((item2) => ({
+              aLLowedStateCode: item2.target,
+              actionCode: item2.id,
+            })),
+          onEntry: nodes.find((x) => x.id === item.source).data.onEntry,
+          onExit: nodes.find((x) => x.id === item.source).data.onExit,
+        })),
+    };
     const jsonFlow = JSON.stringify(flowData, null);
-    console.log("Exported JSON:", jsonFlow);
-    console.log("Exported JSON22: ", JSON.stringify(flow, null));
+    downloadJSON(JSON.stringify(flow, null));
+    // console.log("Exported JSON:", jsonFlow);
+    // console.log("Exported JSON22: ", JSON.stringify(flow, null));
   };
+
+  const downloadJSON = (jsonString) => {
+    const currentDateTime = new Date();
+    const dateTime =
+      currentDateTime.getFullYear().toString() +
+      currentDateTime.getMonth().toString() +
+      currentDateTime.getDay().toString() +
+      "_" +
+      currentDateTime.getHours().toString() +
+      currentDateTime.getMinutes().toString() +
+      currentDateTime.getSeconds().toString();
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.style.display = "none";
+    a.href = url;
+    a.download = props.workflowName + `_jsonFlow_${dateTime}.json`; // Set the filename here
+    document.body.appendChild(a);
+    a.click();
+    URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  };
+
   const onNodesChange = useCallback(
     (changes) => {
       if (
@@ -204,7 +247,13 @@ const Flow = forwardRef((props, ref) => {
 
   const onConnect = useCallback(
     (connection) => {
-      const edge ={id: getId(), source:connection.source,target:connection.target,type:"custom-edge",data:{Name:""}} //{ ...connection, type: "custom-edge" };
+      const edge = {
+        id: getId(),
+        source: connection.source,
+        target: connection.target,
+        type: "custom-edge",
+        data: { Name: "" },
+      }; //{ ...connection, type: "custom-edge" };
 
       setEdges((eds) => addEdge(edge, eds));
     },
