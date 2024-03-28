@@ -14,7 +14,7 @@ FlowCiao is a A lightweight .NET state machine workflow. It is a user-friendly a
 Define your state machine using an Easy-to-use and Fluent Api
 
 ```csharp
-phone.From(idle)
+phone.For(idle)
     .Allow(ringing, (int)Actions.Ring)
     .Allow(busy, (int)Actions.Call)
     .OnEntry<HelloWorld>()
@@ -59,7 +59,7 @@ public class PhoneStateMachine : IFlow
                 .Initial(stepBuilder =>
                 {
                     stepBuilder
-                        .From(idle)
+                        .For(idle)
                         .Allow(ringing, (int)Actions.Ring)
                         .Allow(busy, (int)Actions.Call)
                         .Allow(offline, (int)Actions.PowerOff)
@@ -69,7 +69,7 @@ public class PhoneStateMachine : IFlow
                 .NewStep(stepBuilder =>
                 {
                     stepBuilder
-                        .From(ringing)
+                        .For(ringing)
                         .Allow(offline, (int)Actions.PowerOff)
                         .Allow(idle, (int)Actions.Hangup)
                         .Allow(busy, (int)Actions.Pickup)

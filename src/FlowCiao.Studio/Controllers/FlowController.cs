@@ -1,7 +1,7 @@
 using FlowCiao.Operators;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FlowCiao.Copilot.Controllers
+namespace FlowCiao.Studio.Controllers
 {
     [ApiController]
     [Route("flowciao/api/flows")]

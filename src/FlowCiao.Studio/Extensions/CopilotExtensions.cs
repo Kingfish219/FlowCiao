@@ -1,7 +1,7 @@
 ﻿using Asp.Versioning;
 using FlowCiao.Models;
 
-namespace FlowCiao.Copilot.Extensions;
+namespace FlowCiao.Studio.Extensions;
 
 public static class CopilotExtensions
 {

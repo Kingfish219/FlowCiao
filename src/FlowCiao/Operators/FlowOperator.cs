@@ -59,9 +59,6 @@ namespace FlowCiao.Operators
                     processExecution = await _processExecutionService.InitializeProcessExecution(process);
                 }
 
-                //var activeProcessStep = processExecution.ExecutionSteps
-                //    .SingleOrDefault(x => !x.IsCompleted);
-
                 var activeProcessStep = processExecution.ActiveExecutionStep;
                 if (activeProcessStep is null)
                 {

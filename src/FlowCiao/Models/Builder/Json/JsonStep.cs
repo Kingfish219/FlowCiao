@@ -5,7 +5,7 @@ namespace FlowCiao.Models.Builder.Json;
 public class JsonStep
 {
     public int FromStateCode { get; set; }
-    public List<JsonTransition> Allows { get; set; }
+    public List<JsonTransition> Allows { get; set; } = new();
     public JsonActivity OnEntry { get; set; }
     public JsonActivity OnExit { get; set; }
 }

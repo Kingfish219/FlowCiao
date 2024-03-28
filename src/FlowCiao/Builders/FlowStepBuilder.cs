@@ -5,16 +5,19 @@ using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
 using FlowCiao.Models.Builder.Json;
 using FlowCiao.Models.Flow;
+using FlowCiao.Persistence.Interfaces;
 using FlowCiao.Utils;
 
 namespace FlowCiao.Builders
 {
     internal class FlowStepBuilder : IFlowStepBuilder
     {
+        private readonly IActivityRepository _activityRepository;
         public IFlowBuilder FlowBuilder { get; set; }
 
-        public FlowStepBuilder(IFlowBuilder flowBuilder)
+        public FlowStepBuilder(IFlowBuilder flowBuilder, IActivityRepository activityRepository)
         {
+            _activityRepository = activityRepository;
             FlowBuilder = flowBuilder;
             AllowedTransitionsBuilders = new List<Action<Transition>>();
         }
@@ -24,7 +27,7 @@ namespace FlowCiao.Builders
         public IProcessActivity OnEntryActivity { get; set; }
         public IProcessActivity OnExitActivity { get; set; }
 
-        public IFlowStepBuilder From(State state)
+        public IFlowStepBuilder For(State state)
         {
             InitialState = state;
 
@@ -97,14 +100,10 @@ namespace FlowCiao.Builders
 
         public IFlowStepBuilder OnEntry(string activityName)
         {
-            var activityType = GeneralUtils.FindType(activityName, typeof(IProcessActivity));
-            if (activityType is null)
-            {
-                throw new FlowCiaoException(
-                    $"Error in finding OnEntry activity. No type matches activity name {activityName} or the type is not derived from {nameof(IProcessActivity)}");
-            }
-
-            OnEntryActivity = (IProcessActivity)Activator.CreateInstance(activityType);
+            var foundActivity = TryGetActivity(activityName);
+            OnEntryActivity = foundActivity ??
+                              throw new FlowCiaoException(
+                                  $"Error in finding OnEntry activity. No type matches activity name {activityName} or the type is not derived from {nameof(IProcessActivity)}");
             var activity = new Activity
             {
                 ProcessActivityExecutor = OnEntryActivity
@@ -155,12 +154,9 @@ namespace FlowCiao.Builders
                 })
                 .ToList();
 
-            From(fromState);
+            For(fromState);
 
-            allowedList.ForEach(allowed =>
-            {
-                Allow(allowed.AllowedState, allowed.AllowedAction);
-            });
+            allowedList.ForEach(allowed => { Allow(allowed.AllowedState, allowed.AllowedAction); });
 
             if (jsonStep.OnEntry != null)
             {
@@ -178,6 +174,31 @@ namespace FlowCiao.Builders
         public void Rollback()
         {
             // ignored
+        }
+
+        private IProcessActivity TryGetActivity(string activityName)
+        {
+            try
+            {
+                IProcessActivity processActivity;
+
+                var activityType = GeneralUtils.FindType(activityName, typeof(IProcessActivity));
+                if (activityType != null)
+                {
+                    processActivity = (IProcessActivity)Activator.CreateInstance(activityType);
+                }
+                else
+                {
+                    var storedActivity = _activityRepository.LoadActivity(activityName).GetAwaiter().GetResult();
+                    processActivity = storedActivity;
+                }
+
+                return processActivity;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
     }
 }

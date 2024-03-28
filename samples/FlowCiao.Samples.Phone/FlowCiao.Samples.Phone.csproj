@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\FlowCiao.Copilot\FlowCiao.Copilot.csproj" />
+    <ProjectReference Include="..\..\src\FlowCiao.Studio\FlowCiao.Studio.csproj" />
     <ProjectReference Include="..\..\src\FlowCiao\FlowCiao.csproj" />
   </ItemGroup>
 

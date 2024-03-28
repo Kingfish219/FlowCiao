@@ -12,7 +12,7 @@ namespace FlowCiao.Builders
         internal List<Action<Transition>> AllowedTransitionsBuilders { get; set; }
         public IProcessActivity OnEntryActivity { get; set; }
         public IProcessActivity OnExitActivity { get; set; }
-        public IFlowStepBuilder From(State state);
+        public IFlowStepBuilder For(State state);
         public IFlowStepBuilder AllowSelf(List<int> actions);
         public IFlowStepBuilder Allow(State state, List<int> actions);
         public IFlowStepBuilder Allow(State state, int action, Func<bool> condition = null);

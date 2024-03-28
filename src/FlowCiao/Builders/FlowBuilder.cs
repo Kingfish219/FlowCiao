@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FlowCiao.Exceptions;
 using FlowCiao.Models.Builder.Json;
 using FlowCiao.Models.Flow;
+using FlowCiao.Persistence.Interfaces;
 using FlowCiao.Services;
 
 namespace FlowCiao.Builders
@@ -14,16 +15,18 @@ namespace FlowCiao.Builders
         public List<IFlowStepBuilder> StepBuilders { get; set; }
         public IFlowStepBuilder InitialStepBuilder { get; set; }
         private readonly IProcessService _processService;
+        private readonly IActivityRepository _activityRepository;
 
-        public FlowBuilder(IProcessService processService)
+        public FlowBuilder(IProcessService processService, IActivityRepository activityRepository)
         {
             StepBuilders = new List<IFlowStepBuilder>();
             _processService = processService;
+            _activityRepository = activityRepository;
         }
 
         public IFlowBuilder Initial(Action<IFlowStepBuilder> action)
         {
-            var builder = new FlowStepBuilder(this);
+            var builder = new FlowStepBuilder(this, _activityRepository);
             InitialStepBuilder = builder;
             action(InitialStepBuilder);
             StepBuilders.Add(builder);
@@ -33,7 +36,7 @@ namespace FlowCiao.Builders
         
         public IFlowBuilder NewStep(Action<IFlowStepBuilder> action)
         {
-            var builder = new FlowStepBuilder(this);
+            var builder = new FlowStepBuilder(this, _activityRepository);
             action(builder);
             StepBuilders.Add(builder);
 
@@ -109,11 +112,9 @@ namespace FlowCiao.Builders
                 var states = jsonFlow.States
                     .Select(jsonState => new State(jsonState.Code, jsonState.Name))
                     .ToList();
-                
-                var builder = new FlowStepBuilder(this);
-                InitialStepBuilder = builder;
+
+                InitialStepBuilder = new FlowStepBuilder(this, _activityRepository);;
                 InitialStepBuilder.Build(states, jsonFlow.Initial);
-                StepBuilders.Add(builder);
             
                 process = new Process
                 {
@@ -134,7 +135,7 @@ namespace FlowCiao.Builders
                 {
                     jsonFlow.Steps.ForEach(jsonStep =>
                     {
-                        var stepBuilder = new FlowStepBuilder(this);
+                        var stepBuilder = new FlowStepBuilder(this, _activityRepository);
                         stepBuilder.Build(states, jsonStep);
                         StepBuilders.Add(stepBuilder);
                     });
@@ -225,9 +226,9 @@ namespace FlowCiao.Builders
             //}
         }
 
-        public void Rollback()
+        private void Rollback()
         {
-            throw new NotImplementedException();
+            // ignored
         }
 
         public IFlowStepBuilder Initial(IFlowStepBuilder builder)

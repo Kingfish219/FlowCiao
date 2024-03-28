@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace FlowCiao.Copilot.Controllers;
+namespace FlowCiao.Studio.Controllers;
 
 [ApiController]
 public class FlowCiaoApiControllerBase : ControllerBase

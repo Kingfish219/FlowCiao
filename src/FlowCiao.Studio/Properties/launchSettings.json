@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "FlowCiao.Copilot": {
+    "FlowCiao.Studio": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Data;
+using System.IO;
 using System.Threading.Tasks;
 using Dapper;
+using FlowCiao.Exceptions;
+using FlowCiao.Interfaces;
 using FlowCiao.Models;
 using FlowCiao.Models.Flow;
 using FlowCiao.Persistence.Interfaces;
@@ -32,6 +35,28 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
 
                 return entity.Id;
             });
+        }
+
+        public async Task RegisterActivity(ActivityAssembly activityAssembly)
+        {
+            var storagePath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+                @"FlowCiao\Assembly");
+            if (string.IsNullOrWhiteSpace(Path.GetDirectoryName(storagePath)))
+            {
+                throw new FlowCiaoPersistencyException("Could not get ProgramsData path in order to save the file");
+            }
+
+            if (!Directory.Exists(storagePath))
+            {
+                Directory.CreateDirectory(storagePath);
+            }
+
+            await File.WriteAllBytesAsync(Path.Join(storagePath, activityAssembly.FileName), activityAssembly.FileContent);
+        }
+
+        public Task<IProcessActivity> LoadActivity(string activityFileName)
+        {
+            throw new NotImplementedException();
         }
     }
 }

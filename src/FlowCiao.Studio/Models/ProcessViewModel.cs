@@ -1,4 +1,4 @@
-namespace FlowCiao.Copilot.Models;
+namespace FlowCiao.Studio.Models;
 
 public class ProcessViewModel
 {

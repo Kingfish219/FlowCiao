@@ -1,6 +1,6 @@
 using FlowCiao;
 using FlowCiao.Builders;
-using FlowCiao.Copilot.Extensions;
+using FlowCiao.Studio.Extensions;
 using FlowCiao.Samples.Phone.FLowCiao;
 
 var builder = WebApplication.CreateBuilder(args);

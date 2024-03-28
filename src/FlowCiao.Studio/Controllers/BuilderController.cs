@@ -1,9 +1,9 @@
 using FlowCiao.Builders;
-using FlowCiao.Copilot.Models;
 using FlowCiao.Models.Builder.Json;
+using FlowCiao.Studio.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FlowCiao.Copilot.Controllers
+namespace FlowCiao.Studio.Controllers
 {
     [Route("flowciao/api/builder")]
     public class BuilderController : FlowCiaoApiControllerBase

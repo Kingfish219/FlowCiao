@@ -27,7 +27,7 @@ namespace FlowCiao.Samples.Phone.FLowCiao
                 .Initial(stepBuilder =>
                 {
                     stepBuilder
-                        .From(idle)
+                        .For(idle)
                         .Allow(ringing, (int)Actions.Ring)
                         .Allow(busy, (int)Actions.Call)
                         .Allow(offline, (int)Actions.PowerOff)
@@ -37,7 +37,7 @@ namespace FlowCiao.Samples.Phone.FLowCiao
                 .NewStep(stepBuilder =>
                 {
                     stepBuilder
-                        .From(ringing)
+                        .For(ringing)
                         .Allow(offline, (int)Actions.PowerOff)
                         .Allow(idle, (int)Actions.Hangup)
                         .Allow(busy, (int)Actions.Pickup)
