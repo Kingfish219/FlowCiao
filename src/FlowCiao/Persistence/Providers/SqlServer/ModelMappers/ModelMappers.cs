@@ -53,13 +53,5 @@ namespace FlowCiao.Persistence.Providers.SqlServer.ModelMappers
                 Map(x => x.Id).ToColumn("UserId");
             }
         }
-
-        internal class GroupMap : EntityMap<Group>
-        {
-            internal GroupMap()
-            {
-                Map(x => x.Id).ToColumn("GroupId");
-            }
-        }
     }
 }

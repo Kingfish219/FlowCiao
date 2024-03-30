@@ -27,7 +27,7 @@ namespace FlowCiao.Services
 
         public async Task<Guid> Modify(Process process)
         {
-            var processId = await _processRepository.Modfiy(process);
+            var processId = await _processRepository.Modify(process);
             if (processId == default)
             {
                 throw new FlowCiaoPersistencyException();

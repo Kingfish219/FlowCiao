@@ -20,14 +20,12 @@ BEGIN
 				   ([Id]
 				   ,[Name]
 				   ,[ActivityTypeCode]
-				   ,[Process]
 				   ,[Executor])
 		VALUES
            (
 			   @Id
 			   ,@Name
 			   ,@ActivityTypeCode
-			   ,@Process
 			   ,@Executor
 		   )
 	END

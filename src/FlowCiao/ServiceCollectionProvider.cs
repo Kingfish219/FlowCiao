@@ -67,7 +67,6 @@ namespace FlowCiao
             services.AddTransient<IStateRepository, StateCacheRepository>();
             services.AddTransient<IActionRepository, ActionCacheRepository>();
             services.AddTransient<IActivityRepository, ActivityCacheRepository>();
-            services.AddTransient<ILogRepository, LogCacheRepository>();
             services.AddTransient<IProcessExecutionRepository, ProcessExecutionCacheRepository>();
             services.AddTransient<IProcessRepository, ProcessCacheRepository>();
         }
@@ -86,7 +85,6 @@ namespace FlowCiao
             services.AddTransient<IStateRepository, StateRepository>();
             services.AddTransient<IActionRepository, ActionRepository>();
             services.AddTransient<IActivityRepository, ActivityRepository>();
-            services.AddTransient<ILogRepository, LogRepository>();
             services.AddTransient<IProcessExecutionRepository, ProcessExecutionRepository>();
             services.AddTransient<IProcessRepository, ProcessRepository>();
         }

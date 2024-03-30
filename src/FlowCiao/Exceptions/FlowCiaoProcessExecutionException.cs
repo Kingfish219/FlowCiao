@@ -1,6 +1,5 @@
 ﻿using System;
 using FlowCiao.Models;
-using FlowCiao.Persistence.Providers.SqlServer.Repositories;
 
 namespace FlowCiao.Exceptions
 {
@@ -10,7 +9,7 @@ namespace FlowCiao.Exceptions
         {
         }
 
-        public FlowCiaoProcessExecutionException(string message, LogRepository logRepository, ProcessExecutionStep processStep, [System.Runtime.CompilerServices.CallerFilePath] string handlerName = "", [System.Runtime.CompilerServices.CallerLineNumber] int line = 0)
+        public FlowCiaoProcessExecutionException(string message, ProcessExecutionStep processStep, [System.Runtime.CompilerServices.CallerFilePath] string handlerName = "", [System.Runtime.CompilerServices.CallerLineNumber] int line = 0)
             : base(message)
         {
             try
