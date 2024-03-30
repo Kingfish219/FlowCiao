@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FlowCiao.Exceptions;
 using FlowCiao.Models.Builder.Json;
-using FlowCiao.Models.Flow;
+using FlowCiao.Models.Core;
 using FlowCiao.Persistence.Interfaces;
 using FlowCiao.Services;
 

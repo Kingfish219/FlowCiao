@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using FlowCiao.Models.Flow;
+using FlowCiao.Models.Core;
 using Newtonsoft.Json;
 
-namespace FlowCiao.Models
+namespace FlowCiao.Models.Execution
 {
     public class ProcessExecution
     {

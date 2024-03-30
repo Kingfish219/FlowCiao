@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using FlowCiao.Models;
-using FlowCiao.Models.Flow;
+using FlowCiao.Models.Core;
 
 namespace FlowCiao.Operators
 {

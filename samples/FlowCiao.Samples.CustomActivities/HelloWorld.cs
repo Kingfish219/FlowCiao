@@ -1,5 +1,6 @@
 ﻿using FlowCiao.Interfaces;
 using FlowCiao.Models;
+using FlowCiao.Models.Execution;
 
 namespace FlowCiao.Samples.CustomActivities
 {

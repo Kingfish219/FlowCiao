@@ -5,9 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
 using FlowCiao.Models;
-using FlowCiao.Models.Flow;
+using FlowCiao.Models.Core;
 using FlowCiao.Persistence.Interfaces;
-using Process = FlowCiao.Models.Flow.Process;
+using Process = FlowCiao.Models.Core.Process;
 
 namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
 {

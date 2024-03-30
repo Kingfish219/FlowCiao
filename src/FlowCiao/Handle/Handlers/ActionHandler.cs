@@ -1,13 +1,14 @@
 ﻿using System;
 using FlowCiao.Models;
+using FlowCiao.Models.Execution;
 using FlowCiao.Persistence.Interfaces;
 using FlowCiao.Services;
 
-namespace FlowCiao.Handlers
+namespace FlowCiao.Handle.Handlers
 {
-    internal class ProcessAuthHandler : WorkflowHandler
+    internal class ActionHandler : WorkflowHandler
     {
-        public ProcessAuthHandler(IProcessRepository processRepository
+        public ActionHandler(IProcessRepository processRepository
             , IProcessService processService) : base(processRepository, processService)
         {
         }
@@ -16,6 +17,8 @@ namespace FlowCiao.Handlers
         {
             try
             {
+                processStepContext.ProcessExecutionStepDetail.IsCompleted = true;
+
                 return NextHandler.Handle(processStepContext);
             }
             catch (Exception exception)

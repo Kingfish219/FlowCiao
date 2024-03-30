@@ -1,6 +1,7 @@
 ﻿using Dapper.FluentMap.Mapping;
 using FlowCiao.Models;
-using FlowCiao.Models.Flow;
+using FlowCiao.Models.Core;
+using FlowCiao.Models.Execution;
 
 namespace FlowCiao.Persistence.Providers.SqlServer.ModelMappers
 {

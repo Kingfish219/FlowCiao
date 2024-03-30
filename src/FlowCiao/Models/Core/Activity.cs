@@ -2,7 +2,7 @@
 using FlowCiao.Interfaces;
 using Newtonsoft.Json;
 
-namespace FlowCiao.Models.Flow
+namespace FlowCiao.Models.Core
 {
     public class Activity
     {

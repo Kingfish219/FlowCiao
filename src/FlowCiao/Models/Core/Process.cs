@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Dapper.Contrib.Extensions;
 
-namespace FlowCiao.Models.Flow
+namespace FlowCiao.Models.Core
 {
     [Table("Process")]
     public class Process

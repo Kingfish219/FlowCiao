@@ -1,4 +1,4 @@
-﻿namespace FlowCiao.Models.Flow
+﻿namespace FlowCiao.Models.Core
 {
     internal class StateActivity
     {

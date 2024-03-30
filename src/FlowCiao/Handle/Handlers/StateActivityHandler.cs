@@ -3,14 +3,15 @@ using System.Linq;
 using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
 using FlowCiao.Models;
+using FlowCiao.Models.Execution;
 using FlowCiao.Persistence.Interfaces;
 using FlowCiao.Services;
 
-namespace FlowCiao.Handlers
+namespace FlowCiao.Handle.Handlers
 {
-    internal class TransitionActivityHandler : WorkflowHandler
+    internal class StateActivityHandler : WorkflowHandler
     {
-        public TransitionActivityHandler(IProcessRepository processRepository, IProcessService processService) : base(processRepository, processService)
+        public StateActivityHandler(IProcessRepository processRepository, IProcessService processService) : base(processRepository, processService)
         {
         }
 
@@ -18,15 +19,15 @@ namespace FlowCiao.Handlers
         {
             try
             {
-                var activities = processStepContext.ProcessExecutionStepDetail.Transition.Activities;
+                var activities = processStepContext.ProcessExecution.State.Activities;
                 if (activities is null || activities.Count == 0)
                 {
-                    return NextHandler.Handle(processStepContext);
+                    return NextHandler?.Handle(processStepContext);
                 }
 
                 var types = AppDomain.CurrentDomain.GetAssemblies()
-                    .SelectMany(type => type.GetTypes())
-                    .Where(p => typeof(IProcessActivity).IsAssignableFrom(p) && !p.IsAbstract);
+                        .SelectMany(type => type.GetTypes())
+                        .Where(p => typeof(IProcessActivity).IsAssignableFrom(p) && !p.IsAbstract);
 
                 foreach (var type in types)
                 {
@@ -44,7 +45,7 @@ namespace FlowCiao.Handlers
                     }
                 }
 
-                return NextHandler.Handle(processStepContext);
+                return NextHandler?.Handle(processStepContext);
             }
             catch (Exception exception)
             {
@@ -58,10 +59,21 @@ namespace FlowCiao.Handlers
 
         public override ProcessResult RollBack(ProcessStepContext processStepContext)
         {
-            return PreviousHandler?.RollBack(processStepContext) ?? new ProcessResult
+            try
             {
-                Status = ProcessResultStatus.Failed
-            };
+                return PreviousHandler?.RollBack(processStepContext) ?? new ProcessResult
+                {
+                    Status = ProcessResultStatus.Failed
+                };
+            }
+            catch (Exception exception)
+            {
+                return new ProcessResult
+                {
+                    Status = ProcessResultStatus.Failed,
+                    Message = exception.Message
+                };
+            }
         }
     }
 }

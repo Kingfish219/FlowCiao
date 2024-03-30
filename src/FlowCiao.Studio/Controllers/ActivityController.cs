@@ -1,4 +1,4 @@
-﻿using FlowCiao.Models.Flow;
+﻿using FlowCiao.Models.Core;
 using FlowCiao.Persistence.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 

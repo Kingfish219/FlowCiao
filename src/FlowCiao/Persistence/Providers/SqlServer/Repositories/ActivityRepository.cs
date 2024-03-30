@@ -6,7 +6,7 @@ using Dapper;
 using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
 using FlowCiao.Models;
-using FlowCiao.Models.Flow;
+using FlowCiao.Models.Core;
 using FlowCiao.Persistence.Interfaces;
 
 namespace FlowCiao.Persistence.Providers.SqlServer.Repositories

@@ -1,6 +1,6 @@
 ﻿using FlowCiao.Builders;
 
-namespace FlowCiao.Models.Flow
+namespace FlowCiao.Models.Core
 {
     public interface IFlow
     {

@@ -4,9 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using FlowCiao.Exceptions;
 using FlowCiao.Models;
-using FlowCiao.Models.Flow;
+using FlowCiao.Models.Core;
+using FlowCiao.Models.Execution;
 using FlowCiao.Persistence.Interfaces;
-using Process = FlowCiao.Models.Flow.Process;
+using Process = FlowCiao.Models.Core.Process;
 
 namespace FlowCiao.Services
 {

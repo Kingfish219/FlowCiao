@@ -1,5 +1,5 @@
 ﻿
-namespace FlowCiao.Models
+namespace FlowCiao.Models.Execution
 {
     public class ProcessStepInput
     {

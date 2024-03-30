@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace FlowCiao.Models
+namespace FlowCiao.Models.Execution
 {
     public class ProcessStepContext
     {

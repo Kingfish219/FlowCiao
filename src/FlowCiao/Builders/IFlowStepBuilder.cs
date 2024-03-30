@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using FlowCiao.Interfaces;
 using FlowCiao.Models.Builder.Json;
-using FlowCiao.Models.Flow;
+using FlowCiao.Models.Core;
 
 namespace FlowCiao.Builders
 {

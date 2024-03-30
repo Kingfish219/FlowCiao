@@ -5,7 +5,6 @@ CREATE TABLE [FlowCiao].[Activity](
 	[Id] [uniqueidentifier] NOT NULL,
 	[Name] [nvarchar](400) NULL,
 	[ActivityTypeCode] [int] NULL,
-	[Process] [uniqueidentifier] NULL,
 	[Executor] [nvarchar](500) NULL,
  CONSTRAINT [PK_Activity] PRIMARY KEY CLUSTERED 
 (
