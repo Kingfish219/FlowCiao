@@ -33,8 +33,8 @@ const IdleNode = (node) => {
   const onNodeNameChange = (e) => {
     node.data.Name = e.target.value;
   }
-  const [isEntryActionSelected, setIsEntryActionSelected] = useState(false);
-  const [isExitActionSelected, setIsExitActionSelected] = useState(false);
+  const [isEntryActionSelected, setIsEntryActionSelected] = useState(node.data.onEntry != "" );
+  const [isExitActionSelected, setIsExitActionSelected] = useState(node.data.onExit != "");
   var items = [
     {
       key: "entryAction",
@@ -207,7 +207,7 @@ const IdleNode = (node) => {
       className="node-name"
         type="text"
         placeholder="Pending"
-         defaultValue={"Pending"}
+         defaultValue={node.data.Name != "" ? node.data.Name : "Pending"}
          onChange={onNodeNameChange}
       />
       {(isEntryActionSelected || isExitActionSelected) && (
@@ -223,7 +223,7 @@ const IdleNode = (node) => {
               />
               <input className="action-func-name"
                 placeholder="Custom Act"
-                defaultValue={"Custom Act"}
+                defaultValue={node.data.onEntry != "" ? node.data.onEntry : "Custom Act"}
                 onChange={onNodeEntryFuncChange}
               />
               <button
@@ -244,7 +244,7 @@ const IdleNode = (node) => {
               <input
                 className="action-func-name"
                 placeholder="Custom Act"
-                defaultValue={"Custom Act"}
+                defaultValue={node.data.onExit != "" ? node.data.onExit : "Custom Act" }
                 onChange={onNodeExitFuncChange}
               />
               <button

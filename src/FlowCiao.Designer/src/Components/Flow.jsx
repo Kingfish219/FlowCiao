@@ -21,11 +21,8 @@ import ReactFlow, {
   Controls,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { DeleteOutlined } from "@ant-design/icons";
 import IdleNode from "./IdleNode";
 import StartNode from "./StartNode";
-
-import Sidebar from "./Sidebar";
 
 import "./Flow.css";
 import CustomEdge from "./CustomEdge";
@@ -36,8 +33,14 @@ const nodeTypes = { idleNode: IdleNode, StartNode: StartNode };
 
 const edgeTypes = { "custom-edge": CustomEdge };
 
-let id = 3;
-const getId = () => `${id++}`;
+localStorage.setItem("lastNodeId", 2);
+const getId = () => {
+  let id = localStorage.getItem("lastNodeId")
+  id++;
+  localStorage.setItem("lastNodeId", id);
+  return `${id}`;
+};
+const setId = (id) =>{localStorage.setItem("lastNodeId",  id == undefined ? 2 : id);}
 
 const Flow = forwardRef((props, ref) => {
   const edgeUpdateSuccessful = useRef(true);
@@ -90,7 +93,9 @@ const Flow = forwardRef((props, ref) => {
     );
   };
   const onNodesDelete = (node) => {
-    if (node[0].id === "1" || node[0].id === "2") {
+    var startNode = nodes.find((x) => x.type === "StartNode");
+    var firstIdleNodeId = edges.find((x) => x.source === startNode.id).target;
+    if (node[0].id === startNode.id || node[0].id === firstIdleNodeId) {
       return;
     }
     const index = nodesPosition.current.indexOf(node[0].position);
@@ -136,6 +141,7 @@ const Flow = forwardRef((props, ref) => {
 
   useImperativeHandle(ref, () => ({
     exportFlowAsJSON,
+    importJson,
   }));
 
   const exportFlowAsJSON = () => {
@@ -143,40 +149,91 @@ const Flow = forwardRef((props, ref) => {
       nodes: [...nodes],
       trigers: [...edges],
     };
+    var startNode = nodes.find((x) => x.type === "StartNode");
+    var firstIdleNodeId = edges.find((x) => x.source === startNode.id).target;
+
+    var states = nodes
+      .filter((x) => x.id !== startNode.id)
+      .map((node) => ({ Code: node.id, Name: node.data.Name }));
+
+    var actions = edges
+      .filter((x) => x.id !== firstIdleNodeId)
+      .map((edge) => ({ Code: edge.id, Name: edge.data.Name }));
+
+    var initial = {
+      fromStateCode: firstIdleNodeId,
+      allows: edges
+        .filter((edge) => edge.source === firstIdleNodeId)
+        .map((item) => ({
+          allowedStateCode: item.target,
+          actionCode: item.id,
+        })),
+      onEntry:
+        nodes.find((x) => x.id === firstIdleNodeId).data.onEntry != ""
+          ? { name: nodes.find((x) => x.id === firstIdleNodeId).data.onEntry }
+          : "",
+      onExit:
+        nodes.find((x) => x.id === firstIdleNodeId).data.onExit != ""
+          ? { name: nodes.find((x) => x.id === firstIdleNodeId).data.onExit }
+          : "",
+    };
+
+    var steps = edges
+      .filter((x) => x.source !== startNode.id && x.source !== firstIdleNodeId)
+      .map((item) => ({
+        fromStateCode: item.source,
+        allows: edges
+          .filter((edge) => edge.source === item.source)
+          .map((item2) => ({
+            allowedStateCode: item2.target,
+            actionCode: item2.id,
+          })),
+        onEntry:
+          nodes.find((x) => x.id === item.source).data.onEntry != ""
+            ? { name: nodes.find((x) => x.id === item.source).data.onEntry }
+            : "",
+        onExit:
+          nodes.find((x) => x.id === item.source).data.onExit != ""
+            ? { name: nodes.find((x) => x.id === item.source).data.onExit }
+            : "",
+      }));
+
+      const removeDuplicates = (arr) => {
+        const uniqueMap = new Map();
+        arr.forEach((item) => uniqueMap.set(item.fromStateCode, item));
+        return Array.from(uniqueMap.values());
+      };
+      
+      // Apply removeDuplicates function to the mapped array
+      steps = removeDuplicates(steps);
+
+    var endSteps = states
+      .filter(
+        (x) =>
+          steps.concat(initial).find((y) => y.fromStateCode == x.Code) ==
+          undefined
+      )
+      .map((item) => ({
+        fromStateCode: item.Code,
+        onEntry:
+          nodes.find((x) => x.id === item.Code).data.onEntry != ""
+            ? { name: nodes.find((x) => x.id === item.Code).data.onEntry }
+            : "",
+        onExit:
+          nodes.find((x) => x.id === item.Code).data.onExit != ""
+            ? { name: nodes.find((x) => x.id === item.Code).data.onExit }
+            : "",
+      }));
+
     const flow = {
       Key: props.workflowName,
       Name: props.workflowName,
-      States: nodes
-        .filter((x) => x.id !== "1")
-        .map((node) => ({ Code: node.id, Name: node.data.Name })),
-      Actions: edges
-        .filter((x) => x.id !== "2")
-        .map((edge) => ({ Code: edge.id, Name: edge.data.Name })),
-      Initial: {
-        fromStateCode: 2,
-        allows: edges
-          .filter((edge) => edge.source === "2")
-          .map((item) => ({
-            aLLowedStateCode: item.target,
-            actionCode: item.id,
-          })),
-        onEntry: nodes.find((x) => x.id === "2").data.onEntry,
-        onExit: nodes.find((x) => x.id === "2").data.onExit,
-      },
-      Steps: edges
-        .filter((x) => x.source !== "1" && x.source !== "2")
-        .map((item) => ({
-          fromStateCode: item.source,
-          allows: edges
-            .filter((edge) => edge.source === item.source)
-            .map((item2) => ({
-              aLLowedStateCode: item2.target,
-              actionCode: item2.id,
-            })),
-          onEntry: nodes.find((x) => x.id === item.source).data.onEntry,
-          onExit: nodes.find((x) => x.id === item.source).data.onExit,
-        })),
+      States: states,
+      Actions: actions,
+      Initial: initial,
+      Steps: steps.concat(endSteps),
     };
+
     const jsonFlow = JSON.stringify(flowData, null);
     downloadJSON(JSON.stringify(flow, null));
     // console.log("Exported JSON:", jsonFlow);
@@ -205,11 +262,131 @@ const Flow = forwardRef((props, ref) => {
     document.body.removeChild(a);
   };
 
+  const importJson = (jsonFlow) => {
+    
+    nodesPosition.current = [{ x: 0, y: 0 }];      
+    setId();
+
+    var importedNodes = jsonFlow.States.map((node) => ({
+      id: node.Code,
+      type: "idleNode",
+      data: {
+        AddIdleNodeFunc: onAddIdleNodeFunc,
+        Name: node.Name,
+        onEntry: "",
+        onExit: "",
+      },
+      origin: [0.5, 0.0],
+      position: null,
+    }));
+
+    var importedEdges = jsonFlow.Actions.map((edge) => ({
+      id: edge.Code,
+      source: "",
+      target: "",
+      type: "custom-edge",
+      data: { Name: edge.Name },
+    }));
+
+    var firstIdleNode = importedNodes.find(
+      (x) => x.id == jsonFlow.Initial.fromStateCode
+    );
+    firstIdleNode.data.onEntry =
+      jsonFlow.Initial.onEntry != undefined &&
+      jsonFlow.Initial.onEntry != ""
+        ? jsonFlow.Initial.onEntry.name
+        : "";
+    firstIdleNode.data.onExit =
+      jsonFlow.Initial.onExit != undefined && jsonFlow.Initial.onExit != ""
+        ? jsonFlow.Initial.onExit.name
+        : "";
+    firstIdleNode.position = { x: 200, y: 0 };
+    jsonFlow.Initial.allows.forEach((element) => {
+      importedEdges.find((x) => x.id == element.actionCode).source =
+        jsonFlow.Initial.fromStateCode;
+      importedEdges.find((x) => x.id == element.actionCode).target =
+        element.allowedStateCode;
+      var nextStepNode = importedNodes.find(
+        (x) => x.id == element.allowedStateCode
+      );
+
+      const position = findFirstEmptyPosition(
+        firstIdleNode.position.x + 250,
+        firstIdleNode.position.y
+      );
+      nodesPosition.current.push(position);
+      nextStepNode.position = position;
+    });
+
+    const initialNode = {
+      id: (firstIdleNode.id - 1).toString(),
+      type: "StartNode",
+      position: { x: 0, y: 0 },
+      data: {
+        AddIdleNodeFunc: onAddIdleNodeFunc,
+      },
+    };
+    importedNodes = [initialNode, ...importedNodes];
+
+    const initialEdge = {
+      id: (
+        Math.min(...jsonFlow.Initial.allows.map((o) => o.actionCode)) - 1
+      ).toString(),
+      source: (firstIdleNode.id - 1).toString(),
+      target: firstIdleNode.id.toString(),
+      type: "custom-edge",
+      data: { Name: "" },
+    };
+    importedEdges = [initialEdge, ...importedEdges];
+
+    jsonFlow.Steps.forEach((stepElement) => {
+      var stepNode = importedNodes.find(
+        (x) => x.id == stepElement.fromStateCode
+      );
+      stepNode.data.onEntry =
+        stepElement.onEntry != undefined && stepElement.onEntry != ""
+          ? stepElement.onEntry.name
+          : "";
+      stepNode.data.onExit =
+        stepElement.onExit != undefined && stepElement.onExit != ""
+          ? stepElement.onExit.name
+          : "";
+      if (stepNode.position == null) {
+        stepNode.position = { x: 200, y: 0 };
+      }
+      if (stepElement.allows != undefined && stepElement.allows != "") {
+        stepElement.allows.forEach((element) => {
+          importedEdges.find((x) => x.id == element.actionCode).source =
+            stepElement.fromStateCode;
+          importedEdges.find((x) => x.id == element.actionCode).target =
+            element.allowedStateCode;
+          var nextStepNode = importedNodes.find(
+            (x) => x.id == element.allowedStateCode
+          );
+
+          const position = findFirstEmptyPosition(
+            stepNode.position.x + 250,
+            stepNode.position.y
+          );
+          nodesPosition.current.push(position);
+          nextStepNode.position = position;
+        });
+      }
+    });
+
+    setId(Math.max(...jsonFlow.States.map((o) => o.Code)))
+
+    setEdges(importedEdges);
+    setNodes(importedNodes);
+  };
+
   const onNodesChange = useCallback(
     (changes) => {
+      var startNode = nodes.find((x) => x.type === "StartNode");
+      var firstIdleNodeId = edges.find((x) => x.source === startNode.id).target;
       if (
         changes[0].type === "remove" &&
-        (changes[0].id === "1" || changes[0].id === "2")
+        (changes[0].id === startNode.id || changes[0].id === firstIdleNodeId)
       ) {
         return;
       }
@@ -220,7 +397,12 @@ const Flow = forwardRef((props, ref) => {
 
   const onEdgesChange = useCallback(
     (changes) => {
-      if (changes[0].type === "remove" && changes[0].id === "2") {
+      var startNode = nodes.find((x) => x.type === "StartNode");
+      var firstEdgeIdleNodeId = edges.find((x) => x.source === startNode.id).id;
+      if (
+        changes[0].type === "remove" &&
+        changes[0].id === firstEdgeIdleNodeId
+      ) {
         return;
       }
       setEdges((eds) => applyEdgeChanges(changes, eds));
@@ -247,14 +429,13 @@ const Flow = forwardRef((props, ref) => {
 
   const onConnect = useCallback(
     (connection) => {
-      const edge = {
+      let edge = {
         id: getId(),
         source: connection.source,
         target: connection.target,
         type: "custom-edge",
         data: { Name: "" },
       }; //{ ...connection, type: "custom-edge" };
-
       setEdges((eds) => addEdge(edge, eds));
     },
     [setEdges]
@@ -265,77 +446,16 @@ const Flow = forwardRef((props, ref) => {
     setNodes(updatedNodes);
   };
 
-  const onDragOver = useCallback((event) => {
-    event.preventDefault();
-    event.dataTransfer.dropEffect = "move";
-  }, []);
-
-  const onDrop = useCallback(
-    (event) => {
-      event.preventDefault();
-      console.log(event);
-      const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
-      const type = event.dataTransfer.getData("application/reactflow");
-
-      // check if the dropped element is valid
-      if (typeof type === "undefined" || !type) {
-        return;
-      }
-
-      const position = reactFlowInstance.project({
-        x: event.clientX - reactFlowBounds.left,
-        y: event.clientY - reactFlowBounds.top,
-      });
-
-      const nodeStyle =
-        type == "default" || type == "idleNode"
-          ? {
-              width: "127px",
-              height: "49px",
-              border: "1px solid #1a192b",
-              borderRadius: "9px",
-              marginBottom: "10px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              cursor: "grab",
-            }
-          : {
-              width: "110px",
-              minHeight: "48px",
-              border: "1px solid #C8C8C8",
-              borderTop: "3px solid #2F6EE9",
-              borderRadius: 4,
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              cursor: "grab",
-            };
-      const newNode = {
-        id: getId(),
-        type,
-        position,
-        sourcePosition: "right",
-        targetPosition: "left",
-        data: { label: `${type == "default" ? "Idle" : "End"}` },
-        style: nodeStyle,
-      };
-
-      setNodes((nds) => nds.concat(newNode));
-    },
-
-    [reactFlowInstance]
-  );
-
   useEffect(() => {
     if (props.resetFlowCalled) {
       setNodes(initialNodes);
       setEdges(initialEdges);
-      nodesPosition.current = [{ x: 0, y: 0 }];
-      id = 2;
+      nodesPosition.current = [{ x: 0, y: 0 }];      
+      setId();
       props.onResetFlowClick(false);
     }
   }, [props.resetFlowCalled]);
+
 
   const connectionLineStyle = {
     strokeWidth: 1.5,
@@ -354,7 +474,7 @@ const Flow = forwardRef((props, ref) => {
             onEdgesChange={onEdgesChange}
             // onNodeClick={onNodesClick}
             deleteKeyCode={["Backspace", "Delete"]}
-            onNodesDelete={onNodesDelete} // as needed
+            onNodesDelete={onNodesDelete}
             // onEdgesDelete={}   // as needed
             onConnect={onConnect}
             onEdgeUpdate={onEdgeUpdate}
@@ -363,8 +483,6 @@ const Flow = forwardRef((props, ref) => {
             onInit={setReactFlowInstance}
             nodeTypes={nodeTypes}
             edgeTypes={edgeTypes}
-            // onDrop={onDrop}
-            // onDragOver={onDragOver}
             connectionLineComponent={CustomConnectionLine}
             connectionLineStyle={connectionLineStyle}
             fitView

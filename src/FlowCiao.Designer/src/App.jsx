@@ -1,8 +1,6 @@
 import { useState, useRef } from "react";
 import Flow from "./Components/Flow";
-import {
-  ExclamationCircleFilled
-} from "@ant-design/icons";
+import { ExclamationCircleFilled } from "@ant-design/icons";
 import {
   ConfigProvider,
   Layout,
@@ -10,7 +8,7 @@ import {
   Input,
   Button,
   ColorPicker,
-  Modal
+  Modal, Upload
 } from "antd";
 import "./App.css";
 import plusImg from "./Assets/plus.svg";
@@ -32,6 +30,28 @@ function App() {
     }
   };
 
+  const handleFileChange = (info) => {
+   // if (info.file.status === "done") {
+      handleFileSelect(info.file);
+  //  }
+  };
+  const handleFileSelect = (file) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const jsonData = JSON.parse(reader.result);
+        console.log('JSON Data:', jsonData);
+        if (flowDesignerRef.current) {
+          flowDesignerRef.current.importJson(jsonData);
+        }
+        // Do something with jsonData, like updating state
+      } catch (error) {
+        console.error('Error parsing JSON file:', error);
+      }
+    };
+    reader.readAsText(file);
+  };
+
   const [color, setColor] = useState("#1677ff");
   const onChangeColor = (selectedColor) => {
     setColor(selectedColor.toHexString());
@@ -45,28 +65,28 @@ function App() {
     }
   };
   const [resetFlow, setResetFlow] = useState(false);
-  const resetFlowClick = (isCleared = true) =>{
-    if(isCleared) {
+  const resetFlowClick = (isCleared = true) => {
+    if (isCleared) {
       showConfirm();
-    }else{
-      setResetFlow(false)
+    } else {
+      setResetFlow(false);
     }
-  }
+  };
   const showConfirm = () => {
     confirm({
-      title: 'Do you want to delete flow?',
+      title: "Do you want to delete flow?",
       icon: <ExclamationCircleFilled />,
       // content: 'Some descriptions',
       onOk() {
-        setWorkflowName("")
-      setResetFlow(true)
-      }
+        setWorkflowName("");
+        setResetFlow(true);
+      },
     });
   };
 
   const workflowNameOnChange = (event) => {
     setWorkflowName(event.target.value);
-  }
+  };
 
   return (
     <ThemeContext.Provider
@@ -85,7 +105,12 @@ function App() {
       >
         <Layout className="main-layout">
           <Header className="main-header">
-            <Input placeholder="Workflow Name" id="workflow-name" value={workflowName} onChange={workflowNameOnChange}/>
+            <Input
+              placeholder="Workflow Name"
+              id="workflow-name"
+              value={workflowName}
+              onChange={workflowNameOnChange}
+            />
             <Space className="header-botton-container">
               <Button
                 style={{ background: "#0047FF" }}
@@ -99,13 +124,26 @@ function App() {
                 icon={<img src={exportImg} />}
                 onClick={handleExportFlowAsJSON}
               />
-              <Button icon={<img src={importImg} />} />
-              <Button icon={<img src={plusImg} />} onClick={resetFlowClick}/>
+              <Upload
+                onChange={handleFileChange}
+                showUploadList={false}
+                beforeUpload={() => false} // Prevent auto-upload
+              >
+                <Button
+                icon={<img src={importImg}/>}
+              />
+              </Upload>
+              <Button icon={<img src={plusImg} />} onClick={resetFlowClick} />
             </Space>
           </Header>
           <Content className="main-content">
             <div>
-              <Flow ref={flowDesignerRef} resetFlowCalled={resetFlow} onResetFlowClick={resetFlowClick} workflowName={workflowName}/>
+              <Flow
+                ref={flowDesignerRef}
+                resetFlowCalled={resetFlow}
+                onResetFlowClick={resetFlowClick}
+                workflowName={workflowName}
+              />
             </div>
           </Content>
         </Layout>
