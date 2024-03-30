@@ -7,7 +7,7 @@
 	@ActorContent VARBINARY(MAX)= NULL
 AS
 BEGIN
-	IF EXISTS (SELECT 1 FROM [FlowCiao].[Activity] WHERE Id = @Id)
+	IF EXISTS (SELECT 1 FROM [FlowCiao].[Activity] WHERE Id = @Id OR [ActorName] = @ActorName)
 	BEGIN
 		UPDATE FlowCiao.[Activity]
 		SET

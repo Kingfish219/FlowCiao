@@ -30,6 +30,7 @@ namespace FlowCiao.Builders
             var builder = new FlowStepBuilder(this, _activityRepository);
             InitialStepBuilder = builder;
             action(InitialStepBuilder);
+            InitialStepBuilder.InitialState.IsInitial = true;
             StepBuilders.Add(builder);
 
             return this;
@@ -60,20 +61,15 @@ namespace FlowCiao.Builders
                     return process;
                 }
 
-                var constructor = flow.Construct<T>(this);
-                if(constructor.InitialStepBuilder is null)
-                {
-                    throw new FlowCiaoException("Your flow should have an initial state, use Initial to declare one");
-                }
-                constructor.InitialStepBuilder.InitialState.IsInitial = true;
-
+                flow.Plan<T>(this);
+                
                 process = new Process
                 {
                     Key = flow.Key,
-                    InitialState = constructor.InitialStepBuilder.InitialState
+                    InitialState = InitialStepBuilder.InitialState
                 };
 
-                foreach (var builder in constructor.StepBuilders)
+                foreach (var builder in StepBuilders)
                 {
                     foreach (var allowedTransition in builder.AllowedTransitionsBuilders)
                     {
@@ -113,7 +109,7 @@ namespace FlowCiao.Builders
                     .Select(jsonState => new State(jsonState.Code, jsonState.Name))
                     .ToList();
 
-                InitialStepBuilder = new FlowStepBuilder(this, _activityRepository);;
+                InitialStepBuilder = new FlowStepBuilder(this, _activityRepository);
                 InitialStepBuilder.Build(states, jsonFlow.Initial);
             
                 process = new Process
@@ -166,7 +162,7 @@ namespace FlowCiao.Builders
                 throw;
             }
         }
-
+ 
         public Process Build<T>(Action<IFlowBuilder> constructor) where T : IFlow, new()
         {
             throw new NotImplementedException();
@@ -229,11 +225,6 @@ namespace FlowCiao.Builders
         private void Rollback()
         {
             // ignored
-        }
-
-        public IFlowStepBuilder Initial(IFlowStepBuilder builder)
-        {
-            throw new NotImplementedException();
         }
     }
 }

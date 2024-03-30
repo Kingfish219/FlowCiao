@@ -17,7 +17,7 @@ namespace FlowCiao.Samples.Phone.FLowCiao
             PowerOff = 5
         }
 
-        public IFlowBuilder Construct<T>(IFlowBuilder builder) where T : IFlow, new()
+        public IFlowBuilder Plan<T>(IFlowBuilder builder) where T : IFlow, new()
         {
             var idle = new State(1, "idle");
             var ringing = new State(2, "ringing");
