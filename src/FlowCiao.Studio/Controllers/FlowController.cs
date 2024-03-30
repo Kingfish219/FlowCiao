@@ -7,13 +7,10 @@ namespace FlowCiao.Studio.Controllers
     [Route("flowciao/api/flows")]
     public class FlowController : ControllerBase
     {
-        private readonly ILogger<FlowController> _logger;
         private readonly IFlowOperator _operator;
 
-        public FlowController(ILogger<FlowController> logger,
-            IFlowOperator flowOperator)
+        public FlowController(IFlowOperator flowOperator)
         {
-            _logger = logger;
             _operator = flowOperator;
         }
 

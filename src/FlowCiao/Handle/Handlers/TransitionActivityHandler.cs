@@ -33,7 +33,7 @@ namespace FlowCiao.Handle.Handlers
                 {
                     var activity = (IProcessActivity)Activator.CreateInstance(type);
                     if (activity is null ||
-                            !activities.Exists(x => x.ProcessActivityExecutor.GetType().Equals(activity.GetType())))
+                            !activities.Exists(x => x.Actor.GetType().Equals(activity.GetType())))
                     {
                         continue;
                     }

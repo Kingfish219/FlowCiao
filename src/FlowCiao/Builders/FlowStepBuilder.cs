@@ -43,10 +43,7 @@ namespace FlowCiao.Builders
                 transition.Activities = OnExitActivity != null
                     ? new List<Activity>
                     {
-                        new()
-                        {
-                            ProcessActivityExecutor = OnExitActivity
-                        }
+                        new(OnExitActivity)
                     }
                     : new List<Activity>();
                 transition.Actions = actions.Select(action => new ProcessAction(action)).ToList();
@@ -64,15 +61,12 @@ namespace FlowCiao.Builders
                 transition.Activities = OnExitActivity != null
                     ? new List<Activity>
                     {
-                        new()
-                        {
-                            ProcessActivityExecutor = OnExitActivity
-                        }
+                        new(OnExitActivity)
                     }
                     : new List<Activity>();
                 transition.Actions = new List<ProcessAction>
                 {
-                    new ProcessAction(action)
+                    new(action)
                 };
                 transition.Condition = condition;
             });
@@ -88,10 +82,7 @@ namespace FlowCiao.Builders
         public IFlowStepBuilder OnEntry<TA>() where TA : IProcessActivity, new()
         {
             OnEntryActivity = (TA)Activator.CreateInstance(typeof(TA));
-            var activity = new Activity
-            {
-                ProcessActivityExecutor = OnEntryActivity
-            };
+            var activity = new Activity(OnEntryActivity);
             InitialState.Activities ??= new List<Activity>();
             InitialState.Activities.Add(activity);
 
@@ -104,10 +95,7 @@ namespace FlowCiao.Builders
             OnEntryActivity = foundActivity ??
                               throw new FlowCiaoException(
                                   $"Error in finding OnEntry activity. No type matches activity name {activityName} or the type is not derived from {nameof(IProcessActivity)}");
-            var activity = new Activity
-            {
-                ProcessActivityExecutor = OnEntryActivity
-            };
+            var activity = new Activity(OnEntryActivity);
             InitialState.Activities ??= new List<Activity>();
             InitialState.Activities.Add(activity);
 

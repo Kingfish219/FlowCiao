@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
-using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Dapper;
 using FlowCiao.Exceptions;
@@ -15,48 +17,80 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
     {
         public ActivityRepository(FlowSettings settings) : base(settings)
         {
-
         }
 
-        public Task<Guid> Modify(Activity entity)
+        public async Task<List<Activity>> Get(string actorName = default, bool fetchActorContent = false)
         {
-            return Task.Run(() =>
-            {
-                var toInsert = new
-                {
-                    Id = entity.Id == default ? Guid.NewGuid() : entity.Id,
-                    Executor = entity.ProcessActivityExecutor.ToString()
-                };
+            using var connection = GetDbConnection();
+            connection.Open();
 
-                using var connection = GetDbConnection();
-                connection.Open();
-                connection.Execute(ConstantsProvider.Usp_Activity_Modify, toInsert, commandType: CommandType.StoredProcedure);
-                entity.Id = toInsert.Id;
+            var sql = $@"SELECT [Id]
+                              ,[Name]
+                              ,[ActivityTypeCode]
+                              ,[ActorName]
+                              {(fetchActorContent ? ",[ActorContent]" : string.Empty)}
+                        FROM [FlowCiao].[Activity]
+                        WHERE
+                            ([ActorName] = @ActorName OR ISNULL(@ActorName, '') = '')";
 
-                return entity.Id;
-            });
+            var result = (await connection.QueryAsync<Activity>(sql, param: new { ActorName = actorName }))?.ToList();
+
+            return result;
         }
 
-        public async Task RegisterActivity(ActivityAssembly activityAssembly)
+        public async Task<Guid> Modify(Activity entity)
         {
-            var storagePath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-                @"FlowCiao\Assembly");
-            if (string.IsNullOrWhiteSpace(Path.GetDirectoryName(storagePath)))
+            var toInsert = new
             {
-                throw new FlowCiaoPersistencyException("Could not get ProgramsData path in order to save the file");
+                Id = entity.Id == default ? Guid.NewGuid() : entity.Id,
+                entity.Name,
+                entity.ActivityTypeCode,
+                entity.ActorName,
+                entity.ActorContent
+            };
+
+            using var connection = GetDbConnection();
+            
+            connection.Open();
+            await connection.ExecuteAsync(ConstantsProvider.Usp_Activity_Modify, toInsert,
+                commandType: CommandType.StoredProcedure);
+            entity.Id = toInsert.Id;
+
+            return entity.Id;
+        }
+
+        public async Task<Activity> RegisterActivity(ActivityAssembly activityAssembly)
+        {
+            var activity = new Activity
+            {
+                Name = activityAssembly.FileName.Split('.')[^2],
+                ActorName = activityAssembly.FileName,
+                ActorContent = activityAssembly.FileContent
+            };
+            activity.Id = await Modify(activity);
+            
+            return activity;
+        }
+
+        public async Task<IProcessActivity> LoadActivity(string activityFileName)
+        {
+            var existedActivity = (await Get(actorName: activityFileName, true)).SingleOrDefault();
+            if (existedActivity is null)
+            {
+                throw new FlowCiaoPersistencyException($"Could not find assembly with name: {activityFileName}");
             }
 
-            if (!Directory.Exists(storagePath))
+            var assembly = Assembly.Load(existedActivity.ActorContent);
+            var activityType = assembly.GetType(activityFileName);
+            if (activityType is null)
             {
-                Directory.CreateDirectory(storagePath);
+                throw new FlowCiaoException(
+                    $"Could not load assembly with name: {activityFileName}. Content may be corrupted");
             }
 
-            await File.WriteAllBytesAsync(Path.Join(storagePath, activityAssembly.FileName), activityAssembly.FileContent);
-        }
+            var activity = (IProcessActivity)Activator.CreateInstance(activityType);
 
-        public Task<IProcessActivity> LoadActivity(string activityFileName)
-        {
-            throw new NotImplementedException();
+            return activity;
         }
     }
 }

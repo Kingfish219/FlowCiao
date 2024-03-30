@@ -15,14 +15,12 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
     {
         public ProcessExecutionRepository(FlowSettings settings) : base(settings) { }
 
-        public Task<List<ProcessExecution>> Get(Guid id = default, Guid processId = default)
+        public async Task<List<ProcessExecution>> Get(Guid id = default, Guid processId = default)
         {
-            return Task.Run(() =>
-            {
                 using var connection = GetDbConnection();
 
                 connection.Open();
-                var query = @"SELECT pe.*,
+                const string query = @"SELECT pe.*,
 	                                   p.Id ProcessId,
 	                                   p.[Key]
                                 FROM [FlowCiao].ProcessExecution pe
@@ -30,7 +28,7 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
                                 WHERE
                                   (pe.[Id] = @Id OR ISNULL(@Id, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER)) AND
                                   (pe.[ProcessId] = @ProcessId OR ISNULL(@ProcessId, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER))";
-                var result = connection.Query<ProcessExecution, Process, ProcessExecution>(query,
+                var result = (await connection.QueryAsync<ProcessExecution, Process, ProcessExecution>(query,
                     (processExecution, process) =>
                     {
                         processExecution.Process = process;
@@ -38,10 +36,9 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
                         return processExecution;
                     },
                     splitOn: "ProcessId",
-                    param: new { ProcessId = processId, Id = id }).ToList();
+                    param: new { ProcessId = processId, Id = id }))?.ToList();
 
                 return result;
-            });
         }
 
         public Task<Guid> Modify(ProcessExecution entity)

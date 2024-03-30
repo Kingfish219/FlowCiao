@@ -2,15 +2,16 @@
 BEGIN
 
 CREATE TABLE [FlowCiao].[Activity](
-	[Id] [uniqueidentifier] NOT NULL,
-	[Name] [nvarchar](400) NULL,
-	[ActivityTypeCode] [int] NULL,
-	[Executor] [nvarchar](500) NULL,
- CONSTRAINT [PK_Activity] PRIMARY KEY CLUSTERED 
+    [Id] [uniqueidentifier] NOT NULL,
+    [Name] [nvarchar](400) NULL,
+    [ActivityTypeCode] [int] NULL,
+    [Process] [uniqueidentifier] NULL,
+    [Executor] [nvarchar](500) NULL,
+    CONSTRAINT [PK_Activity] PRIMARY KEY CLUSTERED
 (
-	[Id] ASC
+[Id] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
+    ) ON [PRIMARY]
 
 ALTER TABLE [FlowCiao].[Activity] ADD  CONSTRAINT [DF_Activity_Id]  DEFAULT (NEWID()) FOR [Id]
 

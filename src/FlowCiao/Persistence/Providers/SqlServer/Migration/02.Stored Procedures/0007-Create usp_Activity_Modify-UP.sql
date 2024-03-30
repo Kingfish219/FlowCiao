@@ -3,7 +3,8 @@
 	@Name NVARCHAR(400)= NULL,
 	@ActivityTypeCode INT= NULL,
 	@Process UNIQUEIDENTIFIER= NULL,
-	@Executor NVARCHAR(500)= NULL
+	@ActorName NVARCHAR(500)= NULL,
+	@ActorContent VARBINARY(MAX)= NULL
 AS
 BEGIN
 	IF EXISTS (SELECT 1 FROM [FlowCiao].[Activity] WHERE Id = @Id)
@@ -11,7 +12,8 @@ BEGIN
 		UPDATE FlowCiao.[Activity]
 		SET
 			[Name] = @Name,
-			[Executor] = @Executor
+		    [ActorName] = ISNULL(@ActorName, [ActorName]),
+			[ActorContent] = ISNULL(@ActorContent, [ActorContent])
 		WHERE Id = @Id
 	END
 	ELSE
@@ -20,13 +22,15 @@ BEGIN
 				   ([Id]
 				   ,[Name]
 				   ,[ActivityTypeCode]
-				   ,[Executor])
+				   ,[ActorName]
+				   ,[ActorContent])
 		VALUES
            (
 			   @Id
 			   ,@Name
 			   ,@ActivityTypeCode
-			   ,@Executor
+			   ,@ActorName
+			   ,@ActorContent
 		   )
 	END
 END

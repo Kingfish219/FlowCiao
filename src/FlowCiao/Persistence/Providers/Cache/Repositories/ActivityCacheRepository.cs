@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using FlowCiao.Exceptions;
@@ -15,6 +17,13 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
         {
         }
 
+        public async Task<List<Activity>> Get(string actorName = default, bool fetchActorContent = false)
+        {
+            await Task.CompletedTask;
+            
+            return FlowHub.Activities;
+        }
+
         public async Task<Guid> Modify(Activity entity)
         {
             if (entity.Id == default)
@@ -27,8 +36,16 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
             return entity.Id;
         }
 
-        public async Task RegisterActivity(ActivityAssembly activityAssembly)
+        public async Task<Activity> RegisterActivity(ActivityAssembly activityAssembly)
         {
+            var activity = new Activity
+            {
+                Name = activityAssembly.FileName.Split('.')[^2],
+                ActorName = activityAssembly.FileName,
+                ActorContent = activityAssembly.FileContent
+            };
+            activity.Id = await Modify(activity);
+            
             var storagePath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 @"FlowCiao\Assembly");
             if (string.IsNullOrWhiteSpace(Path.GetDirectoryName(storagePath)))
@@ -42,6 +59,8 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
             }
 
             await File.WriteAllBytesAsync(Path.Join(storagePath, activityAssembly.FileName), activityAssembly.FileContent);
+
+            return activity;
         }
 
         public async Task<IProcessActivity> LoadActivity(string activityFileName)

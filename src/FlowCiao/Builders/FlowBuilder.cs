@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FlowCiao.Exceptions;
+using FlowCiao.Interfaces;
 using FlowCiao.Models.Builder.Json;
 using FlowCiao.Models.Core;
 using FlowCiao.Persistence.Interfaces;
@@ -64,14 +65,13 @@ namespace FlowCiao.Builders
                 {
                     throw new FlowCiaoException("Your flow should have an initial state, use Initial to declare one");
                 }
+                constructor.InitialStepBuilder.InitialState.IsInitial = true;
 
                 process = new Process
                 {
-                    Key = flow.Key
+                    Key = flow.Key,
+                    InitialState = constructor.InitialStepBuilder.InitialState
                 };
-                process.Transitions ??= new List<Transition>();
-                constructor.InitialStepBuilder.InitialState.IsInitial = true;
-                process.InitialState = constructor.InitialStepBuilder.InitialState;
 
                 foreach (var builder in constructor.StepBuilders)
                 {
@@ -188,7 +188,7 @@ namespace FlowCiao.Builders
             //        {
             //            new Activity
             //            {
-            //                ProcessActivityExecutor = builder.OnEntryActivity
+            //                Actor = builder.OnEntryActivity
             //            }
             //        };
 
@@ -202,7 +202,7 @@ namespace FlowCiao.Builders
             //                {
             //                    new Activity
             //                    {
-            //                        ProcessActivityExecutor = builder.OnExitActivity
+            //                        Actor = builder.OnExitActivity
             //                    }
             //                },
             //                Actions = allowedTransition.Item2

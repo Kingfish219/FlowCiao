@@ -1,5 +1,5 @@
 ﻿using FlowCiao.Models.Core;
-using FlowCiao.Persistence.Interfaces;
+using FlowCiao.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlowCiao.Studio.Controllers;
@@ -7,15 +7,21 @@ namespace FlowCiao.Studio.Controllers;
 [Route("flowciao/api/activity")]
 public class ActivityController : FlowCiaoApiControllerBase
 {
-    private readonly ILogger<ActivityController> _logger;
-    private readonly IActivityRepository _activityRepository;
+    private readonly ActivityService _activityService;
 
-    public ActivityController(ILogger<ActivityController> logger, IActivityRepository activityRepository)
+    public ActivityController(ActivityService activityService)
     {
-        _logger = logger;
-        _activityRepository = activityRepository;
+        _activityService = activityService;
     }
 
+    [HttpGet("")]
+    public async Task<IActionResult> Get()
+    {
+        var result = await _activityService.Get();
+
+        return Ok(result);
+    }
+    
     [HttpPost("register")]
     public async Task<IActionResult> RegisterActivityAssembly(IFormFile? file)
     {
@@ -32,11 +38,8 @@ public class ActivityController : FlowCiaoApiControllerBase
         await using var ms = new MemoryStream();
         await file.CopyToAsync(ms);
         var fileBytes = ms.ToArray();
-        await _activityRepository.RegisterActivity(new ActivityAssembly(file.FileName, fileBytes));
+        var result = await _activityService.RegisterActivity(new ActivityAssembly(file.FileName, fileBytes));
 
-        return Ok(new
-        {
-            Id = Guid.NewGuid()
-        });
+        return Ok(result);
     }
 }
