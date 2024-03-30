@@ -27,7 +27,7 @@ namespace FlowCiao.Operators
         }
 
         private static ProcessStepContext InstantiateContext(int action,
-            Dictionary<string, object> data,
+            Dictionary<object, object> data,
             ProcessExecution processExecution,
             ProcessExecutionStep activeProcessStep)
         {
@@ -61,7 +61,7 @@ namespace FlowCiao.Operators
             return processExecution;
         }
 
-        public async Task<ProcessResult> FireAsync(Guid processInstanceId, int action, Dictionary<string, object> data = null)
+        public async Task<ProcessResult> FireAsync(Guid processInstanceId, int action, Dictionary<object, object> data = null)
         {
             try
             {
@@ -72,13 +72,51 @@ namespace FlowCiao.Operators
                     throw new FlowCiaoException("Invalid ProcessInstance id!");
                 }
 
-                var activeProcessStep = processExecution.ActiveExecutionStep;
-                if (activeProcessStep is null)
+                if (processExecution.ActiveExecutionStep is null)
                 {
                     throw new FlowCiaoProcessExecutionException("No active steps to fire");
                 }
 
-                if (activeProcessStep.Details
+                if (processExecution.ActiveExecutionStep.Details
+                        .SingleOrDefault(x => x.Transition.Actions.FirstOrDefault()!.Code == action) is null)
+                {
+                    throw new FlowCiaoProcessExecutionException("Action is invalid!");
+                }
+
+                var processStepContext = InstantiateContext(action, data, processExecution, processExecution.ActiveExecutionStep);
+                var handlers = _processHandlerFactory.BuildHandlers();
+
+                var result = handlers.Peek().Handle(processStepContext);
+
+                return result;
+            }
+            catch (Exception exception)
+            {
+                return new ProcessResult
+                {
+                    Status = ProcessResultStatus.Failed,
+                    Message = exception.Message
+                };
+            }
+        }
+
+        public async Task<ProcessResult> FireAsync(ProcessExecution processExecution, int action, Dictionary<object, object> data = null)
+        {
+            try
+            {
+                await Task.CompletedTask;
+                
+                if (processExecution is null)
+                {
+                    throw new FlowCiaoException("Invalid ProcessInstance id!");
+                }
+
+                if (processExecution.ActiveExecutionStep is null)
+                {
+                    throw new FlowCiaoProcessExecutionException("No active steps to fire");
+                }
+
+                if (processExecution.ActiveExecutionStep.Details
                         .SingleOrDefault(x => x.Transition.Actions.FirstOrDefault()!.Code == action) is null)
                 {
                     throw new FlowCiaoProcessExecutionException("Action is invalid!");
@@ -103,7 +141,7 @@ namespace FlowCiao.Operators
 
         public async Task<ProcessResult> Fire(string key,
             int action,
-            Dictionary<string, object> data = null)
+            Dictionary<object, object> data = null)
         {
             try
             {
@@ -121,13 +159,12 @@ namespace FlowCiao.Operators
                     processExecution = await _processExecutionService.InitializeProcessExecution(process);
                 }
 
-                var activeProcessStep = processExecution.ActiveExecutionStep;
-                if (activeProcessStep is null)
+                if (processExecution.ActiveExecutionStep is null)
                 {
                     throw new FlowCiaoProcessExecutionException("No active steps to fire");
                 }
 
-                if (activeProcessStep.Details
+                if (processExecution.ActiveExecutionStep.Details
                         .SingleOrDefault(x => x.Transition.Actions.FirstOrDefault()!.Code == action) is null)
                 {
                     throw new FlowCiaoProcessExecutionException("Action is invalid!");

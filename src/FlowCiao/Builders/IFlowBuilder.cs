@@ -13,8 +13,8 @@ namespace FlowCiao.Builders
         IFlowStepBuilder InitialStepBuilder { get; set; }
         IFlowBuilder Initial(Action<IFlowStepBuilder> action);
         IFlowBuilder NewStep(Action<IFlowStepBuilder> action);
-        Process Build<T>(Action<IFlowBuilder> action) where T : IFlow, new();
-        Process Build<T>() where T : IFlow, new();
+        Process Build<T>(Action<IFlowBuilder> action) where T : IFlowPlanner, new();
+        Process Build<T>() where T : IFlowPlanner, new();
         Task<Process> Build(JsonFlow jsonFlow);
     }
 }

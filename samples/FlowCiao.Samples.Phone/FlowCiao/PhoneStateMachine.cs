@@ -5,7 +5,7 @@ using FlowCiao.Samples.Phone.FLowCiao.Activities;
 
 namespace FlowCiao.Samples.Phone.FLowCiao
 {
-    public class PhoneStateMachine : IFlow
+    public class PhoneStateMachine : IFlowPlanner
     {
         public string Key { get; set; } = "phone";
         private enum Actions
@@ -17,7 +17,7 @@ namespace FlowCiao.Samples.Phone.FLowCiao
             PowerOff = 5
         }
 
-        public IFlowBuilder Plan<T>(IFlowBuilder builder) where T : IFlow, new()
+        public IFlowBuilder Plan<T>(IFlowBuilder builder) where T : IFlowPlanner, new()
         {
             var idle = new State(1, "idle");
             var ringing = new State(2, "ringing");

@@ -45,7 +45,7 @@ namespace FlowCiao.Builders
             return this;
         }
         
-        public Process Build<T>() where T : IFlow, new()
+        public Process Build<T>() where T : IFlowPlanner, new()
         {
             try
             {
@@ -69,12 +69,12 @@ namespace FlowCiao.Builders
                     InitialState = InitialStepBuilder.InitialState
                 };
 
-                foreach (var builder in StepBuilders)
+                foreach (var stepBuilder in StepBuilders)
                 {
-                    foreach (var allowedTransition in builder.AllowedTransitionsBuilders)
+                    foreach (var allowedTransitionBuilder in stepBuilder.AllowedTransitionsBuilders)
                     {
                         var transition = new Transition();
-                        allowedTransition(transition);
+                        allowedTransitionBuilder(transition);
                         process.Transitions.Add(transition);
                     }
                 }
@@ -163,7 +163,7 @@ namespace FlowCiao.Builders
             }
         }
  
-        public Process Build<T>(Action<IFlowBuilder> constructor) where T : IFlow, new()
+        public Process Build<T>(Action<IFlowBuilder> constructor) where T : IFlowPlanner, new()
         {
             throw new NotImplementedException();
 

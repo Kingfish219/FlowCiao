@@ -9,16 +9,16 @@ namespace FlowCiao.Models.Execution
         internal ProcessExecutionStepDetail ProcessExecutionStepDetail { get; set; }
         internal ProcessUser ProcessUser { get; set; }
         internal ProcessStepInput ProcessStepInput { get; set; }
-        public Dictionary<string, object> Data { get; set; }
+        public Dictionary<object, object> Data { get; set; }
 
         internal ProcessStepContext()
         {
-            Data = new Dictionary<string, object>();
+            Data = new Dictionary<object, object>();
         }
 
         internal void ClearDictionary()
         {
-            Data = new Dictionary<string, object>();
+            Data = new Dictionary<object, object>();
         }
     }
 }

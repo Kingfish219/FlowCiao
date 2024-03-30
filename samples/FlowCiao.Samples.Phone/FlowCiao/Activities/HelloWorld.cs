@@ -10,7 +10,7 @@ namespace FlowCiao.Samples.Phone.FLowCiao.Activities
         {
             Console.WriteLine("Hello world");
 
-            return ProcessResult.SuccessResult();
+            return ProcessResult.Success();
         }
     }
 }

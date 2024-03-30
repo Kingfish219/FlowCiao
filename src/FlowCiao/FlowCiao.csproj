@@ -66,8 +66,6 @@
 	<ItemGroup>
 		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0013-Create StateActivity-UP.sql" />
 		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0015-Create ProcessExecution-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0016-Create ProcessExecutionStep-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0017-Create ProcessExecutionStepDetail-UP.sql" />
 		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\02.Stored Procedures\0000-Create usp_State_Modify-UP.sql" />
 		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\02.Stored Procedures\0001-Create usp_Transition_Modify-UP.sql" />
 		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\02.Stored Procedures\0002-Create usp_Process_Modify-UP.sql" />

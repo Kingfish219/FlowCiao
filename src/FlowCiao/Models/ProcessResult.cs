@@ -9,7 +9,7 @@ namespace FlowCiao.Models
         public string Message { get; set; }
         public Guid InstanceId { get; set; }
 
-        public static ProcessResult SuccessResult()
+        public static ProcessResult Success()
         {
             return new ProcessResult
             {

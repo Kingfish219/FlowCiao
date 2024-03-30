@@ -10,7 +10,7 @@ namespace FlowCiao.Samples.CustomActivities
         {
             Console.WriteLine("Hello world");
 
-            return ProcessResult.SuccessResult();
+            return ProcessResult.Success();
         }
     }
 }
