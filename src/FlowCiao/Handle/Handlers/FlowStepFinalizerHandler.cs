@@ -11,7 +11,7 @@ namespace FlowCiao.Handle.Handlers
         private readonly FlowExecutionService _executionService;
 
         public FlowStepFinalizerHandler(IFlowRepository flowRepository,
-            IFlowService flowService,
+            FlowService flowService,
             FlowExecutionService flowExecutionService) : base(flowRepository, flowService)
         {
             _executionService = flowExecutionService;

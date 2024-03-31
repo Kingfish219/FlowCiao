@@ -12,18 +12,29 @@ namespace FlowCiao.Models.Core
     {
         [Key]
         public Guid Id { get; set; }
+        
         public string Name { get; set; }
+        
         public int ActivityType { get; set; } = 1;
+        
         [MaxLength(500)]
         public string ActorName { get; set; }
+        
         [MaxLength(1000000)]
         public byte[] ActorContent { get; set; }
+        
         [JsonIgnore]
         [NotMapped]
         public IFlowActivity Actor { get; set; }
 
         public List<State> States { get; set; }
         
+        public List<Transition> Transitions { get; set; }
+        
+        public List<TransitionActivity> TransitionActivities { get; set; }
+        
+        public List<StateActivity> StateActivities { get; set; }
+
         public Activity()
         {
             

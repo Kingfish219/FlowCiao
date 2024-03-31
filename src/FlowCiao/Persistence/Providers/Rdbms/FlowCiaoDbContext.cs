@@ -2,9 +2,8 @@ using System.Linq;
 using FlowCiao.Models.Core;
 using FlowCiao.Models.Execution;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ValueGeneration;
 
-namespace FlowCiao.Persistence.Providers;
+namespace FlowCiao.Persistence.Providers.Rdbms;
 
 public class FlowCiaoDbContext : DbContext
 {
@@ -22,31 +21,8 @@ public class FlowCiaoDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        modelBuilder.HasDefaultSchema("FlowCiao");
 
-        modelBuilder.Entity<Flow>()
-            .Property(x => x.Id)
-            .HasValueGenerator<SequentialGuidValueGenerator>();
-        
-        modelBuilder.Entity<Activity>()
-            .Property(x => x.Id)
-            .HasValueGenerator<SequentialGuidValueGenerator>();
-        
-        modelBuilder.Entity<Trigger>()
-            .Property(x => x.Id)
-            .HasValueGenerator<SequentialGuidValueGenerator>();
-        
-        modelBuilder.Entity<Transition>()
-            .Property(x => x.Id)
-            .HasValueGenerator<SequentialGuidValueGenerator>();
-        
-        modelBuilder.Entity<State>()
-            .Property(x => x.Id)
-            .HasValueGenerator<SequentialGuidValueGenerator>();
-        
-        modelBuilder.Entity<FlowExecution>()
-            .Property(x => x.Id)
-            .HasValueGenerator<SequentialGuidValueGenerator>();
-        
         var cascadeFKs = modelBuilder.Model.GetEntityTypes()
             .SelectMany(t => t.GetForeignKeys())
             .Where(fk => !fk.IsOwnership && fk.DeleteBehavior == DeleteBehavior.Cascade);

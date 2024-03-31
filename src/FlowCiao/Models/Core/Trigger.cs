@@ -23,6 +23,8 @@ namespace FlowCiao.Models.Core
 
         public List<Transition> Transitions { get; set; }
         
+        public List<TransitionTrigger> TransitionTriggers { get; set; }
+        
         public int Priority { get; set; }
     }
 }

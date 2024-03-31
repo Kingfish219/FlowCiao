@@ -8,11 +8,11 @@ namespace FlowCiao.Handle
     public class FlowHandlerFactory
     {
         private readonly IFlowRepository _flowRepository;
-        private readonly IFlowService _flowService;
+        private readonly FlowService _flowService;
         private readonly FlowExecutionService _flowExecutionService;
 
         public FlowHandlerFactory(IFlowRepository flowRepository
-            , IFlowService flowService,
+            , FlowService flowService,
             FlowExecutionService flowExecutionService)
         {
             _flowRepository = flowRepository;
@@ -26,7 +26,7 @@ namespace FlowCiao.Handle
         }
 
         private Queue<FlowHandler> BuildDefaultHandlers(IFlowRepository flowRepository,
-            IFlowService flowService,
+            FlowService flowService,
             FlowExecutionService flowExecutionService)
         {
             var triggerHandler = new TriggerHandler(flowRepository, flowService);

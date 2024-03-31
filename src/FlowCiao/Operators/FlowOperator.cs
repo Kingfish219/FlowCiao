@@ -15,11 +15,11 @@ namespace FlowCiao.Operators
     {
         private readonly FlowExecutionService _flowExecutionService;
         private readonly FlowHandlerFactory _flowHandlerFactory;
-        private readonly IFlowService _flowService;
+        private readonly FlowService _flowService;
 
         public FlowOperator(FlowHandlerFactory flowHandlerFactory,
             FlowExecutionService flowExecutionService,
-            IFlowService flowService)
+            FlowService flowService)
         {
             _flowHandlerFactory = flowHandlerFactory;
             _flowExecutionService = flowExecutionService;

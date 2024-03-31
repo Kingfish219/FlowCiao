@@ -15,10 +15,10 @@ namespace FlowCiao.Builders
     {
         public List<IFlowStepBuilder> StepBuilders { get; set; }
         public IFlowStepBuilder InitialStepBuilder { get; set; }
-        private readonly IFlowService _flowService;
+        private readonly FlowService _flowService;
         private readonly IActivityRepository _activityRepository;
 
-        public FlowBuilder(IFlowService flowService, IActivityRepository activityRepository)
+        public FlowBuilder(FlowService flowService, IActivityRepository activityRepository)
         {
             StepBuilders = new List<IFlowStepBuilder>();
             _flowService = flowService;

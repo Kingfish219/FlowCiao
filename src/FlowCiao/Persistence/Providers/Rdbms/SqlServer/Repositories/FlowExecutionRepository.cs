@@ -6,7 +6,7 @@ using FlowCiao.Models.Execution;
 using FlowCiao.Persistence.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
+namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
 {
     public class FlowExecutionRepository : FlowSqlServerRepository, IFlowExecutionRepository
     {

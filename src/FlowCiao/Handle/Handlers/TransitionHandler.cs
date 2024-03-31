@@ -10,7 +10,7 @@ namespace FlowCiao.Handle.Handlers
     internal class TransitionHandler : FlowHandler
     {
         public TransitionHandler(IFlowRepository flowRepository
-            , IFlowService flowService) : base(flowRepository, flowService)
+            , FlowService flowService) : base(flowRepository, flowService)
         {
         }
 

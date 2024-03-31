@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddControllers();
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
-    
+
     builder.Services.AddFlowCiao(settings =>
     {
         settings
@@ -39,7 +39,7 @@ var app = builder.Build();
         app.UseSwaggerUI();
     }
 
-    //app.UseAuthorization();
+    app.UseFlowCiao();
     app.MapControllers();
     app.Run();
 }

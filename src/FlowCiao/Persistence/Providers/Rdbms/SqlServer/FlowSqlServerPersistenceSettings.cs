@@ -1,28 +1,25 @@
-using System.Data;
 using FlowCiao.Persistence.Interfaces;
-using FlowCiao.Persistence.Providers.SqlServer.Repositories;
-using Microsoft.Data.SqlClient;
+using FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FlowCiao.Persistence.Providers.SqlServer;
+namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer;
 
 public class FlowSqlServerPersistenceSettings
 {
     private readonly IServiceCollection _serviceCollection;
-    public string ConnectionString { get; private set; }
 
     public FlowSqlServerPersistenceSettings(IServiceCollection serviceCollection)
     {
         _serviceCollection = serviceCollection;
     }
-        
+
     public void UseSqlServer(string connectionString)
     {
-        ConnectionString = connectionString;
-            
         _serviceCollection.AddDbContext<FlowCiaoDbContext>(options =>
-            options.UseSqlServer(ConnectionString));
+            options.UseSqlServer(connectionString,
+                x => x.MigrationsHistoryTable(HistoryRepository.DefaultTableName, "FlowCiao")));
 
         _serviceCollection.AddTransient<ITransitionRepository, TransitionRepository>();
         _serviceCollection.AddTransient<IStateRepository, StateRepository>();
@@ -32,8 +29,8 @@ public class FlowSqlServerPersistenceSettings
         _serviceCollection.AddTransient<IFlowRepository, FlowRepository>();
     }
 
-    public IDbConnection GetDbConnection()
+    internal void Migrate(IServiceScope serviceScope)
     {
-        return new SqlConnection(ConnectionString);
+        serviceScope.ServiceProvider.GetService<FlowCiaoDbContext>().Database.Migrate();
     }
 }

@@ -12,9 +12,9 @@ namespace FlowCiao.Handle.Handlers
         internal IFlowHandler PreviousHandler { get; private set; }
 
         protected readonly IFlowRepository FlowRepository;
-        protected readonly IFlowService FlowService;
+        protected readonly FlowService FlowService;
 
-        internal FlowHandler(IFlowRepository flowRepository, IFlowService flowStepManager)
+        internal FlowHandler(IFlowRepository flowRepository, FlowService flowStepManager)
         {
             FlowRepository = flowRepository;
             FlowService = flowStepManager;

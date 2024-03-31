@@ -11,7 +11,7 @@ namespace FlowCiao.Handle.Handlers
 {
     internal class TransitionActivityHandler : FlowHandler
     {
-        public TransitionActivityHandler(IFlowRepository flowRepository, IFlowService flowService) : base(flowRepository, flowService)
+        public TransitionActivityHandler(IFlowRepository flowRepository, FlowService flowService) : base(flowRepository, flowService)
         {
         }
 

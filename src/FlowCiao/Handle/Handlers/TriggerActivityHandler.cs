@@ -9,7 +9,7 @@ namespace FlowCiao.Handle.Handlers
     internal class TriggerActivityHandler : FlowHandler
     {
         public TriggerActivityHandler(IFlowRepository flowRepository
-            , IFlowService flowService) : base(flowRepository, flowService)
+            , FlowService flowService) : base(flowRepository, flowService)
         {
         }
 

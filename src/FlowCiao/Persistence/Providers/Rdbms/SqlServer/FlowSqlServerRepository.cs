@@ -1,5 +1,5 @@
 ﻿
-namespace FlowCiao.Persistence.Providers.SqlServer
+namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer
 {
     public class FlowSqlServerRepository
     {

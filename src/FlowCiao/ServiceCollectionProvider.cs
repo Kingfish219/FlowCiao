@@ -10,8 +10,8 @@ using FlowCiao.Persistence.Interfaces;
 using FlowCiao.Persistence.Providers.Cache;
 using FlowCiao.Persistence.Providers.Cache.Repositories;
 using FlowCiao.Services;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using FlowCacheRepository = FlowCiao.Persistence.Providers.Cache.Repositories.FlowCacheRepository;
 
 namespace FlowCiao
 {
@@ -20,22 +20,28 @@ namespace FlowCiao
         public static IServiceCollection AddFlowCiao(this IServiceCollection services,
             Action<FlowSettings> settings)
         {
-            try
-            {
-                var flowSettings = new FlowSettings(services);
-                settings.Invoke(flowSettings);
-                services.AddSingleton(flowSettings);
+            var flowSettings = new FlowSettings(services);
+            settings.Invoke(flowSettings);
+            services.AddSingleton(flowSettings);
 
-                AddRepositories(services, flowSettings);
-                AddServices(services);
-                services.AddTransient<IFlowBuilder, FlowBuilder>();
-                services.AddSingleton<IFlowOperator, FlowOperator>();
+            AddRepositories(services, flowSettings);
+            AddServices(services);
             
-                return services;
-            }
-            catch (Exception ex)
+            services.AddScoped<IFlowBuilder, FlowBuilder>();
+            services.AddScoped<IFlowStepBuilder, FlowStepBuilder>();
+            services.AddScoped<IFlowOperator, FlowOperator>();
+
+            return services;
+        }
+
+        public static void UseFlowCiao(this IApplicationBuilder applicationBuilder)
+        {
+            using var scope = applicationBuilder.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
+                .CreateScope();
+            var flowSettings = scope.ServiceProvider.GetService<FlowSettings>();
+            if (flowSettings.PersistFlow)
             {
-                return services;
+                flowSettings.MigrateIfRequired(scope);
             }
         }
 
@@ -58,23 +64,22 @@ namespace FlowCiao
                 new List<Trigger>());
 
             services.AddSingleton(flowHub);
-            services.AddTransient<ITransitionRepository, TransitionCacheRepository>();
-            services.AddTransient<IStateRepository, StateCacheRepository>();
-            services.AddTransient<ITriggerRepository, TriggerCacheRepository>();
-            services.AddTransient<IActivityRepository, ActivityCacheRepository>();
-            services.AddTransient<IFlowExecutionRepository, FlowExecutionCacheRepository>();
-            services.AddTransient<IFlowRepository, FlowCacheRepository>();
+            services.AddScoped<ITransitionRepository, TransitionCacheRepository>();
+            services.AddScoped<IStateRepository, StateCacheRepository>();
+            services.AddScoped<ITriggerRepository, TriggerCacheRepository>();
+            services.AddScoped<IActivityRepository, ActivityCacheRepository>();
+            services.AddScoped<IFlowExecutionRepository, FlowExecutionCacheRepository>();
+            services.AddScoped<IFlowRepository, FlowCacheRepository>();
         }
 
         private static void AddServices(IServiceCollection services)
         {
-            services.AddTransient<ActivityService>();
-            services.AddTransient<TransitionService>();
-            services.AddTransient<StateService>();
-            services.AddTransient<IFlowService, FlowService>();
-            services.AddTransient<FlowExecutionService>();
-            services.AddTransient<FlowHandlerFactory>();
-            services.AddTransient<FlowExecutionService>();
+            services.AddScoped<ActivityService>();
+            services.AddScoped<TransitionService>();
+            services.AddScoped<StateService>();
+            services.AddScoped<FlowExecutionService>();
+            services.AddScoped<FlowHandlerFactory>();
+            services.AddScoped<FlowService>();
         }
     }
 }

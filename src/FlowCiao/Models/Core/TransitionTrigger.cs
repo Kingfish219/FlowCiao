@@ -7,9 +7,6 @@ namespace FlowCiao.Models.Core
 {
      public class TransitionTrigger
     {
-        [Key]
-        public Guid Id { get; set; }
-        
         [ForeignKey("Trigger")]
         public Guid TriggerId { get; set; }
         

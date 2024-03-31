@@ -25,6 +25,10 @@ namespace FlowCiao.Models.Core
         
         public List<Activity> Activities { get; set; }
         
+        public List<TransitionActivity> TransitionActivities { get; set; }
+        
+        public List<TransitionTrigger> TransitionTriggers { get; set; }
+
         [NotMapped]
         public Func<bool> Condition { get; set; }
     }

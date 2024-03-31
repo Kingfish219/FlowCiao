@@ -21,12 +21,14 @@ builder.Services.AddFlowCiao(settings =>
 
 var app = builder.Build();
 
-// Build your custom flow and Fire!!!
-var flowBuilder = app.Services.GetService<IFlowBuilder>();
-var flow = flowBuilder?.Build<PhoneStateMachine>();
-var flowOperator = app.Services.GetService<IFlowOperator>();
-var instance = flowOperator.Instantiate(flow).GetAwaiter().GetResult();
-//var result = flowOperator.FireAsync(instance, 1, new Dictionary<object, object>()).GetAwaiter().GetResult();
+using (var scope = app.Services.CreateScope()) {
+    // Build your custom flow and Fire!!!
+    var flowBuilder = scope.ServiceProvider.GetRequiredService<IFlowBuilder>();
+    var flow = flowBuilder?.Build<PhoneStateMachine>();
+    var flowOperator = scope.ServiceProvider.GetService<IFlowOperator>();
+    var instance = flowOperator.Instantiate(flow).GetAwaiter().GetResult();
+    //var result = flowOperator.FireAsync(instance, 1, new Dictionary<object, object>()).GetAwaiter().GetResult();
+}
 
 if (app.Environment.IsDevelopment())
 {

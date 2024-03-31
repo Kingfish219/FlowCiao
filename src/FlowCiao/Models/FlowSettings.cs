@@ -1,5 +1,5 @@
 ﻿using System;
-using FlowCiao.Persistence.Providers.SqlServer;
+using FlowCiao.Persistence.Providers.Rdbms.SqlServer;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FlowCiao.Models
@@ -8,7 +8,7 @@ namespace FlowCiao.Models
     {
         private readonly IServiceCollection _serviceCollection;
         public bool PersistFlow { get; private set; }
-        public FlowSqlServerPersistenceSettings PersistenceSettings { get; private set; }
+        private FlowSqlServerPersistenceSettings PersistenceSettings { get; set; }
 
         public FlowSettings(IServiceCollection serviceCollection)
         {
@@ -22,6 +22,16 @@ namespace FlowCiao.Models
             settings(PersistenceSettings);
             
             return this;
+        }
+        
+        internal void MigrateIfRequired(IServiceScope serviceScope)
+        {
+            if (!PersistFlow)
+            {
+                return;
+            }
+            
+            PersistenceSettings.Migrate(serviceScope);
         }
     }
 }

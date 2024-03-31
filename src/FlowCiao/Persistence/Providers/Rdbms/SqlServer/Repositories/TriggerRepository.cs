@@ -4,7 +4,7 @@ using FlowCiao.Models.Core;
 using FlowCiao.Persistence.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
+namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
 {
     public class TriggerRepository : FlowSqlServerRepository, ITriggerRepository
     {

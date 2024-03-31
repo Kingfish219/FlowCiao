@@ -5,7 +5,7 @@ using FlowCiao.Models.Core;
 using FlowCiao.Persistence.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
+namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
 {
     public class FlowRepository : FlowSqlServerRepository, IFlowRepository
     {
@@ -17,7 +17,7 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
         {
             return await DbContext.Flows.SingleOrDefaultAsync(a =>
                 (a.Id == default || a.Id == id) &&
-                (string.IsNullOrWhiteSpace(key) || a.Key.Equals(key, StringComparison.InvariantCultureIgnoreCase)));
+                (string.IsNullOrWhiteSpace(key) || a.Key.ToLower().Equals(key.ToLower())));
         }
 
         public async Task<List<Flow>> Get()
