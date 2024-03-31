@@ -36,6 +36,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Use FlowCiao
+app.UseFlowCiao();
 app.MapControllers();
-
 app.Run();
