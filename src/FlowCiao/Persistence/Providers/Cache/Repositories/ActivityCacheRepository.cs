@@ -24,6 +24,15 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
             return FlowHub.Activities;
         }
 
+        public async Task<Activity> GetByKey(Guid id = default, string actorName = default)
+        {
+            await Task.CompletedTask;
+
+            return FlowHub.Activities.SingleOrDefault(a =>
+                (a.Id == default || a.Id == id) &&
+                (string.IsNullOrWhiteSpace(actorName) || a.ActorName.Equals(actorName, StringComparison.InvariantCultureIgnoreCase)));
+        }
+
         public async Task<Guid> Modify(Activity entity)
         {
             if (entity.Id == default)

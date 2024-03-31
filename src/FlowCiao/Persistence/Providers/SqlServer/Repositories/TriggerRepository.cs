@@ -1,36 +1,35 @@
 ﻿using System;
-using System.Data;
 using System.Threading.Tasks;
-using Dapper;
-using FlowCiao.Models;
 using FlowCiao.Models.Core;
 using FlowCiao.Persistence.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
 {
     public class TriggerRepository : FlowSqlServerRepository, ITriggerRepository
     {
-        public TriggerRepository(FlowSettings settings) : base(settings) { }
+        public TriggerRepository(FlowCiaoDbContext dbContext) : base(dbContext) { }
 
-        public Task<Guid> Modify(Trigger entity)
+        public async Task<Trigger> GetById(Guid id)
         {
-            return Task.Run(() =>
+            return await DbContext.Triggers.SingleOrDefaultAsync(a => a.Id == id);
+        }
+
+        public async Task<Guid> Modify(Trigger entity)
+        {
+            var existed = await GetById(entity.Id);
+            if (existed != null)
             {
-                var toInsert = new
-                {
-                    Id = entity.Id == default ? Guid.NewGuid() : entity.Id,
-                    entity.Name,
-                    entity.TriggerType,
-                    FlowId = entity.FlowId
-                };
+                DbContext.Triggers.Update(entity);
+            }
+            else
+            {
+                await DbContext.Triggers.AddAsync(entity);
+            }
+            
+            await DbContext.SaveChangesAsync();
 
-                using var connection = GetDbConnection();
-                connection.Open();
-                connection.Execute(ConstantsProvider.Usp_Trigger_Modify, toInsert, commandType: CommandType.StoredProcedure);
-                entity.Id = toInsert.Id;
-
-                return entity.Id;
-            });
+            return entity.Id;
         }
     }
 }

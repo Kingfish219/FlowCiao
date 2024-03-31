@@ -7,7 +7,8 @@ namespace FlowCiao.Persistence.Interfaces
 {
     public interface IFlowExecutionRepository
     {
-        Task<List<FlowExecution>> Get(Guid id = default, Guid flowId = default);
+        Task<List<FlowExecution>> Get(Guid flowId = default);
+        Task<FlowExecution> GetById(Guid id);
         Task<Guid> Modify(FlowExecution entity);
     }
 }

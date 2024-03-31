@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using FlowCiao.Builders;
-using FlowCiao.Exceptions;
 using FlowCiao.Handle;
 using FlowCiao.Models;
 using FlowCiao.Models.Core;
@@ -10,8 +9,6 @@ using FlowCiao.Operators;
 using FlowCiao.Persistence.Interfaces;
 using FlowCiao.Persistence.Providers.Cache;
 using FlowCiao.Persistence.Providers.Cache.Repositories;
-using FlowCiao.Persistence.Providers.SqlServer;
-using FlowCiao.Persistence.Providers.SqlServer.Repositories;
 using FlowCiao.Services;
 using Microsoft.Extensions.DependencyInjection;
 using FlowCacheRepository = FlowCiao.Persistence.Providers.Cache.Repositories.FlowCacheRepository;
@@ -25,7 +22,7 @@ namespace FlowCiao
         {
             try
             {
-                var flowSettings = new FlowSettings();
+                var flowSettings = new FlowSettings(services);
                 settings.Invoke(flowSettings);
                 services.AddSingleton(flowSettings);
 
@@ -44,11 +41,7 @@ namespace FlowCiao
 
         private static void AddRepositories(IServiceCollection services, FlowSettings flowSettings)
         {
-            if (flowSettings.PersistFlow)
-            {
-                AddSqlServerRepositories(services, flowSettings);
-            }
-            else
+            if (!flowSettings.PersistFlow)
             {
                 AddCacheRepositories(services);
             }
@@ -71,24 +64,6 @@ namespace FlowCiao
             services.AddTransient<IActivityRepository, ActivityCacheRepository>();
             services.AddTransient<IFlowExecutionRepository, FlowExecutionCacheRepository>();
             services.AddTransient<IFlowRepository, FlowCacheRepository>();
-        }
-
-        private static void AddSqlServerRepositories(IServiceCollection services, FlowSettings flowSettings)
-        {
-            DapperHelper.EnsureMappings();
-
-            var migration = new DbMigrationManager(flowSettings);
-            if (!migration.MigrateUp())
-            {
-                throw new FlowCiaoPersistencyException("Migration failed");
-            }
-
-            services.AddTransient<ITransitionRepository, TransitionRepository>();
-            services.AddTransient<IStateRepository, StateRepository>();
-            services.AddTransient<ITriggerRepository, TriggerRepository>();
-            services.AddTransient<IActivityRepository, ActivityRepository>();
-            services.AddTransient<IFlowExecutionRepository, FlowExecutionRepository>();
-            services.AddTransient<IFlowRepository, FlowRepository>();
         }
 
         private static void AddServices(IServiceCollection services)

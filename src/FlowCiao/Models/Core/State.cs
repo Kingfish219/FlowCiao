@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Dapper.Contrib.Extensions;
+using System.ComponentModel.DataAnnotations;
 
 namespace FlowCiao.Models.Core
 {
-    [Table("State")]
     public class State
     {
         public State(int code, string name)
@@ -23,17 +22,10 @@ namespace FlowCiao.Models.Core
         public int Code { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public StateType TypeId { get; set; }
         public Guid FlowId { get; set; }
         public bool IsFinal { get; set; }
         public bool IsInitial { get; set; }
         public string OwnerId { get; set; }
         public List<Activity> Activities { get; set; }
-    }
-
-    public class StateType
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
     }
 }

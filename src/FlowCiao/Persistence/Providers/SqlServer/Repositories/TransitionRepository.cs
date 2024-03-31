@@ -1,36 +1,37 @@
 ﻿using System;
 using System.Data;
 using System.Threading.Tasks;
-using Dapper;
 using FlowCiao.Models;
 using FlowCiao.Models.Core;
 using FlowCiao.Persistence.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
 {
     public class TransitionRepository : FlowSqlServerRepository, ITransitionRepository
     {
-        public TransitionRepository(FlowSettings settings) : base(settings) { }
+        public TransitionRepository(FlowCiaoDbContext dbContext) : base(dbContext) { }
 
-        public Task<Guid> Modify(Transition entity)
+        public async Task<Transition> GetById(Guid id)
         {
-            return Task.Run(() =>
+            return await DbContext.Transitions.SingleOrDefaultAsync(a => a.Id == id);
+        }
+
+        public async Task<Guid> Modify(Transition entity)
+        {
+            var existed = await GetById(entity.Id);
+            if (existed != null)
             {
-                var toInsert = new
-                {
-                    Id = entity.Id == default ? Guid.NewGuid() : entity.Id,
-                    ProcessId = entity.FlowId,
-                    CurrentStateId = entity.From.Id,
-                    NextStateId = entity.To.Id
-                };
+                DbContext.Transitions.Update(entity);
+            }
+            else
+            {
+                await DbContext.Transitions.AddAsync(entity);
+            }
+            
+            await DbContext.SaveChangesAsync();
 
-                using var connection = GetDbConnection();
-                connection.Open();
-                connection.Execute(ConstantsProvider.Usp_Transition_Modify, toInsert, commandType: CommandType.StoredProcedure);
-                entity.Id = toInsert.Id;
-
-                return entity.Id;
-            });
+            return entity.Id;
         }
 
         public Task AssociateTriggers(Transition entity, Trigger trigger)
@@ -43,10 +44,10 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
                     TriggerId = trigger.Id,
                     trigger.Priority
                 };
-
-                using var connection = GetDbConnection();
-                connection.Open();
-                connection.Execute(ConstantsProvider.Usp_TransitionTrigger_Modify, toInsert, commandType: CommandType.StoredProcedure);
+                
+                // using var connection = GetDbConnection();
+                // connection.Open();
+                // connection.Execute(ConstantsProvider.Usp_TransitionTrigger_Modify, toInsert, commandType: CommandType.StoredProcedure);
 
                 return entity.Id;
             });
@@ -62,9 +63,9 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
                     ActivityId = activity.Id
                 };
 
-                using var connection = GetDbConnection();
-                connection.Open();
-                connection.Execute(ConstantsProvider.Usp_TransitionActivity_Modify, toInsert, commandType: CommandType.StoredProcedure);
+                // using var connection = GetDbConnection();
+                // connection.Open();
+                // connection.Execute(ConstantsProvider.Usp_TransitionActivity_Modify, toInsert, commandType: CommandType.StoredProcedure);
 
                 return entity.Id;
             });

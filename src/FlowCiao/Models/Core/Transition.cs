@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Dapper.Contrib.Extensions;
+using System.ComponentModel.DataAnnotations;
 
 namespace FlowCiao.Models.Core
 {
-    [Table("Transition")]
     public class Transition
     {
         [Key]

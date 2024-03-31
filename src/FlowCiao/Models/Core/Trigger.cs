@@ -1,9 +1,8 @@
 ﻿using System;
-using Dapper.Contrib.Extensions;
+using System.ComponentModel.DataAnnotations;
 
 namespace FlowCiao.Models.Core
 {
-    [Table("Trigger")]
     public class Trigger
     {
         public Trigger(int code)

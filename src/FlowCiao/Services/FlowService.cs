@@ -44,9 +44,14 @@ namespace FlowCiao.Services
             return flowId;
         }
 
-        public async Task<List<Flow>> Get(Guid flowId = default, string key = default)
+        public async Task<List<Flow>> Get()
         {
-            return await _flowRepository.Get(flowId, key);
+            return await _flowRepository.Get();
+        }
+        
+        public async Task<Flow> GetByKey(Guid flowId = default, string key = default)
+        {
+            return await _flowRepository.GetByKey(flowId, key);
         }
 
         public FlowExecutionStep GenerateFlowStep(Flow flow, State state)

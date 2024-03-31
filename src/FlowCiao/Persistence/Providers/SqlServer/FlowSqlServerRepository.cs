@@ -1,20 +1,13 @@
-﻿using System.Data;
-using FlowCiao.Models;
-
+﻿
 namespace FlowCiao.Persistence.Providers.SqlServer
 {
     public class FlowSqlServerRepository
     {
-        private readonly FlowPersistenceSettings _settings;
+        protected FlowCiaoDbContext DbContext { get; }
 
-        public FlowSqlServerRepository(FlowSettings flowSettings)
+        protected FlowSqlServerRepository(FlowCiaoDbContext dbContext)
         {
-            _settings = flowSettings.PersistenceSettings;
-        }
-
-        protected IDbConnection GetDbConnection()
-        {
-            return _settings.GetDbConnection();
+            DbContext = dbContext;
         }
     }
 }

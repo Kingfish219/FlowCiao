@@ -1,82 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
-using FlowCiao.Models;
 using FlowCiao.Models.Core;
 using FlowCiao.Persistence.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
 {
     public class FlowRepository : FlowSqlServerRepository, IFlowRepository
     {
-        public FlowRepository(FlowSettings settings) : base(settings)
+        public FlowRepository(FlowCiaoDbContext dbContext) : base(dbContext)
         {
         }
-
-        public async Task<List<Flow>> Get(Guid flowId = default, string key = default)
+        
+        public async Task<Flow> GetByKey(Guid id = default, string key = default)
         {
-            using var connection = GetDbConnection();
-            connection.Open();
-
-            var sql = @"SELECT p.*
-                                , t.Id TransitionId
-                                , t.FlowId
-                                , s.Id StateId
-                                , s.[Name]
-                                , s1.Id StateId
-                                , s1.[Name]
-                                FROM [FlowCiao].Flow p
-                                JOIN FlowCiao.Transition t on p.Id = t.FlowId
-                                JOIN FlowCiao.[State] s on s.Id = t.CurrentStateId
-                                JOIN FlowCiao.[State] s1 on s1.Id = t.NextStateId
-                                WHERE
-                                  (p.[Id] = @FlowId OR ISNULL(@FlowId, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER)) AND
-                                  (p.[Key] = @Key OR ISNULL(@Key, '') = '')";
-
-            var processes = new List<Flow>();
-            _ = (await connection.QueryAsync<Flow, Transition, State, State, Flow>(sql,
-                (process, transition, currentState, nextState) =>
-                {
-                    var selectedProcess = processes.FirstOrDefault(x => x.Id == process.Id);
-                    if (selectedProcess is null)
-                    {
-                        selectedProcess = process;
-                        processes.Add(selectedProcess);
-                    }
-
-                    selectedProcess.Transitions ??= new List<Transition>();
-
-                    transition.From = currentState;
-                    transition.To = nextState;
-
-                    selectedProcess.Transitions.Add(transition);
-
-                    return selectedProcess;
-                }, splitOn: "TransitionId, StateId, StateId", param: new { ProcessId = flowId, Key = key }))?.ToList();
-
-            return processes;
+            return await DbContext.Flows.SingleOrDefaultAsync(a =>
+                (a.Id == default || a.Id == id) &&
+                (string.IsNullOrWhiteSpace(key) || a.Key.Equals(key, StringComparison.InvariantCultureIgnoreCase)));
         }
 
-        public Task<Guid> Modify(Flow entity)
+        public async Task<List<Flow>> Get()
         {
-            return Task.Run(() =>
+            return await DbContext.Flows.ToListAsync();
+        }
+
+        public async Task<Guid> Modify(Flow entity)
+        {
+            var existed = await GetByKey(entity.Id, entity.Key);
+            if (existed != null)
             {
-                var toInsert = new
-                {
-                    Id = entity.Id == default ? Guid.NewGuid() : entity.Id, entity.Key
-                };
+                DbContext.Flows.Update(entity);
+            }
+            else
+            {
+                await DbContext.Flows.AddAsync(entity);
+            }
+            
+            await DbContext.SaveChangesAsync();
 
-                using var connection = GetDbConnection();
-                connection.Open();
-                connection.Execute(ConstantsProvider.Usp_Process_Modify, toInsert,
-                    commandType: CommandType.StoredProcedure);
-                entity.Id = toInsert.Id;
-
-                return entity.Id;
-            });
+            return entity.Id;
         }
     }
 }

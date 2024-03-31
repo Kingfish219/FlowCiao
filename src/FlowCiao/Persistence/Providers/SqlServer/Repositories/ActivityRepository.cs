@@ -1,60 +1,65 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Dapper;
 using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
-using FlowCiao.Models;
 using FlowCiao.Models.Core;
 using FlowCiao.Persistence.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
 {
     public class ActivityRepository : FlowSqlServerRepository, IActivityRepository
     {
-        public ActivityRepository(FlowSettings settings) : base(settings)
+        public ActivityRepository(FlowCiaoDbContext dbContext) : base(dbContext)
         {
         }
 
         public async Task<List<Activity>> Get(string actorName = default, bool fetchActorContent = false)
         {
-            using var connection = GetDbConnection();
-            connection.Open();
-
-            var sql = $@"SELECT [Id]
-                              ,[Name]
-                              ,[ActivityTypeCode]
-                              ,[ActorName]
-                              {(fetchActorContent ? ",[ActorContent]" : string.Empty)}
-                        FROM [FlowCiao].[Activity]
-                        WHERE
-                            ([ActorName] = @ActorName OR ISNULL(@ActorName, '') = '')";
-
-            var result = (await connection.QueryAsync<Activity>(sql, param: new { ActorName = actorName }))?.ToList();
-
-            return result;
+            if (fetchActorContent)
+            {
+                return await DbContext.Activities
+                    .Where(a =>
+                        string.IsNullOrWhiteSpace(actorName) || actorName.Equals(a.ActorName))
+                    .ToListAsync();
+            }
+            
+            return await DbContext.Activities
+                .Where(a =>
+                    string.IsNullOrWhiteSpace(actorName) || actorName.Equals(a.ActorName))
+                .Select(activity => new Activity
+                {
+                    Id = activity.Id,
+                    Name = activity.Name,
+                    ActorName = activity.ActorName,
+                    ActivityTypeCode = activity.ActivityTypeCode
+                })
+                .ToListAsync();
+        }
+        
+        public async Task<Activity> GetByKey(Guid id = default, string actorName = default)
+        {
+            return await DbContext.Activities.SingleOrDefaultAsync(a =>
+                (a.Id == default || a.Id == id) &&
+                (string.IsNullOrWhiteSpace(actorName) || a.ActorName.Equals(actorName, StringComparison.InvariantCultureIgnoreCase)));
         }
 
         public async Task<Guid> Modify(Activity entity)
         {
-            var toInsert = new
+            var existed = await GetByKey(entity.Id);
+            if (existed != null)
             {
-                Id = entity.Id == default ? Guid.NewGuid() : entity.Id,
-                entity.Name,
-                entity.ActivityTypeCode,
-                entity.ActorName,
-                entity.ActorContent
-            };
-
-            using var connection = GetDbConnection();
+                DbContext.Activities.Update(entity);
+            }
+            else
+            {
+                await DbContext.Activities.AddAsync(entity);
+            }
             
-            connection.Open();
-            await connection.ExecuteAsync(ConstantsProvider.Usp_Activity_Modify, toInsert,
-                commandType: CommandType.StoredProcedure);
-            entity.Id = toInsert.Id;
+            await DbContext.SaveChangesAsync();
 
             return entity.Id;
         }
@@ -74,7 +79,7 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
 
         public async Task<IFlowActivity> LoadActivity(string activityFileName)
         {
-            var existedActivity = (await Get(actorName: activityFileName, true)).SingleOrDefault();
+            var existedActivity = await GetByKey(actorName: activityFileName);
             if (existedActivity is null)
             {
                 throw new FlowCiaoPersistencyException($"Could not find assembly with name: {activityFileName}");

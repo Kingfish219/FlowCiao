@@ -27,6 +27,24 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
             });
         }
 
+        public Task<List<FlowExecution>> Get(Guid flowId = default)
+        {
+            return Task.Run(() =>
+            {
+                var db = GetDbConnection();
+                var result = (from o in db.FlowExecutions
+                    where flowId == default || o.Flow.Id.Equals(flowId)
+                    select o).ToList();
+
+                return result;
+            });
+        }
+
+        public Task<FlowExecution> GetById(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<Guid> Modify(FlowExecution entity)
         {
             if (entity.Id == default)

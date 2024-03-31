@@ -1,9 +1,8 @@
 ﻿using System;
-using Dapper.Contrib.Extensions;
+using System.ComponentModel.DataAnnotations;
 
 namespace FlowCiao.Models.Core
 {
-    [Table("TransitionTrigger")]
      public class TransitionTrigger
     {
         [Key]

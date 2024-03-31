@@ -1,34 +1,35 @@
 ﻿using System;
-using System.Data;
 using System.Threading.Tasks;
-using Dapper;
-using FlowCiao.Models;
 using FlowCiao.Models.Core;
 using FlowCiao.Persistence.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
 {
     public class StateRepository : FlowSqlServerRepository, IStateRepository
     {
-        public StateRepository(FlowSettings settings) : base(settings) { }
-
-        public Task<Guid> Modify(State entity)
+        public StateRepository(FlowCiaoDbContext dbContext) : base(dbContext) { }
+        
+        public async Task<State> GetById(Guid id)
         {
-            return Task.Run(() =>
+            return await DbContext.States.SingleOrDefaultAsync(a => a.Id == id);
+        }
+
+        public async Task<Guid> Modify(State entity)
+        {
+            var existed = await GetById(entity.Id);
+            if (existed != null)
             {
-                var toInsert = new
-                {
-                    Id = entity.Id == default ? Guid.NewGuid() : entity.Id,
-                    entity.Name
-                };
+                DbContext.States.Update(entity);
+            }
+            else
+            {
+                await DbContext.States.AddAsync(entity);
+            }
+            
+            await DbContext.SaveChangesAsync();
 
-                using var connection = GetDbConnection();
-                connection.Open();
-                connection.Execute(ConstantsProvider.Usp_State_Modify, toInsert, commandType: CommandType.StoredProcedure);
-                entity.Id = toInsert.Id;
-
-                return entity.Id;
-            });
+            return entity.Id;
         }
 
         public Task AssociateActivities(State entity, Activity activity)
@@ -41,9 +42,9 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
                     ActivityId = activity.Id
                 };
 
-                using var connection = GetDbConnection();
-                connection.Open();
-                connection.Execute(ConstantsProvider.usp_StateActivity_Modify, toInsert, commandType: CommandType.StoredProcedure);
+                // using var connection = GetDbConnection();
+                // connection.Open();
+                // connection.Execute(ConstantsProvider.usp_StateActivity_Modify, toInsert, commandType: CommandType.StoredProcedure);
 
                 return entity.Id;
             });

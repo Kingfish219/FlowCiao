@@ -13,6 +13,25 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
         {
         }
 
+        public Task<List<Flow>> Get()
+        {
+            return Task.Run(() =>
+            {
+                var db = GetDbConnection();
+                
+                return db.Flows;
+            });
+        }
+
+        public async Task<Flow> GetByKey(Guid id = default, string key = default)
+        {
+            await Task.CompletedTask;
+
+            return FlowHub.Flows.SingleOrDefault(a =>
+                (a.Id == default || a.Id == id) &&
+                (string.IsNullOrWhiteSpace(key) || a.Key.Equals(key, StringComparison.InvariantCultureIgnoreCase)));
+        }
+
         public async Task<Guid> Modify(Flow entity)
         {
             if (entity.Id == default)
@@ -20,7 +39,7 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
                 entity.Id = Guid.NewGuid();
             }
 
-            var flows = await Get(entity.Id, entity.Key);
+            var flows = await GetByKey(entity.Id, entity.Key);
             if (flows is not null)
             {
                 await FlowHub.DeleteFlow(entity);
@@ -29,20 +48,6 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
             await FlowHub.ModifyFlow(entity);
 
             return entity.Id;
-        }
-
-        public async Task<List<Flow>> Get(Guid flowId = default, string key = null)
-        {
-            return await Task.Run(() =>
-            {
-                var db = GetDbConnection();
-                var result = (from o in db.Flows
-                              where (string.IsNullOrWhiteSpace(key) || o.Key.Equals(key, StringComparison.InvariantCultureIgnoreCase))
-                              && (flowId == default || o.Id.Equals(flowId))
-                              select o).ToList();
-
-                return result;
-            });
         }
     }
 }

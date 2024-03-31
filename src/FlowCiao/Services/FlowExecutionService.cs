@@ -23,9 +23,14 @@ namespace FlowCiao.Services
             _flowExecutionRepository = flowExecutionRepository;
         }
 
-        public async Task<List<FlowExecution>> Get(Guid id = default, Guid flowId = default)
+        public async Task<List<FlowExecution>> Get(Guid flowId = default)
         {
-            return await _flowExecutionRepository.Get(id, flowId);
+            return await _flowExecutionRepository.Get(flowId);
+        }
+
+        public async Task<FlowExecution> GetById(Guid id)
+        {
+            return await _flowExecutionRepository.GetById(id);
         }
 
         private FlowExecutionStep GenerateFlowStep(Flow flow, State state)
