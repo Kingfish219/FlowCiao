@@ -18,12 +18,46 @@ body {
   background: #fff;
   padding: 0 40px;
 }
-#workflow-name{
-  width: 200px;
+#workflow-name,
+#workflow-name:active{
+  width: 220px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #1E1E1E;
+  border: unset;
+  outline: unset; 
+   overflow-x: auto;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+#workflow-name.focused {
+  white-space: normal;
+  text-overflow: clip;
+}
+.header-workflow-dropdown-btn,
+.header-workflow-dropdown-btn:active{
+  border: unset;
+  outline: unset;
+  padding: 0;
 }
 .header-botton-container{
+  height: 100%;
   float: right;
   flex-direction: row-reverse;
+}
+.header-botton-container .header-btn{
+height: 40px;
+min-width: 40px;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+.header-botton-container .header-btn.header-activities-btn{
+  padding: 8px;
+}
+.header-botton-container .header-btn.header-activities-btn .activities-icon{
+width: 18px;
+margin-right: 5px;
 }
 .main-content{
   padding: 35px;

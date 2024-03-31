@@ -5,9 +5,6 @@ import dotImg from "../Assets/dot.svg"
 import plusImg from "../Assets/circle-plus.svg"
 
 const StartNode = (node) => {
-  const onChange = useCallback((evt) => {
-    console.log(evt.target.value);
-  }, []);
 
   const [isHoverNode, setIsHoverNpde] = useState(false);
 

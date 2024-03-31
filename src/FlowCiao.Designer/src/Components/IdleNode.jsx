@@ -12,10 +12,6 @@ import NodeActvityModal from "./NodeActvityModal";
 
 const IdleNode = (node) => {
   const appCtx = useContext(ApplicationContext);
-  console.log(appCtx)
-  const onChange = useCallback((evt) => {
-    console.log(evt.target.value);
-  }, []);
 
   const [isHoverNode, setIsHoverNode] = useState(false);
   const [isHoverSpaceNode, setIsHoverSpaceNode] = useState(false);

@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import ApplicationContext from './ApplicationContext';
 
  const ApplicationContextProvider = ({ color, activities, children }) => {
-  const [allFlowActivities, setAllFlowActivities] = useState(activities);
 
+  const [allFlowActivities, setAllFlowActivities] = useState([]);
+
+  useEffect(() => {
+    setAllFlowActivities(activities);
+  }, [activities]);
+  
   const updateAllFlowActivities = (newActivities) => {
     setAllFlowActivities(newActivities);
   };
@@ -13,7 +18,6 @@ import ApplicationContext from './ApplicationContext';
     AllFlowActivities: allFlowActivities,
     updateAllFlowActivities,
   };
-
   return (
     <ApplicationContext.Provider value={contextValue}>
       {children}

@@ -1,4 +1,4 @@
-import { useCallback, useState, useContext } from "react";
+import { useCallback, useState, useContext, useEffect } from "react";
 import { Handle, Position, useStore } from "reactflow";
 import { Button, Dropdown, ConfigProvider, Modal } from "antd";
 import exitActionImg from "../Assets/exit-action.svg";
@@ -9,19 +9,20 @@ import editIconImg from "../Assets/edit-icon.svg";
 import trashImg from "../Assets/trash.svg";
 import ApplicationContext from "../Store/ApplicationContext";
 
-const NodeActvityModal = ({ node, isModalOpen, onApplyChanges}) => {
-    
-  const { AllFlowActivities, updateAllFlowActivities } = useContext(ApplicationContext);
+const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
+  const { AllFlowActivities, updateAllFlowActivities } =
+    useContext(ApplicationContext);
+
   const [activities, setActivities] = useState({
     onEntryName: node.data.onEntry,
     onExitName: node.data.onExit,
   });
   const handleOk = () => {
-    updateAllFlowActivities(flowActivitiesList)
+    updateAllFlowActivities(flowActivitiesList);
     onApplyChanges(activities);
   };
   const handleCancel = () => {
-    setFlowActivitiesList(AllFlowActivities)
+    setFlowActivitiesList(AllFlowActivities);
     setActivities({
       onEntryName: node.data.onEntry,
       onExitName: node.data.onExit,
@@ -32,9 +33,8 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges}) => {
   const chooseOnEntryActionHandler = ({ key }) => {
     if (key == "registerActivity") {
       // setIsEntryActionSelected(true);
-      uploadActivityDll()
+      uploadActivityDll();
     } else {
-      console.log(items);
       setActivities({
         ...activities,
         onEntryName: items[0].children.find((x) => x.key == key).name,
@@ -45,7 +45,7 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges}) => {
   const chooseOnExitActionHandler = ({ key }) => {
     if (key == "registerActivity") {
       // setIsEntryActionSelected(true);
-      uploadActivityDll()
+      uploadActivityDll();
     } else {
       setActivities({
         ...activities,
@@ -60,46 +60,62 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges}) => {
   const removeExitActionHandler = () => {
     setActivities({ ...activities, onExitName: "" });
   };
-const [flowActivitiesList, setFlowActivitiesList] = useState(AllFlowActivities)
-  const uploadActivityDll = () => {
-    getActivities()
-  }
-  const getActivities = () => {
-    var flowActivities = [{
-        name: "HelloWordActivity",
-      }]
-    setFlowActivitiesList(flowActivities)
-  }
+  const [flowActivitiesList, setFlowActivitiesList] =
+    useState(AllFlowActivities);
 
-  var items = [
+    
+
+    useEffect(() => {setFlowActivitiesList(AllFlowActivities)}, [AllFlowActivities])
+
+  const uploadActivityDll = () => {
+    getActivities();
+  };
+  const getActivities = () => {
+    var flowActivities = [
+      {
+        name: "HelloWordActivity",
+      },
+    ];
+    setFlowActivitiesList(flowActivities);
+  };
+
+  var registerActivityDropDownItem = [
     {
-      key: "activities",
-      type: "group",
-      label: "Custom Activities",
-      overlayclassname: "activities-dropdown-items-container",
-      children: flowActivitiesList.map((x,index) => ({
-        key: index + 1,
-        name: x.name,
-        label: (
-          <span className="activities-dropdown-item">
-            <img src={actionIconImg} />
-            <span className="activity-name">{x.name}</span>
-          </span>
-        ),
-      })).concat([
-        
-        {
-          key: "registerActivity",
-          label: (
-            <span className="activities-dropdown-item">
-              <img src={uploadIconImg} />
-              <span className="activity-name">Register or update Activity</span>
-            </span>
-          ),
-        },
-      ]),
+      key: "registerActivity",
+      label: (
+        <span className="activities-dropdown-item">
+          <img src={uploadIconImg} />
+          <span className="activity-name">Register or update Activity</span>
+        </span>
+      ),
     },
   ];
+  var items = [];
+  if (flowActivitiesList.length > 0) {
+    items = [
+      {
+        key: "activities",
+        type: "group",
+        label: "Custom Activities",
+        overlayclassname: "activities-dropdown-items-container",
+        children: flowActivitiesList.map((x, index) => ({
+          key: index + 1,
+          name: x.name,
+          label: (
+            <span className="activities-dropdown-item">
+              <img src={actionIconImg} />
+              <span className="activity-name">{x.name}</span>
+            </span>
+          ),
+        })),
+      },
+      {
+        type: "divider",
+      },
+    ];
+  }
+
+  items = items.concat(registerActivityDropDownItem);
 
   return (
     <>
@@ -141,6 +157,7 @@ const [flowActivitiesList, setFlowActivitiesList] = useState(AllFlowActivities)
                   onClick: chooseOnEntryActionHandler,
                 }}
                 placement="bottomRight"
+                trigger={['click']}
               >
                 <button className="add-actvity-btn">+ Add Actvity</button>
               </Dropdown>
@@ -155,10 +172,9 @@ const [flowActivitiesList, setFlowActivitiesList] = useState(AllFlowActivities)
                       onClick: chooseOnEntryActionHandler,
                     }}
                     placement="bottomRight"
+                    trigger={['click']}
                   >
-                    <button
-                      className="node-action-edit-btn"
-                    >
+                    <button className="node-action-edit-btn">
                       <img src={editIconImg} />
                     </button>
                   </Dropdown>
@@ -181,6 +197,7 @@ const [flowActivitiesList, setFlowActivitiesList] = useState(AllFlowActivities)
                   onClick: chooseOnExitActionHandler,
                 }}
                 placement="bottomRight"
+                trigger={['click']}
               >
                 <button className="add-actvity-btn">+ Add Actvity</button>
               </Dropdown>
@@ -195,10 +212,9 @@ const [flowActivitiesList, setFlowActivitiesList] = useState(AllFlowActivities)
                       onClick: chooseOnExitActionHandler,
                     }}
                     placement="bottomRight"
+                    trigger={['click']}
                   >
-                    <button
-                      className="node-action-edit-btn"
-                    >
+                    <button className="node-action-edit-btn">
                       <img src={editIconImg} />
                     </button>
                   </Dropdown>
