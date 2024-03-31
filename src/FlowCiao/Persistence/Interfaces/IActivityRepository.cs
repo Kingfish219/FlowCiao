@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using FlowCiao.Interfaces;
 using FlowCiao.Models.Core;
+using FlowCiao.Models.Dto;
 
 namespace FlowCiao.Persistence.Interfaces
 {

@@ -49,8 +49,7 @@ namespace FlowCiao.Operators
         
         public async Task<FlowExecution> Instantiate(string flowKey)
         {
-            var process = (await _flowService.Get(key: flowKey))
-                .SingleOrDefault();
+            var process = await _flowService.GetByKey(key: flowKey);
             if (process is null)
             {
                 throw new FlowCiaoException("Invalid flow key!");
@@ -65,7 +64,7 @@ namespace FlowCiao.Operators
         {
             try
             {
-                var processExecution = (await _flowExecutionService.Get(id: flowInstanceId)).SingleOrDefault();
+                var processExecution = await _flowExecutionService.GetById(id: flowInstanceId);
 
                 if (processExecution is null)
                 {
@@ -149,8 +148,7 @@ namespace FlowCiao.Operators
 
                 if (processExecution is null)
                 {
-                    var process = (await _flowService.Get(key: key))
-                        .SingleOrDefault();
+                    var process = await _flowService.GetByKey(key: key);
                     if (process is null)
                     {
                         throw new FlowCiaoException("Invalid flow key!");
@@ -192,8 +190,7 @@ namespace FlowCiao.Operators
             var processExecution = (await _flowExecutionService.Get()).SingleOrDefault();
             if (processExecution is null)
             {
-                var process = (await _flowService.Get(key: key))
-                        .SingleOrDefault();
+                var process = await _flowService.GetByKey(key: key);
                 if (process is null)
                 {
                     throw new FlowCiaoException("Invalid key!");

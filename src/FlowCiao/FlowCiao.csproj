@@ -80,8 +80,4 @@
 		</None>
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Persistence\Providers\SqlServer\ModelMappers\" />
-	</ItemGroup>
-
 </Project>

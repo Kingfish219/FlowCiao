@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -12,13 +13,16 @@ namespace FlowCiao.Models.Core
         [Key]
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public int ActivityTypeCode { get; set; } = 1;
+        public int ActivityType { get; set; } = 1;
+        [MaxLength(500)]
         public string ActorName { get; set; }
+        [MaxLength(1000000)]
         public byte[] ActorContent { get; set; }
-        
         [JsonIgnore]
         [NotMapped]
         public IFlowActivity Actor { get; set; }
+
+        public List<State> States { get; set; }
         
         public Activity()
         {

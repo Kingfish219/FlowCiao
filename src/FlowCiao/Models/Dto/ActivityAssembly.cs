@@ -1,4 +1,4 @@
-﻿namespace FlowCiao.Models.Core;
+﻿namespace FlowCiao.Models.Dto;
 
 public class ActivityAssembly
 {

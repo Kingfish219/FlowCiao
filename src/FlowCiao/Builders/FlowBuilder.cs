@@ -55,7 +55,7 @@ namespace FlowCiao.Builders
                     throw new FlowCiaoException();
                 }
 
-                var flow = _flowService.Get(key: flowPlanner.Key).GetAwaiter().GetResult().FirstOrDefault();
+                var flow = _flowService.GetByKey(key: flowPlanner.Key).GetAwaiter().GetResult();
                 if (flow != null)
                 {
                     return flow;
@@ -99,7 +99,7 @@ namespace FlowCiao.Builders
         {
             try
             {
-                var flow = (await _flowService.Get(key: jsonFlow.Key)).FirstOrDefault();
+                var flow = await _flowService.GetByKey(key: jsonFlow.Key);
                 if (flow != null)
                 {
                     return flow;

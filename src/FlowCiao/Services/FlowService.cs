@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FlowCiao.Exceptions;
 using FlowCiao.Models.Core;
 using FlowCiao.Models.Execution;
 using FlowCiao.Persistence.Interfaces;
@@ -27,21 +26,17 @@ namespace FlowCiao.Services
 
         public async Task<Guid> Modify(Flow flow)
         {
-            var flowId = await _flowRepository.Modify(flow);
-            if (flowId == default)
-            {
-                throw new FlowCiaoPersistencyException();
-            }
-
+            await Task.CompletedTask;
+            
             flow.Transitions?.ForEach(transition =>
             {
-                transition.FlowId = flowId;
+                transition.Flow = flow;
                 transition.From.Id = _stateService.Modify(transition.From).GetAwaiter().GetResult();
                 transition.To.Id = _stateService.Modify(transition.To).GetAwaiter().GetResult();
                 transition.Id = _transitionService.Modify(transition).GetAwaiter().GetResult();
             });
 
-            return flowId;
+            return flow.Id;
         }
 
         public async Task<List<Flow>> Get()

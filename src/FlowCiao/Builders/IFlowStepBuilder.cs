@@ -20,7 +20,6 @@ namespace FlowCiao.Builders
         public IFlowStepBuilder OnEntry(string activityName);
         public IFlowStepBuilder OnExit<TActivity>() where TActivity : IFlowActivity, new();
         public IFlowStepBuilder OnExit(string activityName);
-        public IFlowStepBuilder AssignToUser(Func<string> userId);
         public IFlowStepBuilder Build(List<State> states, JsonStep jsonStep);
     }
 }

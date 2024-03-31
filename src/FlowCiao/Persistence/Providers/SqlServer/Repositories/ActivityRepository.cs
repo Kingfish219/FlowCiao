@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
 using FlowCiao.Models.Core;
+using FlowCiao.Models.Dto;
 using FlowCiao.Persistence.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,7 +36,7 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
                     Id = activity.Id,
                     Name = activity.Name,
                     ActorName = activity.ActorName,
-                    ActivityTypeCode = activity.ActivityTypeCode
+                    ActivityType = activity.ActivityType
                 })
                 .ToListAsync();
         }

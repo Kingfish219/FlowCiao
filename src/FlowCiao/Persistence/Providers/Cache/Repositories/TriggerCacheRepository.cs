@@ -5,10 +5,15 @@ using FlowCiao.Persistence.Interfaces;
 
 namespace FlowCiao.Persistence.Providers.Cache.Repositories
 {
-    public class TriggerCacheRepository : Cache.FlowCacheRepository, ITriggerRepository
+    public class TriggerCacheRepository : FlowCiaoCacheRepository, ITriggerRepository
     {
         public TriggerCacheRepository(FlowHub flowHub) : base(flowHub)
         {
+        }
+
+        public Task<Trigger> GetById(Guid id)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<Guid> Modify(Trigger entity)

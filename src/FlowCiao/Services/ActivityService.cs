@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
 using FlowCiao.Models.Core;
+using FlowCiao.Models.Dto;
 using FlowCiao.Persistence.Interfaces;
 
 namespace FlowCiao.Services

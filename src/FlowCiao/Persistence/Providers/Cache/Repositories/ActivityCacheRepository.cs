@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
 using FlowCiao.Models.Core;
+using FlowCiao.Models.Dto;
 using FlowCiao.Persistence.Interfaces;
 
 namespace FlowCiao.Persistence.Providers.Cache.Repositories
 {
-    public class ActivityCacheRepository : Cache.FlowCacheRepository, IActivityRepository
+    public class ActivityCacheRepository : FlowCiaoCacheRepository, IActivityRepository
     {
         public ActivityCacheRepository(FlowHub flowHub) : base(flowHub)
         {

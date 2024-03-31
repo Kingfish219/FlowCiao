@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlowCiao.Models.Core
 {
@@ -15,7 +17,12 @@ namespace FlowCiao.Models.Core
         public int Code { get; set; }
         public string Name { get; set; }
         public int TriggerType { get; set; }
-        public Guid FlowId { get; set; }
+        
+        [ForeignKey("FlowId")]
+        public Flow Flow { get; set; }
+
+        public List<Transition> Transitions { get; set; }
+        
         public int Priority { get; set; }
     }
 }

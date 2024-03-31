@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlowCiao.Models.Core
 {
@@ -12,20 +13,15 @@ namespace FlowCiao.Models.Core
             Name = name;
         }
 
-        public State()
-        {
-
-        }
-
         [Key]
         public Guid Id { get; set; }
         public int Code { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public Guid FlowId { get; set; }
+        [ForeignKey("FlowId")]
+        public Flow Flow { get; set; }
         public bool IsFinal { get; set; }
         public bool IsInitial { get; set; }
-        public string OwnerId { get; set; }
         public List<Activity> Activities { get; set; }
     }
 }

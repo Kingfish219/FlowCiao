@@ -123,13 +123,6 @@ namespace FlowCiao.Builders
             return this;
         }
 
-        public IFlowStepBuilder AssignToUser(Func<string> userId)
-        {
-            InitialState.OwnerId = userId();
-
-            return this;
-        }
-
         public IFlowStepBuilder Build(List<State> states, JsonStep jsonStep)
         {
             var fromState = states.Single(state => state.Code == jsonStep.FromStateCode);
