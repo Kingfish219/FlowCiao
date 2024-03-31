@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
 using FlowCiao.Models.Core;
-using FlowCiao.Models.Dto;
 using FlowCiao.Persistence.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -65,13 +64,13 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
             return entity.Id;
         }
 
-        public async Task<Activity> RegisterActivity(ActivityAssembly activityAssembly)
+        public async Task<Activity> RegisterActivity(string actorName, byte[] actorContent)
         {
             var activity = new Activity
             {
-                Name = activityAssembly.FileName.Split('.')[^2],
-                ActorName = activityAssembly.FileName,
-                ActorContent = activityAssembly.FileContent
+                Name = actorName.Split('.')[^2],
+                ActorName = actorName,
+                ActorContent = actorContent
             };
             activity.Id = await Modify(activity);
             

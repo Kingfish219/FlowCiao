@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using FlowCiao.Interfaces;
 using FlowCiao.Models.Core;
-using FlowCiao.Models.Dto;
 
 namespace FlowCiao.Persistence.Interfaces
 {
@@ -12,7 +11,7 @@ namespace FlowCiao.Persistence.Interfaces
         Task<List<Activity>> Get(string actorName = default, bool fetchActorContent = false);
         Task<Activity> GetByKey(Guid id = default, string actorName = default);
         Task<Guid> Modify(Activity entity);
-        Task<Activity> RegisterActivity(ActivityAssembly activityAssembly);
+        Task<Activity> RegisterActivity(string actorName, byte[] actorContent);
         Task<IFlowActivity> LoadActivity(string activityFileName);
     }
 }

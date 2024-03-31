@@ -42,9 +42,9 @@ namespace FlowCiao.Operators
 
         public async Task<FlowExecution> Instantiate(Flow flow)
         {
-            var processExecution = await _flowExecutionService.InitializeFlowExecution(flow);
+            var flowExecution = await _flowExecutionService.InitializeFlowExecution(flow);
 
-            return processExecution;
+            return flowExecution;
         }
         
         public async Task<FlowExecution> Instantiate(string flowKey)

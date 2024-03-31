@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
 using FlowCiao.Models.Core;
-using FlowCiao.Models.Dto;
 using FlowCiao.Persistence.Interfaces;
 
 namespace FlowCiao.Services
@@ -28,14 +27,14 @@ namespace FlowCiao.Services
             return await _activityRepository.Modify(activity);
         }
 
-        public async Task<Activity> RegisterActivity(ActivityAssembly activityAssembly)
+        public async Task<Activity> RegisterActivity(string actorName, byte[] actorContent)
         {
-            if (!activityAssembly.FileName.EndsWith(".dll"))
+            if (!actorName.EndsWith(".dll"))
             {
                 throw new FlowCiaoException("Invalid file");
             }
             
-            var result = await _activityRepository.RegisterActivity(activityAssembly);
+            var result = await _activityRepository.RegisterActivity(actorName, actorContent);
             result.ActorContent = null;
 
             return result;

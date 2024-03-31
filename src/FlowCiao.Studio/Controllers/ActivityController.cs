@@ -1,6 +1,4 @@
-﻿using FlowCiao.Models.Core;
-using FlowCiao.Models.Dto;
-using FlowCiao.Services;
+﻿using FlowCiao.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlowCiao.Studio.Controllers;
@@ -39,7 +37,7 @@ public class ActivityController : FlowCiaoApiControllerBase
         await using var ms = new MemoryStream();
         await file.CopyToAsync(ms);
         var fileBytes = ms.ToArray();
-        var result = await _activityService.RegisterActivity(new ActivityAssembly(file.FileName, fileBytes));
+        var result = await _activityService.RegisterActivity(file.FileName, fileBytes);
 
         return Ok(result);
     }
