@@ -8,7 +8,8 @@ import {
   Input,
   Button,
   ColorPicker,
-  Modal, Upload
+  Modal,
+  Upload,
 } from "antd";
 import "./App.css";
 import plusImg from "./Assets/plus.svg";
@@ -16,7 +17,7 @@ import importImg from "./Assets/import.svg";
 import exportImg from "./Assets/export.svg";
 import paintImg from "./Assets/paint.svg";
 import publishImg from "./Assets/publish.svg";
-import ThemeContext from "./Store/ThemeContext";
+import ApplicationContextProvider from "./Store/ApplicationContextProvider";
 const { Header, Footer, Sider, Content } = Layout;
 const { confirm } = Modal;
 
@@ -31,22 +32,22 @@ function App() {
   };
 
   const handleFileChange = (info) => {
-   // if (info.file.status === "done") {
-      handleFileSelect(info.file);
-  //  }
+    // if (info.file.status === "done") {
+    handleFileSelect(info.file);
+    //  }
   };
   const handleFileSelect = (file) => {
     const reader = new FileReader();
     reader.onload = () => {
       try {
         const jsonData = JSON.parse(reader.result);
-        console.log('JSON Data:', jsonData);
+        console.log("JSON Data:", jsonData);
         if (flowDesignerRef.current) {
           flowDesignerRef.current.importJson(jsonData);
         }
         // Do something with jsonData, like updating state
       } catch (error) {
-        console.error('Error parsing JSON file:', error);
+        console.error("Error parsing JSON file:", error);
       }
     };
     reader.readAsText(file);
@@ -89,10 +90,13 @@ function App() {
   };
 
   return (
-    <ThemeContext.Provider
-      value={{
-        borderColor: color,
-      }}
+    <ApplicationContextProvider
+      color={color}
+      activities={[
+        {
+          name: "HelloWordActivity1",
+        },
+      ]}
     >
       <ConfigProvider
         theme={{
@@ -129,9 +133,7 @@ function App() {
                 showUploadList={false}
                 beforeUpload={() => false} // Prevent auto-upload
               >
-                <Button
-                icon={<img src={importImg}/>}
-              />
+                <Button icon={<img src={importImg} />} />
               </Upload>
               <Button icon={<img src={plusImg} />} onClick={resetFlowClick} />
             </Space>
@@ -148,7 +150,7 @@ function App() {
           </Content>
         </Layout>
       </ConfigProvider>
-    </ThemeContext.Provider>
+    </ApplicationContextProvider>
   );
 }
 

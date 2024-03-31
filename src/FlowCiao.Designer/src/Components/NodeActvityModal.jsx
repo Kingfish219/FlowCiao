@@ -7,16 +7,21 @@ import actionIconImg from "../Assets/action-icon.svg";
 import uploadIconImg from "../Assets/upload-icon.svg";
 import editIconImg from "../Assets/edit-icon.svg";
 import trashImg from "../Assets/trash.svg";
+import ApplicationContext from "../Store/ApplicationContext";
 
-const NodeActvityModal = ({ node, isModalOpen, onApplyChanges, activitiesList}) => {
+const NodeActvityModal = ({ node, isModalOpen, onApplyChanges}) => {
+    
+  const { AllFlowActivities, updateAllFlowActivities } = useContext(ApplicationContext);
   const [activities, setActivities] = useState({
     onEntryName: node.data.onEntry,
     onExitName: node.data.onExit,
   });
   const handleOk = () => {
-    onApplyChanges(activities, flowActivitiesList);
+    updateAllFlowActivities(flowActivitiesList)
+    onApplyChanges(activities);
   };
   const handleCancel = () => {
+    setFlowActivitiesList(AllFlowActivities)
     setActivities({
       onEntryName: node.data.onEntry,
       onExitName: node.data.onExit,
@@ -55,7 +60,7 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges, activitiesList}) 
   const removeExitActionHandler = () => {
     setActivities({ ...activities, onExitName: "" });
   };
-const [flowActivitiesList, setFlowActivitiesList] = useState(activitiesList)
+const [flowActivitiesList, setFlowActivitiesList] = useState(AllFlowActivities)
   const uploadActivityDll = () => {
     getActivities()
   }

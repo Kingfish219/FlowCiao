@@ -7,11 +7,12 @@ import dotImg from "../Assets/dot.svg";
 import plusImg from "../Assets/circle-plus.svg";
 import actionIconImg from "../Assets/action-icon.svg";
 import trashImg from "../Assets/trash.svg";
-import ThemeContext from "../Store/ThemeContext";
+import ApplicationContext from "../Store/ApplicationContext";
 import NodeActvityModal from "./NodeActvityModal";
 
 const IdleNode = (node) => {
-  const themeCtx = useContext(ThemeContext);
+  const appCtx = useContext(ApplicationContext);
+  console.log(appCtx)
   const onChange = useCallback((evt) => {
     console.log(evt.target.value);
   }, []);
@@ -59,10 +60,7 @@ const IdleNode = (node) => {
   const showModal = () => {
     setIsModalOpen(true);
   };
-  const [flowAllActivities, setFlowAllActivities] = useState([{
-    name: "HelloWordActivity1",
-  }]);
-  const onApplyChanges = (activities, flowActivitiesList) => {
+ const onApplyChanges = (activities) => {
     if (activities != null) {
       node.data.onEntry = activities.onEntryName;
       node.data.onExit = activities.onExitName;
@@ -74,9 +72,6 @@ const IdleNode = (node) => {
         updatedActivities.push(node.data.onExit);
       }
       setNodeActivities(updatedActivities);
-    }
-    if(flowActivitiesList != null){
-      setFlowAllActivities(flowActivitiesList)
     }
     setIsModalOpen(false);
   };
@@ -90,7 +85,7 @@ const IdleNode = (node) => {
           if (el) {
             el.style.setProperty(
               "border-top-color",
-              themeCtx.borderColor,
+              appCtx.Theme.borderColor,
               "important"
             );
           }
@@ -184,7 +179,6 @@ const IdleNode = (node) => {
         node={node}
         onApplyChanges={onApplyChanges}
         isModalOpen={isModalOpen}
-        activitiesList={flowAllActivities}
       />
     </>
   );
