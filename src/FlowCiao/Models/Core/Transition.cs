@@ -10,7 +10,7 @@ namespace FlowCiao.Models.Core
         [Key]
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public Guid ProcessId { get; set; }
+        public Guid FlowId { get; set; }
         public Guid CurrentStateId { get; set; }
         public Guid NextStateId { get; set; }
         public State From { get; set; }

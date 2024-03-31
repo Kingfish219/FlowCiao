@@ -11,7 +11,7 @@ using FlowCiao.Persistence.Interfaces;
 
 namespace FlowCiao.Persistence.Providers.Cache.Repositories
 {
-    public class ActivityCacheRepository : FlowCacheRepository, IActivityRepository
+    public class ActivityCacheRepository : Cache.FlowCacheRepository, IActivityRepository
     {
         public ActivityCacheRepository(FlowHub flowHub) : base(flowHub)
         {
@@ -31,7 +31,7 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
                 entity.Id = Guid.NewGuid();
             }
 
-            await FlowHub.ModfiyActivity(entity);
+            await FlowHub.ModifyActivity(entity);
 
             return entity.Id;
         }
@@ -63,7 +63,7 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
             return activity;
         }
 
-        public async Task<IProcessActivity> LoadActivity(string activityFileName)
+        public async Task<IFlowActivity> LoadActivity(string activityFileName)
         {
             var storagePath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 @"FlowCiao\Assembly");
@@ -88,7 +88,7 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
                 throw new FileNotFoundException($"Could not find assembly with name: {activityFileName}");
             }
             
-            var activity = (IProcessActivity)Activator.CreateInstance(activityType);
+            var activity = (IFlowActivity)Activator.CreateInstance(activityType);
 
             await Task.CompletedTask;
             

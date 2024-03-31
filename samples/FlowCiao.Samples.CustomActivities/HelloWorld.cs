@@ -4,13 +4,13 @@ using FlowCiao.Models.Execution;
 
 namespace FlowCiao.Samples.CustomActivities
 {
-    public class HelloWorld : IProcessActivity
+    public class HelloWorld : IFlowActivity
     {
-        public ProcessResult Execute(ProcessStepContext context)
+        public FlowResult Execute(FlowStepContext context)
         {
             Console.WriteLine("Hello world");
 
-            return ProcessResult.Success();
+            return FlowResult.Success();
         }
     }
 }

@@ -40,7 +40,7 @@ namespace FlowCiao.Services
             return result;
         }
 
-        public Task<IProcessActivity> LoadActivity(string activityFileName)
+        public Task<IFlowActivity> LoadActivity(string activityFileName)
         {
             return _activityRepository.LoadActivity(activityFileName);
         }

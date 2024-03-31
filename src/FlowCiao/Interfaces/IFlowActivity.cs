@@ -3,8 +3,8 @@ using FlowCiao.Models.Execution;
 
 namespace FlowCiao.Interfaces
 {
-    public interface IProcessActivity
+    public interface IFlowActivity
     {
-        ProcessResult Execute(ProcessStepContext context);
+        FlowResult Execute(FlowStepContext context);
     }
 }

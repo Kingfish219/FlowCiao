@@ -2,14 +2,14 @@
 
 namespace FlowCiao.Models.Execution
 {
-    public class ProcessStepContext
+    public class FlowStepContext
     {
-        internal ProcessExecution ProcessExecution { get; set; }
-        internal ProcessExecutionStep ProcessExecutionStep { get; set; }
-        internal ProcessExecutionStepDetail ProcessExecutionStepDetail { get; set; }
+        internal FlowExecution FlowExecution { get; set; }
+        internal FlowExecutionStep FlowExecutionStep { get; set; }
+        internal FlowExecutionStepDetail FlowExecutionStepDetail { get; set; }
         public Dictionary<object, object> Data { get; set; }
 
-        internal ProcessStepContext()
+        internal FlowStepContext()
         {
             Data = new Dictionary<object, object>();
         }

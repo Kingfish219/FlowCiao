@@ -21,7 +21,7 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
                     Id = entity.Id == default ? Guid.NewGuid() : entity.Id,
                     entity.Name,
                     entity.TriggerType,
-                    entity.ProcessId
+                    FlowId = entity.FlowId
                 };
 
                 using var connection = GetDbConnection();

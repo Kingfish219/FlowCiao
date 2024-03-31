@@ -4,15 +4,15 @@ using FlowCiao.Models.Core;
 
 namespace FlowCiao.Models.Execution
 {
-    public class ProcessExecutionStep
+    public class FlowExecutionStep
     {
-        public List<ProcessExecutionStepDetail> Details { get; set; }
+        public List<FlowExecutionStepDetail> Details { get; set; }
         public bool IsCompleted { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime CompletedOn { get; set; }
     }
 
-    public class ProcessExecutionStepDetail
+    public class FlowExecutionStepDetail
     {
         public Guid Id { get; set; }
         public Transition Transition { get; set; }

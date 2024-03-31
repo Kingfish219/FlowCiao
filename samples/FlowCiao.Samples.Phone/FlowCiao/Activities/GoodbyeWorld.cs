@@ -4,13 +4,13 @@ using FlowCiao.Models.Execution;
 
 namespace FlowCiao.Samples.Phone.FLowCiao.Activities
 {
-    public class GoodbyeWorld : IProcessActivity
+    public class GoodbyeWorld : IFlowActivity
     {
-        public ProcessResult Execute(ProcessStepContext context)
+        public FlowResult Execute(FlowStepContext context)
         {
             Console.WriteLine("Goodbye world");
 
-            return ProcessResult.Success();
+            return FlowResult.Success();
         }
     }
 }

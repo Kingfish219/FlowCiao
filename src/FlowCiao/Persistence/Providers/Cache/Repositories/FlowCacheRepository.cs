@@ -7,38 +7,38 @@ using FlowCiao.Persistence.Interfaces;
 
 namespace FlowCiao.Persistence.Providers.Cache.Repositories
 {
-    internal class ProcessCacheRepository : FlowCacheRepository, IProcessRepository
+    internal class FlowCacheRepository : Cache.FlowCacheRepository, IFlowRepository
     {
-        public ProcessCacheRepository(FlowHub flowHub) : base(flowHub)
+        public FlowCacheRepository(FlowHub flowHub) : base(flowHub)
         {
         }
 
-        public async Task<Guid> Modify(Process entity)
+        public async Task<Guid> Modify(Flow entity)
         {
             if (entity.Id == default)
             {
                 entity.Id = Guid.NewGuid();
             }
 
-            var process = await Get(entity.Id, entity.Key);
-            if (process is not null)
+            var flows = await Get(entity.Id, entity.Key);
+            if (flows is not null)
             {
-                await FlowHub.DeleteProcess(entity);
+                await FlowHub.DeleteFlow(entity);
             }
 
-            await FlowHub.ModifyProcess(entity);
+            await FlowHub.ModifyFlow(entity);
 
             return entity.Id;
         }
 
-        public async Task<List<Process>> Get(Guid processId = default, string key = null)
+        public async Task<List<Flow>> Get(Guid flowId = default, string key = null)
         {
             return await Task.Run(() =>
             {
                 var db = GetDbConnection();
-                var result = (from o in db.Processes
+                var result = (from o in db.Flows
                               where (string.IsNullOrWhiteSpace(key) || o.Key.Equals(key, StringComparison.InvariantCultureIgnoreCase))
-                              && (processId == default || o.Id.Equals(processId))
+                              && (flowId == default || o.Id.Equals(flowId))
                               select o).ToList();
 
                 return result;

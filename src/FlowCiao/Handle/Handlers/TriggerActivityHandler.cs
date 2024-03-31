@@ -6,34 +6,34 @@ using FlowCiao.Services;
 
 namespace FlowCiao.Handle.Handlers
 {
-    internal class TriggerActivityHandler : WorkflowHandler
+    internal class TriggerActivityHandler : FlowHandler
     {
-        public TriggerActivityHandler(IProcessRepository processRepository
-            , IProcessService processService) : base(processRepository, processService)
+        public TriggerActivityHandler(IFlowRepository flowRepository
+            , IFlowService flowService) : base(flowRepository, flowService)
         {
         }
 
-        public override ProcessResult Handle(ProcessStepContext processStepContext)
+        public override FlowResult Handle(FlowStepContext flowStepContext)
         {
             try
             {
-                return NextHandler.Handle(processStepContext);
+                return NextHandler.Handle(flowStepContext);
             }
             catch (Exception exception)
             {
-                return new ProcessResult
+                return new FlowResult
                 {
-                    Status = ProcessResultStatus.Failed,
+                    Status = FlowResultStatus.Failed,
                     Message = exception.Message
                 };
             }
         }
 
-        public override ProcessResult RollBack(ProcessStepContext processStepContext)
+        public override FlowResult RollBack(FlowStepContext flowStepContext)
         {
-            return PreviousHandler?.RollBack(processStepContext) ?? new ProcessResult
+            return PreviousHandler?.RollBack(flowStepContext) ?? new FlowResult
             {
-                Status = ProcessResultStatus.Failed
+                Status = FlowResultStatus.Failed
             };
         }
     }

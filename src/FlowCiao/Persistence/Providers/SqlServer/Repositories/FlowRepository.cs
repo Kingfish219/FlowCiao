@@ -7,38 +7,37 @@ using Dapper;
 using FlowCiao.Models;
 using FlowCiao.Models.Core;
 using FlowCiao.Persistence.Interfaces;
-using Process = FlowCiao.Models.Core.Process;
 
 namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
 {
-    public class ProcessRepository : FlowSqlServerRepository, IProcessRepository
+    public class FlowRepository : FlowSqlServerRepository, IFlowRepository
     {
-        public ProcessRepository(FlowSettings settings) : base(settings)
+        public FlowRepository(FlowSettings settings) : base(settings)
         {
         }
 
-        public async Task<List<Process>> Get(Guid processId = default, string key = default)
+        public async Task<List<Flow>> Get(Guid flowId = default, string key = default)
         {
             using var connection = GetDbConnection();
             connection.Open();
 
             var sql = @"SELECT p.*
                                 , t.Id TransitionId
-                                , t.ProcessId
+                                , t.FlowId
                                 , s.Id StateId
                                 , s.[Name]
                                 , s1.Id StateId
                                 , s1.[Name]
-                                FROM [FlowCiao].Process p
-                                JOIN FlowCiao.Transition t on p.Id = t.ProcessId
+                                FROM [FlowCiao].Flow p
+                                JOIN FlowCiao.Transition t on p.Id = t.FlowId
                                 JOIN FlowCiao.[State] s on s.Id = t.CurrentStateId
                                 JOIN FlowCiao.[State] s1 on s1.Id = t.NextStateId
                                 WHERE
-                                  (p.[Id] = @ProcessId OR ISNULL(@ProcessId, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER)) AND
+                                  (p.[Id] = @FlowId OR ISNULL(@FlowId, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER)) AND
                                   (p.[Key] = @Key OR ISNULL(@Key, '') = '')";
 
-            var processes = new List<Process>();
-            _ = (await connection.QueryAsync<Process, Transition, State, State, Process>(sql,
+            var processes = new List<Flow>();
+            _ = (await connection.QueryAsync<Flow, Transition, State, State, Flow>(sql,
                 (process, transition, currentState, nextState) =>
                 {
                     var selectedProcess = processes.FirstOrDefault(x => x.Id == process.Id);
@@ -56,12 +55,12 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
                     selectedProcess.Transitions.Add(transition);
 
                     return selectedProcess;
-                }, splitOn: "TransitionId, StateId, StateId", param: new { ProcessId = processId, Key = key }))?.ToList();
+                }, splitOn: "TransitionId, StateId, StateId", param: new { ProcessId = flowId, Key = key }))?.ToList();
 
             return processes;
         }
 
-        public Task<Guid> Modify(Process entity)
+        public Task<Guid> Modify(Flow entity)
         {
             return Task.Run(() =>
             {

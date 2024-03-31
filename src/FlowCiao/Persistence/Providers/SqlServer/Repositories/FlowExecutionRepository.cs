@@ -11,37 +11,37 @@ using FlowCiao.Persistence.Interfaces;
 
 namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
 {
-    public class ProcessExecutionRepository : FlowSqlServerRepository, IProcessExecutionRepository
+    public class FlowExecutionRepository : FlowSqlServerRepository, IFlowExecutionRepository
     {
-        public ProcessExecutionRepository(FlowSettings settings) : base(settings) { }
+        public FlowExecutionRepository(FlowSettings settings) : base(settings) { }
 
-        public async Task<List<ProcessExecution>> Get(Guid id = default, Guid processId = default)
+        public async Task<List<FlowExecution>> Get(Guid id = default, Guid flowId = default)
         {
                 using var connection = GetDbConnection();
 
                 connection.Open();
                 const string query = @"SELECT pe.*,
-	                                   p.Id ProcessId,
+	                                   p.Id FlowId,
 	                                   p.[Key]
-                                FROM [FlowCiao].ProcessExecution pe
-                                JOIN FlowCiao.Process p ON p.Id = pe.ProcessId
+                                FROM [FlowCiao].FlowExecution pe
+                                JOIN FlowCiao.Flow p ON p.Id = pe.FlowId
                                 WHERE
                                   (pe.[Id] = @Id OR ISNULL(@Id, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER)) AND
-                                  (pe.[ProcessId] = @ProcessId OR ISNULL(@ProcessId, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER))";
-                var result = (await connection.QueryAsync<ProcessExecution, Process, ProcessExecution>(query,
-                    (processExecution, process) =>
+                                  (pe.[FlowId] = @FlowId OR ISNULL(@FlowId, CAST(0x0 AS UNIQUEIDENTIFIER)) = CAST(0x0 AS UNIQUEIDENTIFIER))";
+                var result = (await connection.QueryAsync<FlowExecution, Flow, FlowExecution>(query,
+                    (flowExecution, flow) =>
                     {
-                        processExecution.Process = process;
+                        flowExecution.Flow = flow;
 
-                        return processExecution;
+                        return flowExecution;
                     },
-                    splitOn: "ProcessId",
-                    param: new { ProcessId = processId, Id = id }))?.ToList();
+                    splitOn: "FlowId",
+                    param: new { FlowId = flowId, Id = id }))?.ToList();
 
                 return result;
         }
 
-        public Task<Guid> Modify(ProcessExecution entity)
+        public Task<Guid> Modify(FlowExecution entity)
         {
             return Task.Run(() =>
             {
@@ -51,7 +51,7 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
                 {
                     Id = entity.Id == default ? Guid.NewGuid() : entity.Id,
                     entity.CreatedOn,
-                    ProcessId = entity.Process.Id,
+                    ProcessId = entity.Flow.Id,
                     entity.ExecutionState,
                     State = entity.State.Id,
                     entity.Progress

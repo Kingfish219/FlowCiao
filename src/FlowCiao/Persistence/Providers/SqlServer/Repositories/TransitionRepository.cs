@@ -19,7 +19,7 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
                 var toInsert = new
                 {
                     Id = entity.Id == default ? Guid.NewGuid() : entity.Id,
-                    entity.ProcessId,
+                    ProcessId = entity.FlowId,
                     CurrentStateId = entity.From.Id,
                     NextStateId = entity.To.Id
                 };

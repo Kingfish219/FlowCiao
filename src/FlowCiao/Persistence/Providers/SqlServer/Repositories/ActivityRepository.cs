@@ -72,7 +72,7 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
             return activity;
         }
 
-        public async Task<IProcessActivity> LoadActivity(string activityFileName)
+        public async Task<IFlowActivity> LoadActivity(string activityFileName)
         {
             var existedActivity = (await Get(actorName: activityFileName, true)).SingleOrDefault();
             if (existedActivity is null)
@@ -88,7 +88,7 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
                     $"Could not load assembly with name: {activityFileName}. Content may be corrupted");
             }
 
-            var activity = (IProcessActivity)Activator.CreateInstance(activityType);
+            var activity = (IFlowActivity)Activator.CreateInstance(activityType);
 
             return activity;
         }

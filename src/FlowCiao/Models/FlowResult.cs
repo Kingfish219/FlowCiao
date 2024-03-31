@@ -3,28 +3,28 @@ using System;
 
 namespace FlowCiao.Models
 {
-    public class ProcessResult
+    public class FlowResult
     {
-        public ProcessResultStatus Status { get; set; } = ProcessResultStatus.Completed;
+        public FlowResultStatus Status { get; set; } = FlowResultStatus.Completed;
         public string Message { get; set; }
         public Guid InstanceId { get; set; }
 
-        public static ProcessResult Success()
+        public static FlowResult Success()
         {
-            return new ProcessResult
+            return new FlowResult
             {
-                Status = ProcessResultStatus.Completed,
+                Status = FlowResultStatus.Completed,
                 Message = "Success"
             };
         }
     }
 
-    public class ProcessResult<T> : ProcessResult
+    public class FlowResult<T> : FlowResult
     {
         public T Data { get; set; }
     }
 
-    public enum ProcessResultStatus
+    public enum FlowResultStatus
     {
         NotStarted,
         Cancelled,

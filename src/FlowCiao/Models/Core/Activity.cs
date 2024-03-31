@@ -12,7 +12,7 @@ namespace FlowCiao.Models.Core
             
         }
         
-        public Activity(IProcessActivity actor)
+        public Activity(IFlowActivity actor)
         {
             Actor = actor;
             var actorType = actor.GetType();
@@ -32,7 +32,7 @@ namespace FlowCiao.Models.Core
         public byte[] ActorContent { get; set; }
         
         [JsonIgnore]
-        public IProcessActivity Actor { get; set; }
+        public IFlowActivity Actor { get; set; }
     }
 }
 

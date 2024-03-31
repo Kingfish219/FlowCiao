@@ -1,5 +1,4 @@
 ﻿using Dapper.FluentMap.Mapping;
-using FlowCiao.Models;
 using FlowCiao.Models.Core;
 using FlowCiao.Models.Execution;
 
@@ -23,19 +22,19 @@ namespace FlowCiao.Persistence.Providers.SqlServer.ModelMappers
             }
         }
 
-        internal class ProcessExecutionMap : EntityMap<ProcessExecution>
+        internal class FlowExecutionMap : EntityMap<FlowExecution>
         {
-            internal ProcessExecutionMap()
+            internal FlowExecutionMap()
             {
                 Map(x => x.State.Id).ToColumn("State");
             }
         }
 
-        internal class ProcessMap : EntityMap<Process>
+        internal class ProcessMap : EntityMap<Flow>
         {
             internal ProcessMap()
             {
-                Map(x => x.Id).ToColumn("ProcessId");
+                Map(x => x.Id).ToColumn("FlowId");
             }
         }
 

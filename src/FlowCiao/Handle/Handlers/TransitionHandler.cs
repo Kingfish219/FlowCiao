@@ -7,55 +7,55 @@ using FlowCiao.Services;
 
 namespace FlowCiao.Handle.Handlers
 {
-    internal class TransitionHandler : WorkflowHandler
+    internal class TransitionHandler : FlowHandler
     {
-        public TransitionHandler(IProcessRepository processRepository
-            , IProcessService processService) : base(processRepository, processService)
+        public TransitionHandler(IFlowRepository flowRepository
+            , IFlowService flowService) : base(flowRepository, flowService)
         {
         }
 
-        public override ProcessResult Handle(ProcessStepContext processStepContext)
+        public override FlowResult Handle(FlowStepContext flowStepContext)
         {
             try
             {
-                if (processStepContext.ProcessExecutionStepDetail is null)
+                if (flowStepContext.FlowExecutionStepDetail is null)
                 {
-                    throw new FlowCiaoProcessExecutionException("Exception occured while completing progress transition");
+                    throw new FlowExecutionException("Exception occured while completing progress transition");
                 }
 
-                if (!processStepContext.ProcessExecutionStepDetail.IsCompleted)
+                if (!flowStepContext.FlowExecutionStepDetail.IsCompleted)
                 {
-                    throw new FlowCiaoProcessExecutionException("Exception occured while completing progress transition, process step action is not yet completed");
+                    throw new FlowExecutionException("Exception occured while completing progress transition, flow step action is not yet completed");
                 }
 
-                var transition = processStepContext.ProcessExecutionStepDetail.Transition;
+                var transition = flowStepContext.FlowExecutionStepDetail.Transition;
                 if (transition.Condition != null)
                 {
                     if (!transition.Condition())
                     {
-                        throw new FlowCiaoProcessExecutionException("Exception occured while completing transition as transition condition did not meet");
+                        throw new FlowExecutionException("Exception occured while completing transition as transition condition did not meet");
                     }
                 }
 
-                processStepContext.ProcessExecution.State = processStepContext.ProcessExecutionStepDetail.Transition.To;
+                flowStepContext.FlowExecution.State = flowStepContext.FlowExecutionStepDetail.Transition.To;
 
-                return NextHandler.Handle(processStepContext);
+                return NextHandler.Handle(flowStepContext);
             }
             catch (Exception exception)
             {
-                return new ProcessResult
+                return new FlowResult
                 {
-                    Status = ProcessResultStatus.Failed,
+                    Status = FlowResultStatus.Failed,
                     Message = exception.Message
                 };
             }
         }
 
-        public override ProcessResult RollBack(ProcessStepContext processStepContext)
+        public override FlowResult RollBack(FlowStepContext flowStepContext)
         {
-            return PreviousHandler?.RollBack(processStepContext) ?? new ProcessResult
+            return PreviousHandler?.RollBack(flowStepContext) ?? new FlowResult
             {
-                Status = ProcessResultStatus.Failed
+                Status = FlowResultStatus.Failed
             };
         }
     }

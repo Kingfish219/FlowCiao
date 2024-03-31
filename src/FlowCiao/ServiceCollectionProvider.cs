@@ -14,6 +14,7 @@ using FlowCiao.Persistence.Providers.SqlServer;
 using FlowCiao.Persistence.Providers.SqlServer.Repositories;
 using FlowCiao.Services;
 using Microsoft.Extensions.DependencyInjection;
+using FlowCacheRepository = FlowCiao.Persistence.Providers.Cache.Repositories.FlowCacheRepository;
 
 namespace FlowCiao
 {
@@ -56,8 +57,8 @@ namespace FlowCiao
         private static void AddCacheRepositories(IServiceCollection services)
         {
             var flowHub = new FlowHub();
-            flowHub.Initiate(new List<Process>(),
-                new List<ProcessExecution>(),
+            flowHub.Initiate(new List<Flow>(),
+                new List<FlowExecution>(),
                 new List<State>(),
                 new List<Transition>(),
                 new List<Activity>(),
@@ -68,8 +69,8 @@ namespace FlowCiao
             services.AddTransient<IStateRepository, StateCacheRepository>();
             services.AddTransient<ITriggerRepository, TriggerCacheRepository>();
             services.AddTransient<IActivityRepository, ActivityCacheRepository>();
-            services.AddTransient<IProcessExecutionRepository, ProcessExecutionCacheRepository>();
-            services.AddTransient<IProcessRepository, ProcessCacheRepository>();
+            services.AddTransient<IFlowExecutionRepository, FlowExecutionCacheRepository>();
+            services.AddTransient<IFlowRepository, FlowCacheRepository>();
         }
 
         private static void AddSqlServerRepositories(IServiceCollection services, FlowSettings flowSettings)
@@ -86,8 +87,8 @@ namespace FlowCiao
             services.AddTransient<IStateRepository, StateRepository>();
             services.AddTransient<ITriggerRepository, TriggerRepository>();
             services.AddTransient<IActivityRepository, ActivityRepository>();
-            services.AddTransient<IProcessExecutionRepository, ProcessExecutionRepository>();
-            services.AddTransient<IProcessRepository, ProcessRepository>();
+            services.AddTransient<IFlowExecutionRepository, FlowExecutionRepository>();
+            services.AddTransient<IFlowRepository, FlowRepository>();
         }
 
         private static void AddServices(IServiceCollection services)
@@ -95,10 +96,10 @@ namespace FlowCiao
             services.AddTransient<ActivityService>();
             services.AddTransient<TransitionService>();
             services.AddTransient<StateService>();
-            services.AddTransient<IProcessService, ProcessService>();
-            services.AddTransient<ProcessExecutionService>();
-            services.AddTransient<ProcessHandlerFactory>();
-            services.AddTransient<ProcessExecutionService>();
+            services.AddTransient<IFlowService, FlowService>();
+            services.AddTransient<FlowExecutionService>();
+            services.AddTransient<FlowHandlerFactory>();
+            services.AddTransient<FlowExecutionService>();
         }
     }
 }

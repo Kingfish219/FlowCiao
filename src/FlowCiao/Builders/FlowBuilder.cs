@@ -15,13 +15,13 @@ namespace FlowCiao.Builders
     {
         public List<IFlowStepBuilder> StepBuilders { get; set; }
         public IFlowStepBuilder InitialStepBuilder { get; set; }
-        private readonly IProcessService _processService;
+        private readonly IFlowService _flowService;
         private readonly IActivityRepository _activityRepository;
 
-        public FlowBuilder(IProcessService processService, IActivityRepository activityRepository)
+        public FlowBuilder(IFlowService flowService, IActivityRepository activityRepository)
         {
             StepBuilders = new List<IFlowStepBuilder>();
-            _processService = processService;
+            _flowService = flowService;
             _activityRepository = activityRepository;
         }
 
@@ -45,27 +45,27 @@ namespace FlowCiao.Builders
             return this;
         }
         
-        public Process Build<T>() where T : IFlowPlanner, new()
+        public Flow Build<T>() where T : IFlowPlanner, new()
         {
             try
             {
-                var flow = Activator.CreateInstance<T>();
-                if (flow is null)
+                var flowPlanner = Activator.CreateInstance<T>();
+                if (flowPlanner is null)
                 {
                     throw new FlowCiaoException();
                 }
 
-                var process = _processService.Get(key: flow.Key).GetAwaiter().GetResult().FirstOrDefault();
-                if (process != null)
+                var flow = _flowService.Get(key: flowPlanner.Key).GetAwaiter().GetResult().FirstOrDefault();
+                if (flow != null)
                 {
-                    return process;
+                    return flow;
                 }
 
-                flow.Plan<T>(this);
+                flowPlanner.Plan<T>(this);
                 
-                process = new Process
+                flow = new Flow
                 {
-                    Key = flow.Key,
+                    Key = flowPlanner.Key,
                     InitialState = InitialStepBuilder.InitialState
                 };
 
@@ -75,17 +75,17 @@ namespace FlowCiao.Builders
                     {
                         var transition = new Transition();
                         allowedTransitionBuilder(transition);
-                        process.Transitions.Add(transition);
+                        flow.Transitions.Add(transition);
                     }
                 }
 
-                var result = _processService.Modify(process).GetAwaiter().GetResult();
+                var result = _flowService.Modify(flow).GetAwaiter().GetResult();
                 if (result == default)
                 {
                     throw new FlowCiaoPersistencyException("Check your database connection!");
                 }
 
-                return process;
+                return flow;
             }
             catch (Exception)
             {
@@ -95,14 +95,14 @@ namespace FlowCiao.Builders
             }
         }
 
-        public async Task<Process> Build(JsonFlow jsonFlow)
+        public async Task<Flow> Build(JsonFlow jsonFlow)
         {
             try
             {
-                var process = (await _processService.Get(key: jsonFlow.Key)).FirstOrDefault();
-                if (process != null)
+                var flow = (await _flowService.Get(key: jsonFlow.Key)).FirstOrDefault();
+                if (flow != null)
                 {
-                    return process;
+                    return flow;
                 }
 
                 var states = jsonFlow.States
@@ -112,19 +112,19 @@ namespace FlowCiao.Builders
                 InitialStepBuilder = new FlowStepBuilder(this, _activityRepository);
                 InitialStepBuilder.Build(states, jsonFlow.Initial);
             
-                process = new Process
+                flow = new Flow
                 {
                     Key = jsonFlow.Key
                 };
-                process.Transitions ??= new List<Transition>();
+                flow.Transitions ??= new List<Transition>();
                 InitialStepBuilder.InitialState.IsInitial = true;
-                process.InitialState = InitialStepBuilder.InitialState;
+                flow.InitialState = InitialStepBuilder.InitialState;
 
                 InitialStepBuilder.AllowedTransitionsBuilders.ForEach(allowedTransition =>
                 {
                     var transition = new Transition();
                     allowedTransition(transition);
-                    process.Transitions.Add(transition);
+                    flow.Transitions.Add(transition);
                 });
                 
                 if (jsonFlow.Steps is { Count: > 0 })
@@ -142,18 +142,18 @@ namespace FlowCiao.Builders
                         {
                             var transition = new Transition();
                             allowedTransition(transition);
-                            process.Transitions.Add(transition);
+                            flow.Transitions.Add(transition);
                         }
                     }
                 }
 
-                var result = await _processService.Modify(process);
+                var result = await _flowService.Modify(flow);
                 if (result == default)
                 {
                     throw new FlowCiaoPersistencyException("Check your database connection!");
                 }
 
-                return process;
+                return flow;
             }
             catch (Exception)
             {
@@ -163,7 +163,7 @@ namespace FlowCiao.Builders
             }
         }
  
-        public Process Build<T>(Action<IFlowBuilder> constructor) where T : IFlowPlanner, new()
+        public Flow Build<T>(Action<IFlowBuilder> constructor) where T : IFlowPlanner, new()
         {
             throw new NotImplementedException();
 
@@ -172,10 +172,10 @@ namespace FlowCiao.Builders
             //    var flow = Activator.CreateInstance<T>();
             //    constructor.Invoke(this);
 
-            //    var process = _processService.Get(key: flow.Key).GetAwaiter().GetResult().FirstOrDefault();
-            //    if (process != null)
+            //    var flow = _flowService.Get(key: flow.Key).GetAwaiter().GetResult().FirstOrDefault();
+            //    if (flow != null)
             //    {
-            //        return process;
+            //        return flow;
             //    }
 
             //    foreach (var builder in StepBuilders)
@@ -190,7 +190,7 @@ namespace FlowCiao.Builders
 
             //        foreach (var allowedTransition in builder.AllowedTransitions)
             //        {
-            //            process.Transitions.Add(new Transition
+            //            flow.Transitions.Add(new Transition
             //            {
             //                From = builder.InitialState,
             //                To = allowedTransition.Item1,
@@ -206,13 +206,13 @@ namespace FlowCiao.Builders
             //        }
             //    }
 
-            //    var result = _processService.Modify(process).GetAwaiter().GetResult();
+            //    var result = _flowService.Modify(flow).GetAwaiter().GetResult();
             //    if (result == default)
             //    {
             //        throw new FlowCiaoPersistancyException("Check your database connection!");
             //    }
 
-            //    return process;
+            //    return flow;
             //}
             //catch (Exception)
             //{

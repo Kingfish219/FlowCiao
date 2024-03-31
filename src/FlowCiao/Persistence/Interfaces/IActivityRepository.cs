@@ -11,6 +11,6 @@ namespace FlowCiao.Persistence.Interfaces
         Task<List<Activity>> Get(string actorName = default, bool fetchActorContent = false);
         Task<Guid> Modify(Activity entity);
         Task<Activity> RegisterActivity(ActivityAssembly activityAssembly);
-        Task<IProcessActivity> LoadActivity(string activityFileName);
+        Task<IFlowActivity> LoadActivity(string activityFileName);
     }
 }

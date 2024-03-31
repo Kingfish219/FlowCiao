@@ -1,16 +1,15 @@
 ﻿using System;
-using FlowCiao.Models;
 using FlowCiao.Models.Execution;
 
 namespace FlowCiao.Exceptions
 {
-    public class FlowCiaoProcessExecutionException : Exception
+    public class FlowExecutionException : Exception
     {
-        public FlowCiaoProcessExecutionException()
+        public FlowExecutionException()
         {
         }
 
-        public FlowCiaoProcessExecutionException(string message, ProcessExecutionStep processStep, [System.Runtime.CompilerServices.CallerFilePath] string handlerName = "", [System.Runtime.CompilerServices.CallerLineNumber] int line = 0)
+        public FlowExecutionException(string message, FlowExecutionStep flowStep, [System.Runtime.CompilerServices.CallerFilePath] string handlerName = "", [System.Runtime.CompilerServices.CallerLineNumber] int line = 0)
             : base(message)
         {
             try
@@ -19,9 +18,9 @@ namespace FlowCiao.Exceptions
                 //var log = new Log()
                 //{
                 //    Id = Guid.NewGuid(),
-                //    ProcessStepId = processStep.Id,
-                //    ProcessId = processStep.Process.Id,
-                //    EntityId = processStep.Entity.Id,
+                //    ProcessStepId = flowStep.Id,
+                //    FlowId = flowStep.Flow.Id,
+                //    EntityId = flowStep.Entity.Id,
                 //    CreateDate = DateTime.Now,
                 //    Type = 1,
                 //    Data = message + "- Line: " + line,
@@ -31,12 +30,13 @@ namespace FlowCiao.Exceptions
             }
             catch (Exception) { }
         }
-        public FlowCiaoProcessExecutionException(string message)
+        
+        public FlowExecutionException(string message)
             : base(message)
         {
         }
 
-        public FlowCiaoProcessExecutionException(string message, Exception inner)
+        public FlowExecutionException(string message, Exception inner)
             : base(message, inner)
         {
         }

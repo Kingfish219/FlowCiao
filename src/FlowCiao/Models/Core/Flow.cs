@@ -4,8 +4,8 @@ using Dapper.Contrib.Extensions;
 
 namespace FlowCiao.Models.Core
 {
-    [Table("Process")]
-    public class Process
+    [Table("Flow")]
+    public class Flow
     {
         [Key]
         public Guid Id { get; set; }

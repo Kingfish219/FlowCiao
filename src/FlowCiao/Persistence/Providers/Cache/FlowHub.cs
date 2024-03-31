@@ -7,67 +7,67 @@ namespace FlowCiao.Persistence.Providers.Cache
 {
     public class FlowHub
     {
-        public List<Process> Processes { get; set; }
-        public List<ProcessExecution> ProcessExecutions { get; set; }
+        public List<Flow> Flows { get; set; }
+        public List<FlowExecution> FlowExecutions { get; set; }
         public List<State> States { get; set; }
         public List<Activity> Activities { get; set; }
         public List<Transition> Transitions { get; set; }
         public List<Trigger> Triggers { get; set; }
 
-        public void Initiate(List<Process> processes,
-            List<ProcessExecution> processExecutions,
+        public void Initiate(List<Flow> flows,
+            List<FlowExecution> flowExecutions,
             List<State> states,
             List<Transition> transitions,
             List<Activity> activities,
             List<Trigger> triggers)
         {
-            Processes = processes;
-            ProcessExecutions = processExecutions;
+            Flows = flows;
+            FlowExecutions = flowExecutions;
             States = states;
             Transitions = transitions;
             Activities = activities;
             Triggers = triggers;
         }
 
-        public async Task DeleteProcess(Process process)
+        public async Task DeleteFlow(Flow flow)
         {
             await Task.Run(() =>
             {
-                Processes.RemoveAll(x => x.Id.Equals(process.Id));
+                Flows.RemoveAll(x => x.Id.Equals(flow.Id));
             });
         }
 
-        public async Task ModifyProcess(Process process)
+        public async Task ModifyFlow(Flow flow)
         {
             await Task.Run(() =>
             {
-                if (Processes.Exists(x => x.Id.Equals(process.Id)))
+                if (Flows.Exists(x => x.Id.Equals(flow.Id)))
                 {
                     return;
                 }
 
-                Processes.Add(process);
+                Flows.Add(flow);
             });
         }
 
-        public async Task DeleteProcessExecution(ProcessExecution processExecution)
+        public async Task DeleteFlowExecution(FlowExecution flowExecution)
         {
             await Task.Run(() =>
             {
-                ProcessExecutions.RemoveAll(x => x.Id.Equals(processExecution.Id));
+                FlowExecutions.RemoveAll(x => x.Id.Equals(flowExecution.Id));
             });
         }
 
-        public async Task ModifyProcessExecution(ProcessExecution processExecution)
+        public async Task ModifyFlowExecution(FlowExecution flowExecution)
         {
             await Task.Run(() =>
             {
-                if (ProcessExecutions.Exists(x => x.Id.Equals(processExecution.Id)))
+                if (FlowExecutions.Exists(x => x.Id.Equals(flowExecution.Id)))
                 {
                     return;
                 }
 
-                ProcessExecutions.Add(processExecution);
+                FlowExecutions.Add(flowExecution);
             });
         }
 
@@ -113,7 +113,7 @@ namespace FlowCiao.Persistence.Providers.Cache
             });
         }
 
-        public async Task ModfiyActivity(Activity activity)
+        public async Task ModifyActivity(Activity activity)
         {
             await Task.Run(() =>
             {

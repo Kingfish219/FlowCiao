@@ -16,7 +16,7 @@ namespace FlowCiao.Models.Core
         public int Code { get; set; }
         public string Name { get; set; }
         public int TriggerType { get; set; }
-        public Guid ProcessId { get; set; }
+        public Guid FlowId { get; set; }
         public int Priority { get; set; }
     }
 }

@@ -9,55 +9,55 @@ using FlowCiao.Persistence.Interfaces;
 
 namespace FlowCiao.Services
 {
-    public class ProcessService : IProcessService
+    public class FlowService : IFlowService
     {
-        private readonly IProcessRepository _processRepository;
+        private readonly IFlowRepository _flowRepository;
         private readonly TransitionService _transitionService;
         private readonly StateService _stateService;
 
-        public ProcessService(IProcessRepository processRepository
+        public FlowService(IFlowRepository flowRepository
             , TransitionService transitionService
             , StateService stateService
             )
         {
-            _processRepository = processRepository;
+            _flowRepository = flowRepository;
             _transitionService = transitionService;
             _stateService = stateService;
         }
 
-        public async Task<Guid> Modify(Process process)
+        public async Task<Guid> Modify(Flow flow)
         {
-            var processId = await _processRepository.Modify(process);
-            if (processId == default)
+            var flowId = await _flowRepository.Modify(flow);
+            if (flowId == default)
             {
                 throw new FlowCiaoPersistencyException();
             }
 
-            process.Transitions?.ForEach(transition =>
+            flow.Transitions?.ForEach(transition =>
             {
-                transition.ProcessId = processId;
+                transition.FlowId = flowId;
                 transition.From.Id = _stateService.Modify(transition.From).GetAwaiter().GetResult();
                 transition.To.Id = _stateService.Modify(transition.To).GetAwaiter().GetResult();
                 transition.Id = _transitionService.Modify(transition).GetAwaiter().GetResult();
             });
 
-            return processId;
+            return flowId;
         }
 
-        public async Task<List<Process>> Get(Guid processId = default, string key = default)
+        public async Task<List<Flow>> Get(Guid flowId = default, string key = default)
         {
-            return await _processRepository.Get(processId, key);
+            return await _flowRepository.Get(flowId, key);
         }
 
-        public ProcessExecutionStep GenerateProcessStep(Process process, State state)
+        public FlowExecutionStep GenerateFlowStep(Flow flow, State state)
         {
-            var processStep = new ProcessExecutionStep
+            var flowExecutionStep = new FlowExecutionStep
             {
                 CreatedOn = DateTime.Now,
-                Details = process.Transitions.Where(x => x.From.Code.Equals(state.Code))
+                Details = flow.Transitions.Where(x => x.From.Code.Equals(state.Code))
                     .Select(transition =>
                     {
-                        return new ProcessExecutionStepDetail
+                        return new FlowExecutionStepDetail
                         {
                             Id = Guid.NewGuid(),
                             CreatedOn = DateTime.Now,
@@ -66,16 +66,16 @@ namespace FlowCiao.Services
                     }).ToList()
             };
 
-            return processStep;
+            return flowExecutionStep;
         }
 
-        public async Task<ProcessExecution> Finalize(ProcessExecution processExecution)
+        public async Task<FlowExecution> Finalize(FlowExecution flowExecution)
         {
             await Task.CompletedTask;
 
-            processExecution.ExecutionSteps.Add(GenerateProcessStep(processExecution.Process, processExecution.State));
+            flowExecution.ExecutionSteps.Add(GenerateFlowStep(flowExecution.Flow, flowExecution.State));
 
-            return processExecution;
+            return flowExecution;
         }
     }
 }

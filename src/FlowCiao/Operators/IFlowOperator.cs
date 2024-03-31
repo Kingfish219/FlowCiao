@@ -9,11 +9,11 @@ namespace FlowCiao.Operators
 {
     public interface IFlowOperator
     {
-        Task<ProcessResult> FireAsync(Guid processInstanceId, int trigger, Dictionary<object, object> data = null);
-        Task<ProcessResult> FireAsync(ProcessExecution processExecution, int trigger, Dictionary<object, object> data = null);
-        Task<ProcessResult> Fire(string key, int trigger, Dictionary<object, object> data = null);
-        Task<ProcessExecution> Instantiate(Process process);
-        Task<ProcessExecution> Instantiate(string flowKey);
+        Task<FlowResult> FireAsync(Guid flowInstanceId, int trigger, Dictionary<object, object> data = null);
+        Task<FlowResult> FireAsync(FlowExecution flowExecution, int trigger, Dictionary<object, object> data = null);
+        Task<FlowResult> Fire(string key, int trigger, Dictionary<object, object> data = null);
+        Task<FlowExecution> Instantiate(Flow flow);
+        Task<FlowExecution> Instantiate(string flowKey);
         Task<State> GetFLowState(string key);
     }
 }

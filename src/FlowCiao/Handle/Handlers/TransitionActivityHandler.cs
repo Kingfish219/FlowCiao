@@ -9,59 +9,59 @@ using FlowCiao.Services;
 
 namespace FlowCiao.Handle.Handlers
 {
-    internal class TransitionActivityHandler : WorkflowHandler
+    internal class TransitionActivityHandler : FlowHandler
     {
-        public TransitionActivityHandler(IProcessRepository processRepository, IProcessService processService) : base(processRepository, processService)
+        public TransitionActivityHandler(IFlowRepository flowRepository, IFlowService flowService) : base(flowRepository, flowService)
         {
         }
 
-        public override ProcessResult Handle(ProcessStepContext processStepContext)
+        public override FlowResult Handle(FlowStepContext flowStepContext)
         {
             try
             {
-                var activities = processStepContext.ProcessExecutionStepDetail.Transition.Activities;
+                var activities = flowStepContext.FlowExecutionStepDetail.Transition.Activities;
                 if (activities is null || activities.Count == 0)
                 {
-                    return NextHandler.Handle(processStepContext);
+                    return NextHandler.Handle(flowStepContext);
                 }
 
                 var types = AppDomain.CurrentDomain.GetAssemblies()
                     .SelectMany(type => type.GetTypes())
-                    .Where(p => typeof(IProcessActivity).IsAssignableFrom(p) && !p.IsAbstract);
+                    .Where(p => typeof(IFlowActivity).IsAssignableFrom(p) && !p.IsAbstract);
 
                 foreach (var type in types)
                 {
-                    var activity = (IProcessActivity)Activator.CreateInstance(type);
+                    var activity = (IFlowActivity)Activator.CreateInstance(type);
                     if (activity is null ||
                             !activities.Exists(x => x.Actor.GetType().Equals(activity.GetType())))
                     {
                         continue;
                     }
 
-                    var result = activity.Execute(processStepContext);
-                    if (result.Status != ProcessResultStatus.Completed && result.Status != ProcessResultStatus.SetOwner)
+                    var result = activity.Execute(flowStepContext);
+                    if (result.Status != FlowResultStatus.Completed && result.Status != FlowResultStatus.SetOwner)
                     {
-                        throw new FlowCiaoProcessExecutionException("Exception occured while invoking activities" + result.Message);
+                        throw new FlowExecutionException("Exception occured while invoking activities" + result.Message);
                     }
                 }
 
-                return NextHandler.Handle(processStepContext);
+                return NextHandler.Handle(flowStepContext);
             }
             catch (Exception exception)
             {
-                return new ProcessResult
+                return new FlowResult
                 {
-                    Status = ProcessResultStatus.Failed,
+                    Status = FlowResultStatus.Failed,
                     Message = exception.Message
                 };
             }
         }
 
-        public override ProcessResult RollBack(ProcessStepContext processStepContext)
+        public override FlowResult RollBack(FlowStepContext flowStepContext)
         {
-            return PreviousHandler?.RollBack(processStepContext) ?? new ProcessResult
+            return PreviousHandler?.RollBack(flowStepContext) ?? new FlowResult
             {
-                Status = ProcessResultStatus.Failed
+                Status = FlowResultStatus.Failed
             };
         }
     }

@@ -5,7 +5,7 @@ using FlowCiao.Persistence.Interfaces;
 
 namespace FlowCiao.Persistence.Providers.Cache.Repositories
 {
-    public class TransitionCacheRepository : FlowCacheRepository, ITransitionRepository
+    public class TransitionCacheRepository : Cache.FlowCacheRepository, ITransitionRepository
     {
         public TransitionCacheRepository(FlowHub flowHub) : base(flowHub)
         {

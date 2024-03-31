@@ -24,8 +24,8 @@ namespace FlowCiao.Builders
 
         public State InitialState { get; set; }
         public List<Action<Transition>> AllowedTransitionsBuilders { get; set; }
-        public IProcessActivity OnEntryActivity { get; set; }
-        public IProcessActivity OnExitActivity { get; set; }
+        public IFlowActivity OnEntryActivity { get; set; }
+        public IFlowActivity OnExitActivity { get; set; }
 
         public IFlowStepBuilder For(State state)
         {
@@ -79,7 +79,7 @@ namespace FlowCiao.Builders
             throw new NotImplementedException();
         }
 
-        public IFlowStepBuilder OnEntry<TA>() where TA : IProcessActivity, new()
+        public IFlowStepBuilder OnEntry<TA>() where TA : IFlowActivity, new()
         {
             OnEntryActivity = (TA)Activator.CreateInstance(typeof(TA));
             var activity = new Activity(OnEntryActivity);
@@ -94,7 +94,7 @@ namespace FlowCiao.Builders
             var foundActivity = TryGetActivity(activityName);
             OnEntryActivity = foundActivity ??
                               throw new FlowCiaoException(
-                                  $"Error in finding OnEntry activity. No type matches activity name {activityName} or the type is not derived from {nameof(IProcessActivity)}");
+                                  $"Error in finding OnEntry activity. No type matches activity name {activityName} or the type is not derived from {nameof(IFlowActivity)}");
             var activity = new Activity(OnEntryActivity);
             InitialState.Activities ??= new List<Activity>();
             InitialState.Activities.Add(activity);
@@ -102,7 +102,7 @@ namespace FlowCiao.Builders
             return this;
         }
 
-        public IFlowStepBuilder OnExit<TA>() where TA : IProcessActivity, new()
+        public IFlowStepBuilder OnExit<TA>() where TA : IFlowActivity, new()
         {
             OnExitActivity = (TA)Activator.CreateInstance(typeof(TA));
 
@@ -111,14 +111,14 @@ namespace FlowCiao.Builders
 
         public IFlowStepBuilder OnExit(string activityName)
         {
-            var activityType = GeneralUtils.FindType(activityName, typeof(IProcessActivity));
+            var activityType = GeneralUtils.FindType(activityName, typeof(IFlowActivity));
             if (activityType is null)
             {
                 throw new FlowCiaoException(
-                    $"Error in finding OnExit activity. No type matches activity name {activityName} or the type is not derived from {nameof(IProcessActivity)}");
+                    $"Error in finding OnExit activity. No type matches activity name {activityName} or the type is not derived from {nameof(IFlowActivity)}");
             }
 
-            OnExitActivity = (IProcessActivity)Activator.CreateInstance(activityType);
+            OnExitActivity = (IFlowActivity)Activator.CreateInstance(activityType);
 
             return this;
         }
@@ -164,24 +164,24 @@ namespace FlowCiao.Builders
             // ignored
         }
 
-        private IProcessActivity TryGetActivity(string activityName)
+        private IFlowActivity TryGetActivity(string activityName)
         {
             try
             {
-                IProcessActivity processActivity;
+                IFlowActivity flowActivity;
 
-                var activityType = GeneralUtils.FindType(activityName, typeof(IProcessActivity));
+                var activityType = GeneralUtils.FindType(activityName, typeof(IFlowActivity));
                 if (activityType != null)
                 {
-                    processActivity = (IProcessActivity)Activator.CreateInstance(activityType);
+                    flowActivity = (IFlowActivity)Activator.CreateInstance(activityType);
                 }
                 else
                 {
                     var storedActivity = _activityRepository.LoadActivity(activityName).GetAwaiter().GetResult();
-                    processActivity = storedActivity;
+                    flowActivity = storedActivity;
                 }
 
-                return processActivity;
+                return flowActivity;
             }
             catch (Exception)
             {

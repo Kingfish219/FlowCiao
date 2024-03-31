@@ -24,7 +24,7 @@ namespace FlowCiao.Models.Core
         public string Name { get; set; }
         public string Description { get; set; }
         public StateType TypeId { get; set; }
-        public Guid ProcessId { get; set; }
+        public Guid FlowId { get; set; }
         public bool IsFinal { get; set; }
         public bool IsInitial { get; set; }
         public string OwnerId { get; set; }
