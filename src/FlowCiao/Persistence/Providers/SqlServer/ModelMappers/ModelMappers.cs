@@ -7,9 +7,9 @@ namespace FlowCiao.Persistence.Providers.SqlServer.ModelMappers
 {
     internal class ModelMappers
     {
-        internal class ActionMap : EntityMap<ProcessAction>
+        internal class TriggerMap : EntityMap<Trigger>
         {
-            internal ActionMap()
+            internal TriggerMap()
             {
                 Map(x => x.Id).ToColumn("ActionId");
             }
@@ -44,14 +44,6 @@ namespace FlowCiao.Persistence.Providers.SqlServer.ModelMappers
             internal StateMap()
             {
                 Map(x => x.Id).ToColumn("StateId");
-            }
-        }
-
-        internal class UserMap : EntityMap<ProcessUser>
-        {
-            internal UserMap()
-            {
-                Map(x => x.Id).ToColumn("UserId");
             }
         }
     }

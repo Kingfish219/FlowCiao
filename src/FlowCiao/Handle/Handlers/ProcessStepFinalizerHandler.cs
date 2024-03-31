@@ -44,7 +44,7 @@ namespace FlowCiao.Handle.Handlers
                 //}
 
                 //var state = ProcessRepository.GetState(processStepContext.ProcessStepDetail.TransitionActions
-                //    .FirstOrDefault(x => x.Action.ActionTypeCode == processStepContext.ProcessStepInput.ActionCode)
+                //    .FirstOrDefault(x => x.Action.TriggerType == processStepContext.ProcessStepInput.TriggerCode)
                 //    .Transition.NextStateId).Result;
                 //if (state.IsFinal)
                 //{

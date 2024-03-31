@@ -15,11 +15,10 @@ namespace FlowCiao.Persistence.Providers.SqlServer
 
             FluentMapper.Initialize(config =>
             {
-                config.AddMap(new ActionMap());
+                config.AddMap(new TriggerMap());
                 config.AddMap(new TransitionMap());
                 config.AddMap(new ProcessMap());
                 config.AddMap(new StateMap());
-                config.AddMap(new UserMap());
             });
         }
     }

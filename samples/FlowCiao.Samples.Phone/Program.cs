@@ -26,7 +26,7 @@ var flowBuilder = app.Services.GetService<IFlowBuilder>();
 var flow = flowBuilder?.Build<PhoneStateMachine>();
 var flowOperator = app.Services.GetService<IFlowOperator>();
 var instance = flowOperator.Instantiate(flow).GetAwaiter().GetResult();
-var result = flowOperator.FireAsync(instance, 1, new Dictionary<object, object>()).GetAwaiter().GetResult();
+//var result = flowOperator.FireAsync(instance, 1, new Dictionary<object, object>()).GetAwaiter().GetResult();
 
 if (app.Environment.IsDevelopment())
 {

@@ -6,9 +6,9 @@ using FlowCiao.Services;
 
 namespace FlowCiao.Handle.Handlers
 {
-    internal class ActionActivityHandler : WorkflowHandler
+    internal class TriggerHandler : WorkflowHandler
     {
-        public ActionActivityHandler(IProcessRepository processRepository
+        public TriggerHandler(IProcessRepository processRepository
             , IProcessService processService) : base(processRepository, processService)
         {
         }
@@ -17,6 +17,8 @@ namespace FlowCiao.Handle.Handlers
         {
             try
             {
+                processStepContext.ProcessExecutionStepDetail.IsCompleted = true;
+
                 return NextHandler.Handle(processStepContext);
             }
             catch (Exception exception)

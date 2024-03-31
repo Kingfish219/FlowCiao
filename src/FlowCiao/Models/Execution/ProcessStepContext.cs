@@ -7,8 +7,6 @@ namespace FlowCiao.Models.Execution
         internal ProcessExecution ProcessExecution { get; set; }
         internal ProcessExecutionStep ProcessExecutionStep { get; set; }
         internal ProcessExecutionStepDetail ProcessExecutionStepDetail { get; set; }
-        internal ProcessUser ProcessUser { get; set; }
-        internal ProcessStepInput ProcessStepInput { get; set; }
         public Dictionary<object, object> Data { get; set; }
 
         internal ProcessStepContext()

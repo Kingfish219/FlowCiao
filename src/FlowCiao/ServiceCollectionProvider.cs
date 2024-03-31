@@ -61,12 +61,12 @@ namespace FlowCiao
                 new List<State>(),
                 new List<Transition>(),
                 new List<Activity>(),
-                new List<ProcessAction>());
+                new List<Trigger>());
 
             services.AddSingleton(flowHub);
             services.AddTransient<ITransitionRepository, TransitionCacheRepository>();
             services.AddTransient<IStateRepository, StateCacheRepository>();
-            services.AddTransient<IActionRepository, ActionCacheRepository>();
+            services.AddTransient<ITriggerRepository, TriggerCacheRepository>();
             services.AddTransient<IActivityRepository, ActivityCacheRepository>();
             services.AddTransient<IProcessExecutionRepository, ProcessExecutionCacheRepository>();
             services.AddTransient<IProcessRepository, ProcessCacheRepository>();
@@ -84,7 +84,7 @@ namespace FlowCiao
 
             services.AddTransient<ITransitionRepository, TransitionRepository>();
             services.AddTransient<IStateRepository, StateRepository>();
-            services.AddTransient<IActionRepository, ActionRepository>();
+            services.AddTransient<ITriggerRepository, TriggerRepository>();
             services.AddTransient<IActivityRepository, ActivityRepository>();
             services.AddTransient<IProcessExecutionRepository, ProcessExecutionRepository>();
             services.AddTransient<IProcessRepository, ProcessRepository>();

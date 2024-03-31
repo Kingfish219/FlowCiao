@@ -23,7 +23,7 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
             return entity.Id;
         }
 
-        public async Task AssociateActions(Transition entity, ProcessAction action)
+        public async Task AssociateTriggers(Transition entity, Trigger trigger)
         {
             //return Task.Run(() =>
             //{

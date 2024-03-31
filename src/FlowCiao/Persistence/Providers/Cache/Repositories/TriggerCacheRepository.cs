@@ -5,20 +5,20 @@ using FlowCiao.Persistence.Interfaces;
 
 namespace FlowCiao.Persistence.Providers.Cache.Repositories
 {
-    public class ActionCacheRepository : FlowCacheRepository, IActionRepository
+    public class TriggerCacheRepository : FlowCacheRepository, ITriggerRepository
     {
-        public ActionCacheRepository(FlowHub flowHub) : base(flowHub)
+        public TriggerCacheRepository(FlowHub flowHub) : base(flowHub)
         {
         }
 
-        public async Task<Guid> Modify(ProcessAction entity)
+        public async Task<Guid> Modify(Trigger entity)
         {
             if (entity.Id == default)
             {
                 entity.Id = Guid.NewGuid();
             }
 
-            await FlowHub.ModifyAction(entity);
+            await FlowHub.ModifyTrigger(entity);
 
             return entity.Id;
         }

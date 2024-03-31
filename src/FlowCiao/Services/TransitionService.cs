@@ -9,16 +9,16 @@ namespace FlowCiao.Services
     public class TransitionService
     {
         private readonly ITransitionRepository _transitionRepository;
-        private readonly IActionRepository _actionRepository;
+        private readonly ITriggerRepository _triggerRepository;
         private readonly ActivityService _activityService;
 
         public TransitionService(ITransitionRepository transitionRepository
-                        , IActionRepository actionRepository
+                        , ITriggerRepository triggerRepository
                         , ActivityService activityService
             )
         {
             _transitionRepository = transitionRepository;
-            _actionRepository = actionRepository;
+            _triggerRepository = triggerRepository;
             _activityService = activityService;
         }
 
@@ -41,15 +41,15 @@ namespace FlowCiao.Services
                 _transitionRepository.AssociateActivities(transition, activity).GetAwaiter().GetResult();
             });
 
-            transition.Actions?.ForEach(action =>
+            transition.Triggers?.ForEach(trigger =>
             {
-                var result = _actionRepository.Modify(action).GetAwaiter().GetResult();
+                var result = _triggerRepository.Modify(trigger).GetAwaiter().GetResult();
                 if (result == default)
                 {
                     throw new FlowCiaoPersistencyException("State Activity");
                 }
 
-                _transitionRepository.AssociateActions(transition, action).GetAwaiter().GetResult();
+                _transitionRepository.AssociateTriggers(transition, trigger).GetAwaiter().GetResult();
             });
 
             return transition.Id;

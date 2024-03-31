@@ -33,20 +33,20 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
             });
         }
 
-        public Task AssociateActions(Transition entity, ProcessAction action)
+        public Task AssociateTriggers(Transition entity, Trigger trigger)
         {
             return Task.Run(() =>
             {
                 var toInsert = new
                 {
                     TransitionId = entity.Id,
-                    ActionId = action.Id,
-                    action.Priority
+                    TriggerId = trigger.Id,
+                    trigger.Priority
                 };
 
                 using var connection = GetDbConnection();
                 connection.Open();
-                connection.Execute(ConstantsProvider.Usp_TransitionAction_Modify, toInsert, commandType: CommandType.StoredProcedure);
+                connection.Execute(ConstantsProvider.Usp_TransitionTrigger_Modify, toInsert, commandType: CommandType.StoredProcedure);
 
                 return entity.Id;
             });

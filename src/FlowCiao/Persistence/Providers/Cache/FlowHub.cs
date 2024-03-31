@@ -12,21 +12,21 @@ namespace FlowCiao.Persistence.Providers.Cache
         public List<State> States { get; set; }
         public List<Activity> Activities { get; set; }
         public List<Transition> Transitions { get; set; }
-        public List<ProcessAction> Actions { get; set; }
+        public List<Trigger> Triggers { get; set; }
 
         public void Initiate(List<Process> processes,
             List<ProcessExecution> processExecutions,
             List<State> states,
             List<Transition> transitions,
             List<Activity> activities,
-            List<ProcessAction> actions)
+            List<Trigger> triggers)
         {
             Processes = processes;
             ProcessExecutions = processExecutions;
             States = states;
             Transitions = transitions;
             Activities = activities;
-            Actions = actions;
+            Triggers = triggers;
         }
 
         public async Task DeleteProcess(Process process)
@@ -134,24 +134,24 @@ namespace FlowCiao.Persistence.Providers.Cache
             });
         }
 
-        public async Task ModifyAction(ProcessAction action)
+        public async Task ModifyTrigger(Trigger trigger)
         {
             await Task.Run(() =>
             {
-                if (Actions.Exists(x => x.Id.Equals(action.Id)))
+                if (Triggers.Exists(x => x.Id.Equals(trigger.Id)))
                 {
                     return;
                 }
 
-                Actions.Add(action);
+                Triggers.Add(trigger);
             });
         }
 
-        public async Task DeleteAction(ProcessAction action)
+        public async Task DeleteTrigger(Trigger trigger)
         {
             await Task.Run(() =>
             {
-                Actions.RemoveAll(x => x.Id.Equals(action.Id));
+                Triggers.RemoveAll(x => x.Id.Equals(trigger.Id));
             });
         }
     }

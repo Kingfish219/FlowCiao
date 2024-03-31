@@ -15,7 +15,7 @@ namespace FlowCiao.Models.Core
         public Guid NextStateId { get; set; }
         public State From { get; set; }
         public State To { get; set; }
-        public List<ProcessAction> Actions { get; set; }
+        public List<Trigger> Triggers { get; set; }
         public List<Activity> Activities { get; set; }
         public Func<bool> Condition { get; set; }
     }

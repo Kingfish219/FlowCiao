@@ -4,8 +4,8 @@ using FlowCiao.Models.Core;
 
 namespace FlowCiao.Persistence.Interfaces
 {
-    public interface IActionRepository
+    public interface ITriggerRepository
     {
-        Task<Guid> Modify(ProcessAction entity);
+        Task<Guid> Modify(Trigger entity);
     }
 }

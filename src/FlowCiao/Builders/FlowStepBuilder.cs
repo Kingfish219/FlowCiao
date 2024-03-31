@@ -34,7 +34,7 @@ namespace FlowCiao.Builders
             return this;
         }
 
-        public IFlowStepBuilder Allow(State state, List<int> actions)
+        public IFlowStepBuilder Allow(State state, List<int> triggers)
         {
             AllowedTransitionsBuilders.Add((transition) =>
             {
@@ -46,13 +46,13 @@ namespace FlowCiao.Builders
                         new(OnExitActivity)
                     }
                     : new List<Activity>();
-                transition.Actions = actions.Select(action => new ProcessAction(action)).ToList();
+                transition.Triggers = triggers.Select(trigger => new Trigger(trigger)).ToList();
             });
 
             return this;
         }
 
-        public IFlowStepBuilder Allow(State state, int action, Func<bool> condition = null)
+        public IFlowStepBuilder Allow(State state, int trigger, Func<bool> condition = null)
         {
             AllowedTransitionsBuilders.Add((transition) =>
             {
@@ -64,9 +64,9 @@ namespace FlowCiao.Builders
                         new(OnExitActivity)
                     }
                     : new List<Activity>();
-                transition.Actions = new List<ProcessAction>
+                transition.Triggers = new List<Trigger>
                 {
-                    new(action)
+                    new(trigger)
                 };
                 transition.Condition = condition;
             });
@@ -74,7 +74,7 @@ namespace FlowCiao.Builders
             return this;
         }
 
-        public IFlowStepBuilder AllowSelf(List<int> actions)
+        public IFlowStepBuilder AllowSelf(List<int> triggers)
         {
             throw new NotImplementedException();
         }
@@ -138,13 +138,13 @@ namespace FlowCiao.Builders
                 .Select(state => new
                 {
                     AllowedState = state,
-                    AllowedAction = jsonStep.Allows.Single(x => x.AllowedStateCode == state.Code).ActionCode
+                    AllowedTrigger = jsonStep.Allows.Single(x => x.AllowedStateCode == state.Code).TriggerCode
                 })
                 .ToList();
 
             For(fromState);
 
-            allowedList.ForEach(allowed => { Allow(allowed.AllowedState, allowed.AllowedAction); });
+            allowedList.ForEach(allowed => { Allow(allowed.AllowedState, allowed.AllowedTrigger); });
 
             if (jsonStep.OnEntry != null)
             {

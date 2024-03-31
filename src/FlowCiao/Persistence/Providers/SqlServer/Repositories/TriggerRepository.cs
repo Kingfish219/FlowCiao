@@ -8,11 +8,11 @@ using FlowCiao.Persistence.Interfaces;
 
 namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
 {
-    public class ActionRepository : FlowSqlServerRepository, IActionRepository
+    public class TriggerRepository : FlowSqlServerRepository, ITriggerRepository
     {
-        public ActionRepository(FlowSettings settings) : base(settings) { }
+        public TriggerRepository(FlowSettings settings) : base(settings) { }
 
-        public Task<Guid> Modify(ProcessAction entity)
+        public Task<Guid> Modify(Trigger entity)
         {
             return Task.Run(() =>
             {
@@ -20,13 +20,13 @@ namespace FlowCiao.Persistence.Providers.SqlServer.Repositories
                 {
                     Id = entity.Id == default ? Guid.NewGuid() : entity.Id,
                     entity.Name,
-                    entity.ActionTypeCode,
+                    entity.TriggerType,
                     entity.ProcessId
                 };
 
                 using var connection = GetDbConnection();
                 connection.Open();
-                connection.Execute(ConstantsProvider.Usp_Action_Modify, toInsert, commandType: CommandType.StoredProcedure);
+                connection.Execute(ConstantsProvider.Usp_Trigger_Modify, toInsert, commandType: CommandType.StoredProcedure);
                 entity.Id = toInsert.Id;
 
                 return entity.Id;

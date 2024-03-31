@@ -201,7 +201,7 @@ namespace FlowCiao.Builders
             //                        Actor = builder.OnExitActivity
             //                    }
             //                },
-            //                Actions = allowedTransition.Item2
+            //                Triggers = allowedTransition.Item2
             //            });
             //        }
             //    }

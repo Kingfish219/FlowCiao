@@ -29,20 +29,20 @@ namespace FlowCiao.Handle
             IProcessService processService,
             ProcessExecutionService processExecutionService)
         {
-            var actionHandler = new ActionHandler(processRepository, processService);
-            var actionActivityHandler = new ActionActivityHandler(processRepository, processService);
+            var triggerHandler = new TriggerHandler(processRepository, processService);
+            var triggerActivityHandler = new TriggerActivityHandler(processRepository, processService);
             var transitionHandler = new TransitionHandler(processRepository, processService);
             var transitionActivityHandler = new TransitionActivityHandler(processRepository, processService);
             var stateActivityHandler = new StateActivityHandler(processRepository, processService);
             var processStepFinalizerHandler = new ProcessStepFinalizerHandler(processRepository, processService, processExecutionService);
 
-            actionHandler.SetNextHandler(actionActivityHandler);
+            triggerHandler.SetNextHandler(triggerActivityHandler);
 
-            actionActivityHandler.SetNextHandler(transitionHandler);
-            actionActivityHandler.SetPreviousHandler(actionHandler);
+            triggerActivityHandler.SetNextHandler(transitionHandler);
+            triggerActivityHandler.SetPreviousHandler(triggerHandler);
 
             transitionHandler.SetNextHandler(transitionActivityHandler);
-            transitionHandler.SetPreviousHandler(actionActivityHandler);
+            transitionHandler.SetPreviousHandler(triggerActivityHandler);
 
             transitionActivityHandler.SetNextHandler(stateActivityHandler);
             transitionActivityHandler.SetPreviousHandler(transitionHandler);
@@ -54,8 +54,8 @@ namespace FlowCiao.Handle
 
             var queue = new Queue<WorkflowHandler>();
 
-            queue.Enqueue(actionHandler);
-            queue.Enqueue(actionActivityHandler);
+            queue.Enqueue(triggerHandler);
+            queue.Enqueue(triggerActivityHandler);
             queue.Enqueue(transitionHandler);
             queue.Enqueue(transitionActivityHandler);
             queue.Enqueue(stateActivityHandler);
