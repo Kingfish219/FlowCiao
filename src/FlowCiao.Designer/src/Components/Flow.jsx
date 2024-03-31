@@ -63,7 +63,7 @@ const Flow = forwardRef((props, ref) => {
   };
 
   const onAddIdleNodeFunc = (currentNode) => {
-    var newNodeXPos = currentNode.xPos + 250;
+    var newNodeXPos = currentNode.xPos + 350;
     const position = findFirstEmptyPosition(newNodeXPos, currentNode.yPos);
     nodesPosition.current.push(position);
     const id = getId();
@@ -119,7 +119,7 @@ const Flow = forwardRef((props, ref) => {
     {
       id: "1",
       type: "StartNode",
-      position: { x: 0, y: 0 },
+      position: { x: 0, y: 15 },
       data: {
         AddIdleNodeFunc: onAddIdleNodeFunc,
       },
@@ -311,7 +311,7 @@ const Flow = forwardRef((props, ref) => {
       );
 
       const position = findFirstEmptyPosition(
-        firstIdleNode.position.x + 250,
+        firstIdleNode.position.x + 350,
         firstIdleNode.position.y
       );
       nodesPosition.current.push(position);
@@ -321,7 +321,7 @@ const Flow = forwardRef((props, ref) => {
     const initialNode = {
       id: (firstIdleNode.id - 1).toString(),
       type: "StartNode",
-      position: { x: 0, y: 0 },
+      position: { x: 0, y: 15 },
       data: {
         AddIdleNodeFunc: onAddIdleNodeFunc,
       },
@@ -365,7 +365,7 @@ const Flow = forwardRef((props, ref) => {
           );
 
           const position = findFirstEmptyPosition(
-            stepNode.position.x + 250,
+            stepNode.position.x + 350,
             stepNode.position.y
           );
           nodesPosition.current.push(position);

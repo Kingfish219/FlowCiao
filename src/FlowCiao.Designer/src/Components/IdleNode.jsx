@@ -1,29 +1,38 @@
-import { useCallback, useState, useContext } from "react";
-import { Handle, Position, useStore} from "reactflow";
-import { Button, Dropdown, Space } from "antd";
+import { useCallback, useState, useContext, useEffect } from "react";
+import { Handle, Position, useStore } from "reactflow";
+import { Button, Dropdown, Space, Modal } from "antd";
 import exitActionImg from "../Assets/exit-action.svg";
 import entryActionImg from "../Assets/entry-action.svg";
 import dotImg from "../Assets/dot.svg";
 import plusImg from "../Assets/circle-plus.svg";
-import threeDotImg from "../Assets/circle-threedot.svg";
+import actionIconImg from "../Assets/action-icon.svg";
 import trashImg from "../Assets/trash.svg";
 import ThemeContext from "../Store/ThemeContext";
+import NodeActvityModal from "./NodeActvityModal";
 
 const IdleNode = (node) => {
-
   const themeCtx = useContext(ThemeContext);
   const onChange = useCallback((evt) => {
     console.log(evt.target.value);
   }, []);
 
-  const [isHoverNode, setIsHoverNpde] = useState(false);
+  const [isHoverNode, setIsHoverNode] = useState(false);
+  const [isHoverSpaceNode, setIsHoverSpaceNode] = useState(false);
 
   const onIdleNodeHoverFunc = () => {
-    setIsHoverNpde(true);
+    setIsHoverNode(true);
   };
 
-  const onIdleNodeLoseHoverFunc = () => {
-    setIsHoverNpde(false);
+  const onIdleNodeLoseHoverFunc = (event) => {
+    setIsHoverNode(false);
+  };
+
+  const onIdleNodeHoverSpaceFunc = () => {
+    setIsHoverSpaceNode(true);
+  };
+
+  const onIdleNodeLoseHoverSpaceFunc = (event) => {
+    setIsHoverSpaceNode(false);
   };
 
   const onAddIdleNodeClick = () => {
@@ -32,232 +41,152 @@ const IdleNode = (node) => {
 
   const onNodeNameChange = (e) => {
     node.data.Name = e.target.value;
-  }
-  const [isEntryActionSelected, setIsEntryActionSelected] = useState(node.data.onEntry != "" );
-  const [isExitActionSelected, setIsExitActionSelected] = useState(node.data.onExit != "");
-  var items = [
-    {
-      key: "entryAction",
-      label: (
-        <span>
-          <img src={entryActionImg} />
-          <span className="node-action-btn">
-            On Entry
-          </span>
-        </span>
-      ),
-      // disabled: isEntryActionSelected,
-    },
-    {
-      type: "divider",
-    },
-    {
-      key: "exitAction",
-      label: (
-        <span>
-          <img src={exitActionImg} />
-          <span className="node-action-btn">
-            On Exit
-          </span>
-        </span>
-      ),
-      // disabled: isExitActionSelected,
-      
-    },
-  ];
+  };
+  const [nodeActivities, setNodeActivities] = useState([]);
 
-  if(isEntryActionSelected){
-   items = [
-      {
-        key: "exitAction",
-        label: (
-          <span>
-            <img src={exitActionImg} />
-            <span className="node-action-btn">
-              On Exit
-            </span>
-          </span>
-        ),
-        disabled: isExitActionSelected,
-        
-      },
-    ];
-  }
-  if(isExitActionSelected){
-    items = [
-      {
-        key: "entryAction",
-        label: (
-          <span>
-            <img src={entryActionImg} />
-            <span className="node-action-btn">
-              On Entry
-            </span>
-          </span>
-        ),
-        disabled: isEntryActionSelected,
-      },
-    ];
-  }
-
-  const chooseActionHandler = ( {key}) => {
-    if (key == "entryAction") {
-      setIsEntryActionSelected(true);
-    } else if (key == "exitAction") {
-      setIsExitActionSelected(true);
+  useEffect(() => {
+    let updatedActivities = [];
+    if (node.data.onEntry != "") {
+      updatedActivities.push(node.data.onEntry);
     }
-  };
-  const onNodeEntryFuncChange = (e) => {
-    node.data.onEntry = e.target.value;
-  }
-  const onNodeExitFuncChange = (e) => {
-    node.data.onExit = e.target.value;
-  }
-  const removeEntryActionHandler = () => {
-    setIsEntryActionSelected(false);
-    node.data.onEntry = "";
-  };
-  const removeExitActionHandler = () => {
-    setIsExitActionSelected(false);
-    node.data.onExit = "";
-  };
-  return (
-    <div
-      onMouseEnter={onIdleNodeHoverFunc}
-      onMouseLeave={onIdleNodeLoseHoverFunc}
-      ref={el => {
-        if (el) {
-          el.style.setProperty('border-top-color', themeCtx.borderColor, 'important');
-        }
-      }}
-    >
-      <Handle
-        type="target"
-        isConnectable={true}
-        position={Position.Left}
-        className="node-handle"
-      />
-      <Handle
-        type="target"
-        isConnectable={true}
-        position={Position.Right}
-        className="node-handle"
-      />
-      <Handle
-        type="target"
-        isConnectable={true}
-        position={Position.Top}
-        className="node-handle"
-      />
-      <Handle
-        type="target"
-        isConnectable={true}
-        position={Position.Bottom}
-        className="node-handle"
-      />
-      <Handle
-        type="source"
-        isConnectable={true}
-        className="node-handle"
-        position={Position.Right}
-      />
-      <Handle
-        type="source"
-        isConnectable={true}
-        className="node-handle"
-        position={Position.Left}
-      />
-      <Handle
-        type="source"
-        isConnectable={true}
-        className="node-handle"
-        position={Position.Top}
-      />
-      <Handle
-        type="source"
-        isConnectable={true}
-        className="node-handle"
-        position={Position.Bottom}
-      />
-      <button
-        id="addIdleNode"
-        className="add-node-btn"
-        onClick={onAddIdleNodeClick}
-      >
-        {isHoverNode ? <img src={plusImg} /> : <img src={dotImg} />}
-      </button>
-      {
-        !isHoverNode || (isEntryActionSelected && isExitActionSelected) ? <></>
-:
-      <Dropdown
-        menu={{
-          items,
-          onClick: chooseActionHandler ,
-        }}
-        placement="bottomRight"
-      >
-        <button
-        className="add-node-function-btn"
-        >
-          <img src={threeDotImg} />
-        </button>
-      </Dropdown>
-      }
-      <input
-      className="node-name"
-        type="text"
-        placeholder="Pending"
-         defaultValue={node.data.Name != "" ? node.data.Name : "Pending"}
-         onChange={onNodeNameChange}
-      />
-      {(isEntryActionSelected || isExitActionSelected) && (
-        <div className="func-container">
-          <span className="func-container-title">
-            Actvities
-          </span>
-          {isEntryActionSelected && (
-            <div className="node-func">
-              <img
-                src={entryActionImg}
-                className="image-svg-2F6EE9-color"
-              />
-              <input className="action-func-name"
-                placeholder="Custom Act"
-                defaultValue={node.data.onEntry != "" ? node.data.onEntry : "Custom Act"}
-                onChange={onNodeEntryFuncChange}
-              />
-              <button
-                className="func-action-remove-btn"
-                onClick={removeEntryActionHandler}
-              >
-                <img src={trashImg} width={8} />
-              </button>
-            </div>
-          )}
+    if (node.data.onExit != "") {
+      updatedActivities.push(node.data.onExit);
+    }
+    setNodeActivities(updatedActivities);
+  },[])
 
-          {isExitActionSelected && (
-            <div className="node-func">
-              <img
-                src={exitActionImg}
-                className="image-svg-2F6EE9-color"
-              />
-              <input
-                className="action-func-name"
-                placeholder="Custom Act"
-                defaultValue={node.data.onExit != "" ? node.data.onExit : "Custom Act" }
-                onChange={onNodeExitFuncChange}
-              />
-              <button
-                className="func-action-remove-btn"
-                onClick={removeExitActionHandler}
-              >
-                <img src={trashImg} width={8} />
-              </button>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const [flowAllActivities, setFlowAllActivities] = useState([{
+    name: "HelloWordActivity1",
+  }]);
+  const onApplyChanges = (activities, flowActivitiesList) => {
+    if (activities != null) {
+      node.data.onEntry = activities.onEntryName;
+      node.data.onExit = activities.onExitName;
+      let updatedActivities = [];
+      if (node.data.onEntry != "") {
+        updatedActivities.push(node.data.onEntry);
+      }
+      if (node.data.onExit != "") {
+        updatedActivities.push(node.data.onExit);
+      }
+      setNodeActivities(updatedActivities);
+    }
+    if(flowActivitiesList != null){
+      setFlowAllActivities(flowActivitiesList)
+    }
+    setIsModalOpen(false);
+  };
+
+  return (
+    <>
+      <div
+        onMouseEnter={onIdleNodeHoverFunc}
+        onMouseLeave={onIdleNodeLoseHoverFunc}
+        ref={(el) => {
+          if (el) {
+            el.style.setProperty(
+              "border-top-color",
+              themeCtx.borderColor,
+              "important"
+            );
+          }
+        }}
+      >
+        <Handle
+          type="target"
+          isConnectable={true}
+          position={Position.Left}
+          className="node-handle"
+        />
+        <Handle
+          type="target"
+          isConnectable={true}
+          position={Position.Right}
+          className="node-handle"
+        />
+        <Handle
+          type="target"
+          isConnectable={true}
+          position={Position.Top}
+          className="node-handle"
+        />
+        <Handle
+          type="target"
+          isConnectable={true}
+          position={Position.Bottom}
+          className="node-handle"
+        />
+        <Handle
+          type="source"
+          isConnectable={true}
+          className="node-handle"
+          position={Position.Right}
+        />
+        <Handle
+          type="source"
+          isConnectable={true}
+          className="node-handle"
+          position={Position.Left}
+        />
+        <Handle
+          type="source"
+          isConnectable={true}
+          className="node-handle"
+          position={Position.Top}
+        />
+        <Handle
+          type="source"
+          isConnectable={true}
+          className="node-handle"
+          position={Position.Bottom}
+        />
+        <button
+          id="addIdleNode"
+          className="add-node-btn"
+          onClick={onAddIdleNodeClick}
+        >
+          {isHoverNode ? <img src={plusImg} /> : <img src={dotImg} />}
+        </button>
+        {!isHoverNode && !isHoverSpaceNode ? (
+          <></>
+        ) : (
+          <button className={nodeActivities.length > 0 ? "node-actvity-btn" : "node-actvity-btn no-activity"}  onClick={showModal}>
+            {nodeActivities.length > 0 ? (
+              <span className="node-activity-count-container">
+                <img className="active-filter" src={actionIconImg} />
+                <span>{nodeActivities.length}</span>
+              </span>
+            ) : (
+              <span className="node-activity-count-container no-activity">
+                <img src={actionIconImg} />
+              </span>
+            )}
+          </button>
+        )}
+        <div
+          className="node-actvity-btn-hover-space"
+          onMouseEnter={onIdleNodeHoverSpaceFunc}
+          onMouseLeave={onIdleNodeLoseHoverSpaceFunc}
+        ></div>
+        <input
+          className="node-name"
+          type="text"
+          placeholder="Pending"
+          defaultValue={node.data.Name != "" ? node.data.Name : "Pending"}
+          onChange={onNodeNameChange}
+        />
+      </div>
+      <NodeActvityModal
+        node={node}
+        onApplyChanges={onApplyChanges}
+        isModalOpen={isModalOpen}
+        activitiesList={flowAllActivities}
+      />
+    </>
   );
 };
 export default IdleNode;

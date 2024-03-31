@@ -50,19 +50,15 @@
   align-items: center;
   cursor: grab;
 }
-.react-flow__node.selected {
-  border: unset !important;
-  box-shadow: 0px 1px 7px 0px #757575;
-}
 .react-flow__node-idleNode {
-  width: 118px !important;
-  min-height: 48px !important;
+  width: 146px !important;
+  min-height: 54px !important;
   display: flex;
   align-items: center;
   background-color: transparent;
 }
 .react-flow__node-idleNode > div {
-  width: 100%;
+  width: 146px;
   border: 1px solid !important;
   border-left-color: #c8c8c8 !important;
   border-right-color: #c8c8c8 !important;
@@ -70,6 +66,10 @@
   border-top: 3px solid #2f6ee9 !important;
   border-radius: 4px !important;
   background: #fff;
+}
+
+.react-flow__node.selected > div {
+  box-shadow: 0px 1px 7px 0px #757575;
 }
 .dndflow .dndnode.circle-node {
   width: 70px;
@@ -109,7 +109,7 @@
   max-width: 100px;
   color: #000;
   text-align: center;
-  font-size: 8px;
+  font-size: 12px;
   font-weight: 500;
   background: #f5f5f5;
 }
@@ -131,12 +131,6 @@
   font-size: 20px;
 }
 
-.react-flow__node.selected {
-  background-color: lightblue;
-  border: 2px solid blue;
-  z-index: 1;
-}
-
 .node-action-btn {
   margin-left: 4px;
   color: #393939;
@@ -147,7 +141,7 @@
   width: 4px;
   height: 4px;
   position: absolute;
-  right: -10px;
+  right: -8px;
   top: 30%;
   background: transparent;
   border: none;
@@ -158,14 +152,64 @@
   top: -1px;
     right: -6px;
 }
-.add-node-function-btn {
+.node-actvity-btn-hover-space{
+  width: 160px;
+  height: 19px;
   background: transparent;
-  border: none;
-  outline: none;
   position: absolute;
-  top: 3px;
-  right: 0;
-  cursor: pointer;
+  top: -15px;
+}
+.node-actvity-btn {
+  background: transparent;
+    outline: none;
+    position: absolute;
+    top: -15px;
+    right: -25px;
+    cursor: pointer;
+    padding: 0;
+    border: unset;
+    height: 16px;
+    min-width: 16px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+}
+.node-actvity-btn.no-activity{
+  right: -15px;
+}
+.node-activity-count-container{
+  padding: 1px 3px;
+    background: transparent;
+    outline: none;
+    border: 1px solid #C8C8C8;
+    border-radius: 6px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.node-activity-count-container.no-activity{
+  border-radius: 50%;
+  height: 16px;
+  width: 16px;
+}
+
+.node-activity-count-container img{
+  margin: 0 -1px 0 0px;
+}
+
+.node-activity-count-container img.active-filter{
+  filter: invert(46%) sepia(63%) saturate(5622%) hue-rotate(210deg) brightness(95%) contrast(92%);
+}
+
+.node-activity-count-container span{
+  font-size: 10px;
+  line-height: 12px;
+  padding-left: 2px;
+  color: #2F6EE9;
 }
 .node-name {
   border: none;
@@ -174,7 +218,7 @@
   text-align: center;
   margin: 14px 0;
 }
-.func-container {
+/* .func-container {
   width: 100%;
   border-top: 1px dashed #cacaca;
 }
@@ -210,7 +254,7 @@
   border: none;
   outline: none;
   padding: 0;
-}
+} */
 .node-handle{
   background: transparent;
    border: none;
@@ -221,6 +265,99 @@
    width: 23px; 
    height: 23px;
 }
+
+/*#region activity modal*/
+
+.activity-modal .title{
+  font-size: 18px;
+  font-weight: 600 ;
+  color: #313131;
+  padding: 0;
+  margin: 0;
+}
+
+.activity-modal .modal-title{
+  font-size: 20px;
+  font-weight: 600 ;
+  color: #1B1B1B;
+}
+
+.activity-container{
+  padding: 25px 0;
+}
+.activity-container.dash-bottom-border{
+  border-bottom: 1px dashed #DFDFDF;
+  margin-bottom: 25px;
+}
+.ant-dropdown-menu li[overlayclassname="activities-dropdown-items-container"] ul li
+{
+  padding-left: 0 !important;
+}
+.activities-dropdown-item .activity-name{
+  padding: 0 8px;
+}
+
+.activities-dropdown-item img{
+  height: 15px;
+  width: 15px;
+}
+
+.add-actvity-btn{
+  width: 100%;
+  height: 36px;
+  background: transparent;
+  border: 1px dashed #B6B6B6;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+
+}
+.node-activity{
+  display: flex;
+  align-items: center;
+}
+.node-activity .action-icon{
+  width: 15px;
+    height: 15px;
+    margin-right: 10px;
+  filter: invert(59%) sepia(67%) saturate(6875%) hue-rotate(128deg) brightness(93%) contrast(105%);
+}
+
+.node-activity p{
+  font-size: 14px;
+  font-weight: 500;
+  flex:1;
+}
+.node-activity span .node-action-edit-btn,
+.node-activity span .node-action-remove-btn  {
+  background: none;
+  border: none;
+  outline: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.node-activity span .node-action-edit-btn img{
+  width: 18px;
+  height: 18px;
+}
+.node-activity span .node-action-remove-btn  img{
+  width: 16px;
+  height: 16px;
+  margin-left: 8px;
+}
+
+.action-modal-footer-btn{
+  width: 48%;
+  height: 40px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/*#endregion*/
+
 @media screen and (min-width: 768px) {
   .dndflow {
     flex-direction: row;
