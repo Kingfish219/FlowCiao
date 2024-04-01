@@ -83,12 +83,11 @@
 			<PackagePath>\</PackagePath>
 		</None>
 	</ItemGroup>
-
+	
 	<ItemGroup>
-	  <Reference Include="Microsoft.AspNetCore.Http.Abstractions">
-	    <HintPath>..\..\..\..\Program Files\dotnet\shared\Microsoft.AspNetCore.App\6.0.21\Microsoft.AspNetCore.Http.Abstractions.dll</HintPath>
-	  </Reference>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
+
 
 	<ItemGroup>
 	  <Folder Include="Persistence\Providers\Rdbms\SqlServer\Migrations\" />
