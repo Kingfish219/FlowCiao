@@ -6,14 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace FlowCiao.Studio.Controllers
 {
     [Route("flowciao/api/builder")]
-    public class BuilderController : FlowCiaoApiControllerBase
+    public class BuilderController : FlowCiaoControllerBase
     {
-        private readonly ILogger<BuilderController> _logger;
         private readonly IFlowBuilder _flowBuilder;
 
-        public BuilderController(ILogger<BuilderController> logger, IFlowBuilder flowBuilder)
+        public BuilderController(IFlowBuilder flowBuilder)
         {
-            _logger = logger;
             _flowBuilder = flowBuilder;
         }
 
@@ -21,13 +19,13 @@ namespace FlowCiao.Studio.Controllers
         public async Task<IActionResult> BuildFromJson(JsonFlow jsonFlow)
         {
             var process = await _flowBuilder.Build(jsonFlow);
-            var processViewModel = new ProcessViewModel
+            var flowViewModel = new FlowViewModel
             {
                 Key = process.Key,
                 Id = process.Id
             };
 
-            return Ok(processViewModel);
+            return Ok(flowViewModel);
         }
     }
 }

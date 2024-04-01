@@ -1,9 +1,9 @@
 ﻿using FlowCiao.Builders;
 using FlowCiao.Interfaces;
 using FlowCiao.Models.Core;
-using FlowCiao.Samples.Phone.FLowCiao.Activities;
+using FlowCiao.Samples.Phone.FlowCiao.Activities;
 
-namespace FlowCiao.Samples.Phone.FLowCiao
+namespace FlowCiao.Samples.Phone.FlowCiao
 {
     public class PhoneStateMachine : IFlowPlanner
     {

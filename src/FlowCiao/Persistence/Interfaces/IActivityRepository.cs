@@ -8,7 +8,7 @@ namespace FlowCiao.Persistence.Interfaces
 {
     public interface IActivityRepository
     {
-        Task<List<Activity>> Get(string actorName = default, bool fetchActorContent = false);
+        Task<List<Activity>> Get(bool fetchActorContent = false);
         Task<Activity> GetByKey(Guid id = default, string actorName = default);
         Task<Guid> Modify(Activity entity);
         Task<Activity> RegisterActivity(string actorName, byte[] actorContent);

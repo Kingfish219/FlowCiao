@@ -20,10 +20,10 @@ namespace FlowCiao.Models.Core
         
         [ForeignKey("ToStateId")]
         public State To { get; set; }
+
+        public List<Trigger> Triggers { get; set; } = new();
         
-        public List<Trigger> Triggers { get; set; }
-        
-        public List<Activity> Activities { get; set; }
+        public List<Activity> Activities { get; set; } = new();
         
         public List<TransitionActivity> TransitionActivities { get; set; }
         

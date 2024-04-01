@@ -17,7 +17,7 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
         {
         }
 
-        public async Task<List<Activity>> Get(string actorName = default, bool fetchActorContent = false)
+        public async Task<List<Activity>> Get(bool fetchActorContent = false)
         {
             await Task.CompletedTask;
             

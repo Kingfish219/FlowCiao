@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FlowCiao.Studio.Controllers;
 
 [Route("flowciao/api/activity")]
-public class ActivityController : FlowCiaoApiControllerBase
+public class ActivityController : FlowCiaoControllerBase
 {
     private readonly ActivityService _activityService;
 
@@ -22,7 +22,7 @@ public class ActivityController : FlowCiaoApiControllerBase
     }
     
     [HttpPost("register")]
-    public async Task<IActionResult> RegisterActivityAssembly(IFormFile? file)
+    public async Task<IActionResult> RegisterActivityAssembly(IFormFile file)
     {
         if (file is null)
         {

@@ -1,7 +1,7 @@
 using FlowCiao;
 using FlowCiao.Builders;
 using FlowCiao.Operators;
-using FlowCiao.Samples.Phone.FLowCiao;
+using FlowCiao.Samples.Phone.FlowCiao;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +20,7 @@ builder.Services.AddFlowCiao(settings =>
 });
 
 var app = builder.Build();
+app.UseFlowCiao();
 
 using (var scope = app.Services.CreateScope()) {
     // Build your custom flow and Fire!!!
@@ -37,6 +38,5 @@ if (app.Environment.IsDevelopment())
 }
 
 // Use FlowCiao
-app.UseFlowCiao();
 app.MapControllers();
 app.Run();

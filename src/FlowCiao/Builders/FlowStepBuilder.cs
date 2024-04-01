@@ -5,19 +5,19 @@ using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
 using FlowCiao.Models.Builder.Json;
 using FlowCiao.Models.Core;
-using FlowCiao.Persistence.Interfaces;
+using FlowCiao.Services;
 using FlowCiao.Utils;
 
 namespace FlowCiao.Builders
 {
     internal class FlowStepBuilder : IFlowStepBuilder
     {
-        private readonly IActivityRepository _activityRepository;
+        private readonly ActivityService _activityService;
         public IFlowBuilder FlowBuilder { get; set; }
 
-        public FlowStepBuilder(IFlowBuilder flowBuilder, IActivityRepository activityRepository)
+        public FlowStepBuilder(IFlowBuilder flowBuilder, ActivityService activityService)
         {
-            _activityRepository = activityRepository;
+            _activityService = activityService;
             FlowBuilder = flowBuilder;
             AllowedTransitionsBuilders = new List<Action<Transition>>();
         }
@@ -170,7 +170,7 @@ namespace FlowCiao.Builders
                 }
                 else
                 {
-                    var storedActivity = _activityRepository.LoadActivity(activityName).GetAwaiter().GetResult();
+                    var storedActivity = _activityService.LoadActivity(activityName).GetAwaiter().GetResult();
                     flowActivity = storedActivity;
                 }
 

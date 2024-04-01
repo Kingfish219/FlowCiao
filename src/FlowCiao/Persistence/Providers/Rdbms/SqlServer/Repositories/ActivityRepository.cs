@@ -17,19 +17,15 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
         {
         }
 
-        public async Task<List<Activity>> Get(string actorName = default, bool fetchActorContent = false)
+        public async Task<List<Activity>> Get(bool fetchActorContent = false)
         {
             if (fetchActorContent)
             {
                 return await DbContext.Activities
-                    .Where(a =>
-                        string.IsNullOrWhiteSpace(actorName) || actorName.Equals(a.ActorName))
                     .ToListAsync();
             }
             
             return await DbContext.Activities
-                .Where(a =>
-                    string.IsNullOrWhiteSpace(actorName) || actorName.Equals(a.ActorName))
                 .Select(activity => new Activity
                 {
                     Id = activity.Id,
@@ -43,16 +39,18 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
         public async Task<Activity> GetByKey(Guid id = default, string actorName = default)
         {
             return await DbContext.Activities.SingleOrDefaultAsync(a =>
-                (a.Id == default || a.Id == id) &&
-                (string.IsNullOrWhiteSpace(actorName) || a.ActorName.Equals(actorName, StringComparison.InvariantCultureIgnoreCase)));
+                (id == default || a.Id == id) &&
+                (string.IsNullOrWhiteSpace(actorName) || a.ActorName.ToLower() == actorName));
         }
 
         public async Task<Guid> Modify(Activity entity)
         {
-            var existed = await GetByKey(entity.Id);
+            var existed = await GetByKey(entity.Id, entity.ActorName);
             if (existed != null)
             {
-                DbContext.Activities.Update(entity);
+                entity.Id = existed.Id;
+                entity.ActorName = existed.ActorName;
+                DbContext.Entry(existed).CurrentValues.SetValues(entity);
             }
             else
             {

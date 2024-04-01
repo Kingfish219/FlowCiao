@@ -17,11 +17,16 @@ namespace FlowCiao.Services
             _activityRepository = activityRepository;
         }
 
-        public Task<List<Activity>> Get()
+        public Task<List<Activity>> Get(bool fetchActorContent = false)
         {
-            return _activityRepository.Get();
+            return _activityRepository.Get(fetchActorContent);
         }
-        
+
+        public Task<Activity> GetByKey(Guid id = default, string actorName = default)
+        {
+            return _activityRepository.GetByKey(id, actorName);
+        }
+
         public async Task<Guid> Modify(Activity activity)
         {
             return await _activityRepository.Modify(activity);
@@ -33,7 +38,7 @@ namespace FlowCiao.Services
             {
                 throw new FlowCiaoException("Invalid file");
             }
-            
+
             var result = await _activityRepository.RegisterActivity(actorName, actorContent);
             result.ActorContent = null;
 

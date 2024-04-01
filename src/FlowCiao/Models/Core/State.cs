@@ -22,7 +22,7 @@ namespace FlowCiao.Models.Core
         public Flow Flow { get; set; }
         public bool IsFinal { get; set; }
         public bool IsInitial { get; set; }
-        public List<Activity> Activities { get; set; }
+        public List<Activity> Activities { get; set; } = new();
 
         public List<StateActivity> StateActivities { get; set; }
     }

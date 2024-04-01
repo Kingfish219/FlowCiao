@@ -10,28 +10,28 @@ namespace FlowCiao.Models.Execution
     public class FlowExecution
     {
         public Guid Id { get; set; }
-        
-        [ForeignKey("FlowId")]
+
+        [ForeignKey("FlowId")] 
         public Flow Flow { get; set; }
-        
+
         public FlowExecutionState ExecutionState { get; set; }
-        
-        [NotMapped]
+
+        [NotMapped] 
         public FlowExecutionStep ActiveExecutionStep => ExecutionSteps.SingleOrDefault(x => !x.IsCompleted);
 
-        [NotMapped]
+        [NotMapped] 
         public List<FlowExecutionStep> ExecutionSteps { get; set; }
-        
+
         public DateTime CreatedOn { get; set; }
-        
+
         public string Progress
         {
             get => JsonConvert.SerializeObject(ExecutionSteps);
             set => ExecutionSteps = JsonConvert.DeserializeObject<List<FlowExecutionStep>>(value);
         }
-        
-        [ForeignKey("StateId")]
-        public State State { get; set; }
+
+        [NotMapped] 
+        public State State => ExecutionSteps.FirstOrDefault()?.Details.FirstOrDefault()?.Transition?.From;
 
         public enum FlowExecutionState
         {

@@ -2,7 +2,7 @@
 using FlowCiao.Models;
 using FlowCiao.Models.Execution;
 
-namespace FlowCiao.Samples.Phone.FLowCiao.Activities
+namespace FlowCiao.Samples.Phone.FlowCiao.Activities
 {
     public class HelloWorld : IFlowActivity
     {

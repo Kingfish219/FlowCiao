@@ -65,8 +65,7 @@ namespace FlowCiao.Services
                 {
                     GenerateFlowStep(flow,
                             flow.Transitions.First(x => x.From.IsInitial).From)
-                },
-                State = flow.InitialState
+                }
             };
 
             if (_flowSettings.PersistFlow)

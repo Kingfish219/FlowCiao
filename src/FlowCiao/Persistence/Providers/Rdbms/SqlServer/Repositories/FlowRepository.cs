@@ -16,7 +16,7 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
         public async Task<Flow> GetByKey(Guid id = default, string key = default)
         {
             return await DbContext.Flows.SingleOrDefaultAsync(a =>
-                (a.Id == default || a.Id == id) &&
+                (id == default || a.Id == id) &&
                 (string.IsNullOrWhiteSpace(key) || a.Key.ToLower().Equals(key.ToLower())));
         }
 

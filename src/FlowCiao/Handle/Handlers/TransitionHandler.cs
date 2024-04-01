@@ -29,15 +29,15 @@ namespace FlowCiao.Handle.Handlers
                 }
 
                 var transition = flowStepContext.FlowExecutionStepDetail.Transition;
-                if (transition.Condition != null)
+                if (transition.Condition is null)
                 {
-                    if (!transition.Condition())
-                    {
-                        throw new FlowExecutionException("Exception occured while completing transition as transition condition did not meet");
-                    }
+                    return NextHandler.Handle(flowStepContext);
                 }
-
-                flowStepContext.FlowExecution.State = flowStepContext.FlowExecutionStepDetail.Transition.To;
+                
+                if (!transition.Condition())
+                {
+                    throw new FlowExecutionException("Exception occured while completing transition as transition condition did not meet");
+                }
 
                 return NextHandler.Handle(flowStepContext);
             }
