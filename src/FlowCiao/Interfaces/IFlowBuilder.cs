@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FlowCiao.Interfaces;
 using FlowCiao.Models.Builder.Json;
 using FlowCiao.Models.Core;
 
-namespace FlowCiao.Builders
+namespace FlowCiao.Interfaces
 {
     public interface IFlowBuilder
     {

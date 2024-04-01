@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using FlowCiao.Builders;
 using FlowCiao.Handle;
+using FlowCiao.Interfaces;
 using FlowCiao.Models;
 using FlowCiao.Models.Core;
 using FlowCiao.Models.Execution;
@@ -26,7 +27,7 @@ namespace FlowCiao
 
             AddRepositories(services, flowSettings);
             AddServices(services);
-            
+
             services.AddScoped<IFlowBuilder, FlowBuilder>();
             services.AddScoped<IFlowStepBuilder, FlowStepBuilder>();
             services.AddScoped<IFlowOperator, FlowOperator>();

@@ -16,28 +16,32 @@ namespace FlowCiao.Builders
         public IFlowStepBuilder InitialStepBuilder { get; set; }
         private readonly FlowService _flowService;
         private readonly ActivityService _activityService;
-        
-        public FlowBuilder(FlowService flowService, ActivityService activityService)
+        private readonly StateService _stateService;
+        private readonly TransitionService _transitionService;
+
+        public FlowBuilder(FlowService flowService, ActivityService activityService, StateService stateService,
+            TransitionService transitionService)
         {
             StepBuilders = new List<IFlowStepBuilder>();
             _flowService = flowService;
             _activityService = activityService;
+            _stateService = stateService;
+            _transitionService = transitionService;
         }
 
         public IFlowBuilder Initial(Action<IFlowStepBuilder> action)
         {
-            var builder = new FlowStepBuilder(this, _activityService);
-            InitialStepBuilder = builder;
+            InitialStepBuilder = new FlowStepBuilder(_activityService, _stateService, _transitionService);
             action(InitialStepBuilder);
             InitialStepBuilder.InitialState.IsInitial = true;
-            StepBuilders.Add(builder);
+            StepBuilders.Add(InitialStepBuilder);
 
             return this;
         }
 
         public IFlowBuilder NewStep(Action<IFlowStepBuilder> action)
         {
-            var builder = new FlowStepBuilder(this, _activityService);
+            var builder = new FlowStepBuilder(_activityService, _stateService, _transitionService);
             action(builder);
             StepBuilders.Add(builder);
 
@@ -49,11 +53,6 @@ namespace FlowCiao.Builders
             try
             {
                 var flowPlanner = Activator.CreateInstance<T>();
-                if (flowPlanner is null)
-                {
-                    throw new FlowCiaoException();
-                }
-
                 var flow = _flowService.GetByKey(key: flowPlanner.Key).GetAwaiter().GetResult();
                 if (flow != null)
                 {
@@ -69,7 +68,7 @@ namespace FlowCiao.Builders
 
                 foreach (var stepBuilder in StepBuilders)
                 {
-                    foreach (var allowedTransitionBuilder in stepBuilder.AllowedTransitionsBuilders)
+                    foreach (var allowedTransitionBuilder in stepBuilder.AllowedBuilders)
                     {
                         var transition = new Transition();
                         allowedTransitionBuilder(transition);
@@ -90,7 +89,8 @@ namespace FlowCiao.Builders
                     for (var i = 0; i < transition.Activities.Count; i++)
                     {
                         var activity = transition.Activities[i];
-                        var existed = _activityService.GetByKey(activity.Id, activity.ActorName).GetAwaiter().GetResult();
+                        var existed = _activityService.GetByKey(activity.Id, activity.ActorName).GetAwaiter()
+                            .GetResult();
                         if (existed != null)
                         {
                             transition.Activities[i] = existed;
@@ -104,13 +104,14 @@ namespace FlowCiao.Builders
                         }
                     }
                 }
-                
+
                 foreach (var state in flow.States)
                 {
                     for (var i = 0; i < state.Activities.Count; i++)
                     {
                         var activity = state.Activities[i];
-                        var existed = _activityService.GetByKey(activity.Id, activity.ActorName).GetAwaiter().GetResult();
+                        var existed = _activityService.GetByKey(activity.Id, activity.ActorName).GetAwaiter()
+                            .GetResult();
                         if (existed != null)
                         {
                             state.Activities[i] = existed;
@@ -155,7 +156,7 @@ namespace FlowCiao.Builders
                     .Select(jsonState => new State(jsonState.Code, jsonState.Name))
                     .ToList();
 
-                InitialStepBuilder = new FlowStepBuilder(this, _activityService);
+                InitialStepBuilder = new FlowStepBuilder(_activityService, _stateService, _transitionService);
                 InitialStepBuilder.Build(states, jsonFlow.Initial);
 
                 flow = new Flow
@@ -165,7 +166,7 @@ namespace FlowCiao.Builders
                 flow.Transitions ??= new List<Transition>();
                 InitialStepBuilder.InitialState.IsInitial = true;
 
-                InitialStepBuilder.AllowedTransitionsBuilders.ForEach(allowedTransition =>
+                InitialStepBuilder.AllowedBuilders.ForEach(allowedTransition =>
                 {
                     var transition = new Transition();
                     allowedTransition(transition);
@@ -176,14 +177,14 @@ namespace FlowCiao.Builders
                 {
                     jsonFlow.Steps.ForEach(jsonStep =>
                     {
-                        var stepBuilder = new FlowStepBuilder(this, _activityService);
+                        var stepBuilder = new FlowStepBuilder(_activityService, _stateService, _transitionService);
                         stepBuilder.Build(states, jsonStep);
                         StepBuilders.Add(stepBuilder);
                     });
 
                     foreach (var stepBuilder in StepBuilders)
                     {
-                        foreach (var allowedTransition in stepBuilder.AllowedTransitionsBuilders)
+                        foreach (var allowedTransition in stepBuilder.AllowedBuilders)
                         {
                             var transition = new Transition();
                             allowedTransition(transition);
@@ -211,60 +212,6 @@ namespace FlowCiao.Builders
         public Flow Build<T>(Action<IFlowBuilder> constructor) where T : IFlowPlanner, new()
         {
             throw new NotImplementedException();
-
-            //try
-            //{
-            //    var flow = Activator.CreateInstance<T>();
-            //    constructor.Invoke(this);
-
-            //    var flow = _flowService.Get(key: flow.Key).GetAwaiter().GetResult().FirstOrDefault();
-            //    if (flow != null)
-            //    {
-            //        return flow;
-            //    }
-
-            //    foreach (var builder in StepBuilders)
-            //    {
-            //        builder.InitialState.Activities = new List<Activity>
-            //        {
-            //            new Activity
-            //            {
-            //                Actor = builder.OnEntryActivity
-            //            }
-            //        };
-
-            //        foreach (var allowedTransition in builder.AllowedTransitions)
-            //        {
-            //            flow.Transitions.Add(new Transition
-            //            {
-            //                From = builder.InitialState,
-            //                To = allowedTransition.Item1,
-            //                Activities = new List<Activity>
-            //                {
-            //                    new Activity
-            //                    {
-            //                        Actor = builder.OnExitActivity
-            //                    }
-            //                },
-            //                Triggers = allowedTransition.Item2
-            //            });
-            //        }
-            //    }
-
-            //    var result = _flowService.Modify(flow).GetAwaiter().GetResult();
-            //    if (result == default)
-            //    {
-            //        throw new FlowCiaoPersistancyException("Check your database connection!");
-            //    }
-
-            //    return flow;
-            //}
-            //catch (Exception)
-            //{
-            //    Rollback();
-
-            //    throw;
-            //}
         }
 
         private void Rollback()

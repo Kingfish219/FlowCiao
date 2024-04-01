@@ -4,7 +4,7 @@ using FlowCiao.Models.Execution;
 using FlowCiao.Persistence.Interfaces;
 using FlowCiao.Services;
 
-namespace FlowCiao.Handle.Handlers
+namespace FlowCiao.Handle
 {
     internal abstract class FlowHandler : IFlowHandler
     {
