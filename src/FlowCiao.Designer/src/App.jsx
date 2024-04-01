@@ -298,6 +298,7 @@ function App() {
                 resetFlowCalled={resetFlow}
                 onResetFlowClick={resetFlowClick}
                 workflowName={workflowName}
+                onSetWorkflowName={(name) => {setWorkflowName(name);}}
               />
             </div>
           </Content>

@@ -365,20 +365,27 @@ const Flow = forwardRef((props, ref) => {
             (x) => x.id == element.allowedStateCode
           );
 
-          const position = findFirstEmptyPosition(
-            stepNode.position.x + 350,
-            stepNode.position.y
-          );
-          nodesPosition.current.push(position);
-          nextStepNode.position = position;
+          if (nextStepNode.position == null) {
+            const position = findFirstEmptyPosition(
+              stepNode.position.x + 350,
+              stepNode.position.y
+            );
+            nodesPosition.current.push(position);
+            nextStepNode.position = position;
+          }
         });
       }
     });
 
-    setId(Math.max(...jsonFlow.States.map((o) => o.Code)));
+    var maxNodeId = Math.max(...jsonFlow.States.map((o) => o.Code));
+    var maxEdgeId = Math.max(...jsonFlow.Actions.map((o) => o.Code));
+    var lastMaxId = maxNodeId > maxEdgeId ? maxNodeId : maxEdgeId;
+    setId(lastMaxId);
 
     setEdges(importedEdges);
     setNodes(importedNodes);
+
+    props.onSetWorkflowName(jsonFlow.Name);
   };
 
   const onNodesChange = useCallback(
@@ -436,7 +443,7 @@ const Flow = forwardRef((props, ref) => {
         target: connection.target,
         type: "custom-edge",
         data: { Name: "" },
-      }; //{ ...connection, type: "custom-edge" };
+      };
       setEdges((eds) => addEdge(edge, eds));
     },
     [setEdges]
