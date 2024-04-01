@@ -35,12 +35,14 @@ const edgeTypes = { "custom-edge": CustomEdge };
 
 localStorage.setItem("lastNodeId", 2);
 const getId = () => {
-  let id = localStorage.getItem("lastNodeId")
+  let id = localStorage.getItem("lastNodeId");
   id++;
   localStorage.setItem("lastNodeId", id);
   return `${id}`;
 };
-const setId = (id) =>{localStorage.setItem("lastNodeId",  id == undefined ? 2 : id);}
+const setId = (id) => {
+  localStorage.setItem("lastNodeId", id == undefined ? 2 : id);
+};
 
 const Flow = forwardRef((props, ref) => {
   const edgeUpdateSuccessful = useRef(true);
@@ -110,7 +112,7 @@ const Flow = forwardRef((props, ref) => {
       source: "1",
       target: "2",
       type: "custom-edge",
-      data: { Name: "" },
+      data: { Name: "", noInput: true },
     },
   ];
   const [edges, setEdges] = useEdgesState(initialEdges);
@@ -198,14 +200,14 @@ const Flow = forwardRef((props, ref) => {
             : "",
       }));
 
-      const removeDuplicates = (arr) => {
-        const uniqueMap = new Map();
-        arr.forEach((item) => uniqueMap.set(item.fromStateCode, item));
-        return Array.from(uniqueMap.values());
-      };
-      
-      // Apply removeDuplicates function to the mapped array
-      steps = removeDuplicates(steps);
+    const removeDuplicates = (arr) => {
+      const uniqueMap = new Map();
+      arr.forEach((item) => uniqueMap.set(item.fromStateCode, item));
+      return Array.from(uniqueMap.values());
+    };
+
+    // Apply removeDuplicates function to the mapped array
+    steps = removeDuplicates(steps);
 
     var endSteps = states
       .filter(
@@ -263,8 +265,7 @@ const Flow = forwardRef((props, ref) => {
   };
 
   const importJson = (jsonFlow) => {
-    
-    nodesPosition.current = [{ x: 0, y: 0 }];      
+    nodesPosition.current = [{ x: 0, y: 0 }];
     setId();
 
     var importedNodes = jsonFlow.States.map((node) => ({
@@ -291,9 +292,9 @@ const Flow = forwardRef((props, ref) => {
     var firstIdleNode = importedNodes.find(
       (x) => x.id == jsonFlow.Initial.fromStateCode
     );
+    firstIdleNode.data.reset = true;
     firstIdleNode.data.onEntry =
-      jsonFlow.Initial.onEntry != undefined &&
-      jsonFlow.Initial.onEntry != ""
+      jsonFlow.Initial.onEntry != undefined && jsonFlow.Initial.onEntry != ""
         ? jsonFlow.Initial.onEntry.name
         : "";
     firstIdleNode.data.onExit =
@@ -335,7 +336,7 @@ const Flow = forwardRef((props, ref) => {
       source: (firstIdleNode.id - 1).toString(),
       target: firstIdleNode.id.toString(),
       type: "custom-edge",
-      data: { Name: "" },
+      data: { Name: "", noInput: true },
     };
     importedEdges = [initialEdge, ...importedEdges];
 
@@ -374,7 +375,7 @@ const Flow = forwardRef((props, ref) => {
       }
     });
 
-    setId(Math.max(...jsonFlow.States.map((o) => o.Code)))
+    setId(Math.max(...jsonFlow.States.map((o) => o.Code)));
 
     setEdges(importedEdges);
     setNodes(importedNodes);
@@ -448,14 +449,15 @@ const Flow = forwardRef((props, ref) => {
 
   useEffect(() => {
     if (props.resetFlowCalled) {
+      var resetNode = initialNodes;
+      resetNode[1].data = { ...resetNode[1].data, reset: true };
       setNodes(initialNodes);
       setEdges(initialEdges);
-      nodesPosition.current = [{ x: 0, y: 0 }];      
+      nodesPosition.current = [{ x: 0, y: 0 }];
       setId();
       props.onResetFlowClick(false);
     }
   }, [props.resetFlowCalled]);
-
 
   const connectionLineStyle = {
     strokeWidth: 1.5,

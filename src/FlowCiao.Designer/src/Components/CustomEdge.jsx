@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  getBezierPath,
-  EdgeLabelRenderer,
-  BaseEdge,
-} from "reactflow";
+import { getBezierPath, EdgeLabelRenderer, BaseEdge } from "reactflow";
 
 const CustomEdge = ({
   id,
@@ -43,12 +39,16 @@ const CustomEdge = ({
             transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
           }}
         >
-          <input
-            className="custom-edge-input"
-            placeholder="some action"
-            defaultValue={data.Name != "" ? data.Name : "some action"}
-            onChange={onEdgeNameChange}
-          />
+          {data.noInput == undefined || !data.noInput ? (
+            <input
+              className="custom-edge-input"
+              placeholder="some action"
+              defaultValue={data.Name != "" ? data.Name : "some action"}
+              onChange={onEdgeNameChange}
+            />
+          ) : (
+            <></>
+          )}
         </div>
       </EdgeLabelRenderer>
 

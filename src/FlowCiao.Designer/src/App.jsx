@@ -1,4 +1,4 @@
-import { useState, useRef, useContext, useEffect } from "react";
+import { useState, useRef } from "react";
 import Flow from "./Components/Flow";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import {
@@ -22,8 +22,7 @@ import actionIconImg from "./Assets/action-icon.svg";
 import uploadIconImg from "./Assets/upload-icon.svg";
 import arrowDownIconImg from "./Assets/arrow-down-icon.svg";
 import ApplicationContextProvider from "./Store/ApplicationContextProvider";
-import ApplicationContext from "./Store/ApplicationContext";
-const { Header, Footer, Sider, Content } = Layout;
+const { Header, Content } = Layout;
 const { confirm } = Modal;
 
 function App() {
@@ -211,7 +210,7 @@ function App() {
   };
 
   return (
-    <ApplicationContextProvider color={color} activities={flowActivitiesList}>
+    <ApplicationContextProvider color={color}>
       <ConfigProvider
         theme={{
           components: {

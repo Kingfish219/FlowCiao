@@ -10,25 +10,25 @@ import trashImg from "../Assets/trash.svg";
 import ApplicationContext from "../Store/ApplicationContext";
 
 const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
-  const { AllFlowActivities, updateAllFlowActivities } =
-    useContext(ApplicationContext);
 
   const [activities, setActivities] = useState({
     onEntryName: node.data.onEntry,
     onExitName: node.data.onExit,
   });
   const handleOk = () => {
-    updateAllFlowActivities(flowActivitiesList);
     onApplyChanges(activities);
   };
   const handleCancel = () => {
-    setFlowActivitiesList(AllFlowActivities);
     setActivities({
       onEntryName: node.data.onEntry,
       onExitName: node.data.onExit,
     });
     onApplyChanges(null, null);
   };
+
+  const actionDropdownOnClick = () => {
+    getActivities();
+  }
 
   const chooseOnEntryActionHandler = ({ key }) => {
     if (key == "registerActivity") {
@@ -60,12 +60,9 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
   const removeExitActionHandler = () => {
     setActivities({ ...activities, onExitName: "" });
   };
-  const [flowActivitiesList, setFlowActivitiesList] =
-    useState(AllFlowActivities);
 
-    
+  const [flowActivitiesList, setFlowActivitiesList] = useState([]);
 
-    useEffect(() => {setFlowActivitiesList(AllFlowActivities)}, [AllFlowActivities])
 
   const uploadActivityDll = () => {
     getActivities();
@@ -158,6 +155,7 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
                 }}
                 placement="bottomRight"
                 trigger={['click']}
+                onClick={actionDropdownOnClick}
               >
                 <button className="add-actvity-btn">+ Add Actvity</button>
               </Dropdown>
@@ -173,6 +171,7 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
                     }}
                     placement="bottomRight"
                     trigger={['click']}
+                    onClick={actionDropdownOnClick}
                   >
                     <button className="node-action-edit-btn">
                       <img src={editIconImg} />
@@ -198,6 +197,7 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
                 }}
                 placement="bottomRight"
                 trigger={['click']}
+                onClick={actionDropdownOnClick}
               >
                 <button className="add-actvity-btn">+ Add Actvity</button>
               </Dropdown>
@@ -213,6 +213,7 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
                     }}
                     placement="bottomRight"
                     trigger={['click']}
+                    onClick={actionDropdownOnClick}
                   >
                     <button className="node-action-edit-btn">
                       <img src={editIconImg} />

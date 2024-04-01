@@ -1,12 +1,8 @@
 import { useCallback, useState, useContext, useEffect } from "react";
-import { Handle, Position, useStore } from "reactflow";
-import { Button, Dropdown, Space, Modal } from "antd";
-import exitActionImg from "../Assets/exit-action.svg";
-import entryActionImg from "../Assets/entry-action.svg";
+import { Handle, Position } from "reactflow";
 import dotImg from "../Assets/dot.svg";
 import plusImg from "../Assets/circle-plus.svg";
 import actionIconImg from "../Assets/action-icon.svg";
-import trashImg from "../Assets/trash.svg";
 import ApplicationContext from "../Store/ApplicationContext";
 import NodeActvityModal from "./NodeActvityModal";
 
@@ -15,7 +11,9 @@ const IdleNode = (node) => {
 
   const [isHoverNode, setIsHoverNode] = useState(false);
   const [isHoverSpaceNode, setIsHoverSpaceNode] = useState(false);
-
+  const [nodeName, setNodeName] = useState(
+    node.data.Name != "" ? node.data.Name : "Pending"
+  );
   const onIdleNodeHoverFunc = () => {
     setIsHoverNode(true);
   };
@@ -38,6 +36,7 @@ const IdleNode = (node) => {
 
   const onNodeNameChange = (e) => {
     node.data.Name = e.target.value;
+    setNodeName(node.data.Name);
   };
   const [nodeActivities, setNodeActivities] = useState([]);
 
@@ -50,13 +49,28 @@ const IdleNode = (node) => {
       updatedActivities.push(node.data.onExit);
     }
     setNodeActivities(updatedActivities);
-  },[])
+  }, []);
+
+  useEffect(() => {
+    if (node.data.reset) {
+      setNodeName(node.data.Name != "" ? node.data.Name : "Pending");
+      let updatedActivities = [];
+      if (node.data.onEntry != "") {
+        updatedActivities.push(node.data.onEntry);
+      }
+      if (node.data.onExit != "") {
+        updatedActivities.push(node.data.onExit);
+      }
+      setNodeActivities(updatedActivities);
+      delete node.data.reset;
+    }
+  }, [node.data.reset != undefined && node.data.reset]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
     setIsModalOpen(true);
   };
- const onApplyChanges = (activities) => {
+  const onActivitiesApplyChanges = (activities) => {
     if (activities != null) {
       node.data.onEntry = activities.onEntryName;
       node.data.onExit = activities.onExitName;
@@ -145,7 +159,14 @@ const IdleNode = (node) => {
         {!isHoverNode && !isHoverSpaceNode ? (
           <></>
         ) : (
-          <button className={nodeActivities.length > 0 ? "node-actvity-btn" : "node-actvity-btn no-activity"}  onClick={showModal}>
+          <button
+            className={
+              nodeActivities.length > 0
+                ? "node-actvity-btn"
+                : "node-actvity-btn no-activity"
+            }
+            onClick={showModal}
+          >
             {nodeActivities.length > 0 ? (
               <span className="node-activity-count-container">
                 <img className="active-filter" src={actionIconImg} />
@@ -167,13 +188,13 @@ const IdleNode = (node) => {
           className="node-name"
           type="text"
           placeholder="Pending"
-          defaultValue={node.data.Name != "" ? node.data.Name : "Pending"}
+          value={nodeName}
           onChange={onNodeNameChange}
         />
       </div>
       <NodeActvityModal
         node={node}
-        onApplyChanges={onApplyChanges}
+        onApplyChanges={onActivitiesApplyChanges}
         isModalOpen={isModalOpen}
       />
     </>
