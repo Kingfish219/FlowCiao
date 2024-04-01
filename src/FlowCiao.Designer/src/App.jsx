@@ -11,6 +11,7 @@ import {
   Modal,
   Upload,
   Dropdown,
+  message
 } from "antd";
 import "./App.css";
 import plusImg from "./Assets/plus.svg";
@@ -22,10 +23,12 @@ import actionIconImg from "./Assets/action-icon.svg";
 import uploadIconImg from "./Assets/upload-icon.svg";
 import arrowDownIconImg from "./Assets/arrow-down-icon.svg";
 import ApplicationContextProvider from "./Store/ApplicationContextProvider";
+import useActivityData from "./apis/data/useActivityData";
 const { Header, Content } = Layout;
 const { confirm } = Modal;
 
 function App() {
+  const [messageApi, contextHolder] = message.useMessage();
   const flowDesignerRef = useRef();
   const [workflowName, setWorkflowName] = useState("My State Machine");
 
@@ -55,36 +58,78 @@ function App() {
     reader.readAsText(file);
   };
 
+  
   const chooseActionHandler = ({ key }) => {
-    if (key == "headerRegisterActivity") {
-      uploadActivityDll();
-    }
+    // if (key == "headerRegisterActivity") {
+    //   uploadActivityDll();
+    // }
   };
+
+  const {
+    isLoading,
+    error,
+    sendGetRequest : senGeActivitiesRequest,
+    sendUploadDLLFileRequest: sendUploadActvitiesDllFileRequest
+  } = useActivityData()
   const [flowActivitiesList, setFlowActivitiesList] = useState([]);
 
-  const actionDropdownOnClick = () => {
-    getActivities();
-  }
-  const uploadActivityDll = () => {
-    getActivities();
+  
+  const handleActivityDllFileChange = (info) => {
+    const fileReader = new FileReader();
+    fileReader.onload = (e) => {
+      const formDatas = new FormData();
+      formDatas.append("file",info.file);
+      sendUploadActvitiesDllFileRequest(
+        {
+          params: formDatas,
+        },
+        (response) => {
+          if(response.status == 200){
+            messageApi.open({
+              type: 'success',
+              content: 'Uploading is successful',
+            });
+          }
+          console.log(response)
+        }
+      );
+    };
+
+    fileReader.readAsArrayBuffer(info.file);
+    
   };
+
+  const actionDropdownOnClick = (isOpen) => {
+    if(isOpen)
+    {
+      getActivities();
+    }
+  }
   const getActivities = () => {
-    var flowActivities = [
-      {
-        name: "HelloWordActivity",
-      },
-    ];
-    setFlowActivitiesList(flowActivities);
+    senGeActivitiesRequest({},
+      (data) => {
+        var flowActivities =data.map(activity => ({name: activity.name}));
+        setFlowActivitiesList(flowActivities);
+      }
+    );
   };
 
   var registerActivityDropDownItem = [
     {
       key: "headerRegisterActivity",
       label: (
+        <Upload
+        accept=".dll"
+        onChange={handleActivityDllFileChange}
+        showUploadList={false}
+        beforeUpload={() => false} // Prevent auto-upload
+      >
         <span className="activities-dropdown-item">
           <img src={uploadIconImg} />
           <span className="activity-name">Register or update Activity</span>
         </span>
+      </Upload>
+        
       ),
     },
   ];
@@ -275,7 +320,7 @@ function App() {
                 }}
                 placement="bottomRight"
                 trigger={['click']}
-                onClick={actionDropdownOnClick}
+                onOpenChange={actionDropdownOnClick}
               >
                 <Button className="header-btn header-activities-btn">
                   <img className="activities-icon" src={actionIconImg} />
@@ -293,6 +338,7 @@ function App() {
           </Header>
           <Content className="main-content">
             <div>
+            {contextHolder}
               <Flow
                 ref={flowDesignerRef}
                 resetFlowCalled={resetFlow}

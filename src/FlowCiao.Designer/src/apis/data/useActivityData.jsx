@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { ApiCaller } from "../ApiCaller"
 
+const activityApiPath = "flowciao/api/activity"
 const useActivityData = () => {
 
   const [isLoading, setIsLoading] = useState(false);
@@ -10,34 +11,21 @@ const useActivityData = () => {
     setIsLoading(true);
     setError(null);
     try {
-      if (requestConfig.retrieveSingleData) {
-
-        const response = await ApiCaller.getOne("activities", {
-          id: requestConfig.id,
-          params: requestConfig.params,
-        });
-        var data = {};
-        if (response.success) {
-          data = {
-            key: response.data.id,
-            ...response.data,
-          };
-        }
-        applyData(data);
-      } else {
+     
         const response = await ApiCaller.getList(
-          "activities",
+            activityApiPath,
           requestConfig.params,
         );
+
         var data = [];
-        if (response.success) {
-          data = response.data.map((activity) => ({
+        if (response.status == 200) {
+           data = response.data.map((activity) => ({
             key: activity.id,
             ...activity,
           }));
         }
         applyData(data);
-      }
+      
     } catch (err) {
       setError(err.message || "Something went wrong!");
     }
@@ -49,8 +37,8 @@ const useActivityData = () => {
     setIsLoading(true);
     setError(null);
     try {
-        const response = await DataProvider.post(
-          "activities/upload",
+        const response = await ApiCaller.post(
+          `${activityApiPath}/register`,
           requestConfig.params,
         );        
         applyData(response);

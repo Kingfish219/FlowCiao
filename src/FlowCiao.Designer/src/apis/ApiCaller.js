@@ -1,8 +1,9 @@
+import axios from "axios"
 const api = axios.create({
-    baseURL:"development"
+    baseURL:" http://localhost:5235/"
   })
 
-export const DataProvider = {
+export const ApiCaller = {
   getList: async function(resource, params, cancel = false) {
    
     const response = await api.request({
@@ -10,8 +11,8 @@ export const DataProvider = {
       method: "GET",
       params
     })
-    var responseData = ConvertToCamelCase(response.data)
-    return responseData
+   // var responseData = ConvertToCamelCase(response.data)
+    return response
   },
   getOne: async function(resource, reqParams, cancel = false) {
     const { id, ...other } = reqParams
@@ -21,8 +22,8 @@ export const DataProvider = {
       params: other.params
     })
     
-    var responseData = ConvertToCamelCase(response.data)
-    return responseData
+   // var responseData = ConvertToCamelCase(response.data)
+    return response
   },
   post: async function(resource, data, cancel = false) {
     const response = await api.request({
@@ -30,33 +31,33 @@ export const DataProvider = {
       method: "POST",
       data: data
     })
-    var responseData = ConvertToCamelCase(response.code == "ERR_BAD_REQUEST" ? response.response.data: response.data)
-    return responseData
+  //  var responseData = ConvertToCamelCase(response.code == "ERR_BAD_REQUEST" ? response.response.data: response.data)
+    return response
   },
   update: async function(resource, data = {}, cancel = false) {
     const { id, ...others } = data
 
     const response = await api.request({
-      url: `api/${resource}${id ? "/" + id : ""}`,
+      url: `${resource}${id ? "/" + id : ""}`,
       method: "PUT",
       data: others
     })
 
-    var responseData = ConvertToCamelCase(response.data)
-    return responseData
+  //  var responseData = ConvertToCamelCase(response.data)
+    return response
   },
   delete: async function(resource, params, cancel = false) {
     const response = await api.request({
-      url: `api/${resource}/${params.id}`,
+      url: `${resource}/${params.id}`,
       method: "DELETE"
     })
 
-    var responseData = ConvertToCamelCase(response.data)
-    return responseData
+   // var responseData = ConvertToCamelCase(response.data)
+    return response
   },
   download: async function(resource, cancel = false) {
     const response = await api.request({
-      url: `api/${resource}`,
+      url: `${resource}`,
       method: "GET",
       responseType: 'blob'
     })
