@@ -12,7 +12,9 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
 
         public async Task<Trigger> GetById(Guid id)
         {
-            return await DbContext.Triggers.SingleOrDefaultAsync(a => a.Id == id);
+            return await FlowCiaoDbContext.Triggers
+                .AsNoTracking()
+                .SingleOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task<Guid> Modify(Trigger entity)
@@ -20,14 +22,14 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
             var existed = await GetById(entity.Id);
             if (existed != null)
             {
-                DbContext.Triggers.Update(entity);
+                FlowCiaoDbContext.Triggers.Update(entity);
             }
             else
             {
-                await DbContext.Triggers.AddAsync(entity);
+                await FlowCiaoDbContext.Triggers.AddAsync(entity);
             }
             
-            await DbContext.SaveChangesAsync();
+            await FlowCiaoDbContext.SaveChangesAsync();
 
             return entity.Id;
         }

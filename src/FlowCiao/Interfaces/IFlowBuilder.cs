@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using FlowCiao.Models.Builder.Json;
 using FlowCiao.Models.Core;
 
 namespace FlowCiao.Interfaces
@@ -14,6 +13,6 @@ namespace FlowCiao.Interfaces
         IFlowBuilder NewStep(Action<IFlowStepBuilder> action);
         Flow Build<T>(Action<IFlowBuilder> action) where T : IFlowPlanner, new();
         Flow Build<T>() where T : IFlowPlanner, new();
-        Task<Flow> Build(JsonFlow jsonFlow);
+        Task<Flow> BuildFromJsonAsync(string json);
     }
 }

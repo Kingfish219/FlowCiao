@@ -8,10 +8,7 @@ namespace FlowCiao.Interfaces
 {
     public interface IFlowStepBuilder
     {
-        public State InitialState { get; set; }
-        internal List<Action<Transition>> AllowedBuilders { get; set; }
-        protected IFlowActivity OnEntryActivity { get; set; }
-        protected IFlowActivity OnExitActivity { get; set; }
+        internal void IsInitial();
         public IFlowStepBuilder For(State state);
         public IFlowStepBuilder Allow(State state, int trigger, Func<bool> condition = null);
         public IFlowStepBuilder OnEntry<TActivity>() where TActivity : IFlowActivity, new();

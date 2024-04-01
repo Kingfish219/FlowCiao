@@ -12,7 +12,9 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
 
         public async Task<Transition> GetById(Guid id)
         {
-            return await DbContext.Transitions.SingleOrDefaultAsync(a => a.Id == id);
+            return await FlowCiaoDbContext.Transitions
+                .AsNoTracking()
+                .SingleOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task<Guid> Modify(Transition entity)
@@ -20,14 +22,14 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
             var existed = await GetById(entity.Id);
             if (existed != null)
             {
-                DbContext.Transitions.Update(entity);
+                FlowCiaoDbContext.Transitions.Update(entity);
             }
             else
             {
-                await DbContext.Transitions.AddAsync(entity);
+                await FlowCiaoDbContext.Transitions.AddAsync(entity);
             }
             
-            await DbContext.SaveChangesAsync();
+            await FlowCiaoDbContext.SaveChangesAsync();
 
             return entity.Id;
         }

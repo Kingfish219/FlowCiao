@@ -3,11 +3,11 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer
 {
     public class FlowSqlServerRepository
     {
-        protected FlowCiaoDbContext DbContext { get; }
+        protected FlowCiaoDbContext FlowCiaoDbContext { get; }
 
-        protected FlowSqlServerRepository(FlowCiaoDbContext dbContext)
+        protected FlowSqlServerRepository(FlowCiaoDbContext flowCiaoDbContext)
         {
-            DbContext = dbContext;
+            FlowCiaoDbContext = flowCiaoDbContext;
         }
     }
 }

@@ -18,7 +18,7 @@ namespace FlowCiao.Studio.Controllers
         [HttpPost, Route("json")]
         public async Task<IActionResult> BuildFromJson(JsonFlow jsonFlow)
         {
-            var process = await _flowBuilder.Build(jsonFlow);
+            var process = await _flowBuilder.BuildFromJsonAsync(jsonFlow.ToString());
             var flowViewModel = new FlowViewModel
             {
                 Key = process.Key,

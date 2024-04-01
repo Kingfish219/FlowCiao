@@ -15,14 +15,18 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
         
         public async Task<Flow> GetByKey(Guid id = default, string key = default)
         {
-            return await DbContext.Flows.SingleOrDefaultAsync(a =>
+            return await FlowCiaoDbContext.Flows
+                .AsNoTracking()
+                .SingleOrDefaultAsync(a =>
                 (id == default || a.Id == id) &&
                 (string.IsNullOrWhiteSpace(key) || a.Key.ToLower().Equals(key.ToLower())));
         }
 
         public async Task<List<Flow>> Get()
         {
-            return await DbContext.Flows.ToListAsync();
+            return await FlowCiaoDbContext.Flows
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<Guid> Modify(Flow entity)
@@ -30,14 +34,14 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
             var existed = await GetByKey(entity.Id, entity.Key);
             if (existed != null)
             {
-                DbContext.Flows.Update(entity);
+                FlowCiaoDbContext.Flows.Update(entity);
             }
             else
             {
-                await DbContext.Flows.AddAsync(entity);
+                await FlowCiaoDbContext.Flows.AddAsync(entity);
             }
             
-            await DbContext.SaveChangesAsync();
+            await FlowCiaoDbContext.SaveChangesAsync();
 
             return entity.Id;
         }

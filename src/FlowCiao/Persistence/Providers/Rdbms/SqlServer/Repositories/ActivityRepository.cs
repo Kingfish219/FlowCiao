@@ -13,7 +13,7 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
 {
     public class ActivityRepository : FlowSqlServerRepository, IActivityRepository
     {
-        public ActivityRepository(FlowCiaoDbContext dbContext) : base(dbContext)
+        public ActivityRepository(FlowCiaoDbContext flowCiaoDbContext) : base(flowCiaoDbContext)
         {
         }
 
@@ -21,11 +21,13 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
         {
             if (fetchActorContent)
             {
-                return await DbContext.Activities
+                return await FlowCiaoDbContext.Activities
+                    .AsNoTracking()
                     .ToListAsync();
             }
             
-            return await DbContext.Activities
+            return await FlowCiaoDbContext.Activities
+                .AsNoTracking()
                 .Select(activity => new Activity
                 {
                     Id = activity.Id,
@@ -38,7 +40,7 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
         
         public async Task<Activity> GetByKey(Guid id = default, string actorName = default)
         {
-            return await DbContext.Activities.SingleOrDefaultAsync(a =>
+            return await FlowCiaoDbContext.Activities.AsNoTracking().SingleOrDefaultAsync(a =>
                 (id == default || a.Id == id) &&
                 (string.IsNullOrWhiteSpace(actorName) || a.ActorName.ToLower() == actorName));
         }
@@ -50,14 +52,14 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
             {
                 entity.Id = existed.Id;
                 entity.ActorName = existed.ActorName;
-                DbContext.Entry(existed).CurrentValues.SetValues(entity);
+                FlowCiaoDbContext.Activities.Update(entity);
             }
             else
             {
-                await DbContext.Activities.AddAsync(entity);
+                await FlowCiaoDbContext.Activities.AddAsync(entity);
             }
             
-            await DbContext.SaveChangesAsync();
+            await FlowCiaoDbContext.SaveChangesAsync();
 
             return entity.Id;
         }
