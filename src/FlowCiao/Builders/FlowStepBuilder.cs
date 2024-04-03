@@ -30,7 +30,7 @@ namespace FlowCiao.Builders
             FlowStep = new FlowStep();
         }
 
-        public void IsInitial()
+        public void AsInitialStep()
         {
             FlowStep.For.IsInitial = true;
         }
@@ -108,15 +108,15 @@ namespace FlowCiao.Builders
             return this;
         }
 
-        public IFlowStepBuilder Build(List<State> states, JsonStep jsonStep)
+        public IFlowStepBuilder Build(List<State> states, SerializedStep serializedStep)
         {
-            var fromState = states.Single(state => state.Code == jsonStep.FromStateCode);
+            var fromState = states.Single(state => state.Code == serializedStep.FromStateCode);
             var allowedList = states
-                .Where(state => jsonStep.Allows.Exists(allowed => allowed.AllowedStateCode == state.Code))
+                .Where(state => serializedStep.Allows.Exists(allowed => allowed.AllowedStateCode == state.Code))
                 .Select(state => new
                 {
                     AllowedState = state,
-                    AllowedTrigger = jsonStep.Allows.Single(x => x.AllowedStateCode == state.Code).TriggerCode
+                    AllowedTrigger = serializedStep.Allows.Single(x => x.AllowedStateCode == state.Code).TriggerCode
                 })
                 .ToList();
 
@@ -124,14 +124,14 @@ namespace FlowCiao.Builders
 
             allowedList.ForEach(allowed => { Allow(allowed.AllowedState, allowed.AllowedTrigger); });
 
-            if (jsonStep.OnEntry != null)
+            if (serializedStep.OnEntry != null)
             {
-                OnEntry(jsonStep.OnEntry.Name);
+                OnEntry(serializedStep.OnEntry.Name);
             }
 
-            if (jsonStep.OnExit != null)
+            if (serializedStep.OnExit != null)
             {
-                OnExit(jsonStep.OnExit.Name);
+                OnExit(serializedStep.OnExit.Name);
             }
 
             return this;

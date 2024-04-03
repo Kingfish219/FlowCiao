@@ -8,12 +8,12 @@ namespace FlowCiao.Interfaces
 {
     public interface IFlowStepBuilder
     {
-        internal void IsInitial();
+        internal void AsInitialStep();
         public IFlowStepBuilder For(State state);
         public IFlowStepBuilder Allow(State state, int trigger, Func<bool> condition = null);
         public IFlowStepBuilder OnEntry<TActivity>() where TActivity : IFlowActivity, new();
         public IFlowStepBuilder OnExit<TActivity>() where TActivity : IFlowActivity, new();
-        public IFlowStepBuilder Build(List<State> states, JsonStep jsonStep);
-        public FlowStep Build();
+        internal IFlowStepBuilder Build(List<State> states, SerializedStep serializedStep);
+        internal FlowStep Build();
     }
 }

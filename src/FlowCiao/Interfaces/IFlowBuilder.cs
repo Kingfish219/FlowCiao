@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using FlowCiao.Models.Core;
 
@@ -7,12 +6,13 @@ namespace FlowCiao.Interfaces
 {
     public interface IFlowBuilder
     {
-        List<IFlowStepBuilder> StepBuilders { get; set; }
-        IFlowStepBuilder InitialStepBuilder { get; set; }
         IFlowBuilder Initial(Action<IFlowStepBuilder> action);
         IFlowBuilder NewStep(Action<IFlowStepBuilder> action);
-        Flow Build<T>(Action<IFlowBuilder> action) where T : IFlowPlanner, new();
+        Flow Build(string flowKey, Action<IFlowBuilder> build);
+        Task<Flow> BuildAsync(string flowKey, Action<IFlowBuilder> build);
         Flow Build<T>() where T : IFlowPlanner, new();
-        Task<Flow> BuildFromJsonAsync(string json);
+        Task<Flow> BuildAsync<T>() where T : IFlowPlanner, new();
+        Flow Build(IFlowPlanner flowPlanner);
+        Task<Flow> BuildAsync(IFlowPlanner flowPlanner);
     }
 }

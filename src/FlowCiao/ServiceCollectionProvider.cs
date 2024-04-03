@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FlowCiao.Builders;
+using FlowCiao.Builders.Plan;
 using FlowCiao.Handle;
 using FlowCiao.Interfaces;
 using FlowCiao.Models;
@@ -27,12 +28,17 @@ namespace FlowCiao
 
             AddRepositories(services, flowSettings);
             AddServices(services);
+            AddInfra(services);
 
+            return services;
+        }
+
+        private static void AddInfra(IServiceCollection services)
+        {
             services.AddScoped<IFlowBuilder, FlowBuilder>();
             services.AddScoped<IFlowStepBuilder, FlowStepBuilder>();
             services.AddScoped<IFlowOperator, FlowOperator>();
-
-            return services;
+            services.AddScoped<FlowSerializer>();
         }
 
         public static void UseFlowCiao(this IApplicationBuilder applicationBuilder)
