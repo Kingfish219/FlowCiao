@@ -8,8 +8,10 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
 {
     public class StateRepository : FlowSqlServerRepository, IStateRepository
     {
-        public StateRepository(FlowCiaoDbContext dbContext) : base(dbContext) { }
-        
+        public StateRepository(FlowCiaoDbContext dbContext) : base(dbContext)
+        {
+        }
+
         public async Task<State> GetById(Guid id)
         {
             return await FlowCiaoDbContext.States
@@ -20,6 +22,7 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
         public async Task<Guid> Modify(State entity)
         {
             var existed = await GetById(entity.Id);
+            FlowCiaoDbContext.Entry(entity).State = EntityState.Unchanged;
             if (existed != null)
             {
                 FlowCiaoDbContext.States.Update(entity);
@@ -28,28 +31,10 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
             {
                 await FlowCiaoDbContext.States.AddAsync(entity);
             }
-            
+
             await FlowCiaoDbContext.SaveChangesAsync();
 
             return entity.Id;
-        }
-
-        public Task AssociateActivities(State entity, Activity activity)
-        {
-            return Task.Run(() =>
-            {
-                var toInsert = new
-                {
-                    StateId = entity.Id,
-                    ActivityId = activity.Id
-                };
-
-                // using var connection = GetDbConnection();
-                // connection.Open();
-                // connection.Execute(ConstantsProvider.usp_StateActivity_Modify, toInsert, commandType: CommandType.StoredProcedure);
-
-                return entity.Id;
-            });
         }
     }
 }

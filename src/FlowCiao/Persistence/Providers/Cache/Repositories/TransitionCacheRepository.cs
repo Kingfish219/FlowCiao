@@ -30,29 +30,5 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
 
             return entity.Id;
         }
-
-        public async Task AssociateTriggers(Transition entity, Trigger trigger)
-        {
-            //return Task.Run(() =>
-            //{
-            //    var toInsert = new
-            //    {
-            //        TransitionId = entity.Id,
-            //        ActionId = action.Id,
-            //        action.Priority
-            //    };
-
-            //    using var connection = GetDbConnection();
-            //    connection.Open();
-            //    connection.Execute(ConstantsProvider.Usp_TransitionAction_Modify, toInsert, commandType: CommandType.StoredProcedure);
-
-            //    return entity.Id;
-            //});
-        }
-
-        public async Task AssociateActivities(Transition entity, Activity activity)
-        {
-
-        }
     }
 }

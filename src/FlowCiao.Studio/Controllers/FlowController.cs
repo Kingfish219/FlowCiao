@@ -1,4 +1,4 @@
-using FlowCiao.Builders.Serialization;
+using FlowCiao.Builder.Serialization.Serializers;
 using FlowCiao.Operators;
 using FlowCiao.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -12,12 +12,15 @@ namespace FlowCiao.Studio.Controllers
         private readonly IFlowOperator _operator;
         private readonly FlowService _flowService;
         private readonly FlowJsonSerializer _flowJsonSerializer;
+        private readonly FlowExecutionService _flowExecutionService;
 
-        public FlowController(IFlowOperator flowOperator, FlowService flowService, FlowJsonSerializer flowJsonSerializer)
+        public FlowController(IFlowOperator flowOperator, FlowService flowService, FlowJsonSerializer flowJsonSerializer,
+            FlowExecutionService flowExecutionService)
         {
             _operator = flowOperator;
             _flowService = flowService;
             _flowJsonSerializer = flowJsonSerializer;
+            _flowExecutionService = flowExecutionService;
         }
         
         [HttpGet, Route("")]
@@ -30,12 +33,21 @@ namespace FlowCiao.Studio.Controllers
             return Ok(flows);
         }
 
-        [HttpGet, Route("{key}/state")]
-        public async Task<IActionResult> GetFLowState([FromRoute] string key)
+        [HttpGet, Route("/executions/{id}")]
+        public async Task<IActionResult> GetFlowExecution([FromRoute] string id)
         {
-            var state = await _operator.GetFLowState(key);
+            var flowExecutions = await _flowExecutionService.GetById(new Guid(id));
 
-            return Ok(state);
+            return Ok(flowExecutions);
+        }
+
+        [HttpGet, Route("{key}/executions")]
+        public async Task<IActionResult> GetFlowExecutions([FromRoute] string key)
+        {
+            var flow = await _flowService.GetByKey(key: key);
+            var flowExecutions = await _flowExecutionService.Get(flow.Id);
+
+            return Ok(flowExecutions);
         }
 
         [HttpPost, Route("{key}/fire")]

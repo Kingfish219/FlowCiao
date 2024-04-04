@@ -8,7 +8,5 @@ namespace FlowCiao.Persistence.Interfaces
     {
         Task<Transition> GetById(Guid id);
         Task<Guid> Modify(Transition entity);
-        Task AssociateTriggers(Transition entity, Trigger trigger);
-        Task AssociateActivities(Transition entity, Activity activity);
     }
 }

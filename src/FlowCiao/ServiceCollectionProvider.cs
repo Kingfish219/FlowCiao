@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using FlowCiao.Builders;
-using FlowCiao.Builders.Serialization;
+using FlowCiao.Builder;
+using FlowCiao.Builder.Serialization;
+using FlowCiao.Builder.Serialization.Serializers;
 using FlowCiao.Handle;
 using FlowCiao.Interfaces;
 using FlowCiao.Models;

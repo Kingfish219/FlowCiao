@@ -30,23 +30,5 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
 
             return entity.Id;
         }
-
-        public async Task AssociateActivities(State entity, Activity activity)
-        {
-            //return Task.Run(() =>
-            //{
-            //    var toInsert = new
-            //    {
-            //        StateId = entity.Id,
-            //        ActivityId = activity.Id
-            //    };
-
-            //    using var connection = GetDbConnection();
-            //    connection.Open();
-            //    connection.Execute(ConstantsProvider.usp_StateActivity_Modify, toInsert, commandType: CommandType.StoredProcedure);
-
-            //    return entity.Id;
-            //});
-        }
     }
 }

@@ -8,7 +8,7 @@ using FlowCiao.Models.Core;
 using FlowCiao.Services;
 using FlowCiao.Utils;
 
-namespace FlowCiao.Builders
+namespace FlowCiao.Builder
 {
     internal class FlowBuilder : IFlowBuilder
     {

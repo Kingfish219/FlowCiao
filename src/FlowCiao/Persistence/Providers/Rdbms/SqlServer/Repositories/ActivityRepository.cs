@@ -52,9 +52,7 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
             var existed = await GetByKey(entity.Id, entity.ActorName);
             if (existed != null)
             {
-                entity.Id = existed.Id;
-                entity.ActorName = existed.ActorName;
-                FlowCiaoDbContext.Activities.Update(entity);
+                FlowCiaoDbContext.Activities.Update(existed);
             }
             else
             {

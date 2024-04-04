@@ -27,17 +27,6 @@ namespace FlowCiao.Services
                 throw new FlowCiaoPersistencyException("State");
             }
 
-            state.Activities?.ForEach(activity =>
-            {
-                var result = _activityService.Modify(activity).GetAwaiter().GetResult();
-                if (result == default)
-                {
-                    throw new FlowCiaoPersistencyException("State Activity");
-                }
-
-                _stateRepository.AssociateActivities(state, activity).GetAwaiter().GetResult();
-            });
-
             return stateId;
         }
     }

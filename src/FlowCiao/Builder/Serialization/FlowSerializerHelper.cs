@@ -8,7 +8,7 @@ using FlowCiao.Models.Core;
 using FlowCiao.Services;
 using FlowCiao.Utils;
 
-namespace FlowCiao.Builders.Serialization;
+namespace FlowCiao.Builder.Serialization;
 
 public class FlowSerializerHelper
 {
@@ -108,24 +108,24 @@ public class FlowSerializerHelper
                 allowedList.ForEach(allowed => { stepBuilder.Allow(allowed.AllowedState, allowed.AllowedTrigger); });
             }
 
-            if (!string.IsNullOrWhiteSpace(serializedStep.OnEntry.Name))
+            if (!string.IsNullOrWhiteSpace(serializedStep.OnEntry?.ActorName))
             {
-                CreateActivity(serializedStep, serializedStep.OnEntry);
+                CreateActivity(stepBuilder, serializedStep.OnEntry);
             }
 
-            if (!string.IsNullOrWhiteSpace(serializedStep.OnExit.Name))
+            if (!string.IsNullOrWhiteSpace(serializedStep.OnExit?.ActorName))
             {
-                CreateActivity(serializedStep, serializedStep.OnExit);
+                CreateActivity(stepBuilder, serializedStep.OnExit);
             }
         };
     }
 
-    private void CreateActivity(SerializedStep serializedStep, SerializedActivity serializedActivity)
+    private void CreateActivity(IFlowStepBuilder stepBuilder, SerializedActivity serializedActivity)
     {
-        var flowActivity = TryGetActivity(serializedActivity.Name);
+        var flowActivity = TryGetActivity(serializedActivity.ActorName);
         var methodInfo = typeof(IFlowStepBuilder).GetMethod(nameof(IFlowStepBuilder.OnEntry));
         var genericMethod = methodInfo!.MakeGenericMethod(flowActivity.GetType());
-        genericMethod.Invoke(serializedStep, null);
+        genericMethod.Invoke(stepBuilder, null);
     }
 
     private IFlowActivity TryGetActivity(string activityName)

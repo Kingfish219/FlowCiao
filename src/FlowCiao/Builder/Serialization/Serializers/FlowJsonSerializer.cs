@@ -3,7 +3,7 @@ using FlowCiao.Models.Builder.Serialized;
 using FlowCiao.Models.Core;
 using Newtonsoft.Json;
 
-namespace FlowCiao.Builders.Serialization;
+namespace FlowCiao.Builder.Serialization.Serializers;
 
 public class FlowJsonSerializer
 {

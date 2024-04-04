@@ -15,13 +15,20 @@ namespace FlowCiao.Models.Core
 
         [Key]
         public Guid Id { get; set; }
+        
         public int Code { get; set; }
+        
         public string Name { get; set; }
+        
         public string Description { get; set; }
+        
         [ForeignKey("FlowId")]
         public Flow Flow { get; set; }
+        
         public bool IsFinal { get; set; }
+        
         public bool IsInitial { get; set; }
+        
         public List<Activity> Activities { get; set; } = new();
 
         public List<StateActivity> StateActivities { get; set; }

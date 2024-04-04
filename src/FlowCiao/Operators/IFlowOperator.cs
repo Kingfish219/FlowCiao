@@ -14,6 +14,5 @@ namespace FlowCiao.Operators
         Task<FlowResult> Fire(string key, int trigger, Dictionary<object, object> data = null);
         Task<FlowExecution> Ciao(Flow flow);
         Task<FlowExecution> Ciao(string flowKey);
-        Task<State> GetFLowState(string key);
     }
 }

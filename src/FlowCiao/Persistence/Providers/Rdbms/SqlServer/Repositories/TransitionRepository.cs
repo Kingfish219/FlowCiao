@@ -20,6 +20,7 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
         public async Task<Guid> Modify(Transition entity)
         {
             var existed = await GetById(entity.Id);
+            FlowCiaoDbContext.Entry(entity).State = EntityState.Unchanged;
             if (existed != null)
             {
                 FlowCiaoDbContext.Transitions.Update(entity);
@@ -32,43 +33,6 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
             await FlowCiaoDbContext.SaveChangesAsync();
 
             return entity.Id;
-        }
-
-        public Task AssociateTriggers(Transition entity, Trigger trigger)
-        {
-            return Task.Run(() =>
-            {
-                var toInsert = new
-                {
-                    TransitionId = entity.Id,
-                    TriggerId = trigger.Id,
-                    trigger.Priority
-                };
-                
-                // using var connection = GetDbConnection();
-                // connection.Open();
-                // connection.Execute(ConstantsProvider.Usp_TransitionTrigger_Modify, toInsert, commandType: CommandType.StoredProcedure);
-
-                return entity.Id;
-            });
-        }
-
-        public Task AssociateActivities(Transition entity, Activity activity)
-        {
-            return Task.Run(() =>
-            {
-                var toInsert = new
-                {
-                    TransitionId = entity.Id,
-                    ActivityId = activity.Id
-                };
-
-                // using var connection = GetDbConnection();
-                // connection.Open();
-                // connection.Execute(ConstantsProvider.Usp_TransitionActivity_Modify, toInsert, commandType: CommandType.StoredProcedure);
-
-                return entity.Id;
-            });
         }
     }
 }

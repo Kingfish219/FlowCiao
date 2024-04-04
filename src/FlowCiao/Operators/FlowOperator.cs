@@ -184,22 +184,5 @@ namespace FlowCiao.Operators
                 };
             }
         }
-        
-        public async Task<State> GetFLowState(string key)
-        {
-            var processExecution = (await _flowExecutionService.Get()).SingleOrDefault();
-            if (processExecution is null)
-            {
-                var process = await _flowService.GetByKey(key: key);
-                if (process is null)
-                {
-                    throw new FlowCiaoException("Invalid key!");
-                }
-
-                processExecution = await _flowExecutionService.InitializeFlowExecution(process);
-            }
-
-            return processExecution.State;
-        }
     }
 }

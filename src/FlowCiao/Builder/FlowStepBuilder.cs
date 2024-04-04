@@ -11,7 +11,7 @@ using FlowCiao.Models.Core;
 using FlowCiao.Services;
 using FlowCiao.Utils;
 
-namespace FlowCiao.Builders
+namespace FlowCiao.Builder
 {
     internal class FlowStepBuilder : IFlowStepBuilder
     {
@@ -90,6 +90,16 @@ namespace FlowCiao.Builders
         public IFlowStepBuilder OnExit<TA>() where TA : IFlowActivity, new()
         {
             FlowStep.OnExit = (TA)Activator.CreateInstance(typeof(TA));
+            if (FlowStep.Allowed.IsNullOrEmpty())
+            {
+                throw new FlowCiaoException("No allowed transitions found in order to apply OnExit");
+            }
+            
+            FlowStep.Allowed.ForEach(t =>
+            {
+                t.Activities ??= new List<Activity>();
+                t.Activities.Add(new Activity(FlowStep.OnExit));
+            });
 
             return this;
         }
