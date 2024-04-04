@@ -1,5 +1,6 @@
 using FlowCiao;
 using FlowCiao.Builders;
+using FlowCiao.Interfaces;
 using FlowCiao.Operators;
 using FlowCiao.Samples.Phone.FlowCiao;
 
@@ -25,9 +26,9 @@ app.UseFlowCiao();
 using (var scope = app.Services.CreateScope()) {
     // Build your custom flow and Fire!!!
     var flowBuilder = scope.ServiceProvider.GetRequiredService<IFlowBuilder>();
-    var flow = flowBuilder?.Build<PhoneStateMachine>();
+    var flow = flowBuilder.Build<PhoneStateMachine>();
     var flowOperator = scope.ServiceProvider.GetService<IFlowOperator>();
-    var instance = flowOperator.Instantiate(flow).GetAwaiter().GetResult();
+    var instance = flowOperator.Ciao(flow).GetAwaiter().GetResult();
     //var result = flowOperator.FireAsync(instance, 1, new Dictionary<object, object>()).GetAwaiter().GetResult();
 }
 

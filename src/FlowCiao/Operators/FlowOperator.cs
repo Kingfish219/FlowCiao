@@ -40,14 +40,14 @@ namespace FlowCiao.Operators
             };
         }
 
-        public async Task<FlowExecution> Instantiate(Flow flow)
+        public async Task<FlowExecution> Ciao(Flow flow)
         {
             var flowExecution = await _flowExecutionService.InitializeFlowExecution(flow);
 
             return flowExecution;
         }
         
-        public async Task<FlowExecution> Instantiate(string flowKey)
+        public async Task<FlowExecution> Ciao(string flowKey)
         {
             var process = await _flowService.GetByKey(key: flowKey);
             if (process is null)
@@ -60,7 +60,7 @@ namespace FlowCiao.Operators
             return processExecution;
         }
 
-        public async Task<FlowResult> FireAsync(Guid flowInstanceId, int trigger, Dictionary<object, object> data = null)
+        public async Task<FlowResult> FireAsync(Guid flowInstanceId, int triggerCode, Dictionary<object, object> data = null)
         {
             try
             {
@@ -77,12 +77,12 @@ namespace FlowCiao.Operators
                 }
 
                 if (processExecution.ActiveExecutionStep.Details
-                        .SingleOrDefault(x => x.Transition.Triggers.FirstOrDefault()!.Code == trigger) is null)
+                        .SingleOrDefault(x => x.Transition.Triggers.FirstOrDefault()!.Code == triggerCode) is null)
                 {
                     throw new FlowExecutionException("Trigger is invalid!");
                 }
 
-                var processStepContext = InstantiateContext(trigger, data, processExecution, processExecution.ActiveExecutionStep);
+                var processStepContext = InstantiateContext(triggerCode, data, processExecution, processExecution.ActiveExecutionStep);
                 var handlers = _flowHandlerFactory.BuildHandlers();
 
                 var result = handlers.Peek().Handle(processStepContext);
@@ -99,7 +99,7 @@ namespace FlowCiao.Operators
             }
         }
 
-        public async Task<FlowResult> FireAsync(FlowExecution flowExecution, int trigger, Dictionary<object, object> data = null)
+        public async Task<FlowResult> FireAsync(FlowExecution flowExecution, int triggerCode, Dictionary<object, object> data = null)
         {
             try
             {
@@ -116,12 +116,12 @@ namespace FlowCiao.Operators
                 }
 
                 if (flowExecution.ActiveExecutionStep.Details
-                        .SingleOrDefault(x => x.Transition.Triggers.FirstOrDefault()!.Code == trigger) is null)
+                        .SingleOrDefault(x => x.Transition.Triggers.FirstOrDefault()!.Code == triggerCode) is null)
                 {
                     throw new FlowExecutionException("Trigger is invalid!");
                 }
 
-                var processStepContext = InstantiateContext(trigger, data, flowExecution, flowExecution.ActiveExecutionStep);
+                var processStepContext = InstantiateContext(triggerCode, data, flowExecution, flowExecution.ActiveExecutionStep);
                 var handlers = _flowHandlerFactory.BuildHandlers();
 
                 var result = handlers.Peek().Handle(processStepContext);

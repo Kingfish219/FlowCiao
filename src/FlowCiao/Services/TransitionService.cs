@@ -24,35 +24,37 @@ namespace FlowCiao.Services
 
         public async Task<Guid> Modify(Transition transition)
         {
-            transition.Id = await _transitionRepository.Modify(transition);
-            if (transition.Id == default)
-            {
-                throw new FlowCiaoPersistencyException();
-            }
+            return await _transitionRepository.Modify(transition);
 
-            transition.Activities?.ForEach(activity =>
-            {
-                var result = _activityService.Modify(activity).GetAwaiter().GetResult();
-                if (result == default)
-                {
-                    throw new FlowCiaoPersistencyException("State Activity");
-                }
-
-                _transitionRepository.AssociateActivities(transition, activity).GetAwaiter().GetResult();
-            });
-
-            transition.Triggers?.ForEach(trigger =>
-            {
-                var result = _triggerRepository.Modify(trigger).GetAwaiter().GetResult();
-                if (result == default)
-                {
-                    throw new FlowCiaoPersistencyException("State Activity");
-                }
-
-                _transitionRepository.AssociateTriggers(transition, trigger).GetAwaiter().GetResult();
-            });
-
-            return transition.Id;
+            // transition.Id = await _transitionRepository.Modify(transition);
+            // if (transition.Id == default)
+            // {
+            //     throw new FlowCiaoPersistencyException();
+            // }
+            //
+            // transition.Activities?.ForEach(activity =>
+            // {
+            //     var result = _activityService.Modify(activity).GetAwaiter().GetResult();
+            //     if (result == default)
+            //     {
+            //         throw new FlowCiaoPersistencyException("State Activity");
+            //     }
+            //
+            //     _transitionRepository.AssociateActivities(transition, activity).GetAwaiter().GetResult();
+            // });
+            //
+            // transition.Triggers?.ForEach(trigger =>
+            // {
+            //     var result = _triggerRepository.Modify(trigger).GetAwaiter().GetResult();
+            //     if (result == default)
+            //     {
+            //         throw new FlowCiaoPersistencyException("State Activity");
+            //     }
+            //
+            //     _transitionRepository.AssociateTriggers(transition, trigger).GetAwaiter().GetResult();
+            // });
+            //
+            // return transition.Id;
         }
     }
 }

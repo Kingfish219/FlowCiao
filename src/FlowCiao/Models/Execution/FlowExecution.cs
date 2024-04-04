@@ -26,7 +26,10 @@ namespace FlowCiao.Models.Execution
 
         public string Progress
         {
-            get => JsonConvert.SerializeObject(ExecutionSteps);
+            get => JsonConvert.SerializeObject(ExecutionSteps, settings: new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            });
             set => ExecutionSteps = JsonConvert.DeserializeObject<List<FlowExecutionStep>>(value);
         }
 

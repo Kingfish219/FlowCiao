@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
+using FlowCiao.Models;
+using FlowCiao.Models.Builder;
 using FlowCiao.Models.Builder.Json;
 using FlowCiao.Models.Core;
 using FlowCiao.Services;
@@ -12,79 +15,61 @@ namespace FlowCiao.Builders
 {
     internal class FlowStepBuilder : IFlowStepBuilder
     {
-        private readonly ActivityService _activityService;
-        public IFlowBuilder FlowBuilder { get; set; }
+        private FlowStep FlowStep { get; }
 
-        public FlowStepBuilder(IFlowBuilder flowBuilder, ActivityService activityService)
+        private readonly ActivityService _activityService;
+        private readonly StateService _stateService;
+        private readonly TransitionService _transitionService;
+
+        public FlowStepBuilder(ActivityService activityService, StateService stateService,
+            TransitionService transitionService)
         {
             _activityService = activityService;
-            FlowBuilder = flowBuilder;
-            AllowedTransitionsBuilders = new List<Action<Transition>>();
+            _stateService = stateService;
+            _transitionService = transitionService;
+            FlowStep = new FlowStep();
         }
 
-        public State InitialState { get; set; }
-        public List<Action<Transition>> AllowedTransitionsBuilders { get; set; }
-        public IFlowActivity OnEntryActivity { get; set; }
-        public IFlowActivity OnExitActivity { get; set; }
+        public void AsInitialStep()
+        {
+            FlowStep.For.IsInitial = true;
+        }
 
         public IFlowStepBuilder For(State state)
         {
-            InitialState = state;
-
-            return this;
-        }
-
-        public IFlowStepBuilder Allow(State state, List<int> triggers)
-        {
-            AllowedTransitionsBuilders.Add((transition) =>
-            {
-                transition.From = InitialState;
-                transition.To = state;
-                transition.Activities = OnExitActivity != null
-                    ? new List<Activity>
-                    {
-                        new(OnExitActivity)
-                    }
-                    : new List<Activity>();
-                transition.Triggers = triggers.Select(trigger => new Trigger(trigger)).ToList();
-            });
+            FlowStep.For = state;
 
             return this;
         }
 
         public IFlowStepBuilder Allow(State state, int trigger, Func<bool> condition = null)
         {
-            AllowedTransitionsBuilders.Add((transition) =>
+            FlowStep.Allowed.Add(new Transition
             {
-                transition.From = InitialState;
-                transition.To = state;
-                transition.Activities = OnExitActivity != null
+                From = FlowStep.For,
+                To = state,
+                Activities = FlowStep.OnExit != null
                     ? new List<Activity>
                     {
-                        new(OnExitActivity)
+                        new(FlowStep.OnExit)
                     }
-                    : new List<Activity>();
-                transition.Triggers = new List<Trigger>
+                    : new List<Activity>(),
+                Triggers = new List<Trigger>
                 {
                     new(trigger)
-                };
-                transition.Condition = condition;
+                },
+                Condition = condition
             });
-
+            
             return this;
-        }
-
-        public IFlowStepBuilder AllowSelf(List<int> triggers)
-        {
-            throw new NotImplementedException();
         }
 
         public IFlowStepBuilder OnEntry<TA>() where TA : IFlowActivity, new()
         {
-            OnEntryActivity = (TA)Activator.CreateInstance(typeof(TA));
-            var activity = new Activity(OnEntryActivity);
-            InitialState.Activities ??= new List<Activity>();
-            InitialState.Activities.Add(activity);
+            FlowStep.OnEntry = (TA)Activator.CreateInstance(typeof(TA));
+            var activity = new Activity(FlowStep.OnEntry);
+            FlowStep.For.Activities ??= new List<Activity>();
+            FlowStep.For.Activities.Add(activity);
 
             return this;
         }
@@ -92,19 +77,19 @@ namespace FlowCiao.Builders
         public IFlowStepBuilder OnEntry(string activityName)
         {
             var foundActivity = TryGetActivity(activityName);
-            OnEntryActivity = foundActivity ??
-                              throw new FlowCiaoException(
-                                  $"Error in finding OnEntry activity. No type matches activity name {activityName} or the type is not derived from {nameof(IFlowActivity)}");
-            var activity = new Activity(OnEntryActivity);
-            InitialState.Activities ??= new List<Activity>();
-            InitialState.Activities.Add(activity);
+            FlowStep.OnEntry = foundActivity ??
+                               throw new FlowCiaoException(
+                                   $"Error in finding OnEntry activity. No type matches activity name {activityName} or the type is not derived from {nameof(IFlowActivity)}");
+            var activity = new Activity(FlowStep.OnEntry);
+            FlowStep.For.Activities ??= new List<Activity>();
+            FlowStep.For.Activities.Add(activity);
 
             return this;
         }
 
         public IFlowStepBuilder OnExit<TA>() where TA : IFlowActivity, new()
         {
-            OnExitActivity = (TA)Activator.CreateInstance(typeof(TA));
+            FlowStep.OnExit = (TA)Activator.CreateInstance(typeof(TA));
 
             return this;
         }
@@ -118,20 +103,20 @@ namespace FlowCiao.Builders
                     $"Error in finding OnExit activity. No type matches activity name {activityName} or the type is not derived from {nameof(IFlowActivity)}");
             }
 
-            OnExitActivity = (IFlowActivity)Activator.CreateInstance(activityType);
+            FlowStep.OnExit = (IFlowActivity)Activator.CreateInstance(activityType);
 
             return this;
         }
 
-        public IFlowStepBuilder Build(List<State> states, JsonStep jsonStep)
+        public IFlowStepBuilder Build(List<State> states, SerializedStep serializedStep)
         {
-            var fromState = states.Single(state => state.Code == jsonStep.FromStateCode);
+            var fromState = states.Single(state => state.Code == serializedStep.FromStateCode);
             var allowedList = states
-                .Where(state => jsonStep.Allows.Exists(allowed => allowed.AllowedStateCode == state.Code))
+                .Where(state => serializedStep.Allows.Exists(allowed => allowed.AllowedStateCode == state.Code))
                 .Select(state => new
                 {
                     AllowedState = state,
-                    AllowedTrigger = jsonStep.Allows.Single(x => x.AllowedStateCode == state.Code).TriggerCode
+                    AllowedTrigger = serializedStep.Allows.Single(x => x.AllowedStateCode == state.Code).TriggerCode
                 })
                 .ToList();
 
@@ -139,22 +124,82 @@ namespace FlowCiao.Builders
 
             allowedList.ForEach(allowed => { Allow(allowed.AllowedState, allowed.AllowedTrigger); });
 
-            if (jsonStep.OnEntry != null)
+            if (serializedStep.OnEntry != null)
             {
-                OnEntry(jsonStep.OnEntry.Name);
+                OnEntry(serializedStep.OnEntry.Name);
             }
 
-            if (jsonStep.OnExit != null)
+            if (serializedStep.OnExit != null)
             {
-                OnExit(jsonStep.OnExit.Name);
+                OnExit(serializedStep.OnExit.Name);
             }
 
             return this;
         }
 
+        public FlowStep Build()
+        {
+            var result = Persist().GetAwaiter().GetResult();
+            if (!result.Success)
+            {
+                throw new FlowCiaoPersistencyException("Saving some data failed");
+            }
+
+            return FlowStep;
+        }
+
         public void Rollback()
         {
             // ignored
+        }
+
+        private async Task<FuncResult> Persist()
+        {
+            if (!FlowStep.For.Activities.IsNullOrEmpty())
+            {
+                foreach (var activity in FlowStep.For.Activities)
+                {
+                    var activityResult = await _activityService.Modify(activity);
+                    if (activityResult == default)
+                    {
+                        return new FuncResult(false, "Modifying Activity failed");
+                    }
+                }
+            }
+
+            var result = await _stateService.Modify(FlowStep.For);
+            if (result == default)
+            {
+                return new FuncResult(false, "Modifying State failed");
+            }
+
+            if (FlowStep.Allowed.IsNullOrEmpty())
+            {
+                return new FuncResult(true);
+            }
+
+            foreach (var transition in FlowStep.Allowed)
+            {
+                if (!transition.Activities.IsNullOrEmpty())
+                {
+                    foreach (var activity in transition.Activities)
+                    {
+                        var activityResult = await _activityService.Modify(activity);
+                        if (activityResult == default)
+                        {
+                            return new FuncResult(false, "Modifying Activity failed");
+                        }
+                    }
+                }
+                
+                var transitionResult = await _transitionService.Modify(transition);
+                if (transitionResult == default)
+                {
+                    return new FuncResult(false, "Modifying Transition failed");
+                }
+            }
+
+            return new FuncResult(true);
         }
 
         private IFlowActivity TryGetActivity(string activityName)

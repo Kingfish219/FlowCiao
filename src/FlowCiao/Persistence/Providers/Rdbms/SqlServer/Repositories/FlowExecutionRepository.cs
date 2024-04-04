@@ -16,14 +16,15 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
 
         public async Task<List<FlowExecution>> Get(Guid flowId = default)
         {
-            return await DbContext.FlowExecutions
+            return await FlowCiaoDbContext.FlowExecutions
+                .AsNoTracking()
                 .Where(e => flowId == default || e.Flow.Id == flowId)
                 .ToListAsync();
         }
 
         public async Task<FlowExecution> GetById(Guid id)
         {
-            return await DbContext.FlowExecutions.SingleOrDefaultAsync(a => a.Id == id);
+            return await FlowCiaoDbContext.FlowExecutions.SingleOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task<Guid> Modify(FlowExecution entity)
@@ -31,14 +32,14 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
             var existed = await GetById(entity.Id);
             if (existed != null)
             {
-                DbContext.FlowExecutions.Update(entity);
+                FlowCiaoDbContext.FlowExecutions.Update(entity);
             }
             else
             {
-                await DbContext.FlowExecutions.AddAsync(entity);
+                await FlowCiaoDbContext.FlowExecutions.AddAsync(entity);
             }
             
-            await DbContext.SaveChangesAsync();
+            await FlowCiaoDbContext.SaveChangesAsync();
 
             return entity.Id;
         }

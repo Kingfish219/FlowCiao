@@ -1,6 +1,7 @@
 namespace FlowCiao.Models.Builder.Json;
 
-public class JsonActivity
+public class SerializedState
 {
+    public int Code { get; set; }
     public string Name { get; set; }
 }

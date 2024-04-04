@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
-using FlowCiao.Models.Builder.Json;
 using FlowCiao.Models.Core;
 using FlowCiao.Services;
+using FlowCiao.Utils;
 
 namespace FlowCiao.Builders
 {
@@ -16,181 +16,75 @@ namespace FlowCiao.Builders
         public IFlowStepBuilder InitialStepBuilder { get; set; }
         private readonly FlowService _flowService;
         private readonly ActivityService _activityService;
-        
-        public FlowBuilder(FlowService flowService, ActivityService activityService)
+        private readonly StateService _stateService;
+        private readonly TransitionService _transitionService;
+
+        public FlowBuilder(FlowService flowService, ActivityService activityService, StateService stateService,
+            TransitionService transitionService)
         {
             StepBuilders = new List<IFlowStepBuilder>();
             _flowService = flowService;
             _activityService = activityService;
+            _stateService = stateService;
+            _transitionService = transitionService;
         }
 
         public IFlowBuilder Initial(Action<IFlowStepBuilder> action)
         {
-            var builder = new FlowStepBuilder(this, _activityService);
-            InitialStepBuilder = builder;
+            InitialStepBuilder = new FlowStepBuilder(_activityService, _stateService, _transitionService);
             action(InitialStepBuilder);
-            InitialStepBuilder.InitialState.IsInitial = true;
-            StepBuilders.Add(builder);
+            InitialStepBuilder.AsInitialStep();
+            StepBuilders.Add(InitialStepBuilder);
 
             return this;
         }
 
         public IFlowBuilder NewStep(Action<IFlowStepBuilder> action)
         {
-            var builder = new FlowStepBuilder(this, _activityService);
+            var builder = new FlowStepBuilder(_activityService, _stateService, _transitionService);
             action(builder);
             StepBuilders.Add(builder);
 
             return this;
         }
 
-        public Flow Build<T>() where T : IFlowPlanner, new()
+        public Flow Build(string flowKey, Action<IFlowBuilder> build)
         {
-            try
-            {
-                var flowPlanner = Activator.CreateInstance<T>();
-                if (flowPlanner is null)
-                {
-                    throw new FlowCiaoException();
-                }
-
-                var flow = _flowService.GetByKey(key: flowPlanner.Key).GetAwaiter().GetResult();
-                if (flow != null)
-                {
-                    return flow;
-                }
-
-                flowPlanner.Plan<T>(this);
-
-                flow = new Flow
-                {
-                    Key = flowPlanner.Key
-                };
-
-                foreach (var stepBuilder in StepBuilders)
-                {
-                    foreach (var allowedTransitionBuilder in stepBuilder.AllowedTransitionsBuilders)
-                    {
-                        var transition = new Transition();
-                        allowedTransitionBuilder(transition);
-                        flow.Transitions.Add(transition);
-                    }
-                }
-
-                flow.States.AddRange(flow.Transitions.Select(t => t.From));
-                flow.States.AddRange(flow.Transitions.Select(t => t.To));
-                flow.States = flow.States.DistinctBy(s => s.Code).ToList();
-
-                flow.Triggers.AddRange(flow.Transitions.SelectMany(t => t.Triggers));
-                flow.Triggers.AddRange(flow.Transitions.SelectMany(t => t.Triggers));
-                flow.Triggers = flow.Triggers.DistinctBy(s => s.Code).ToList();
-
-                foreach (var transition in flow.Transitions)
-                {
-                    for (var i = 0; i < transition.Activities.Count; i++)
-                    {
-                        var activity = transition.Activities[i];
-                        var existed = _activityService.GetByKey(activity.Id, activity.ActorName).GetAwaiter().GetResult();
-                        if (existed != null)
-                        {
-                            transition.Activities[i] = existed;
-                            continue;
-                        }
-
-                        var inserted = _activityService.Modify(activity).GetAwaiter().GetResult();
-                        if (inserted == default)
-                        {
-                            throw new FlowCiaoPersistencyException("Could not modify activity");
-                        }
-                    }
-                }
-                
-                foreach (var state in flow.States)
-                {
-                    for (var i = 0; i < state.Activities.Count; i++)
-                    {
-                        var activity = state.Activities[i];
-                        var existed = _activityService.GetByKey(activity.Id, activity.ActorName).GetAwaiter().GetResult();
-                        if (existed != null)
-                        {
-                            state.Activities[i] = existed;
-                            continue;
-                        }
-
-                        var inserted = _activityService.Modify(activity).GetAwaiter().GetResult();
-                        if (inserted == default)
-                        {
-                            throw new FlowCiaoPersistencyException("Could not modify activity");
-                        }
-                    }
-                }
-
-                var result = _flowService.Modify(flow).GetAwaiter().GetResult();
-                if (result == default)
-                {
-                    throw new FlowCiaoPersistencyException("Check your database connection!");
-                }
-
-                return flow;
-            }
-            catch (Exception)
-            {
-                Rollback();
-
-                throw;
-            }
+            return BuildAsync(flowKey, build).GetAwaiter().GetResult();
         }
 
-        public async Task<Flow> Build(JsonFlow jsonFlow)
+        public async Task<Flow> BuildAsync(string flowKey, Action<IFlowBuilder> build)
         {
             try
             {
-                var flow = await _flowService.GetByKey(key: jsonFlow.Key);
+                var flow = await _flowService.GetByKey(key: flowKey);
                 if (flow != null)
                 {
                     return flow;
                 }
 
-                var states = jsonFlow.States
-                    .Select(jsonState => new State(jsonState.Code, jsonState.Name))
-                    .ToList();
-
-                InitialStepBuilder = new FlowStepBuilder(this, _activityService);
-                InitialStepBuilder.Build(states, jsonFlow.Initial);
+                build(this);
 
                 flow = new Flow
                 {
-                    Key = jsonFlow.Key
+                    Key = flowKey
                 };
-                flow.Transitions ??= new List<Transition>();
-                InitialStepBuilder.InitialState.IsInitial = true;
 
-                InitialStepBuilder.AllowedTransitionsBuilders.ForEach(allowedTransition =>
+                foreach (var flowStep in StepBuilders.Select(stepBuilder => stepBuilder.Build()))
                 {
-                    var transition = new Transition();
-                    allowedTransition(transition);
-                    flow.Transitions.Add(transition);
-                });
-
-                if (jsonFlow.Steps is { Count: > 0 })
-                {
-                    jsonFlow.Steps.ForEach(jsonStep =>
+                    flow.States.Add(flowStep.For);
+                    if (flowStep.Allowed.IsNullOrEmpty())
                     {
-                        var stepBuilder = new FlowStepBuilder(this, _activityService);
-                        stepBuilder.Build(states, jsonStep);
-                        StepBuilders.Add(stepBuilder);
-                    });
-
-                    foreach (var stepBuilder in StepBuilders)
-                    {
-                        foreach (var allowedTransition in stepBuilder.AllowedTransitionsBuilders)
-                        {
-                            var transition = new Transition();
-                            allowedTransition(transition);
-                            flow.Transitions.Add(transition);
-                        }
+                        continue;
                     }
+
+                    flow.Transitions.AddRange(flowStep.Allowed);
+                    flow.States.AddRange(flow.Transitions.Select(t => t.To));
+                    flow.Triggers.AddRange(flow.Transitions.SelectMany(t => t.Triggers));
                 }
+
+                flow.States = flow.States.DistinctBy(s => s.Code).ToList();
+                flow.Triggers = flow.Triggers.DistinctBy(s => s.Code).ToList();
 
                 var result = await _flowService.Modify(flow);
                 if (result == default)
@@ -208,63 +102,26 @@ namespace FlowCiao.Builders
             }
         }
 
-        public Flow Build<T>(Action<IFlowBuilder> constructor) where T : IFlowPlanner, new()
+        public Flow Build<T>() where T : IFlowPlanner, new()
         {
-            throw new NotImplementedException();
+            var flowPlanner = Activator.CreateInstance<T>();
+            return BuildAsync(flowPlanner.Key, builder => flowPlanner.Plan(builder)).GetAwaiter().GetResult();
+        }
 
-            //try
-            //{
-            //    var flow = Activator.CreateInstance<T>();
-            //    constructor.Invoke(this);
+        public async Task<Flow> BuildAsync<T>() where T : IFlowPlanner, new()
+        {
+            var flowPlanner = Activator.CreateInstance<T>();
+            return await BuildAsync(flowPlanner.Key, builder => flowPlanner.Plan(builder));
+        }
 
-            //    var flow = _flowService.Get(key: flow.Key).GetAwaiter().GetResult().FirstOrDefault();
-            //    if (flow != null)
-            //    {
-            //        return flow;
-            //    }
+        public Flow Build(IFlowPlanner flowPlanner)
+        {
+            return BuildAsync(flowPlanner.Key, builder => flowPlanner.Plan(builder)).GetAwaiter().GetResult();
+        }
 
-            //    foreach (var builder in StepBuilders)
-            //    {
-            //        builder.InitialState.Activities = new List<Activity>
-            //        {
-            //            new Activity
-            //            {
-            //                Actor = builder.OnEntryActivity
-            //            }
-            //        };
-
-            //        foreach (var allowedTransition in builder.AllowedTransitions)
-            //        {
-            //            flow.Transitions.Add(new Transition
-            //            {
-            //                From = builder.InitialState,
-            //                To = allowedTransition.Item1,
-            //                Activities = new List<Activity>
-            //                {
-            //                    new Activity
-            //                    {
-            //                        Actor = builder.OnExitActivity
-            //                    }
-            //                },
-            //                Triggers = allowedTransition.Item2
-            //            });
-            //        }
-            //    }
-
-            //    var result = _flowService.Modify(flow).GetAwaiter().GetResult();
-            //    if (result == default)
-            //    {
-            //        throw new FlowCiaoPersistancyException("Check your database connection!");
-            //    }
-
-            //    return flow;
-            //}
-            //catch (Exception)
-            //{
-            //    Rollback();
-
-            //    throw;
-            //}
+        public async Task<Flow> BuildAsync(IFlowPlanner flowPlanner)
+        {
+            return await BuildAsync(flowPlanner.Key, builder => flowPlanner.Plan(builder));
         }
 
         private void Rollback()
