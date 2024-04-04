@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace FlowCiao.Models.Builder.Json;
+namespace FlowCiao.Models.Builder.Serialized;
 
 public class SerializedStep
 {

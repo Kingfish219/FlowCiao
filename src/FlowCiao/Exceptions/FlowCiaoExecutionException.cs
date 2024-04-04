@@ -3,13 +3,13 @@ using FlowCiao.Models.Execution;
 
 namespace FlowCiao.Exceptions
 {
-    public class FlowExecutionException : Exception
+    public class FlowCiaoExecutionException : Exception
     {
-        public FlowExecutionException()
+        public FlowCiaoExecutionException()
         {
         }
 
-        public FlowExecutionException(string message, FlowExecutionStep flowStep, [System.Runtime.CompilerServices.CallerFilePath] string handlerName = "", [System.Runtime.CompilerServices.CallerLineNumber] int line = 0)
+        public FlowCiaoExecutionException(string message, FlowExecutionStep flowStep, [System.Runtime.CompilerServices.CallerFilePath] string handlerName = "", [System.Runtime.CompilerServices.CallerLineNumber] int line = 0)
             : base(message)
         {
             try
@@ -31,12 +31,12 @@ namespace FlowCiao.Exceptions
             catch (Exception) { }
         }
         
-        public FlowExecutionException(string message)
+        public FlowCiaoExecutionException(string message)
             : base(message)
         {
         }
 
-        public FlowExecutionException(string message, Exception inner)
+        public FlowCiaoExecutionException(string message, Exception inner)
             : base(message, inner)
         {
         }

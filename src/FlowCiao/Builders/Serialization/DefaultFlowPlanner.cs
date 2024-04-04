@@ -1,7 +1,7 @@
 using System;
 using FlowCiao.Interfaces;
 
-namespace FlowCiao.Builders.Plan;
+namespace FlowCiao.Builders.Serialization;
 
 internal class DefaultFlowPlanner : IFlowPlanner
 {

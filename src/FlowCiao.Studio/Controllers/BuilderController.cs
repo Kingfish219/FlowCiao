@@ -1,9 +1,7 @@
-using FlowCiao.Builders.Plan;
+using FlowCiao.Builders.Serialization;
 using FlowCiao.Interfaces;
-using FlowCiao.Models.Builder.Json;
 using FlowCiao.Studio.Models;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace FlowCiao.Studio.Controllers
 {
@@ -11,18 +9,18 @@ namespace FlowCiao.Studio.Controllers
     public class BuilderController : FlowCiaoControllerBase
     {
         private readonly IFlowBuilder _flowBuilder;
-        private readonly FlowSerializer _flowSerializer;
+        private readonly FlowJsonSerializer _flowJsonSerializer;
 
-        public BuilderController(IFlowBuilder flowBuilder, FlowSerializer flowSerializer)
+        public BuilderController(IFlowBuilder flowBuilder, FlowJsonSerializer flowJsonSerializer)
         {
             _flowBuilder = flowBuilder;
-            _flowSerializer = flowSerializer;
+            _flowJsonSerializer = flowJsonSerializer;
         }
 
         [HttpPost, Route("json")]
-        public async Task<IActionResult> BuildFromJson(SerializedFlow serializedFlow)
+        public async Task<IActionResult> BuildFromJson(SerializationViewModel serializationViewModel)
         {
-            var planner = _flowSerializer.ImportJson(JsonConvert.SerializeObject(serializedFlow));
+            var planner = _flowJsonSerializer.Import(serializationViewModel.Content);
             var flow = await _flowBuilder.BuildAsync(planner);
             var flowViewModel = new FlowViewModel
             {

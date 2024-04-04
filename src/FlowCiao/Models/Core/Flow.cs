@@ -24,6 +24,9 @@ namespace FlowCiao.Models.Core
         public List<Trigger> Triggers { get; set; } = new();
 
         [NotMapped]
+        public string SerializedJson { get; set; }
+
+        [NotMapped]
         public List<State> InitialStates => Transitions.Where(x => x.From.IsInitial).Select(x => x.From).ToList();
     }
 }

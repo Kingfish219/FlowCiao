@@ -19,7 +19,7 @@ namespace FlowCiao.Services
 
         public async Task<Guid> Modify(Flow flow)
         {
-            await _flowRepository.Modify(flow); 
+            await _flowRepository.Modify(flow);
 
             return flow.Id;
         }
@@ -28,7 +28,7 @@ namespace FlowCiao.Services
         {
             return await _flowRepository.Get();
         }
-        
+
         public async Task<Flow> GetByKey(Guid flowId = default, string key = default)
         {
             return await _flowRepository.GetByKey(flowId, key);

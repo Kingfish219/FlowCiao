@@ -1,4 +1,4 @@
-namespace FlowCiao.Models.Builder.Json;
+namespace FlowCiao.Models.Builder.Serialized;
 
 public class SerializedState
 {

@@ -41,7 +41,7 @@ namespace FlowCiao.Handle.Handlers
                     var result = activity.Execute(flowStepContext);
                     if (result.Status != FlowResultStatus.Completed && result.Status != FlowResultStatus.SetOwner)
                     {
-                        throw new FlowExecutionException("Exception occured while invoking activities" + result.Message);
+                        throw new FlowCiaoExecutionException("Exception occured while invoking activities" + result.Message);
                     }
                 }
 

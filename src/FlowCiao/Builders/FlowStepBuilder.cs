@@ -6,7 +6,7 @@ using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
 using FlowCiao.Models;
 using FlowCiao.Models.Builder;
-using FlowCiao.Models.Builder.Json;
+using FlowCiao.Models.Builder.Serialized;
 using FlowCiao.Models.Core;
 using FlowCiao.Services;
 using FlowCiao.Utils;

@@ -1,3 +1,4 @@
+using FlowCiao.Builders.Serialization;
 using FlowCiao.Operators;
 using FlowCiao.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -10,19 +11,23 @@ namespace FlowCiao.Studio.Controllers
     {
         private readonly IFlowOperator _operator;
         private readonly FlowService _flowService;
+        private readonly FlowJsonSerializer _flowJsonSerializer;
 
-        public FlowController(IFlowOperator flowOperator, FlowService flowService)
+        public FlowController(IFlowOperator flowOperator, FlowService flowService, FlowJsonSerializer flowJsonSerializer)
         {
             _operator = flowOperator;
             _flowService = flowService;
+            _flowJsonSerializer = flowJsonSerializer;
         }
         
         [HttpGet, Route("")]
         public async Task<IActionResult> Get()
         {
-            var state = await _flowService.Get();
+            var flows = await _flowService.Get();
+            flows.AsParallel()
+                .ForAll(f => f.SerializedJson = _flowJsonSerializer.Export(f));
 
-            return Ok(state);
+            return Ok(flows);
         }
 
         [HttpGet, Route("{key}/state")]

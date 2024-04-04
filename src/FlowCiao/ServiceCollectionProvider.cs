@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FlowCiao.Builders;
-using FlowCiao.Builders.Plan;
+using FlowCiao.Builders.Serialization;
 using FlowCiao.Handle;
 using FlowCiao.Interfaces;
 using FlowCiao.Models;
@@ -38,7 +38,8 @@ namespace FlowCiao
             services.AddScoped<IFlowBuilder, FlowBuilder>();
             services.AddScoped<IFlowStepBuilder, FlowStepBuilder>();
             services.AddScoped<IFlowOperator, FlowOperator>();
-            services.AddScoped<FlowSerializer>();
+            services.AddScoped<FlowSerializerHelper>();
+            services.AddScoped<FlowJsonSerializer>();
         }
 
         public static void UseFlowCiao(this IApplicationBuilder applicationBuilder)

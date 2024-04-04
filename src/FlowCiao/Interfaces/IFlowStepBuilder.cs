@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using FlowCiao.Models.Builder;
-using FlowCiao.Models.Builder.Json;
+using FlowCiao.Models.Builder.Serialized;
 using FlowCiao.Models.Core;
 
 namespace FlowCiao.Interfaces

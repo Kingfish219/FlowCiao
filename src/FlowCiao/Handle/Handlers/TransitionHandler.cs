@@ -20,12 +20,12 @@ namespace FlowCiao.Handle.Handlers
             {
                 if (flowStepContext.FlowExecutionStepDetail is null)
                 {
-                    throw new FlowExecutionException("Exception occured while completing progress transition");
+                    throw new FlowCiaoExecutionException("Exception occured while completing progress transition");
                 }
 
                 if (!flowStepContext.FlowExecutionStepDetail.IsCompleted)
                 {
-                    throw new FlowExecutionException("Exception occured while completing progress transition, flow step action is not yet completed");
+                    throw new FlowCiaoExecutionException("Exception occured while completing progress transition, flow step action is not yet completed");
                 }
 
                 var transition = flowStepContext.FlowExecutionStepDetail.Transition;
@@ -36,7 +36,7 @@ namespace FlowCiao.Handle.Handlers
                 
                 if (!transition.Condition())
                 {
-                    throw new FlowExecutionException("Exception occured while completing transition as transition condition did not meet");
+                    throw new FlowCiaoExecutionException("Exception occured while completing transition as transition condition did not meet");
                 }
 
                 return NextHandler.Handle(flowStepContext);

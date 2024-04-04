@@ -73,13 +73,13 @@ namespace FlowCiao.Operators
 
                 if (processExecution.ActiveExecutionStep is null)
                 {
-                    throw new FlowExecutionException("No active steps to fire");
+                    throw new FlowCiaoExecutionException("No active steps to fire");
                 }
 
                 if (processExecution.ActiveExecutionStep.Details
                         .SingleOrDefault(x => x.Transition.Triggers.FirstOrDefault()!.Code == triggerCode) is null)
                 {
-                    throw new FlowExecutionException("Trigger is invalid!");
+                    throw new FlowCiaoExecutionException("Trigger is invalid!");
                 }
 
                 var processStepContext = InstantiateContext(triggerCode, data, processExecution, processExecution.ActiveExecutionStep);
@@ -112,13 +112,13 @@ namespace FlowCiao.Operators
 
                 if (flowExecution.ActiveExecutionStep is null)
                 {
-                    throw new FlowExecutionException("No active steps to fire");
+                    throw new FlowCiaoExecutionException("No active steps to fire");
                 }
 
                 if (flowExecution.ActiveExecutionStep.Details
                         .SingleOrDefault(x => x.Transition.Triggers.FirstOrDefault()!.Code == triggerCode) is null)
                 {
-                    throw new FlowExecutionException("Trigger is invalid!");
+                    throw new FlowCiaoExecutionException("Trigger is invalid!");
                 }
 
                 var processStepContext = InstantiateContext(triggerCode, data, flowExecution, flowExecution.ActiveExecutionStep);
@@ -159,13 +159,13 @@ namespace FlowCiao.Operators
 
                 if (processExecution.ActiveExecutionStep is null)
                 {
-                    throw new FlowExecutionException("No active steps to fire");
+                    throw new FlowCiaoExecutionException("No active steps to fire");
                 }
 
                 if (processExecution.ActiveExecutionStep.Details
                         .SingleOrDefault(x => x.Transition.Triggers.FirstOrDefault()!.Code == trigger) is null)
                 {
-                    throw new FlowExecutionException("Trigger is invalid!");
+                    throw new FlowCiaoExecutionException("Trigger is invalid!");
                 }
 
                 var processStepContext = InstantiateContext(trigger, data, processExecution, processExecution.ActiveExecutionStep);

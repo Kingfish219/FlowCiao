@@ -40,7 +40,9 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
         
         public async Task<Activity> GetByKey(Guid id = default, string actorName = default)
         {
-            return await FlowCiaoDbContext.Activities.AsNoTracking().SingleOrDefaultAsync(a =>
+            return await FlowCiaoDbContext.Activities
+                .AsNoTracking()
+                .SingleOrDefaultAsync(a =>
                 (id == default || a.Id == id) &&
                 (string.IsNullOrWhiteSpace(actorName) || a.ActorName.ToLower() == actorName));
         }
