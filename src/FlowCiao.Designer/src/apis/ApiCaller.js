@@ -1,11 +1,9 @@
 import axios from "axios"
 const api = axios.create({
-    baseURL:" http://localhost:5235/"
+    baseURL: process.env.REACT_APP_BASE_API_URL
   })
-
 export const ApiCaller = {
   getList: async function(resource, params, cancel = false) {
-   
     const response = await api.request({
       url: `${resource}`,
       method: "GET",

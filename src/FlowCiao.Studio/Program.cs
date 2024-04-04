@@ -17,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
                 persistenceSettings.UseSqlServer(builder.Configuration.GetConnectionString("FlowCiao"));
             });
     });
-    
+
     builder.Services.AddApiVersioning(options =>
     {
         options.DefaultApiVersion = new ApiVersion(1);
@@ -42,6 +42,10 @@ var app = builder.Build();
     }
 
     app.UseFlowCiao();
+
+    app.UseDefaultFiles();
+    app.UseStaticFiles();
+
     app.MapControllers();
     app.Run();
 }

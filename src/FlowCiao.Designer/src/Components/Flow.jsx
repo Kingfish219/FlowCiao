@@ -76,8 +76,8 @@ const Flow = forwardRef((props, ref) => {
       data: {
         AddIdleNodeFunc: onAddIdleNodeFunc,
         Name: "",
-        onEntry: "",
-        onExit: "",
+        onEntry: {name: "", actorName: ""},
+        onExit: {name: "", actorName: ""},
       },
       origin: [0.5, 0.0],
     };
@@ -132,8 +132,8 @@ const Flow = forwardRef((props, ref) => {
       data: {
         AddIdleNodeFunc: onAddIdleNodeFunc,
         Name: "",
-        onEntry: "",
-        onExit: "",
+        onEntry: {name: "", actorName: ""},
+        onExit: {name: "", actorName: ""},
       },
       origin: [0.5, 0.0],
       position: { x: 200, y: 0 },
@@ -149,7 +149,7 @@ const Flow = forwardRef((props, ref) => {
   const exportFlowAsJSON = () => {
     const flowData = {
       nodes: [...nodes],
-      trigers: [...edges],
+      triggers: [...edges],
     };
     var startNode = nodes.find((x) => x.type === "StartNode");
     var firstIdleNodeId = edges.find((x) => x.source === startNode.id).target;
@@ -158,8 +158,8 @@ const Flow = forwardRef((props, ref) => {
       .filter((x) => x.id !== startNode.id)
       .map((node) => ({ Code: node.id, Name: node.data.Name }));
 
-    var actions = edges
-      .filter((x) => x.id !== firstIdleNodeId)
+    var triggers = edges
+      .filter((x) => x.source !== startNode.id)
       .map((edge) => ({ Code: edge.id, Name: edge.data.Name }));
 
     var initial = {
@@ -171,13 +171,15 @@ const Flow = forwardRef((props, ref) => {
           actionCode: item.id,
         })),
       onEntry:
-        nodes.find((x) => x.id === firstIdleNodeId).data.onEntry != ""
-          ? { name: nodes.find((x) => x.id === firstIdleNodeId).data.onEntry }
-          : "",
+        nodes.find((x) => x.id === firstIdleNodeId).data.onEntry.name != ""
+          ? { name: nodes.find((x) => x.id === firstIdleNodeId).data.onEntry.name,
+             actorName: nodes.find((x) => x.id === firstIdleNodeId).data.onEntry.actorName }
+          : {name: "", actorName: ""},
       onExit:
-        nodes.find((x) => x.id === firstIdleNodeId).data.onExit != ""
-          ? { name: nodes.find((x) => x.id === firstIdleNodeId).data.onExit }
-          : "",
+        nodes.find((x) => x.id === firstIdleNodeId).data.onExit.name != ""
+          ? { name: nodes.find((x) => x.id === firstIdleNodeId).data.onExit.name,
+             actorName: nodes.find((x) => x.id === firstIdleNodeId).data.onExit.actorName}
+          : {name: "", actorName: ""},
     };
 
     var steps = edges
@@ -191,13 +193,13 @@ const Flow = forwardRef((props, ref) => {
             actionCode: item2.id,
           })),
         onEntry:
-          nodes.find((x) => x.id === item.source).data.onEntry != ""
-            ? { name: nodes.find((x) => x.id === item.source).data.onEntry }
-            : "",
+          nodes.find((x) => x.id === item.source).data.onEntry.name != ""
+                ? { name: nodes.find((x) => x.id === item.source).data.onEntry.name, actorName: nodes.find((x) => x.id === item.source).data.onEntry.actorName}
+            : {name: "", actorName: ""},
         onExit:
-          nodes.find((x) => x.id === item.source).data.onExit != ""
-            ? { name: nodes.find((x) => x.id === item.source).data.onExit }
-            : "",
+          nodes.find((x) => x.id === item.source).data.onExit.name != ""
+            ? { name: nodes.find((x) => x.id === item.source).data.onExit.name, actorName: nodes.find((x) => x.id === item.source).data.onExit.actorName }
+            : {name: "", actorName: ""},
       }));
 
     const removeDuplicates = (arr) => {
@@ -218,97 +220,102 @@ const Flow = forwardRef((props, ref) => {
       .map((item) => ({
         fromStateCode: item.Code,
         onEntry:
-          nodes.find((x) => x.id === item.Code).data.onEntry != ""
-            ? { name: nodes.find((x) => x.id === item.Code).data.onEntry }
-            : "",
+          nodes.find((x) => x.id === item.Code).data.onEntry.name != ""
+            ? { name: nodes.find((x) => x.id === item.Code).data.onEntry.name, actorName: nodes.find((x) => x.id === item.Code).data.onEntry.actorName}
+            : {name: "", actorName: ""},
         onExit:
-          nodes.find((x) => x.id === item.Code).data.onExit != ""
-            ? { name: nodes.find((x) => x.id === item.Code).data.onExit }
-            : "",
+          nodes.find((x) => x.id === item.Code).data.onExit.name != ""
+            ? { name: nodes.find((x) => x.id === item.Code).data.onExit.name, actorName: nodes.find((x) => x.id === item.Code).data.onExit.actorName }
+            : {name: "", actorName: ""},
       }));
 
     const flow = {
       Key: props.workflowName,
       Name: props.workflowName,
       States: states,
-      Actions: actions,
+      Triggers: triggers,
       Initial: initial,
       Steps: steps.concat(endSteps),
     };
 
     const jsonFlow = JSON.stringify(flowData, null);
-    downloadJSON(JSON.stringify(flow, null));
+   // downloadJSON(JSON.stringify(flow, null));
+    return JSON.stringify(flow, null);
     // console.log("Exported JSON:", jsonFlow);
     // console.log("Exported JSON22: ", JSON.stringify(flow, null));
   };
 
-  const downloadJSON = (jsonString) => {
-    const currentDateTime = new Date();
-    const dateTime =
-      currentDateTime.getFullYear().toString() +
-      currentDateTime.getMonth().toString() +
-      currentDateTime.getDay().toString() +
-      "_" +
-      currentDateTime.getHours().toString() +
-      currentDateTime.getMinutes().toString() +
-      currentDateTime.getSeconds().toString();
-    const blob = new Blob([jsonString], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.style.display = "none";
-    a.href = url;
-    a.download = props.workflowName + `_jsonFlow_${dateTime}.json`; // Set the filename here
-    document.body.appendChild(a);
-    a.click();
-    URL.revokeObjectURL(url);
-    document.body.removeChild(a);
-  };
+  function ConvertToCamelCase(o) {
+    var newO, origKey, newKey, value
+    if (o instanceof Array) {
+      return o.map(function(value) {
+          if (typeof value === "object") {
+            value = ConvertToCamelCase(value)
+          }
+          return value
+      })
+    } else {
+      newO = {}
+      for (origKey in o) {
+        if (o.hasOwnProperty(origKey)) {
+          newKey = (origKey.charAt(0).toLowerCase() + origKey.slice(1) || origKey).toString()
+          value = o[origKey]
+          if (value instanceof Array || (value !== null && value.constructor === Object)) {
+            value = ConvertToCamelCase(value)
+          }
+          newO[newKey] = value
+        }
+      }
+    }
+    return newO
+  }
 
   const importJson = (jsonFlow) => {
+    jsonFlow = ConvertToCamelCase(jsonFlow)
     nodesPosition.current = [{ x: 0, y: 0 }];
     setId();
 
-    var importedNodes = jsonFlow.States.map((node) => ({
-      id: node.Code,
+    var importedNodes = jsonFlow.states.map((node) => ({
+      id: node.code.toString(),
       type: "idleNode",
       data: {
         AddIdleNodeFunc: onAddIdleNodeFunc,
-        Name: node.Name,
-        onEntry: "",
-        onExit: "",
+        Name: node.name,
+        onEntry: {name: "", actorName: ""},
+        onExit: {name: "", actorName: ""},
+        reset: true
       },
       origin: [0.5, 0.0],
       position: null,
     }));
 
-    var importedEdges = jsonFlow.Actions.map((edge) => ({
-      id: edge.Code,
+    var importedEdges = jsonFlow.triggers.map((edge) => ({
+      id: edge.code.toString(),
       source: "",
       target: "",
       type: "custom-edge",
-      data: { Name: edge.Name },
+      data: { Name: edge.name },
     }));
 
     var firstIdleNode = importedNodes.find(
-      (x) => x.id == jsonFlow.Initial.fromStateCode
+      (x) => x.id == jsonFlow.initial.fromStateCode.toString()
     );
-    firstIdleNode.data.reset = true;
     firstIdleNode.data.onEntry =
-      jsonFlow.Initial.onEntry != undefined && jsonFlow.Initial.onEntry != ""
-        ? jsonFlow.Initial.onEntry.name
-        : "";
+      jsonFlow.initial.onEntry != undefined && jsonFlow.initial.onEntry.name != ""
+        ? {name: jsonFlow.initial.onEntry.name, actorName: jsonFlow.initial.onEntry.actorName}
+        : {name: "", actorName: ""};
     firstIdleNode.data.onExit =
-      jsonFlow.Initial.onExit != undefined && jsonFlow.Initial.onExit != ""
-        ? jsonFlow.Initial.onExit.name
-        : "";
+      jsonFlow.initial.onExit != undefined && jsonFlow.initial.onExit.name != ""
+        ? {name: jsonFlow.initial.onExit.name, actorName: jsonFlow.initial.onExit.actorName}
+        : {name: "", actorName: ""};
     firstIdleNode.position = { x: 200, y: 0 };
-    jsonFlow.Initial.allows.forEach((element) => {
-      importedEdges.find((x) => x.id == element.actionCode).source =
-        jsonFlow.Initial.fromStateCode;
-      importedEdges.find((x) => x.id == element.actionCode).target =
-        element.allowedStateCode;
+    jsonFlow.initial.allows.forEach((element) => {
+      importedEdges.find((x) => x.id == element.actionCode.toString()).source =
+        jsonFlow.initial.fromStateCode.toString();
+      importedEdges.find((x) => x.id == element.actionCode.toString()).target =
+        element.allowedStateCode.toString();
       var nextStepNode = importedNodes.find(
-        (x) => x.id == element.allowedStateCode
+        (x) => x.id == element.allowedStateCode.toString()
       );
 
       const position = findFirstEmptyPosition(
@@ -331,7 +338,7 @@ const Flow = forwardRef((props, ref) => {
 
     const initialEdge = {
       id: (
-        Math.min(...jsonFlow.Initial.allows.map((o) => o.actionCode)) - 1
+        Math.min(...jsonFlow.initial.allows.map((o) => o.actionCode)) - 1
       ).toString(),
       source: (firstIdleNode.id - 1).toString(),
       target: firstIdleNode.id.toString(),
@@ -340,29 +347,29 @@ const Flow = forwardRef((props, ref) => {
     };
     importedEdges = [initialEdge, ...importedEdges];
 
-    jsonFlow.Steps.forEach((stepElement) => {
+    jsonFlow.steps.forEach((stepElement) => {
       var stepNode = importedNodes.find(
-        (x) => x.id == stepElement.fromStateCode
+        (x) => x.id == stepElement.fromStateCode.toString()
       );
       stepNode.data.onEntry =
-        stepElement.onEntry != undefined && stepElement.onEntry != ""
-          ? stepElement.onEntry.name
-          : "";
+        stepElement.onEntry != undefined && stepElement.onEntry.name != ""
+          ? {name: stepElement.onEntry.name, actorName: stepElement.onEntry.actorName}
+          : {name: "", actorName: ""};
       stepNode.data.onExit =
-        stepElement.onExit != undefined && stepElement.onExit != ""
-          ? stepElement.onExit.name
-          : "";
+        stepElement.onExit != undefined && stepElement.onExit.name != ""
+          ? {name: stepElement.onExit.name, actorName: stepElement.onExit.actorName}
+          : {name: "", actorName: ""};
       if (stepNode.position == null) {
         stepNode.position = { x: 200, y: 0 };
       }
       if (stepElement.allows != undefined && stepElement.allows != "") {
         stepElement.allows.forEach((element) => {
-          importedEdges.find((x) => x.id == element.actionCode).source =
-            stepElement.fromStateCode;
-          importedEdges.find((x) => x.id == element.actionCode).target =
-            element.allowedStateCode;
+          importedEdges.find((x) => x.id == element.actionCode.toString()).source =
+            stepElement.fromStateCode.toString();
+          importedEdges.find((x) => x.id == element.actionCode.toString()).target =
+            element.allowedStateCode.toString();
           var nextStepNode = importedNodes.find(
-            (x) => x.id == element.allowedStateCode
+            (x) => x.id == element.allowedStateCode.toString()
           );
 
           if (nextStepNode.position == null) {
@@ -377,15 +384,15 @@ const Flow = forwardRef((props, ref) => {
       }
     });
 
-    var maxNodeId = Math.max(...jsonFlow.States.map((o) => o.Code));
-    var maxEdgeId = Math.max(...jsonFlow.Actions.map((o) => o.Code));
+    var maxNodeId = Math.max(...jsonFlow.states.map((o) => o.code));
+    var maxEdgeId = Math.max(...jsonFlow.triggers.map((o) => o.code));
     var lastMaxId = maxNodeId > maxEdgeId ? maxNodeId : maxEdgeId;
     setId(lastMaxId);
 
     setEdges(importedEdges);
     setNodes(importedNodes);
 
-    props.onSetWorkflowName(jsonFlow.Name);
+    props.onSetWorkflowName(jsonFlow.name);
   };
 
   const onNodesChange = useCallback(

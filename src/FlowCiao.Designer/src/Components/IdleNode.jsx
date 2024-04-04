@@ -42,10 +42,10 @@ const IdleNode = (node) => {
 
   useEffect(() => {
     let updatedActivities = [];
-    if (node.data.onEntry != "") {
+    if (node.data.onEntry.name != "") {
       updatedActivities.push(node.data.onEntry);
     }
-    if (node.data.onExit != "") {
+    if (node.data.onExit.name != "") {
       updatedActivities.push(node.data.onExit);
     }
     setNodeActivities(updatedActivities);
@@ -55,10 +55,10 @@ const IdleNode = (node) => {
     if (node.data.reset) {
       setNodeName(node.data.Name != "" ? node.data.Name : "Pending");
       let updatedActivities = [];
-      if (node.data.onEntry != "") {
+      if (node.data.onEntry.name != "") {
         updatedActivities.push(node.data.onEntry);
       }
-      if (node.data.onExit != "") {
+      if (node.data.onExit.name != "") {
         updatedActivities.push(node.data.onExit);
       }
       setNodeActivities(updatedActivities);
@@ -72,13 +72,13 @@ const IdleNode = (node) => {
   };
   const onActivitiesApplyChanges = (activities) => {
     if (activities != null) {
-      node.data.onEntry = activities.onEntryName;
-      node.data.onExit = activities.onExitName;
+      node.data.onEntry = {name: activities.onEntryName, actorName: activities.onEntryActorName};
+      node.data.onExit = {name:activities.onExitName, actorName: activities.onExitActorName};
       let updatedActivities = [];
-      if (node.data.onEntry != "") {
+      if (node.data.onEntry.name != "") {
         updatedActivities.push(node.data.onEntry);
       }
-      if (node.data.onExit != "") {
+      if (node.data.onExit.name != "") {
         updatedActivities.push(node.data.onExit);
       }
       setNodeActivities(updatedActivities);

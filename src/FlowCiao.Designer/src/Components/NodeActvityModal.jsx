@@ -18,28 +18,32 @@ import useActivityData from "../apis/data/useActivityData";
 const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
   const [messageApi, contextHolder] = message.useMessage();
   const [activities, setActivities] = useState({
-    onEntryName: node.data.onEntry,
-    onExitName: node.data.onExit,
+    onEntryName: node.data.onEntry.name,
+    onEntryActorName: node.data.onEntry.actorName,
+    onExitName: node.data.onExit.name,
+    onExitActorName: node.data.onExit.actorName,
   });
   const handleOk = () => {
     onApplyChanges(activities);
   };
   const handleCancel = () => {
     setActivities({
-      onEntryName: node.data.onEntry,
-      onExitName: node.data.onExit,
+      onEntryName: node.data.onEntry.name,
+      onEntryActorName: node.data.onEntry.actorName,
+      onExitName: node.data.onExit.name,
+      onExitActorName: node.data.onExit.actorName,
     });
     onApplyChanges(null, null);
   };
 
   const chooseOnEntryActionHandler = ({ key }) => {
     if (key == "registerActivity") {
-      // setIsEntryActionSelected(true);
       uploadActivityDll();
     } else {
       setActivities({
         ...activities,
         onEntryName: items[0].children.find((x) => x.key == key).name,
+        onEntryActorName: items[0].children.find((x) => x.key == key).actorName,
       });
     }
   };
@@ -49,15 +53,16 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
       setActivities({
         ...activities,
         onExitName: items[0].children.find((x) => x.key == key).name,
+        onExitActorName: items[0].children.find((x) => x.key == key).actorName,
       });
     }
   };
 
   const removeEntryActionHandler = () => {
-    setActivities({ ...activities, onEntryName: "" });
+    setActivities({ ...activities, onEntryName: "", onEntryActorName: "" });
   };
   const removeExitActionHandler = () => {
-    setActivities({ ...activities, onExitName: "" });
+    setActivities({ ...activities, onExitName: "" , onExitActorName: ""});
   };
 
   const uploadActivityDll = () => {
@@ -93,6 +98,11 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
               content: "Uploading is successful",
             });
             getActivities();
+          }else{
+            messageApi.open({
+              type: "error",
+              content: "Uploading is failed",
+            });
           }
         }
       );
@@ -111,8 +121,7 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
     }
   };
   const getActivities = () => {
-    senGeActivitiesRequest({}, (data) => {
-      var flowActivities = data.map((activity) => ({ name: activity.name }));
+    senGeActivitiesRequest({}, (flowActivities) => {
       setFlowActivitiesList(flowActivities);
     });
   };
@@ -146,6 +155,7 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
         children: flowActivitiesList.map((x, index) => ({
           key: index + 1,
           name: x.name,
+          actorName: x.actorName,
           label: (
             <span className="activities-dropdown-item">
               <img src={actionIconImg} />
@@ -161,7 +171,7 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
   }
 
   items = items.concat(registerActivityDropDownItem);
-
+console.log(activities)
   return (
     <>
       {contextHolder}
@@ -196,7 +206,7 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
         >
           <p className="title">On Entry</p>
           <div className="activity-container dash-bottom-border">
-            {activities.onEntryName == "" ? (
+            {activities.onEntryName == "" ||  activities.onEntryName == undefined ? (
               <Dropdown
                 menu={{
                   items,
@@ -251,7 +261,7 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
           </div>
           <p className="title">On Exit</p>
           <div className="activity-container">
-            {activities.onExitName == "" ? (
+            {activities.onExitName == "" || activities.onExitName == undefined ? (
               <Dropdown
                 menu={{
                   items,

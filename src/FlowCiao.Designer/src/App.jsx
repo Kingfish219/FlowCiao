@@ -11,7 +11,7 @@ import {
   Modal,
   Upload,
   Dropdown,
-  message
+  message,
 } from "antd";
 import "./App.css";
 import plusImg from "./Assets/plus.svg";
@@ -24,6 +24,8 @@ import uploadIconImg from "./Assets/upload-icon.svg";
 import arrowDownIconImg from "./Assets/arrow-down-icon.svg";
 import ApplicationContextProvider from "./Store/ApplicationContextProvider";
 import useActivityData from "./apis/data/useActivityData";
+import useFlowData from "./apis/data/useFlowData";
+import useBuilderData from "./apis/data/useBuilderData";
 const { Header, Content } = Layout;
 const { confirm } = Modal;
 
@@ -34,14 +36,35 @@ function App() {
 
   const handleExportFlowAsJSON = () => {
     if (flowDesignerRef.current) {
-      flowDesignerRef.current.exportFlowAsJSON();
+      var json = flowDesignerRef.current.exportFlowAsJSON();
+      downloadJSON(json);
     }
   };
 
+  const downloadJSON = (jsonString) => {
+    const currentDateTime = new Date();
+    const dateTime =
+      currentDateTime.getFullYear().toString() +
+      currentDateTime.getMonth().toString() +
+      currentDateTime.getDay().toString() +
+      "_" +
+      currentDateTime.getHours().toString() +
+      currentDateTime.getMinutes().toString() +
+      currentDateTime.getSeconds().toString();
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.style.display = "none";
+    a.href = url;
+    a.download = workflowName + `_jsonFlow_${dateTime}.json`; // Set the filename here
+    document.body.appendChild(a);
+    a.click();
+    URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  };
+
   const handleFileChange = (info) => {
-    // if (info.file.status === "done") {
     handleFileSelect(info.file);
-    //  }
   };
   const handleFileSelect = (file) => {
     const reader = new FileReader();
@@ -59,64 +82,89 @@ function App() {
   };
 
   
-  const chooseActionHandler = ({ key }) => {
-    // if (key == "headerRegisterActivity") {
-    //   uploadActivityDll();
-    // }
+  const {
+    isLoading: isBuilderLoading,
+    error: builderError,
+    sendBuildFlowRequest,
+  } = useBuilderData();
+
+  const onBuildClick = () => {
+    if (flowDesignerRef.current) {
+      var json = flowDesignerRef.current.exportFlowAsJSON();
+      sendBuildFlowRequest(
+        {
+          params: {Content : json},
+        },
+        (response) => {
+          if (response.status == 200) {
+            messageApi.open({
+              type: "success",
+              content: "Building is successful",
+            });
+          }else{
+            messageApi.open({
+              type: "error",
+              content: "Building is failed",
+            });
+          }
+          console.log(response);
+        }
+      );
+    }
   };
 
   const {
     isLoading,
     error,
-    sendGetRequest : senGeActivitiesRequest,
-    sendUploadDLLFileRequest: sendUploadActvitiesDllFileRequest
-  } = useActivityData()
+    sendGetRequest: senGetActivitiesRequest,
+    sendUploadDLLFileRequest: sendUploadActvitiesDllFileRequest,
+  } = useActivityData();
   const [flowActivitiesList, setFlowActivitiesList] = useState([]);
 
-  const [isUploadingDll, setIsUploadingDll] = useState(false)
+  const [isUploadingDll, setIsUploadingDll] = useState(false);
 
   const handleActivityDllFileChange = (info) => {
     const fileReader = new FileReader();
     fileReader.onload = (e) => {
       const formDatas = new FormData();
-      formDatas.append("file",info.file);
+      formDatas.append("file", info.file);
       setIsUploadingDll(true);
       sendUploadActvitiesDllFileRequest(
         {
           params: formDatas,
         },
         (response) => {
-        setIsUploadingDll(false);
+          setIsUploadingDll(false);
 
-          if(response.status == 200){
+          if (response.status == 200) {
             messageApi.open({
-              type: 'success',
-              content: 'Uploading is successful',
+              type: "success",
+              content: "Uploading is successful",
             });
             getActivities();
+          }else{
+            messageApi.open({
+              type: "error",
+              content: "Uploading is failed",
+            });
           }
-          console.log(response)
+          console.log(response);
         }
       );
     };
 
     fileReader.readAsArrayBuffer(info.file);
-    
   };
 
   const actionDropdownOnClick = (isOpen) => {
-    if(isOpen)
-    {
+    if (isOpen) {
       getActivities();
     }
-  }
+  };
   const getActivities = () => {
-    senGeActivitiesRequest({},
-      (data) => {
-        var flowActivities =data.map(activity => ({name: activity.name}));
-        setFlowActivitiesList(flowActivities);
-      }
-    );
+    senGetActivitiesRequest({}, (flowActivities) => {
+      setFlowActivitiesList(flowActivities);
+    });
   };
 
   var registerActivityDropDownItem = [
@@ -124,17 +172,16 @@ function App() {
       key: "headerRegisterActivity",
       label: (
         <Upload
-        accept=".dll"
-        onChange={handleActivityDllFileChange}
-        showUploadList={false}
-        beforeUpload={() => false} // Prevent auto-upload
-      >
-        <span className="activities-dropdown-item">
-          <img src={uploadIconImg} />
-          <span className="activity-name">Register or update Activity</span>
-        </span>
-      </Upload>
-        
+          accept=".dll"
+          onChange={handleActivityDllFileChange}
+          showUploadList={false}
+          beforeUpload={() => false} // Prevent auto-upload
+        >
+          <span className="activities-dropdown-item">
+            <img src={uploadIconImg} />
+            <span className="activity-name">Register or update Activity</span>
+          </span>
+        </Upload>
       ),
     },
   ];
@@ -181,7 +228,20 @@ function App() {
     }
   };
 
+  const {
+    isFlowLoading,
+    flowError,
+    sendGetRequest: senGetFlowsRequest,
+  } = useFlowData();
   const [previousFlows, setPreviousFlow] = useState([]);
+
+  const getWorkflows = () => {
+    senGetFlowsRequest({}, (data) => {
+      var flowActivities = data.map((flow) => ({ name: flow.name }));
+      setPreviousFlow(flowActivities);
+    });
+  };
+
   var createNewFlowDropDownItem = [
     {
       key: "newFlow",
@@ -288,7 +348,12 @@ function App() {
                   onClick: chooseWorkflowHandler,
                 }}
                 placement="bottomRight"
-                trigger={['click']}
+                trigger={["click"]}
+                onOpenChange={(isOpen) => {
+                  if (isOpen) {
+                    getWorkflows();
+                  }
+                }}
               >
                 <Button className="header-workflow-dropdown-btn">
                   <img src={arrowDownIconImg} width={12} />
@@ -297,9 +362,11 @@ function App() {
             </Space>
             <Space className="header-botton-container">
               <Button
+                loading={isBuilderLoading}
                 className="header-btn"
                 style={{ background: "#0047FF" }}
                 icon={<img src={publishImg} width={18} />}
+                onClick={onBuildClick}
               />
 
               <Button
@@ -308,6 +375,7 @@ function App() {
                 onClick={handleExportFlowAsJSON}
               />
               <Upload
+                accept=".json"
                 className="header-btn"
                 onChange={handleFileChange}
                 showUploadList={false}
@@ -321,13 +389,15 @@ function App() {
               <Dropdown
                 menu={{
                   items: activitiesDropDownItems,
-                  onClick: chooseActionHandler,
                 }}
                 placement="bottomRight"
-                trigger={['click']}
+                trigger={["click"]}
                 onOpenChange={actionDropdownOnClick}
               >
-                <Button loading={isUploadingDll} className="header-btn header-activities-btn">
+                <Button
+                  loading={isUploadingDll}
+                  className="header-btn header-activities-btn"
+                >
                   <img className="activities-icon" src={actionIconImg} />
                   <img src={arrowDownIconImg} />
                 </Button>
@@ -342,13 +412,15 @@ function App() {
           </Header>
           <Content className="main-content">
             <div>
-            {contextHolder}
+              {contextHolder}
               <Flow
                 ref={flowDesignerRef}
                 resetFlowCalled={resetFlow}
                 onResetFlowClick={resetFlowClick}
                 workflowName={workflowName}
-                onSetWorkflowName={(name) => {setWorkflowName(name);}}
+                onSetWorkflowName={(name) => {
+                  setWorkflowName(name);
+                }}
               />
             </div>
           </Content>
