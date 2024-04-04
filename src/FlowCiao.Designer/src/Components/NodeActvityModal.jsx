@@ -1,16 +1,22 @@
-import { useCallback, useState, useContext, useEffect } from "react";
-import { Handle, Position, useStore } from "reactflow";
-import { Button, Dropdown, ConfigProvider, Modal } from "antd";
-import exitActionImg from "../Assets/exit-action.svg";
-import entryActionImg from "../Assets/entry-action.svg";
+import { useState } from "react";
+import {
+  Dropdown,
+  ConfigProvider,
+  Modal,
+  message,
+  Button,
+  Upload,
+  Spin,
+} from "antd";
+import { LoadingOutlined } from '@ant-design/icons';
 import actionIconImg from "../Assets/action-icon.svg";
 import uploadIconImg from "../Assets/upload-icon.svg";
 import editIconImg from "../Assets/edit-icon.svg";
 import trashImg from "../Assets/trash.svg";
-import ApplicationContext from "../Store/ApplicationContext";
+import useActivityData from "../apis/data/useActivityData";
 
 const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
-
+  const [messageApi, contextHolder] = message.useMessage();
   const [activities, setActivities] = useState({
     onEntryName: node.data.onEntry,
     onExitName: node.data.onExit,
@@ -26,10 +32,6 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
     onApplyChanges(null, null);
   };
 
-  const actionDropdownOnClick = () => {
-    getActivities();
-  }
-
   const chooseOnEntryActionHandler = ({ key }) => {
     if (key == "registerActivity") {
       // setIsEntryActionSelected(true);
@@ -43,10 +45,7 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
   };
 
   const chooseOnExitActionHandler = ({ key }) => {
-    if (key == "registerActivity") {
-      // setIsEntryActionSelected(true);
-      uploadActivityDll();
-    } else {
+    if (key != "registerActivity") {
       setActivities({
         ...activities,
         onExitName: items[0].children.find((x) => x.key == key).name,
@@ -61,29 +60,78 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
     setActivities({ ...activities, onExitName: "" });
   };
 
-  const [flowActivitiesList, setFlowActivitiesList] = useState([]);
-
-
   const uploadActivityDll = () => {
     getActivities();
   };
+
+  const {
+    isLoading,
+    error,
+    sendGetRequest: senGeActivitiesRequest,
+    sendUploadDLLFileRequest: sendUploadActvitiesDllFileRequest,
+  } = useActivityData();
+  const [flowActivitiesList, setFlowActivitiesList] = useState([]);
+
+  const [isUploadingDll, setIsUploadingDll] = useState(false);
+
+  const handleActivityDllFileChange = (info) => {
+    const fileReader = new FileReader();
+    fileReader.onload = (e) => {
+      const formDatas = new FormData();
+      formDatas.append("file", info.file);
+      setIsUploadingDll(true);
+      sendUploadActvitiesDllFileRequest(
+        {
+          params: formDatas,
+        },
+        (response) => {
+          setIsUploadingDll(false);
+
+          if (response.status == 200) {
+            messageApi.open({
+              type: "success",
+              content: "Uploading is successful",
+            });
+            getActivities();
+          }
+        }
+      );
+    };
+
+    fileReader.readAsArrayBuffer(info.file);
+  };
+
+  const [actionDropDownTarget, setActionDropDownTarget] = useState("")
+  const actionDropdownOnClick = (isOpen, target) => {
+    if (isOpen) {
+      setActionDropDownTarget(target)
+      getActivities();
+    }else{
+    setActionDropDownTarget("")
+    }
+  };
   const getActivities = () => {
-    var flowActivities = [
-      {
-        name: "HelloWordActivity",
-      },
-    ];
-    setFlowActivitiesList(flowActivities);
+    senGeActivitiesRequest({}, (data) => {
+      var flowActivities = data.map((activity) => ({ name: activity.name }));
+      setFlowActivitiesList(flowActivities);
+    });
   };
 
   var registerActivityDropDownItem = [
     {
       key: "registerActivity",
       label: (
-        <span className="activities-dropdown-item">
-          <img src={uploadIconImg} />
-          <span className="activity-name">Register or update Activity</span>
-        </span>
+        <Upload
+          accept=".dll"
+          onChange={handleActivityDllFileChange}
+          showUploadList={false}
+          beforeUpload={() => false} // Prevent auto-upload
+        >
+          <span className="activities-dropdown-item">
+            <img src={uploadIconImg} />
+            <span className="activity-name">Register or update Activity</span>
+          </span>
+        </Upload>
       ),
     },
   ];
@@ -116,6 +164,7 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
 
   return (
     <>
+      {contextHolder}
       <ConfigProvider
         theme={{
           components: {
@@ -154,24 +203,37 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
                   onClick: chooseOnEntryActionHandler,
                 }}
                 placement="bottomRight"
-                trigger={['click']}
-                onClick={actionDropdownOnClick}
+                trigger={["click"]}
+                onOpenChange={(isOpen) => actionDropdownOnClick(isOpen, "onEntryBtn")}
               >
-                <button className="add-actvity-btn">+ Add Actvity</button>
+                <Button loading={isUploadingDll && actionDropDownTarget == "onEntryBtn"} className="add-actvity-btn">
+                  + Add Actvity
+                </Button>
               </Dropdown>
             ) : (
               <div className="node-activity">
                 <img src={actionIconImg} className="action-icon" />
                 <p>{activities.onEntryName}</p>
                 <span>
+                {(isUploadingDll && actionDropDownTarget == "onEditEntryBtn") && <Spin
+                    indicator={
+                      <LoadingOutlined
+                        style={{
+                          fontSize: 14,
+                          margin: "0 8px 8px 0"
+                        }}
+                        spin
+                      />
+                    }
+                  />}
                   <Dropdown
                     menu={{
                       items,
                       onClick: chooseOnEntryActionHandler,
                     }}
                     placement="bottomRight"
-                    trigger={['click']}
-                    onClick={actionDropdownOnClick}
+                    trigger={["click"]}
+                    onOpenChange={(isOpen) => actionDropdownOnClick(isOpen, "onEditEntryBtn")}
                   >
                     <button className="node-action-edit-btn">
                       <img src={editIconImg} />
@@ -196,24 +258,37 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
                   onClick: chooseOnExitActionHandler,
                 }}
                 placement="bottomRight"
-                trigger={['click']}
-                onClick={actionDropdownOnClick}
+                trigger={["click"]}
+                onOpenChange={(isOpen) => actionDropdownOnClick(isOpen, "onExitBtn")}
               >
-                <button className="add-actvity-btn">+ Add Actvity</button>
+                <Button loading={isUploadingDll && actionDropDownTarget == "onExitBtn"} className="add-actvity-btn">
+                  + Add Actvity
+                </Button>
               </Dropdown>
             ) : (
               <div className="node-activity">
                 <img src={actionIconImg} className="action-icon" />
                 <p>{activities.onExitName}</p>
                 <span>
+                  {(isUploadingDll  && actionDropDownTarget == "onEditExitBtn") && <Spin
+                    indicator={
+                      <LoadingOutlined
+                        style={{
+                          fontSize: 14,
+                          margin: "0 8px 8px 0"
+                        }}
+                        spin
+                      />
+                    }
+                  />}
                   <Dropdown
                     menu={{
                       items,
                       onClick: chooseOnExitActionHandler,
                     }}
                     placement="bottomRight"
-                    trigger={['click']}
-                    onClick={actionDropdownOnClick}
+                    trigger={["click"]}
+                    onOpenChange={(isOpen) => actionDropdownOnClick(isOpen, "onEditExitBtn")}
                   >
                     <button className="node-action-edit-btn">
                       <img src={editIconImg} />
@@ -225,6 +300,7 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
                   >
                     <img src={trashImg} />
                   </button>
+                 
                 </span>
               </div>
             )}

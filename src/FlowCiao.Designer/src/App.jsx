@@ -73,22 +73,27 @@ function App() {
   } = useActivityData()
   const [flowActivitiesList, setFlowActivitiesList] = useState([]);
 
-  
+  const [isUploadingDll, setIsUploadingDll] = useState(false)
+
   const handleActivityDllFileChange = (info) => {
     const fileReader = new FileReader();
     fileReader.onload = (e) => {
       const formDatas = new FormData();
       formDatas.append("file",info.file);
+      setIsUploadingDll(true);
       sendUploadActvitiesDllFileRequest(
         {
           params: formDatas,
         },
         (response) => {
+        setIsUploadingDll(false);
+
           if(response.status == 200){
             messageApi.open({
               type: 'success',
               content: 'Uploading is successful',
             });
+            getActivities();
           }
           console.log(response)
         }
@@ -322,7 +327,7 @@ function App() {
                 trigger={['click']}
                 onOpenChange={actionDropdownOnClick}
               >
-                <Button className="header-btn header-activities-btn">
+                <Button loading={isUploadingDll} className="header-btn header-activities-btn">
                   <img className="activities-icon" src={actionIconImg} />
                   <img src={arrowDownIconImg} />
                 </Button>
@@ -333,7 +338,6 @@ function App() {
                   icon={<img src={paintImg} width={22} />}
                 />
               </ColorPicker>
-              {/* <Button icon={<img src={plusImg} />} onClick={resetFlowClick} /> */}
             </Space>
           </Header>
           <Content className="main-content">
