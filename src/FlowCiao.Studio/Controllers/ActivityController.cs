@@ -37,8 +37,8 @@ public class ActivityController : FlowCiaoControllerBase
         await using var ms = new MemoryStream();
         await file.CopyToAsync(ms);
         var fileBytes = ms.ToArray();
-        var result = await _activityService.RegisterActivity(file.FileName, fileBytes);
+        await _activityService.RegisterActivity(file.FileName, fileBytes);
 
-        return Ok(result);
+        return Ok();
     }
 }

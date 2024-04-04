@@ -11,7 +11,7 @@ namespace FlowCiao.Persistence.Interfaces
         Task<List<Activity>> Get(bool fetchActorContent = false);
         Task<Activity> GetByKey(Guid id = default, string actorName = default);
         Task<Guid> Modify(Activity entity);
-        Task<Activity> RegisterActivity(string actorName, byte[] actorContent);
+        Task<Guid> RegisterActivity(string name, string actorName, byte[] actorContent);
         Task<IFlowActivity> LoadActivity(string activityFileName);
     }
 }

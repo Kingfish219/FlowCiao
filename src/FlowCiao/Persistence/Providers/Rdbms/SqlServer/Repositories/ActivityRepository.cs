@@ -66,17 +66,17 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
             return entity.Id;
         }
 
-        public async Task<Activity> RegisterActivity(string actorName, byte[] actorContent)
+        public async Task<Guid> RegisterActivity(string name, string actorName, byte[] actorContent)
         {
             var activity = new Activity
             {
-                Name = actorName.Split('.')[^2],
+                Name = name,
                 ActorName = actorName,
                 ActorContent = actorContent
             };
             activity.Id = await Modify(activity);
             
-            return activity;
+            return activity.Id;
         }
 
         public async Task<IFlowActivity> LoadActivity(string activityFileName)

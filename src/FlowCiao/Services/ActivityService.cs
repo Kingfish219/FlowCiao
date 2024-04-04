@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
 using FlowCiao.Models.Core;
 using FlowCiao.Persistence.Interfaces;
+using FlowCiao.Utils;
 
 namespace FlowCiao.Services
 {
@@ -32,17 +35,29 @@ namespace FlowCiao.Services
             return await _activityRepository.Modify(activity);
         }
 
-        public async Task<Activity> RegisterActivity(string actorName, byte[] actorContent)
+        public async Task RegisterActivity(string actorName, byte[] actorContent)
         {
             if (!actorName.EndsWith(".dll"))
             {
                 throw new FlowCiaoException("Invalid file");
             }
 
-            var result = await _activityRepository.RegisterActivity(actorName, actorContent);
-            result.ActorContent = null;
+            var assembly = Assembly.Load(actorContent);
+            var extractedActivityTypes = assembly.GetTypes().Where(t => typeof(IFlowActivity).IsAssignableFrom(t)).ToList();
+            if (extractedActivityTypes.IsNullOrEmpty())
+            {
+                throw new FlowCiaoException(
+                    "No valid activities found in this file. Please make sure you your activities are accessible and are in the right format");
+            }
 
-            return result;
+            foreach (var type in extractedActivityTypes)
+            {
+                var result = await _activityRepository.RegisterActivity(type.Name, type.FullName, actorContent);
+                if (result == default)
+                {
+                    throw new FlowCiaoPersistencyException("Could not register activities");
+                }
+            }
         }
 
         public Task<IFlowActivity> LoadActivity(string activityFileName)

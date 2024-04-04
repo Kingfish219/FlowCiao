@@ -45,11 +45,11 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
             return entity.Id;
         }
 
-        public async Task<Activity> RegisterActivity(string actorName, byte[] actorContent)
+        public async Task<Guid> RegisterActivity(string name, string actorName, byte[] actorContent)
         {
             var activity = new Activity
             {
-                Name = actorName.Split('.')[^2],
+                Name = name,
                 ActorName = actorName,
                 ActorContent = actorContent
             };
@@ -69,7 +69,7 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
 
             await File.WriteAllBytesAsync(Path.Join(storagePath, actorName), actorContent);
 
-            return activity;
+            return activity.Id;
         }
 
         public async Task<IFlowActivity> LoadActivity(string activityFileName)
