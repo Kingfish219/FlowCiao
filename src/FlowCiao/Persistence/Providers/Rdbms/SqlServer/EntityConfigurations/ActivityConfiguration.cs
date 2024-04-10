@@ -20,7 +20,5 @@ internal class ActivityConfiguration : IEntityTypeConfiguration<Activity>
             .UsingEntity<TransitionActivity>(
                 l => l.HasOne(e => e.Transition).WithMany(e => e.TransitionActivities),
                 r => r.HasOne(e => e.Activity).WithMany(e => e.TransitionActivities));
-
-        builder.Navigation(e => e.TransitionActivities).AutoInclude();
     }
 }

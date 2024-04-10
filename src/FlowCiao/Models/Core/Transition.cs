@@ -5,30 +5,30 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlowCiao.Models.Core
 {
-    public class Transition
+    public class Transition : BaseEntity
     {
-        [Key]
-        public Guid Id { get; set; }
-        
         public string Name { get; set; }
+
+        public Guid FlowId { get; set; }
         
-        [ForeignKey("FlowId")]
         public Flow Flow { get; set; }
+
+        [Required]
+        public Guid FromId { get; set; }
         
-        [ForeignKey("FromStateId")]
         public State From { get; set; }
         
-        [ForeignKey("ToStateId")]
+        [Required]
+        public Guid ToId { get; set; }
+        
         public State To { get; set; }
 
-        public List<Trigger> Triggers { get; set; } = new();
+        public List<Trigger> Triggers { get; set; } = null!;
         
-        public List<Activity> Activities { get; set; } = new();
+        public List<Activity> Activities { get; set; } = null!;
         
-        public List<TransitionActivity> TransitionActivities { get; set; }
+        public List<TransitionActivity> TransitionActivities { get; set; } = null!;
         
-        public List<TransitionTrigger> TransitionTriggers { get; set; }
-
         [NotMapped]
         public Func<bool> Condition { get; set; }
     }

@@ -1,10 +1,9 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlowCiao.Models.Core
 {
-     public class TransitionActivity
+     public class TransitionActivity : BaseNavigationEntity
     {
         [ForeignKey("Activity")]
         public Guid ActivityId { get; set; }
@@ -12,7 +11,7 @@ namespace FlowCiao.Models.Core
         [ForeignKey("Transition")]
         public Guid TransitionId { get; set; }
         
-        public Transition Transition { get; set; } = null;
-        public Activity Activity { get; set; } = null;
+        public Transition Transition { get; set; }
+        public Activity Activity { get; set; }
     }
 }

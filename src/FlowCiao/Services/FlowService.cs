@@ -19,9 +19,7 @@ namespace FlowCiao.Services
 
         public async Task<Guid> Modify(Flow flow)
         {
-            await _flowRepository.Modify(flow);
-
-            return flow.Id;
+            return await _flowRepository.Modify(flow);
         }
 
         public async Task<List<Flow>> Get()

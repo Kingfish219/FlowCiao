@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FlowCiao.Models.Core
 {
-    public class StateActivity
+    public class StateActivity : BaseNavigationEntity
     {
         [ForeignKey("State")]
         public Guid StateId { get; set; }

@@ -52,15 +52,13 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
             var existed = await GetByKey(entity.Id, entity.ActorName);
             if (existed != null)
             {
-                FlowCiaoDbContext.Activities.Update(existed);
+                await UpdateAsync(entity, existed);
             }
             else
             {
-                await FlowCiaoDbContext.Activities.AddAsync(entity);
+                await CreateAsync(entity);
             }
             
-            await FlowCiaoDbContext.SaveChangesAsync();
-
             return entity.Id;
         }
 

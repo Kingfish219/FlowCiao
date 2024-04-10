@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -8,11 +7,8 @@ using Newtonsoft.Json;
 
 namespace FlowCiao.Models.Core
 {
-    public class Activity
+    public class Activity : BaseEntity
     {
-        [Key]
-        public Guid Id { get; set; }
-
         public string Name { get; set; }
 
         public int ActivityType { get; set; } = 1;
@@ -23,13 +19,13 @@ namespace FlowCiao.Models.Core
         [MaxLength(1000000)]
         public byte[] ActorContent { get; set; }
         
-        public List<State> States { get; set; }
+        public List<State> States { get; set; } = null!;
 
-        public List<Transition> Transitions { get; set; }
+        public List<Transition> Transitions { get; set; } = null!;
 
-        public List<TransitionActivity> TransitionActivities { get; set; }
+        public List<TransitionActivity> TransitionActivities { get; set; } = null!;
 
-        public List<StateActivity> StateActivities { get; set; }
+        public List<StateActivity> StateActivities { get; set; } = null!;
 
         [JsonIgnore]
         [NotMapped]

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using FlowCiao.Exceptions;
 using FlowCiao.Models.Core;
 using FlowCiao.Persistence.Interfaces;
+using FlowCiao.Utils;
 
 namespace FlowCiao.Services
 {
@@ -11,9 +12,7 @@ namespace FlowCiao.Services
         private readonly IStateRepository _stateRepository;
         private readonly ActivityService _activityService;
 
-        public StateService(IStateRepository stateRepository
-                        , ActivityService activityService
-            )
+        public StateService(IStateRepository stateRepository, ActivityService activityService)
         {
             _stateRepository = stateRepository;
             _activityService = activityService;
@@ -21,13 +20,19 @@ namespace FlowCiao.Services
 
         public async Task<Guid> Modify(State state)
         {
-            var stateId = await _stateRepository.Modify(state);
-            if (stateId == default)
+            if (!state.Activities.IsNullOrEmpty())
             {
-                throw new FlowCiaoPersistencyException("State");
+                foreach (var activity in state.Activities)
+                {
+                    var activityResult = await _activityService.Modify(activity);
+                    if (activityResult == default)
+                    {
+                        throw new FlowCiaoPersistencyException("Modifying Activity failed");
+                    }
+                }
             }
-
-            return stateId;
+            
+            return await _stateRepository.Modify(state);
         }
     }
 }

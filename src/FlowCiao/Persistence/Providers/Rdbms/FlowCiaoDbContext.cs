@@ -31,7 +31,7 @@ public class FlowCiaoDbContext : DbContext
         {
             fk.DeleteBehavior = DeleteBehavior.NoAction;
         }
-
+        
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(FlowCiaoDbContext).Assembly);
     }
 }

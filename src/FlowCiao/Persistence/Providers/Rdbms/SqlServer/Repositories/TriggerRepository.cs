@@ -22,14 +22,12 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
             var existed = await GetById(entity.Id);
             if (existed != null)
             {
-                FlowCiaoDbContext.Triggers.Update(entity);
+                await UpdateAsync(entity, existed);
             }
             else
             {
-                await FlowCiaoDbContext.Triggers.AddAsync(entity);
+                await CreateAsync(entity);
             }
-            
-            await FlowCiaoDbContext.SaveChangesAsync();
 
             return entity.Id;
         }

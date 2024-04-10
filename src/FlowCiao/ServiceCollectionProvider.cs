@@ -50,7 +50,7 @@ namespace FlowCiao
             var flowSettings = scope.ServiceProvider.GetService<FlowSettings>();
             if (flowSettings.PersistFlow)
             {
-                flowSettings.MigrateIfRequired(scope);
+                flowSettings.Migrate(scope);
             }
         }
 
@@ -84,6 +84,7 @@ namespace FlowCiao
         private static void AddServices(IServiceCollection services)
         {
             services.AddScoped<ActivityService>();
+            services.AddScoped<TriggerService>();
             services.AddScoped<TransitionService>();
             services.AddScoped<StateService>();
             services.AddScoped<FlowExecutionService>();

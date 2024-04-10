@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
 using FlowCiao.Models;
 using FlowCiao.Models.Builder;
-using FlowCiao.Models.Builder.Serialized;
 using FlowCiao.Models.Core;
 using FlowCiao.Services;
 using FlowCiao.Utils;
@@ -118,38 +116,9 @@ namespace FlowCiao.Builder
             return this;
         }
 
-        public IFlowStepBuilder Build(List<State> states, SerializedStep serializedStep)
+        public FlowStep Build(Guid flowId)
         {
-            var fromState = states.Single(state => state.Code == serializedStep.FromStateCode);
-            var allowedList = states
-                .Where(state => serializedStep.Allows.Exists(allowed => allowed.AllowedStateCode == state.Code))
-                .Select(state => new
-                {
-                    AllowedState = state,
-                    AllowedTrigger = serializedStep.Allows.Single(x => x.AllowedStateCode == state.Code).TriggerCode
-                })
-                .ToList();
-
-            For(fromState);
-
-            allowedList.ForEach(allowed => { Allow(allowed.AllowedState, allowed.AllowedTrigger); });
-
-            if (serializedStep.OnEntry != null)
-            {
-                OnEntry(serializedStep.OnEntry.Name);
-            }
-
-            if (serializedStep.OnExit != null)
-            {
-                OnExit(serializedStep.OnExit.Name);
-            }
-
-            return this;
-        }
-
-        public FlowStep Build()
-        {
-            var result = Persist().GetAwaiter().GetResult();
+            var result = Persist(flowId).GetAwaiter().GetResult();
             if (!result.Success)
             {
                 throw new FlowCiaoPersistencyException("Saving some data failed");
@@ -162,23 +131,12 @@ namespace FlowCiao.Builder
         {
             // ignored
         }
-
-        private async Task<FuncResult> Persist()
+        
+        private async Task<FuncResult> Persist(Guid flowId)
         {
-            if (!FlowStep.For.Activities.IsNullOrEmpty())
-            {
-                foreach (var activity in FlowStep.For.Activities)
-                {
-                    var activityResult = await _activityService.Modify(activity);
-                    if (activityResult == default)
-                    {
-                        return new FuncResult(false, "Modifying Activity failed");
-                    }
-                }
-            }
-
-            var result = await _stateService.Modify(FlowStep.For);
-            if (result == default)
+            FlowStep.For.FlowId = flowId;
+            var forResult = await _stateService.Modify(FlowStep.For);
+            if (forResult == default)
             {
                 return new FuncResult(false, "Modifying State failed");
             }
@@ -190,18 +148,21 @@ namespace FlowCiao.Builder
 
             foreach (var transition in FlowStep.Allowed)
             {
-                if (!transition.Activities.IsNullOrEmpty())
+                transition.From.FlowId = flowId;
+                var transitionStateResult = await _stateService.Modify(transition.From);
+                if (transitionStateResult == default)
                 {
-                    foreach (var activity in transition.Activities)
-                    {
-                        var activityResult = await _activityService.Modify(activity);
-                        if (activityResult == default)
-                        {
-                            return new FuncResult(false, "Modifying Activity failed");
-                        }
-                    }
+                    return new FuncResult(false, "Modifying State failed");
                 }
-                
+
+                transition.To.FlowId = flowId;
+                transitionStateResult = await _stateService.Modify(transition.To);
+                if (transitionStateResult == default)
+                {
+                    return new FuncResult(false, "Modifying State failed");
+                }
+
+                transition.FlowId = flowId;
                 var transitionResult = await _transitionService.Modify(transition);
                 if (transitionResult == default)
                 {

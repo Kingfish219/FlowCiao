@@ -16,9 +16,7 @@ internal class StateConfiguration : IEntityTypeConfiguration<State>
         builder.HasMany(e => e.Activities)
             .WithMany(e => e.States)
             .UsingEntity<StateActivity>(
-                l => l.HasOne(e => e.Activity).WithMany(e => e.StateActivities),
-                r => r.HasOne(e => e.State).WithMany(e => e.StateActivities));
-
-        builder.Navigation(e => e.StateActivities).AutoInclude();
+                l => l.HasOne(e => e.Activity).WithMany(e => e.StateActivities).HasForeignKey(e=>e.ActivityId),
+                r => r.HasOne(e => e.State).WithMany(e => e.StateActivities).HasForeignKey(e=>e.StateId));
     }
 }

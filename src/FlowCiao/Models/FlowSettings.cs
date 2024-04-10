@@ -24,7 +24,7 @@ namespace FlowCiao.Models
             return this;
         }
         
-        internal void MigrateIfRequired(IServiceScope serviceScope)
+        internal void Migrate(IServiceScope serviceScope)
         {
             if (!PersistFlow)
             {

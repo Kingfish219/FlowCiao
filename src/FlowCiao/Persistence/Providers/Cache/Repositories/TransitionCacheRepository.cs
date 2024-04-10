@@ -19,6 +19,13 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
             return FlowHub.Transitions.SingleOrDefault(s => s.Id == id);
         }
 
+        public async Task<Transition> GetByKey(Guid flowId, Guid fromStateId, Guid toStateId)
+        {
+            await Task.CompletedTask;
+            
+            return FlowHub.Transitions.SingleOrDefault(a => a.FlowId == flowId && a.FromId == fromStateId && a.ToId == toStateId);
+        }
+
         public async Task<Guid> Modify(Transition entity)
         {
             if (entity.Id == default)

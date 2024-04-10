@@ -7,6 +7,7 @@ namespace FlowCiao.Persistence.Interfaces
     public interface IStateRepository
     {
         Task<State> GetById(Guid id);
+        Task<State> GetByKey(int code, Guid flowId);
         Task<Guid> Modify(State entity);
     }
 }

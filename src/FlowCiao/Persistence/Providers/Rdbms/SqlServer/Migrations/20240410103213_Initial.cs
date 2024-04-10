@@ -74,7 +74,7 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Migrations
                     Code = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FlowId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    FlowId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsFinal = table.Column<bool>(type: "bit", nullable: false),
                     IsInitial = table.Column<bool>(type: "bit", nullable: false)
                 },
@@ -83,29 +83,6 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Migrations
                     table.PrimaryKey("PK_State", x => x.Id);
                     table.ForeignKey(
                         name: "FK_State_Flow_FlowId",
-                        column: x => x.FlowId,
-                        principalSchema: "FlowCiao",
-                        principalTable: "Flow",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Trigger",
-                schema: "FlowCiao",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Code = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TriggerType = table.Column<int>(type: "int", nullable: false),
-                    FlowId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Priority = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Trigger", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Trigger_Flow_FlowId",
                         column: x => x.FlowId,
                         principalSchema: "FlowCiao",
                         principalTable: "Flow",
@@ -144,9 +121,9 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FlowId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    FromStateId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ToStateId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    FlowId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FromId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ToId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -158,14 +135,14 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Migrations
                         principalTable: "Flow",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Transition_State_FromStateId",
-                        column: x => x.FromStateId,
+                        name: "FK_Transition_State_FromId",
+                        column: x => x.FromId,
                         principalSchema: "FlowCiao",
                         principalTable: "State",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Transition_State_ToStateId",
-                        column: x => x.ToStateId,
+                        name: "FK_Transition_State_ToId",
+                        column: x => x.ToId,
                         principalSchema: "FlowCiao",
                         principalTable: "State",
                         principalColumn: "Id");
@@ -197,27 +174,32 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TransitionTrigger",
+                name: "Trigger",
                 schema: "FlowCiao",
                 columns: table => new
                 {
-                    TriggerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TransitionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Code = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TriggerType = table.Column<int>(type: "int", nullable: false),
+                    Priority = table.Column<int>(type: "int", nullable: false),
+                    TransitionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FlowId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TransitionTrigger", x => new { x.TransitionId, x.TriggerId });
+                    table.PrimaryKey("PK_Trigger", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TransitionTrigger_Transition_TransitionId",
+                        name: "FK_Trigger_Flow_FlowId",
+                        column: x => x.FlowId,
+                        principalSchema: "FlowCiao",
+                        principalTable: "Flow",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Trigger_Transition_TransitionId",
                         column: x => x.TransitionId,
                         principalSchema: "FlowCiao",
                         principalTable: "Transition",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_TransitionTrigger_Trigger_TriggerId",
-                        column: x => x.TriggerId,
-                        principalSchema: "FlowCiao",
-                        principalTable: "Trigger",
                         principalColumn: "Id");
                 });
 
@@ -254,16 +236,16 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Migrations
                 column: "FlowId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transition_FromStateId",
+                name: "IX_Transition_FromId",
                 schema: "FlowCiao",
                 table: "Transition",
-                column: "FromStateId");
+                column: "FromId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transition_ToStateId",
+                name: "IX_Transition_ToId",
                 schema: "FlowCiao",
                 table: "Transition",
-                column: "ToStateId");
+                column: "ToId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TransitionActivity_ActivityId",
@@ -272,16 +254,16 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Migrations
                 column: "ActivityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TransitionTrigger_TriggerId",
-                schema: "FlowCiao",
-                table: "TransitionTrigger",
-                column: "TriggerId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Trigger_FlowId",
                 schema: "FlowCiao",
                 table: "Trigger",
                 column: "FlowId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Trigger_TransitionId",
+                schema: "FlowCiao",
+                table: "Trigger",
+                column: "TransitionId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -299,7 +281,7 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Migrations
                 schema: "FlowCiao");
 
             migrationBuilder.DropTable(
-                name: "TransitionTrigger",
+                name: "Trigger",
                 schema: "FlowCiao");
 
             migrationBuilder.DropTable(
@@ -308,10 +290,6 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Migrations
 
             migrationBuilder.DropTable(
                 name: "Transition",
-                schema: "FlowCiao");
-
-            migrationBuilder.DropTable(
-                name: "Trigger",
                 schema: "FlowCiao");
 
             migrationBuilder.DropTable(

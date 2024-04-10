@@ -12,8 +12,8 @@ namespace FlowCiao.Builder
 {
     internal class FlowBuilder : IFlowBuilder
     {
-        public List<IFlowStepBuilder> StepBuilders { get; set; }
-        public IFlowStepBuilder InitialStepBuilder { get; set; }
+        private List<IFlowStepBuilder> StepBuilders { get; set; }
+        private IFlowStepBuilder InitialStepBuilder { get; set; }
         private readonly FlowService _flowService;
         private readonly ActivityService _activityService;
         private readonly StateService _stateService;
@@ -57,40 +57,41 @@ namespace FlowCiao.Builder
         {
             try
             {
-                var flow = await _flowService.GetByKey(key: flowKey);
-                if (flow != null)
-                {
-                    return flow;
-                }
-
                 build(this);
 
-                flow = new Flow
+                var flow = await _flowService.GetByKey(key: flowKey) ?? new Flow
                 {
-                    Key = flowKey
+                    Key = flowKey,
+                    Name = flowKey,
+                    IsActive = true
                 };
-
-                foreach (var flowStep in StepBuilders.Select(stepBuilder => stepBuilder.Build()))
-                {
-                    flow.States.Add(flowStep.For);
-                    if (flowStep.Allowed.IsNullOrEmpty())
-                    {
-                        continue;
-                    }
-
-                    flow.Transitions.AddRange(flowStep.Allowed);
-                    flow.States.AddRange(flow.Transitions.Select(t => t.To));
-                    flow.Triggers.AddRange(flow.Transitions.SelectMany(t => t.Triggers));
-                }
-
-                flow.States = flow.States.DistinctBy(s => s.Code).ToList();
-                flow.Triggers = flow.Triggers.DistinctBy(s => s.Code).ToList();
 
                 var result = await _flowService.Modify(flow);
                 if (result == default)
                 {
                     throw new FlowCiaoPersistencyException("Check your database connection!");
                 }
+
+                foreach (var flowStep in StepBuilders.Select(stepBuilder => stepBuilder.Build(flow.Id)))
+                {
+                    flow.States ??= new List<State>();
+                    flow.States.Add(flowStep.For);
+                    if (flowStep.Allowed.IsNullOrEmpty())
+                    {
+                        continue;
+                    }
+
+                    flow.Transitions ??= new List<Transition>();
+                    flow.Transitions.AddRange(flowStep.Allowed);
+                    
+                    flow.States.AddRange(flow.Transitions.Select(t => t.To));
+                    
+                    flow.Triggers ??= new List<Trigger>();
+                    flow.Triggers.AddRange(flow.Transitions.SelectMany(t => t.Triggers));
+                }
+
+                flow.States = flow.States.DistinctBy(s => s.Code).ToList();
+                flow.Triggers = flow.Triggers.DistinctBy(s => s.Code).ToList();
 
                 return flow;
             }

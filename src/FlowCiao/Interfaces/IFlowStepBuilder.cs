@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using FlowCiao.Models.Builder;
-using FlowCiao.Models.Builder.Serialized;
 using FlowCiao.Models.Core;
 
 namespace FlowCiao.Interfaces
@@ -13,7 +11,6 @@ namespace FlowCiao.Interfaces
         public IFlowStepBuilder Allow(State state, int trigger, Func<bool> condition = null);
         public IFlowStepBuilder OnEntry<TActivity>() where TActivity : IFlowActivity, new();
         public IFlowStepBuilder OnExit<TActivity>() where TActivity : IFlowActivity, new();
-        internal IFlowStepBuilder Build(List<State> states, SerializedStep serializedStep);
-        internal FlowStep Build();
+        internal FlowStep Build(Guid flowId);
     }
 }

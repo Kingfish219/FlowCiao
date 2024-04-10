@@ -31,6 +31,7 @@ public class FlowSqlServerPersistenceSettings
 
     internal void Migrate(IServiceScope serviceScope)
     {
-        serviceScope.ServiceProvider.GetService<FlowCiaoDbContext>().Database.Migrate();
+        var context = serviceScope.ServiceProvider.GetService<FlowCiaoDbContext>();
+        FlowCiaoDbInitializer.Initialize(context);
     }
 }
