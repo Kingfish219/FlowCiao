@@ -4,9 +4,9 @@ namespace FlowCiao.Models.Execution
 {
     public class FlowStepContext
     {
-        internal FlowExecution FlowExecution { get; set; }
-        internal FlowExecutionStep FlowExecutionStep { get; set; }
-        internal FlowExecutionStepDetail FlowExecutionStepDetail { get; set; }
+        internal FlowInstance FlowInstance { get; set; }
+        internal FlowInstanceStep FlowInstanceStep { get; set; }
+        internal FlowInstanceStepDetail FlowInstanceStepDetail { get; set; }
         public Dictionary<object, object> Data { get; set; }
 
         internal FlowStepContext()

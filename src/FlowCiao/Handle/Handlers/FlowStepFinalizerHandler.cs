@@ -8,29 +8,29 @@ namespace FlowCiao.Handle.Handlers
 {
     internal class FlowStepFinalizerHandler : FlowHandler
     {
-        private readonly FlowExecutionService _executionService;
+        private readonly FlowInstanceService _instanceService;
 
         public FlowStepFinalizerHandler(IFlowRepository flowRepository,
             FlowService flowService,
-            FlowExecutionService flowExecutionService) : base(flowRepository, flowService)
+            FlowInstanceService flowInstanceService) : base(flowRepository, flowService)
         {
-            _executionService = flowExecutionService;
+            _instanceService = flowInstanceService;
         }
 
         public override FlowResult Handle(FlowStepContext flowStepContext)
         {
             try
             {
-                flowStepContext.FlowExecutionStep.IsCompleted = true;
-                flowStepContext.FlowExecution = FlowService.Finalize(flowStepContext.FlowExecution)
+                flowStepContext.FlowInstanceStep.IsCompleted = true;
+                flowStepContext.FlowInstance = FlowService.Finalize(flowStepContext.FlowInstance)
                     .GetAwaiter().GetResult();
 
-                _executionService.Modify(flowStepContext.FlowExecution).GetAwaiter().GetResult();
+                _instanceService.Modify(flowStepContext.FlowInstance).GetAwaiter().GetResult();
 
                 return NextHandler?.Handle(flowStepContext) ?? new FlowResult
                 {
                     Status = FlowResultStatus.Completed,
-                    InstanceId = flowStepContext.FlowExecution.Id
+                    InstanceId = flowStepContext.FlowInstance.Id
                 };
             }
             catch (Exception exception)

@@ -21,7 +21,7 @@ builder.Services.AddFlowCiao(settings =>
 
 var app = builder.Build();
 
-// Call UseFlowCiao if you want to use Data Persistency
+// Call UseFlowCiao if you want to Persist FlowCiao
 app.UseFlowCiao();
 
 using (var scope = app.Services.CreateScope()) {
@@ -29,10 +29,11 @@ using (var scope = app.Services.CreateScope()) {
     var flowBuilder = scope.ServiceProvider.GetRequiredService<IFlowBuilder>();
     var flow = flowBuilder.Build<PhoneStateMachine>();
     
-    // And fire it using Ciao!!!
+    // Initialize it using Ciao and Fire!!!
     var flowOperator = scope.ServiceProvider.GetService<IFlowOperator>();
     var instance = flowOperator.Ciao(flow).GetAwaiter().GetResult();
-    //var result = flowOperator.FireAsync(instance, 1, new Dictionary<object, object>()).GetAwaiter().GetResult();
+    var result = flowOperator.FireAsync(instance, (int)PhoneStateMachine.Triggers.Call).GetAwaiter().GetResult();
+    Console.WriteLine(result.Message);
 }
 
 if (app.Environment.IsDevelopment())

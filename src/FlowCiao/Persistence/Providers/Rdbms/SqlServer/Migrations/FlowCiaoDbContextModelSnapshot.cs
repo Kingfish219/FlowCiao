@@ -58,6 +58,9 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -171,9 +174,6 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Migrations
                     b.Property<int>("Code")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("FlowId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
@@ -188,14 +188,12 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FlowId");
-
                     b.HasIndex("TransitionId");
 
                     b.ToTable("Trigger", "FlowCiao");
                 });
 
-            modelBuilder.Entity("FlowCiao.Models.Execution.FlowExecution", b =>
+            modelBuilder.Entity("FlowCiao.Models.Execution.FlowInstance", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -207,7 +205,7 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Migrations
                     b.Property<int>("ExecutionState")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("FlowId")
+                    b.Property<Guid>("FlowId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Progress")
@@ -217,7 +215,7 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Migrations
 
                     b.HasIndex("FlowId");
 
-                    b.ToTable("FlowExecution", "FlowCiao");
+                    b.ToTable("FlowInstance", "FlowCiao");
                 });
 
             modelBuilder.Entity("FlowCiao.Models.Core.State", b =>
@@ -298,10 +296,6 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Migrations
 
             modelBuilder.Entity("FlowCiao.Models.Core.Trigger", b =>
                 {
-                    b.HasOne("FlowCiao.Models.Core.Flow", null)
-                        .WithMany("Triggers")
-                        .HasForeignKey("FlowId");
-
                     b.HasOne("FlowCiao.Models.Core.Transition", "Transition")
                         .WithMany("Triggers")
                         .HasForeignKey("TransitionId")
@@ -311,11 +305,13 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Migrations
                     b.Navigation("Transition");
                 });
 
-            modelBuilder.Entity("FlowCiao.Models.Execution.FlowExecution", b =>
+            modelBuilder.Entity("FlowCiao.Models.Execution.FlowInstance", b =>
                 {
                     b.HasOne("FlowCiao.Models.Core.Flow", "Flow")
                         .WithMany()
-                        .HasForeignKey("FlowId");
+                        .HasForeignKey("FlowId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("Flow");
                 });
@@ -332,8 +328,6 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Migrations
                     b.Navigation("States");
 
                     b.Navigation("Transitions");
-
-                    b.Navigation("Triggers");
                 });
 
             modelBuilder.Entity("FlowCiao.Models.Core.State", b =>

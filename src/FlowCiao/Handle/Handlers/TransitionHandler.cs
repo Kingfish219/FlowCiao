@@ -18,17 +18,17 @@ namespace FlowCiao.Handle.Handlers
         {
             try
             {
-                if (flowStepContext.FlowExecutionStepDetail is null)
+                if (flowStepContext.FlowInstanceStepDetail is null)
                 {
                     throw new FlowCiaoExecutionException("Exception occured while completing progress transition");
                 }
 
-                if (!flowStepContext.FlowExecutionStepDetail.IsCompleted)
+                if (!flowStepContext.FlowInstanceStepDetail.IsCompleted)
                 {
                     throw new FlowCiaoExecutionException("Exception occured while completing progress transition, flow step action is not yet completed");
                 }
 
-                var transition = flowStepContext.FlowExecutionStepDetail.Transition;
+                var transition = flowStepContext.FlowInstanceStepDetail.Transition;
                 if (transition.Condition is null)
                 {
                     return NextHandler.Handle(flowStepContext);

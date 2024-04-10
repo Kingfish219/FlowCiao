@@ -10,38 +10,37 @@ using FlowCiao.Persistence.Interfaces;
 
 namespace FlowCiao.Services
 {
-    public class FlowExecutionService
+    public class FlowInstanceService
     {
-        private readonly IFlowExecutionRepository _flowExecutionRepository;
+        private readonly IFlowInstanceRepository _flowInstanceRepository;
         private readonly FlowSettings _flowSettings;
 
-        public FlowExecutionService(IFlowExecutionRepository flowExecutionRepository
-            , FlowSettings flowSettings
+        public FlowInstanceService(IFlowInstanceRepository flowInstanceRepository, FlowSettings flowSettings
             )
         {
             _flowSettings = flowSettings;
-            _flowExecutionRepository = flowExecutionRepository;
+            _flowInstanceRepository = flowInstanceRepository;
         }
 
-        public async Task<List<FlowExecution>> Get(Guid flowId = default)
+        public async Task<List<FlowInstance>> Get(Guid flowId = default)
         {
-            return await _flowExecutionRepository.Get(flowId);
+            return await _flowInstanceRepository.Get(flowId);
         }
 
-        public async Task<FlowExecution> GetById(Guid id)
+        public async Task<FlowInstance> GetById(Guid id)
         {
-            return await _flowExecutionRepository.GetById(id);
+            return await _flowInstanceRepository.GetById(id);
         }
 
-        private FlowExecutionStep GenerateFlowStep(Flow flow, State state)
+        private FlowInstanceStep GenerateFlowStep(Flow flow, State state)
         {
-            var flowStep = new FlowExecutionStep
+            var flowStep = new FlowInstanceStep
             {
                 CreatedOn = DateTime.Now,
                 Details = flow.Transitions.Where(x => x.From.Id.Equals(state.Id))
                     .Select(transition =>
                     {
-                        return new FlowExecutionStepDetail
+                        return new FlowInstanceStepDetail
                         {
                             Id = Guid.NewGuid(),
                             CreatedOn = DateTime.Now,
@@ -53,15 +52,15 @@ namespace FlowCiao.Services
             return flowStep;
         }
 
-        public async Task<FlowExecution> InitializeFlowExecution(Flow flow)
+        public async Task<FlowInstance> InitializeFlowInstance(Flow flow)
         {
-            var flowExecution = new FlowExecution
+            var flowExecution = new FlowInstance
             {
                 Id = Guid.NewGuid(),
                 Flow = flow,
                 CreatedOn = DateTime.Now,
-                ExecutionState = FlowExecution.FlowExecutionState.Initial,
-                ExecutionSteps = new List<FlowExecutionStep>
+                ExecutionState = FlowInstance.FlowExecutionState.Initial,
+                InstanceSteps = new List<FlowInstanceStep>
                 {
                     GenerateFlowStep(flow,
                             flow.Transitions.First(x => x.From.IsInitial).From)
@@ -76,15 +75,15 @@ namespace FlowCiao.Services
             return flowExecution;
         }
 
-        public async Task<FlowExecution> FinalizeFlowExecutionStep(Flow flow)
+        public async Task<FlowInstance> FinalizeFlowInstanceStep(Flow flow)
         {
-            var flowExecution = new FlowExecution
+            var flowExecution = new FlowInstance
             {
                 Id = Guid.NewGuid(),
                 Flow = flow,
                 CreatedOn = DateTime.Now,
-                ExecutionState = FlowExecution.FlowExecutionState.Initial,
-                ExecutionSteps = new List<FlowExecutionStep>
+                ExecutionState = FlowInstance.FlowExecutionState.Initial,
+                InstanceSteps = new List<FlowInstanceStep>
                 {
                     GenerateFlowStep(flow,
                         flow.Transitions.First(x => x.From.IsInitial).From)
@@ -99,28 +98,22 @@ namespace FlowCiao.Services
             return flowExecution;
         }
 
-        public async Task<FlowExecution> Finalize(FlowExecution flowExecution)
+        public async Task<FlowInstance> Finalize(FlowInstance flowInstance)
         {
-            flowExecution.ExecutionSteps.Add(GenerateFlowStep(flowExecution.Flow,
-                        flowExecution.Flow.Transitions.First(x => x.From.IsInitial).From));
+            flowInstance.InstanceSteps.Add(GenerateFlowStep(flowInstance.Flow,
+                        flowInstance.Flow.Transitions.First(x => x.From.IsInitial).From));
 
             if (_flowSettings.PersistFlow)
             {
-                await Modify(flowExecution);
+                await Modify(flowInstance);
             }
 
-            return flowExecution;
+            return flowInstance;
         }
 
-        public async Task<Guid> Modify(FlowExecution entity)
+        public async Task<Guid> Modify(FlowInstance entity)
         {
-            var flowId = await _flowExecutionRepository.Modify(entity);
-            if (flowId == default)
-            {
-                throw new FlowCiaoPersistencyException();
-            }
-
-            return flowId;
+            return await _flowInstanceRepository.Modify(entity);
         }
     }
 }

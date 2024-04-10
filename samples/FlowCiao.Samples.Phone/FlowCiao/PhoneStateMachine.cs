@@ -7,7 +7,7 @@ namespace FlowCiao.Samples.Phone.FlowCiao
     public class PhoneStateMachine : IFlowPlanner
     {
         public string Key { get; set; } = "phone";
-        private enum Triggers
+        public enum Triggers
         {
             Ring = 1,
             Call = 2,
@@ -30,7 +30,7 @@ namespace FlowCiao.Samples.Phone.FlowCiao
                         .For(idle)
                         .Allow(ringing, (int)Triggers.Ring)
                         .Allow(busy, (int)Triggers.Call)
-                        .Allow(offline, (int)Triggers.PowerOff)
+                        //.Allow(offline, (int)Triggers.PowerOff)
                         .OnEntry<HelloWorld>()
                         .OnExit<GoodbyeWorld>();
                 })

@@ -5,36 +5,36 @@ using FlowCiao.Services;
 
 namespace FlowCiao.Handle
 {
-    public class FlowHandlerFactory
+    internal class FlowHandlerFactory
     {
         private readonly IFlowRepository _flowRepository;
         private readonly FlowService _flowService;
-        private readonly FlowExecutionService _flowExecutionService;
+        private readonly FlowInstanceService _flowInstanceService;
 
         public FlowHandlerFactory(IFlowRepository flowRepository
             , FlowService flowService,
-            FlowExecutionService flowExecutionService)
+            FlowInstanceService flowInstanceService)
         {
             _flowRepository = flowRepository;
             _flowService = flowService;
-            _flowExecutionService = flowExecutionService;
+            _flowInstanceService = flowInstanceService;
         }
 
         internal Queue<FlowHandler> BuildHandlers()
         {
-            return BuildDefaultHandlers(_flowRepository, _flowService, _flowExecutionService);
+            return BuildDefaultHandlers(_flowRepository, _flowService, _flowInstanceService);
         }
 
         private Queue<FlowHandler> BuildDefaultHandlers(IFlowRepository flowRepository,
             FlowService flowService,
-            FlowExecutionService flowExecutionService)
+            FlowInstanceService flowInstanceService)
         {
             var triggerHandler = new TriggerHandler(flowRepository, flowService);
             var triggerActivityHandler = new TriggerActivityHandler(flowRepository, flowService);
             var transitionHandler = new TransitionHandler(flowRepository, flowService);
             var transitionActivityHandler = new TransitionActivityHandler(flowRepository, flowService);
             var stateActivityHandler = new StateActivityHandler(flowRepository, flowService);
-            var flowStepFinalizerHandler = new FlowStepFinalizerHandler(flowRepository, flowService, flowExecutionService);
+            var flowStepFinalizerHandler = new FlowStepFinalizerHandler(flowRepository, flowService, flowInstanceService);
 
             triggerHandler.SetNextHandler(triggerActivityHandler);
 

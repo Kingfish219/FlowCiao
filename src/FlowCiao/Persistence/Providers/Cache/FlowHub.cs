@@ -8,14 +8,14 @@ namespace FlowCiao.Persistence.Providers.Cache
     public class FlowHub
     {
         public List<Flow> Flows { get; set; }
-        public List<FlowExecution> FlowExecutions { get; set; }
+        public List<FlowInstance> FlowExecutions { get; set; }
         public List<State> States { get; set; }
         public List<Activity> Activities { get; set; }
         public List<Transition> Transitions { get; set; }
         public List<Trigger> Triggers { get; set; }
 
         public void Initiate(List<Flow> flows,
-            List<FlowExecution> flowExecutions,
+            List<FlowInstance> flowExecutions,
             List<State> states,
             List<Transition> transitions,
             List<Activity> activities,
@@ -50,24 +50,24 @@ namespace FlowCiao.Persistence.Providers.Cache
             });
         }
 
-        public async Task DeleteFlowExecution(FlowExecution flowExecution)
+        public async Task DeleteFlowExecution(FlowInstance flowInstance)
         {
             await Task.Run(() =>
             {
-                FlowExecutions.RemoveAll(x => x.Id.Equals(flowExecution.Id));
+                FlowExecutions.RemoveAll(x => x.Id.Equals(flowInstance.Id));
             });
         }
 
-        public async Task ModifyFlowExecution(FlowExecution flowExecution)
+        public async Task ModifyFlowExecution(FlowInstance flowInstance)
         {
             await Task.Run(() =>
             {
-                if (FlowExecutions.Exists(x => x.Id.Equals(flowExecution.Id)))
+                if (FlowExecutions.Exists(x => x.Id.Equals(flowInstance.Id)))
                 {
                     return;
                 }
 
-                FlowExecutions.Add(flowExecution);
+                FlowExecutions.Add(flowInstance);
             });
         }
 

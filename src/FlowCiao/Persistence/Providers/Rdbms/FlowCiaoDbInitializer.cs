@@ -7,11 +7,6 @@ internal static class FlowCiaoDbInitializer
 {
     public static void Initialize(FlowCiaoDbContext context)
     {
-        context.Database.EnsureCreated();
-        
-        if (context.Database.GetPendingMigrations().Any())
-        {
-            context.Database.Migrate();
-        }
+        context.Database.Migrate();
     }
 }

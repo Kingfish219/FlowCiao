@@ -1,26 +1,21 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
 using FlowCiao.Models.Builder.Serialized;
 using FlowCiao.Models.Core;
 using FlowCiao.Services;
-using FlowCiao.Utils;
 
 namespace FlowCiao.Builder.Serialization;
 
 public class FlowSerializerHelper
 {
-    private readonly IFlowBuilder _builder;
     private readonly ActivityService _activityService;
 
-    public FlowSerializerHelper(IFlowBuilder builder, ActivityService activityService)
+    public FlowSerializerHelper(ActivityService activityService)
     {
-        _builder = builder;
         _activityService = activityService;
     }
-
+    
     internal SerializedFlow CreateSerializedFlow(Flow flow)
     {
         var serializedFlow = new SerializedFlow
@@ -67,89 +62,91 @@ public class FlowSerializerHelper
 
     internal IFlowPlanner CreateFlowPlanner(SerializedFlow serializedFlow)
     {
-        var planner = new DefaultFlowPlanner(serializedFlow.Key, () =>
-        {
-            var states = serializedFlow.States
-                .Select(state => new State(state.Code, state.Name))
-                .ToList();
+        // var planner = new DefaultFlowPlanner(serializedFlow.Key, () =>
+        // {
+        //     var states = serializedFlow.States
+        //         .Select(state => new State(state.Code, state.Name))
+        //         .ToList();
+        //
+        //     _builder.Initial(CreateStepBuilder(serializedFlow.Initial, states));
+        //
+        //     if (serializedFlow.Steps.IsNullOrEmpty())
+        //     {
+        //         return _builder;
+        //     }
+        //
+        //     serializedFlow.Steps.ForEach(step => { _builder.NewStep(CreateStepBuilder(step, states)); });
+        //
+        //     return _builder;
+        // });
 
-            _builder.Initial(CreateStepBuilder(serializedFlow.Initial, states));
-
-            if (serializedFlow.Steps.IsNullOrEmpty())
-            {
-                return _builder;
-            }
-
-            serializedFlow.Steps.ForEach(step => { _builder.NewStep(CreateStepBuilder(step, states)); });
-
-            return _builder;
-        });
+        var planner = new SerializerFlowPlanner(serializedFlow, _activityService);
 
         return planner;
     }
 
-    private Action<IFlowStepBuilder> CreateStepBuilder(SerializedStep serializedStep, IReadOnlyCollection<State> states)
-    {
-        return stepBuilder =>
-        {
-            var fromState = states.Single(state => state.Code == serializedStep.FromStateCode);
-            var allowedList = states
-                .Where(state => serializedStep.Allows.Exists(allowed => allowed.AllowedStateCode == state.Code))
-                .Select(state => new
-                {
-                    AllowedState = state,
-                    AllowedTrigger = serializedStep.Allows.Single(x => x.AllowedStateCode == state.Code).TriggerCode
-                })
-                .ToList();
-
-            stepBuilder.For(fromState);
-            if (!allowedList.IsNullOrEmpty())
-            {
-                allowedList.ForEach(allowed => { stepBuilder.Allow(allowed.AllowedState, allowed.AllowedTrigger); });
-            }
-
-            if (!string.IsNullOrWhiteSpace(serializedStep.OnEntry?.ActorName))
-            {
-                CreateActivity(stepBuilder, serializedStep.OnEntry);
-            }
-
-            if (!string.IsNullOrWhiteSpace(serializedStep.OnExit?.ActorName))
-            {
-                CreateActivity(stepBuilder, serializedStep.OnExit);
-            }
-        };
-    }
-
-    private void CreateActivity(IFlowStepBuilder stepBuilder, SerializedActivity serializedActivity)
-    {
-        var flowActivity = TryGetActivity(serializedActivity.ActorName);
-        var methodInfo = typeof(IFlowStepBuilder).GetMethod(nameof(IFlowStepBuilder.OnEntry));
-        var genericMethod = methodInfo!.MakeGenericMethod(flowActivity.GetType());
-        genericMethod.Invoke(stepBuilder, null);
-    }
-
-    private IFlowActivity TryGetActivity(string activityName)
-    {
-        try
-        {
-            IFlowActivity flowActivity;
-
-            var activityType = GeneralUtils.FindType(activityName, typeof(IFlowActivity));
-            if (activityType != null)
-            {
-                flowActivity = (IFlowActivity)Activator.CreateInstance(activityType);
-            }
-            else
-            {
-                var storedActivity = _activityService.LoadActivity(activityName).GetAwaiter().GetResult();
-                flowActivity = storedActivity;
-            }
-
-            return flowActivity;
-        }
-        catch (Exception)
-        {
-            return null;
-        }
-    }
+    // private Action<IFlowStepBuilder> CreateStepBuilder(SerializedStep serializedStep, IReadOnlyCollection<State> states)
+    // {
+    //     return stepBuilder =>
+    //     {
+    //         var fromState = states.Single(state => state.Code == serializedStep.FromStateCode);
+    //         var allowedList = states
+    //             .Where(state => serializedStep.Allows.Exists(allowed => allowed.AllowedStateCode == state.Code))
+    //             .Select(state => new
+    //             {
+    //                 AllowedState = state,
+    //                 AllowedTrigger = serializedStep.Allows.Single(x => x.AllowedStateCode == state.Code).TriggerCode
+    //             })
+    //             .ToList();
+    //
+    //         stepBuilder.For(fromState);
+    //         if (!allowedList.IsNullOrEmpty())
+    //         {
+    //             allowedList.ForEach(allowed => { stepBuilder.Allow(allowed.AllowedState, allowed.AllowedTrigger); });
+    //         }
+    //
+    //         if (!string.IsNullOrWhiteSpace(serializedStep.OnEntry?.ActorName))
+    //         {
+    //             CreateActivity(stepBuilder, serializedStep.OnEntry);
+    //         }
+    //
+    //         if (!string.IsNullOrWhiteSpace(serializedStep.OnExit?.ActorName))
+    //         {
+    //             CreateActivity(stepBuilder, serializedStep.OnExit);
+    //         }
+    //     };
+    // }
+    //
+    // private void CreateActivity(IFlowStepBuilder stepBuilder, SerializedActivity serializedActivity)
+    // {
+    //     var flowActivity = TryGetActivity(serializedActivity.ActorName);
+    //     var methodInfo = typeof(IFlowStepBuilder).GetMethod(nameof(IFlowStepBuilder.OnEntry));
+    //     var genericMethod = methodInfo!.MakeGenericMethod(flowActivity.GetType());
+    //     genericMethod.Invoke(stepBuilder, null);
+    // }
+    //
+    // private IFlowActivity TryGetActivity(string activityName)
+    // {
+    //     try
+    //     {
+    //         IFlowActivity flowActivity;
+    //
+    //         var activityType = GeneralUtils.FindType(activityName, typeof(IFlowActivity));
+    //         if (activityType != null)
+    //         {
+    //             flowActivity = (IFlowActivity)Activator.CreateInstance(activityType);
+    //         }
+    //         else
+    //         {
+    //             var storedActivity = _activityService.LoadActivity(activityName).GetAwaiter().GetResult();
+    //             flowActivity = storedActivity;
+    //         }
+    //
+    //         return flowActivity;
+    //     }
+    //     catch (Exception)
+    //     {
+    //         return null;
+    //     }
+    // }
 }

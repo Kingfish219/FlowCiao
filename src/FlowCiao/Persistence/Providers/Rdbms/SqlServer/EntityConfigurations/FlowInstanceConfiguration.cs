@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.ValueGeneration;
 
 namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.EntityConfigurations;
 
-internal class FlowExecutionConfiguration : IEntityTypeConfiguration<FlowExecution>
+internal class FlowInstanceConfiguration : IEntityTypeConfiguration<FlowInstance>
 {
-    public void Configure(EntityTypeBuilder<FlowExecution> builder)
+    public void Configure(EntityTypeBuilder<FlowInstance> builder)
     {
-        builder.ToTable("FlowExecution")
+        builder.ToTable("FlowInstance")
             .Property(x => x.Id)
             .HasValueGenerator<SequentialGuidValueGenerator>();
     }

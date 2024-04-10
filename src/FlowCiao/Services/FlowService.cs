@@ -17,11 +17,6 @@ namespace FlowCiao.Services
             _flowRepository = flowRepository;
         }
 
-        public async Task<Guid> Modify(Flow flow)
-        {
-            return await _flowRepository.Modify(flow);
-        }
-
         public async Task<List<Flow>> Get()
         {
             return await _flowRepository.Get();
@@ -32,13 +27,18 @@ namespace FlowCiao.Services
             return await _flowRepository.GetByKey(flowId, key);
         }
 
-        public FlowExecutionStep GenerateFlowStep(Flow flow, State state)
+        public async Task<Guid> Modify(Flow flow)
         {
-            var flowExecutionStep = new FlowExecutionStep
+            return await _flowRepository.Modify(flow);
+        }
+
+        public FlowInstanceStep GenerateFlowStep(Flow flow, State state)
+        {
+            var flowExecutionStep = new FlowInstanceStep
             {
                 CreatedOn = DateTime.Now,
                 Details = flow.Transitions.Where(x => x.From.Code.Equals(state.Code))
-                    .Select(transition => new FlowExecutionStepDetail
+                    .Select(transition => new FlowInstanceStepDetail
                     {
                         Id = Guid.NewGuid(),
                         CreatedOn = DateTime.Now,
@@ -49,13 +49,13 @@ namespace FlowCiao.Services
             return flowExecutionStep;
         }
 
-        public async Task<FlowExecution> Finalize(FlowExecution flowExecution)
+        public async Task<FlowInstance> Finalize(FlowInstance flowInstance)
         {
             await Task.CompletedTask;
 
-            flowExecution.ExecutionSteps.Add(GenerateFlowStep(flowExecution.Flow, flowExecution.State));
+            flowInstance.InstanceSteps.Add(GenerateFlowStep(flowInstance.Flow, flowInstance.State));
 
-            return flowExecution;
+            return flowInstance;
         }
     }
 }

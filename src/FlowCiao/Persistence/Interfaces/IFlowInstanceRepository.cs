@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using FlowCiao.Models.Execution;
+
+namespace FlowCiao.Persistence.Interfaces
+{
+    public interface IFlowInstanceRepository
+    {
+        Task<List<FlowInstance>> Get(Guid flowId = default);
+        Task<FlowInstance> GetById(Guid id);
+        Task<Guid> Modify(FlowInstance entity);
+    }
+}

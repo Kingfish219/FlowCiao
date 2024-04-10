@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 
@@ -12,11 +13,16 @@ namespace FlowCiao.Models.Core
 
         public bool IsActive { get; set; }
 
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
         public List<Transition> Transitions { get; set; } = null!;
 
         public List<State> States { get; set; } = null!;
 
-        public List<Trigger> Triggers { get; set; } = null!;
+        [NotMapped]
+        public List<Trigger> Triggers => Transitions?.SelectMany(t => t.Triggers)?
+            .DistinctBy(t => t.Code)
+            .ToList();
 
         [NotMapped]
         public string SerializedJson { get; set; }

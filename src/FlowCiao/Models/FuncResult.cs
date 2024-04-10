@@ -12,20 +12,31 @@
             StatusCode = statusCode;
         }
 
-        public bool Success { get; init; }
-        public int Code { get; init; }
-        public string Title { get; init; }
-        public string Message { get; init; }
-        public int StatusCode { get; init; }
+        public bool Success { get; }
+        public int Code { get; }
+        public string Title { get; }
+        public string Message { get; }
+        public int StatusCode { get; }
     }
 
     public class FuncResult<T>
     {
-        public bool Success { get; set; } = true;
-        public int Code { get; set; }
-        public string Title { get; set; }
-        public string Message { get; set; }
-        public int StatusCode { get; set; }
-        public T Data { get; set; }
+        public FuncResult(bool success, string message = default, int code = default, string title = default,
+            int statusCode = default, T data = default)
+        {
+            Success = success;
+            Code = code;
+            Title = title;
+            Message = message;
+            StatusCode = statusCode;
+            Data = data;
+        }
+        
+        public bool Success { get; }
+        public int Code { get; }
+        public string Title { get; }
+        public string Message { get; }
+        public int StatusCode { get; }
+        public T Data { get; }
     }
 }

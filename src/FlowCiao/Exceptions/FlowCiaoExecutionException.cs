@@ -9,7 +9,7 @@ namespace FlowCiao.Exceptions
         {
         }
 
-        public FlowCiaoExecutionException(string message, FlowExecutionStep flowStep, [System.Runtime.CompilerServices.CallerFilePath] string handlerName = "", [System.Runtime.CompilerServices.CallerLineNumber] int line = 0)
+        public FlowCiaoExecutionException(string message, FlowInstanceStep flowStep, [System.Runtime.CompilerServices.CallerFilePath] string handlerName = "", [System.Runtime.CompilerServices.CallerLineNumber] int line = 0)
             : base(message)
         {
             try

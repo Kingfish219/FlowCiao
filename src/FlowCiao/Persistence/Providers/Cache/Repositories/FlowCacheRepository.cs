@@ -18,7 +18,7 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
             return Task.Run(() =>
             {
                 var db = GetDbConnection();
-                
+
                 return db.Flows;
             });
         }
@@ -29,7 +29,9 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
 
             return FlowHub.Flows.SingleOrDefault(a =>
                 (a.Id == default || a.Id == id) &&
-                (string.IsNullOrWhiteSpace(key) || a.Key.Equals(key, StringComparison.InvariantCultureIgnoreCase)));
+                (string.IsNullOrWhiteSpace(key) || a.Key.Equals(key, StringComparison.InvariantCultureIgnoreCase)) &&
+                a.IsActive
+            );
         }
 
         public async Task<Guid> Modify(Flow entity)
@@ -48,6 +50,14 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
             await FlowHub.ModifyFlow(entity);
 
             return entity.Id;
+        }
+
+        public async Task<bool> Delete(Flow flow)
+        {
+            await Task.CompletedTask;
+            FlowHub.Flows.RemoveAll(f => f.Id == flow.Id);
+
+            return true;
         }
     }
 }

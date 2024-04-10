@@ -15,14 +15,11 @@ namespace FlowCiao.Builder
     {
         private FlowStep FlowStep { get; }
 
-        private readonly ActivityService _activityService;
         private readonly StateService _stateService;
         private readonly TransitionService _transitionService;
 
-        public FlowStepBuilder(ActivityService activityService, StateService stateService,
-            TransitionService transitionService)
+        public FlowStepBuilder(StateService stateService, TransitionService transitionService)
         {
-            _activityService = activityService;
             _stateService = stateService;
             _transitionService = transitionService;
             FlowStep = new FlowStep();
@@ -58,26 +55,13 @@ namespace FlowCiao.Builder
                 },
                 Condition = condition
             });
-            
+
             return this;
         }
 
         public IFlowStepBuilder OnEntry<TA>() where TA : IFlowActivity, new()
         {
             FlowStep.OnEntry = (TA)Activator.CreateInstance(typeof(TA));
-            var activity = new Activity(FlowStep.OnEntry);
-            FlowStep.For.Activities ??= new List<Activity>();
-            FlowStep.For.Activities.Add(activity);
-
-            return this;
-        }
-
-        public IFlowStepBuilder OnEntry(string activityName)
-        {
-            var foundActivity = TryGetActivity(activityName);
-            FlowStep.OnEntry = foundActivity ??
-                               throw new FlowCiaoException(
-                                   $"Error in finding OnEntry activity. No type matches activity name {activityName} or the type is not derived from {nameof(IFlowActivity)}");
             var activity = new Activity(FlowStep.OnEntry);
             FlowStep.For.Activities ??= new List<Activity>();
             FlowStep.For.Activities.Add(activity);
@@ -92,7 +76,7 @@ namespace FlowCiao.Builder
             {
                 throw new FlowCiaoException("No allowed transitions found in order to apply OnExit");
             }
-            
+
             FlowStep.Allowed.ForEach(t =>
             {
                 t.Activities ??= new List<Activity>();
@@ -102,27 +86,13 @@ namespace FlowCiao.Builder
             return this;
         }
 
-        public IFlowStepBuilder OnExit(string activityName)
-        {
-            var activityType = GeneralUtils.FindType(activityName, typeof(IFlowActivity));
-            if (activityType is null)
-            {
-                throw new FlowCiaoException(
-                    $"Error in finding OnExit activity. No type matches activity name {activityName} or the type is not derived from {nameof(IFlowActivity)}");
-            }
-
-            FlowStep.OnExit = (IFlowActivity)Activator.CreateInstance(activityType);
-
-            return this;
-        }
-
         public FlowStep Build(Guid flowId)
         {
-            var result = Persist(flowId).GetAwaiter().GetResult();
-            if (!result.Success)
-            {
-                throw new FlowCiaoPersistencyException("Saving some data failed");
-            }
+            // var result = Persist(flowId).GetAwaiter().GetResult();
+            // if (!result.Success)
+            // {
+            //     throw new FlowCiaoPersistencyException("Saving some data failed");
+            // }
 
             return FlowStep;
         }
@@ -131,8 +101,8 @@ namespace FlowCiao.Builder
         {
             // ignored
         }
-        
-        private async Task<FuncResult> Persist(Guid flowId)
+
+        public async Task<FuncResult> Persist(Guid flowId)
         {
             FlowStep.For.FlowId = flowId;
             var forResult = await _stateService.Modify(FlowStep.For);
@@ -149,15 +119,15 @@ namespace FlowCiao.Builder
             foreach (var transition in FlowStep.Allowed)
             {
                 transition.From.FlowId = flowId;
-                var transitionStateResult = await _stateService.Modify(transition.From);
-                if (transitionStateResult == default)
+                transition.FromId = await _stateService.Modify(transition.From);
+                if (transition.FromId == default)
                 {
                     return new FuncResult(false, "Modifying State failed");
                 }
 
                 transition.To.FlowId = flowId;
-                transitionStateResult = await _stateService.Modify(transition.To);
-                if (transitionStateResult == default)
+                transition.ToId = await _stateService.Modify(transition.To);
+                if (transition.ToId == default)
                 {
                     return new FuncResult(false, "Modifying State failed");
                 }
@@ -171,31 +141,6 @@ namespace FlowCiao.Builder
             }
 
             return new FuncResult(true);
-        }
-
-        private IFlowActivity TryGetActivity(string activityName)
-        {
-            try
-            {
-                IFlowActivity flowActivity;
-
-                var activityType = GeneralUtils.FindType(activityName, typeof(IFlowActivity));
-                if (activityType != null)
-                {
-                    flowActivity = (IFlowActivity)Activator.CreateInstance(activityType);
-                }
-                else
-                {
-                    var storedActivity = _activityService.LoadActivity(activityName).GetAwaiter().GetResult();
-                    flowActivity = storedActivity;
-                }
-
-                return flowActivity;
-            }
-            catch (Exception)
-            {
-                return null;
-            }
         }
     }
 }

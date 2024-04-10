@@ -11,167 +11,67 @@ using FlowCiao.Services;
 
 namespace FlowCiao.Operators
 {
-    public class FlowOperator : IFlowOperator
+    internal class FlowOperator : IFlowOperator
     {
-        private readonly FlowExecutionService _flowExecutionService;
+        private readonly FlowInstanceService _flowInstanceService;
         private readonly FlowHandlerFactory _flowHandlerFactory;
         private readonly FlowService _flowService;
 
         public FlowOperator(FlowHandlerFactory flowHandlerFactory,
-            FlowExecutionService flowExecutionService,
+            FlowInstanceService flowInstanceService,
             FlowService flowService)
         {
             _flowHandlerFactory = flowHandlerFactory;
-            _flowExecutionService = flowExecutionService;
+            _flowInstanceService = flowInstanceService;
             _flowService = flowService;
         }
 
         private static FlowStepContext InstantiateContext(int trigger,
             Dictionary<object, object> data,
-            FlowExecution flowExecution,
-            FlowExecutionStep activeFlowStep)
+            FlowInstance flowInstance)
         {
             return new FlowStepContext
             {
-                FlowExecution = flowExecution,
-                FlowExecutionStep = activeFlowStep,
-                FlowExecutionStepDetail = activeFlowStep.Details.Single(x => x.Transition.Triggers.FirstOrDefault()!.Code == trigger),
+                FlowInstance = flowInstance,
+                FlowInstanceStep = flowInstance.ActiveInstanceStep,
+                FlowInstanceStepDetail =
+                    flowInstance.ActiveInstanceStep.Details.Single(x =>
+                        x.Transition.Triggers.FirstOrDefault()!.Code == trigger),
                 Data = data
             };
         }
 
-        public async Task<FlowExecution> Ciao(Flow flow)
+        public async Task<FlowInstance> Ciao(Flow flow)
         {
-            var flowExecution = await _flowExecutionService.InitializeFlowExecution(flow);
+            var flowInstance = await _flowInstanceService.InitializeFlowInstance(flow);
 
-            return flowExecution;
-        }
-        
-        public async Task<FlowExecution> Ciao(string flowKey)
-        {
-            var process = await _flowService.GetByKey(key: flowKey);
-            if (process is null)
-            {
-                throw new FlowCiaoException("Invalid flow key!");
-            }
-            
-            var processExecution = await _flowExecutionService.InitializeFlowExecution(process);
-
-            return processExecution;
+            return flowInstance;
         }
 
-        public async Task<FlowResult> FireAsync(Guid flowInstanceId, int triggerCode, Dictionary<object, object> data = null)
+        public async Task<FlowInstance> Ciao(string flowKey)
         {
-            try
-            {
-                var processExecution = await _flowExecutionService.GetById(id: flowInstanceId);
+            var flow = await _flowService.GetByKey(key: flowKey);
 
-                if (processExecution is null)
-                {
-                    throw new FlowCiaoException("Invalid ProcessInstance id!");
-                }
-
-                if (processExecution.ActiveExecutionStep is null)
-                {
-                    throw new FlowCiaoExecutionException("No active steps to fire");
-                }
-
-                if (processExecution.ActiveExecutionStep.Details
-                        .SingleOrDefault(x => x.Transition.Triggers.FirstOrDefault()!.Code == triggerCode) is null)
-                {
-                    throw new FlowCiaoExecutionException("Trigger is invalid!");
-                }
-
-                var processStepContext = InstantiateContext(triggerCode, data, processExecution, processExecution.ActiveExecutionStep);
-                var handlers = _flowHandlerFactory.BuildHandlers();
-
-                var result = handlers.Peek().Handle(processStepContext);
-
-                return result;
-            }
-            catch (Exception exception)
-            {
-                return new FlowResult
-                {
-                    Status = FlowResultStatus.Failed,
-                    Message = exception.Message
-                };
-            }
+            return await Ciao(flow);
         }
 
-        public async Task<FlowResult> FireAsync(FlowExecution flowExecution, int triggerCode, Dictionary<object, object> data = null)
-        {
-            try
-            {
-                await Task.CompletedTask;
-                
-                if (flowExecution is null)
-                {
-                    throw new FlowCiaoException("Invalid ProcessInstance id!");
-                }
-
-                if (flowExecution.ActiveExecutionStep is null)
-                {
-                    throw new FlowCiaoExecutionException("No active steps to fire");
-                }
-
-                if (flowExecution.ActiveExecutionStep.Details
-                        .SingleOrDefault(x => x.Transition.Triggers.FirstOrDefault()!.Code == triggerCode) is null)
-                {
-                    throw new FlowCiaoExecutionException("Trigger is invalid!");
-                }
-
-                var processStepContext = InstantiateContext(triggerCode, data, flowExecution, flowExecution.ActiveExecutionStep);
-                var handlers = _flowHandlerFactory.BuildHandlers();
-
-                var result = handlers.Peek().Handle(processStepContext);
-
-                return result;
-            }
-            catch (Exception exception)
-            {
-                return new FlowResult
-                {
-                    Status = FlowResultStatus.Failed,
-                    Message = exception.Message
-                };
-            }
-        }
-
-        public async Task<FlowResult> Fire(string key,
-            int trigger,
+        public async Task<FlowResult> FireAsync(FlowInstance flowInstance, int triggerCode,
             Dictionary<object, object> data = null)
         {
             try
             {
-                var processExecution = (await _flowExecutionService.Get()).SingleOrDefault();
+                await Task.CompletedTask;
+                ValidateFireable(flowInstance, triggerCode);
 
-                if (processExecution is null)
-                {
-                    var process = await _flowService.GetByKey(key: key);
-                    if (process is null)
-                    {
-                        throw new FlowCiaoException("Invalid flow key!");
-                    }
-
-                    processExecution = await _flowExecutionService.InitializeFlowExecution(process);
-                }
-
-                if (processExecution.ActiveExecutionStep is null)
-                {
-                    throw new FlowCiaoExecutionException("No active steps to fire");
-                }
-
-                if (processExecution.ActiveExecutionStep.Details
-                        .SingleOrDefault(x => x.Transition.Triggers.FirstOrDefault()!.Code == trigger) is null)
-                {
-                    throw new FlowCiaoExecutionException("Trigger is invalid!");
-                }
-
-                var processStepContext = InstantiateContext(trigger, data, processExecution, processExecution.ActiveExecutionStep);
-                var handlers = _flowHandlerFactory.BuildHandlers();
-
-                var result = handlers.Peek().Handle(processStepContext);
+                var flowStepContext = InstantiateContext(triggerCode, data, flowInstance);
+                var result = _flowHandlerFactory
+                    .BuildHandlers()
+                    .Peek()
+                    .Handle(flowStepContext);
+                
+                result.Message = result.Status == FlowResultStatus.Completed
+                    ? "Flow fired successfully"
+                    : "Firing flow occurred error and operations would be rolled back";
 
                 return result;
             }
@@ -180,8 +80,44 @@ namespace FlowCiao.Operators
                 return new FlowResult
                 {
                     Status = FlowResultStatus.Failed,
-                    Message = exception.Message
+                    Message = $"Firing flow occurred error and operations would be rolled back: {exception.Message}"
                 };
+            }
+        }
+
+        public async Task<FlowResult> FireAsync(Guid flowInstanceId, int triggerCode,
+            Dictionary<object, object> data = null)
+        {
+            var flowInstance = await _flowInstanceService.GetById(id: flowInstanceId);
+
+            return await FireAsync(flowInstance, triggerCode, data);
+        }
+
+        public async Task<FlowResult> CiaoAndFireAsync(string flowKey,
+            int trigger,
+            Dictionary<object, object> data = null)
+        {
+            var flowInstance = await Ciao(flowKey);
+
+            return await FireAsync(flowInstance, trigger, data);
+        }
+
+        private static void ValidateFireable(FlowInstance flowInstance, int triggerCode)
+        {
+            if (flowInstance is null)
+            {
+                throw new FlowCiaoException("Invalid ProcessInstance id!");
+            }
+
+            if (flowInstance.ActiveInstanceStep is null)
+            {
+                throw new FlowCiaoExecutionException("No active steps to fire");
+            }
+
+            if (flowInstance.ActiveInstanceStep.Details
+                    .SingleOrDefault(x => x.Transition.Triggers.FirstOrDefault()!.Code == triggerCode) is null)
+            {
+                throw new FlowCiaoExecutionException("Trigger is invalid!");
             }
         }
     }

@@ -66,7 +66,7 @@ namespace FlowCiao
         {
             var flowHub = new FlowHub();
             flowHub.Initiate(new List<Flow>(),
-                new List<FlowExecution>(),
+                new List<FlowInstance>(),
                 new List<State>(),
                 new List<Transition>(),
                 new List<Activity>(),
@@ -77,7 +77,7 @@ namespace FlowCiao
             services.AddScoped<IStateRepository, StateCacheRepository>();
             services.AddScoped<ITriggerRepository, TriggerCacheRepository>();
             services.AddScoped<IActivityRepository, ActivityCacheRepository>();
-            services.AddScoped<IFlowExecutionRepository, FlowExecutionCacheRepository>();
+            services.AddScoped<IFlowInstanceRepository, FlowInstanceCacheRepository>();
             services.AddScoped<IFlowRepository, FlowCacheRepository>();
         }
 
@@ -87,7 +87,7 @@ namespace FlowCiao
             services.AddScoped<TriggerService>();
             services.AddScoped<TransitionService>();
             services.AddScoped<StateService>();
-            services.AddScoped<FlowExecutionService>();
+            services.AddScoped<FlowInstanceService>();
             services.AddScoped<FlowHandlerFactory>();
             services.AddScoped<FlowService>();
         }

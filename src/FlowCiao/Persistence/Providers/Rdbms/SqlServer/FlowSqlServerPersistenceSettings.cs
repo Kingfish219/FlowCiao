@@ -25,7 +25,7 @@ public class FlowSqlServerPersistenceSettings
         _serviceCollection.AddTransient<IStateRepository, StateRepository>();
         _serviceCollection.AddTransient<ITriggerRepository, TriggerRepository>();
         _serviceCollection.AddTransient<IActivityRepository, ActivityRepository>();
-        _serviceCollection.AddTransient<IFlowExecutionRepository, FlowExecutionRepository>();
+        _serviceCollection.AddTransient<IFlowInstanceRepository, FlowInstanceRepository>();
         _serviceCollection.AddTransient<IFlowRepository, FlowRepository>();
     }
 

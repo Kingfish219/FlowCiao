@@ -16,10 +16,25 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
         public async Task<Flow> GetByKey(Guid id = default, string key = default)
         {
             return await FlowCiaoDbContext.Flows
+                .Include(f => f.Transitions)
+                .ThenInclude(t => t.From)
+                .ThenInclude(s => s.Activities)
+                .Include(f => f.Transitions)
+                .ThenInclude(t => t.To)
+                .ThenInclude(s => s.Activities)
+                .Include(f => f.Transitions)
+                .ThenInclude(t => t.Activities)
+                .Include(f => f.Transitions)
+                .ThenInclude(t => t.Triggers)
+                .Include(f => f.Transitions)
+                .Include(f => f.States)
                 .AsNoTracking()
+                .AsSplitQuery()
                 .SingleOrDefaultAsync(a =>
                     (id == default || a.Id == id) &&
-                    (string.IsNullOrWhiteSpace(key) || a.Key.ToLower().Equals(key.ToLower())));
+                    (string.IsNullOrWhiteSpace(key) || a.Key.ToLower().Equals(key.ToLower())) &&
+                    a.IsActive
+                );
         }
 
         public async Task<List<Flow>> Get()
@@ -37,8 +52,8 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
                 .ThenInclude(t => t.Triggers)
                 .Include(f => f.Transitions)
                 .Include(f => f.States)
-                .Include(f => f.Triggers)
                 .AsNoTracking()
+                .AsSplitQuery()
                 .ToListAsync();
         }
 

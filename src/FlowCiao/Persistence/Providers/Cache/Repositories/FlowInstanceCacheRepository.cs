@@ -7,13 +7,13 @@ using FlowCiao.Persistence.Interfaces;
 
 namespace FlowCiao.Persistence.Providers.Cache.Repositories
 {
-    internal class FlowExecutionCacheRepository : FlowCiaoCacheRepository, IFlowExecutionRepository
+    internal class FlowInstanceCacheRepository : FlowCiaoCacheRepository, IFlowInstanceRepository
     {
-        public FlowExecutionCacheRepository(FlowHub flowHub) : base(flowHub)
+        public FlowInstanceCacheRepository(FlowHub flowHub) : base(flowHub)
         {
         }
 
-        public async Task<List<FlowExecution>> Get(Guid id = default, Guid flowId = default)
+        public async Task<List<FlowInstance>> Get(Guid id = default, Guid flowId = default)
         {
             return await Task.Run(() =>
             {
@@ -27,7 +27,7 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
             });
         }
 
-        public Task<List<FlowExecution>> Get(Guid flowId = default)
+        public Task<List<FlowInstance>> Get(Guid flowId = default)
         {
             return Task.Run(() =>
             {
@@ -40,12 +40,12 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
             });
         }
 
-        public Task<FlowExecution> GetById(Guid id)
+        public Task<FlowInstance> GetById(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<Guid> Modify(FlowExecution entity)
+        public async Task<Guid> Modify(FlowInstance entity)
         {
             if (entity.Id == default)
             {

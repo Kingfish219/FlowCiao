@@ -16,7 +16,7 @@ public class FlowCiaoDbContext : DbContext
     public DbSet<Trigger> Triggers { get; set; }
     public DbSet<Transition> Transitions { get; set; }
     public DbSet<State> States { get; set; }
-    public DbSet<FlowExecution> FlowExecutions { get; set; }
+    public DbSet<FlowInstance> FlowInstances { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -19,7 +19,7 @@ namespace FlowCiao.Handle.Handlers
         {
             try
             {
-                var activities = flowStepContext.FlowExecution.State.Activities;
+                var activities = flowStepContext.FlowInstance.State.Activities;
                 if (activities is null || activities.Count == 0)
                 {
                     return NextHandler?.Handle(flowStepContext);

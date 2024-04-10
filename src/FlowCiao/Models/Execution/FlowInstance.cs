@@ -7,34 +7,33 @@ using Newtonsoft.Json;
 
 namespace FlowCiao.Models.Execution
 {
-    public class FlowExecution
+    public class FlowInstance : BaseEntity
     {
-        public Guid Id { get; set; }
-
-        [ForeignKey("FlowId")] 
+        public Guid FlowId { get; set; }
+        
         public Flow Flow { get; set; }
 
         public FlowExecutionState ExecutionState { get; set; }
 
         [NotMapped] 
-        public FlowExecutionStep ActiveExecutionStep => ExecutionSteps.SingleOrDefault(x => !x.IsCompleted);
+        public FlowInstanceStep ActiveInstanceStep => InstanceSteps.SingleOrDefault(x => !x.IsCompleted);
 
         [NotMapped] 
-        public List<FlowExecutionStep> ExecutionSteps { get; set; }
+        public List<FlowInstanceStep> InstanceSteps { get; set; }
 
         public DateTime CreatedOn { get; set; }
 
         public string Progress
         {
-            get => JsonConvert.SerializeObject(ExecutionSteps, settings: new JsonSerializerSettings
+            get => JsonConvert.SerializeObject(InstanceSteps, settings: new JsonSerializerSettings
             {
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             });
-            set => ExecutionSteps = JsonConvert.DeserializeObject<List<FlowExecutionStep>>(value);
+            set => InstanceSteps = JsonConvert.DeserializeObject<List<FlowInstanceStep>>(value);
         }
 
         [NotMapped] 
-        public State State => ExecutionSteps.FirstOrDefault()?.Details.FirstOrDefault()?.Transition?.From;
+        public State State => InstanceSteps.FirstOrDefault()?.Details.FirstOrDefault()?.Transition?.From;
 
         public enum FlowExecutionState
         {

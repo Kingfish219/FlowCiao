@@ -17,7 +17,7 @@ namespace FlowCiao.Handle.Handlers
         {
             try
             {
-                flowStepContext.FlowExecutionStepDetail.IsCompleted = true;
+                flowStepContext.FlowInstanceStepDetail.IsCompleted = true;
 
                 return NextHandler.Handle(flowStepContext);
             }

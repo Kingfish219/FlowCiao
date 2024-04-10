@@ -12,15 +12,15 @@ namespace FlowCiao.Studio.Controllers
         private readonly IFlowOperator _operator;
         private readonly FlowService _flowService;
         private readonly FlowJsonSerializer _flowJsonSerializer;
-        private readonly FlowExecutionService _flowExecutionService;
+        private readonly FlowInstanceService _flowInstanceService;
 
         public FlowController(IFlowOperator flowOperator, FlowService flowService, FlowJsonSerializer flowJsonSerializer,
-            FlowExecutionService flowExecutionService)
+            FlowInstanceService flowInstanceService)
         {
             _operator = flowOperator;
             _flowService = flowService;
             _flowJsonSerializer = flowJsonSerializer;
-            _flowExecutionService = flowExecutionService;
+            _flowInstanceService = flowInstanceService;
         }
         
         [HttpGet, Route("")]
@@ -36,7 +36,7 @@ namespace FlowCiao.Studio.Controllers
         [HttpGet, Route("/executions/{id}")]
         public async Task<IActionResult> GetFlowExecution([FromRoute] string id)
         {
-            var flowExecutions = await _flowExecutionService.GetById(new Guid(id));
+            var flowExecutions = await _flowInstanceService.GetById(new Guid(id));
 
             return Ok(flowExecutions);
         }
@@ -45,7 +45,7 @@ namespace FlowCiao.Studio.Controllers
         public async Task<IActionResult> GetFlowExecutions([FromRoute] string key)
         {
             var flow = await _flowService.GetByKey(key: key);
-            var flowExecutions = await _flowExecutionService.Get(flow.Id);
+            var flowExecutions = await _flowInstanceService.Get(flow.Id);
 
             return Ok(flowExecutions);
         }
@@ -53,7 +53,7 @@ namespace FlowCiao.Studio.Controllers
         [HttpPost, Route("{key}/fire")]
         public async Task<IActionResult> Fire([FromRoute] string key, int action)
         {
-            var result = await _operator.Fire(key, action);
+            var result = await _operator.CiaoAndFireAsync(key, action);
 
             return Ok(result);
         }
