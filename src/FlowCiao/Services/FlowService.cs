@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FlowCiao.Models;
 using FlowCiao.Models.Core;
 using FlowCiao.Models.Execution;
 using FlowCiao.Persistence.Interfaces;
@@ -56,6 +57,14 @@ namespace FlowCiao.Services
             flowInstance.InstanceSteps.Add(GenerateFlowStep(flowInstance.Flow, flowInstance.State));
 
             return flowInstance;
+        }
+
+        public async Task<FuncResult> Deactivate(Flow flow)
+        {
+            flow.IsActive = false;
+            await Modify(flow);
+
+            return new FuncResult(true);
         }
     }
 }

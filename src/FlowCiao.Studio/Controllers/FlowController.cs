@@ -33,7 +33,7 @@ namespace FlowCiao.Studio.Controllers
             return Ok(flows);
         }
 
-        [HttpGet, Route("/executions/{id}")]
+        [HttpGet, Route("instances/{id}")]
         public async Task<IActionResult> GetFlowExecution([FromRoute] string id)
         {
             var flowExecutions = await _flowInstanceService.GetById(new Guid(id));
@@ -41,7 +41,7 @@ namespace FlowCiao.Studio.Controllers
             return Ok(flowExecutions);
         }
 
-        [HttpGet, Route("{key}/executions")]
+        [HttpGet, Route("{key}/instances")]
         public async Task<IActionResult> GetFlowExecutions([FromRoute] string key)
         {
             var flow = await _flowService.GetByKey(key: key);

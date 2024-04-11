@@ -140,8 +140,11 @@ namespace FlowCiao.Builder
                     return new FuncResult<Flow>(true, data: existed);
                 }
 
-                existed.IsActive = false;
-                await _flowService.Modify(existed);
+                var funcResult = await _flowService.Deactivate(existed);
+                if (!funcResult.Success)
+                {
+                    throw new FlowCiaoPersistencyException("Error in deactivating previous version of this Flow");
+                }
             }
 
             var result = await _flowService.Modify(flow);
