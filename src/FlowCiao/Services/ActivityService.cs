@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
+using FlowCiao.Models;
 using FlowCiao.Models.Core;
 using FlowCiao.Persistence.Interfaces;
 using FlowCiao.Utils;
@@ -35,7 +36,7 @@ namespace FlowCiao.Services
             return await _activityRepository.Modify(activity);
         }
 
-        public async Task RegisterActivity(string actorName, byte[] actorContent)
+        public async Task<FuncResult> RegisterActivity(string actorName, byte[] actorContent)
         {
             if (!actorName.EndsWith(".dll"))
             {
@@ -58,6 +59,8 @@ namespace FlowCiao.Services
                     throw new FlowCiaoPersistencyException("Could not register activities");
                 }
             }
+
+            return new FuncResult(true, message: "Activities registered successfully");
         }
 
         public Task<IFlowActivity> LoadActivity(string activityFileName)

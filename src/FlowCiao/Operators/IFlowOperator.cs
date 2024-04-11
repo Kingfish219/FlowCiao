@@ -9,9 +9,9 @@ namespace FlowCiao.Operators
 {
     public interface IFlowOperator
     {
-        Task<FlowResult> FireAsync(Guid flowInstanceId, int triggerCode, Dictionary<object, object> data = null);
-        Task<FlowResult> FireAsync(FlowInstance flowInstance, int triggerCode, Dictionary<object, object> data = null);
-        Task<FlowResult> CiaoAndFireAsync(string flowKey, int trigger, Dictionary<object, object> data = null);
+        Task<FlowResult> TriggerAsync(Guid flowInstanceId, int triggerCode, Dictionary<object, object> data = null);
+        Task<FlowResult> TriggerAsync(FlowInstance flowInstance, int triggerCode, Dictionary<object, object> data = null);
+        Task<FlowResult> CiaoAndTriggerAsync(string flowKey, int trigger, Dictionary<object, object> data = null);
         Task<FlowInstance> Ciao(Flow flow);
         Task<FlowInstance> Ciao(string flowKey);
     }

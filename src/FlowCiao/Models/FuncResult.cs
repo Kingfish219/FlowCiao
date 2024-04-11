@@ -2,41 +2,26 @@
 {
     public class FuncResult
     {
-        public FuncResult(bool success, string message = default, int code = default, string title = default,
-            int statusCode = default)
+        public FuncResult(bool success, string message = default, int code = default)
         {
             Success = success;
             Code = code;
-            Title = title;
             Message = message;
-            StatusCode = statusCode;
         }
 
         public bool Success { get; }
         public int Code { get; }
-        public string Title { get; }
         public string Message { get; }
-        public int StatusCode { get; }
     }
 
-    public class FuncResult<T>
+    public class FuncResult<T> : FuncResult
     {
-        public FuncResult(bool success, string message = default, int code = default, string title = default,
-            int statusCode = default, T data = default)
+        public FuncResult(bool success, string message = default, int code = default, T data = default)
+            : base(success, message, code)
         {
-            Success = success;
-            Code = code;
-            Title = title;
-            Message = message;
-            StatusCode = statusCode;
             Data = data;
         }
-        
-        public bool Success { get; }
-        public int Code { get; }
-        public string Title { get; }
-        public string Message { get; }
-        public int StatusCode { get; }
+
         public T Data { get; }
     }
 }

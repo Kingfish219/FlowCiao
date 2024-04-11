@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using Asp.Versioning;
 using FlowCiao;
+using FlowCiao.Studio.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 {
@@ -42,7 +43,9 @@ var app = builder.Build();
     }
 
     app.UseFlowCiao();
-
+    var logger = app.Services.GetRequiredService<ILogger>();
+    app.ConfigureExceptionHandler(logger);
+    
     app.UseDefaultFiles();
     app.UseStaticFiles();
 

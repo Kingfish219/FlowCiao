@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
+using FlowCiao.Models;
 using FlowCiao.Models.Core;
 using FlowCiao.Persistence.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -62,7 +63,7 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
             return entity.Id;
         }
 
-        public async Task<Guid> RegisterActivity(string name, string actorName, byte[] actorContent)
+        public async Task<FuncResult<Guid>> RegisterActivity(string name, string actorName, byte[] actorContent)
         {
             var activity = new Activity
             {
@@ -72,7 +73,7 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
             };
             activity.Id = await Modify(activity);
             
-            return activity.Id;
+            return new FuncResult<Guid>(true, data: activity.Id);
         }
 
         public async Task<IFlowActivity> LoadActivity(string activityFileName)

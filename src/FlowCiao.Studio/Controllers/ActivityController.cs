@@ -1,4 +1,5 @@
 ﻿using FlowCiao.Services;
+using FlowCiao.Studio.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlowCiao.Studio.Controllers;
@@ -18,7 +19,7 @@ public class ActivityController : FlowCiaoControllerBase
     {
         var result = await _activityService.Get();
 
-        return Ok(result);
+        return Ok(new ApiResponse(result));
     }
     
     [HttpPost("register")]
@@ -37,8 +38,8 @@ public class ActivityController : FlowCiaoControllerBase
         await using var ms = new MemoryStream();
         await file.CopyToAsync(ms);
         var fileBytes = ms.ToArray();
-        await _activityService.RegisterActivity(file.FileName, fileBytes);
+        var result = await _activityService.RegisterActivity(file.FileName, fileBytes);
 
-        return Ok();
+        return Ok(new ApiResponse(result));
     }
 }

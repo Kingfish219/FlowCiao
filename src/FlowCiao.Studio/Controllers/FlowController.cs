@@ -1,6 +1,7 @@
 using FlowCiao.Builder.Serialization.Serializers;
 using FlowCiao.Operators;
 using FlowCiao.Services;
+using FlowCiao.Studio.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlowCiao.Studio.Controllers
@@ -30,32 +31,40 @@ namespace FlowCiao.Studio.Controllers
             flows.AsParallel()
                 .ForAll(f => f.SerializedJson = _flowJsonSerializer.Export(f));
 
-            return Ok(flows);
+            return Ok(new ApiResponse(flows));
         }
 
         [HttpGet, Route("instances/{id}")]
         public async Task<IActionResult> GetFlowExecution([FromRoute] string id)
         {
-            var flowExecutions = await _flowInstanceService.GetById(new Guid(id));
+            var flowInstances = await _flowInstanceService.GetById(new Guid(id));
 
-            return Ok(flowExecutions);
+            return Ok(new ApiResponse(flowInstances));
         }
 
         [HttpGet, Route("{key}/instances")]
         public async Task<IActionResult> GetFlowExecutions([FromRoute] string key)
         {
             var flow = await _flowService.GetByKey(key: key);
-            var flowExecutions = await _flowInstanceService.Get(flow.Id);
+            var flowInstances = await _flowInstanceService.Get(flow.Id);
 
-            return Ok(flowExecutions);
+            return Ok(new ApiResponse(flowInstances));
+        }
+        
+        [HttpGet, Route("{id}/instances")]
+        public async Task<IActionResult> GetFlowExecutions1([FromRoute] string id)
+        {
+            var flowInstances = await _flowInstanceService.Get(new Guid(id));
+
+            return Ok(new ApiResponse(flowInstances));
         }
 
         [HttpPost, Route("{key}/fire")]
-        public async Task<IActionResult> Fire([FromRoute] string key, int action)
+        public async Task<IActionResult> Fire([FromRoute] string key, int triggerCode)
         {
-            var result = await _operator.CiaoAndFireAsync(key, action);
+            var result = await _operator.CiaoAndTriggerAsync(key, triggerCode);
 
-            return Ok(result);
+            return Ok(new ApiResponse(result));
         }
     }
 }

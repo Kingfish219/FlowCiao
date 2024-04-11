@@ -32,7 +32,7 @@ using (var scope = app.Services.CreateScope()) {
     // Initialize it using Ciao and Fire!!!
     var flowOperator = scope.ServiceProvider.GetService<IFlowOperator>();
     var instance = flowOperator.Ciao(flow).GetAwaiter().GetResult();
-    var result = flowOperator.FireAsync(instance, (int)PhoneStateMachine.Triggers.Call).GetAwaiter().GetResult();
+    var result = flowOperator.TriggerAsync(instance, (int)PhoneStateMachine.Triggers.Call).GetAwaiter().GetResult();
     Console.WriteLine(result.Message);
 }
 

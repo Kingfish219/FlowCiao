@@ -28,7 +28,7 @@ namespace FlowCiao.Studio.Controllers
                 Id = flow.Id
             };
 
-            return Ok(flowViewModel);
+            return Ok(new ApiResponse(data: flowViewModel));
         }
     }
 }

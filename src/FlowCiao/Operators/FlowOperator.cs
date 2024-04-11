@@ -55,7 +55,7 @@ namespace FlowCiao.Operators
             return await Ciao(flow);
         }
 
-        public async Task<FlowResult> FireAsync(FlowInstance flowInstance, int triggerCode,
+        public async Task<FlowResult> TriggerAsync(FlowInstance flowInstance, int triggerCode,
             Dictionary<object, object> data = null)
         {
             try
@@ -85,21 +85,21 @@ namespace FlowCiao.Operators
             }
         }
 
-        public async Task<FlowResult> FireAsync(Guid flowInstanceId, int triggerCode,
+        public async Task<FlowResult> TriggerAsync(Guid flowInstanceId, int triggerCode,
             Dictionary<object, object> data = null)
         {
             var flowInstance = await _flowInstanceService.GetById(id: flowInstanceId);
 
-            return await FireAsync(flowInstance, triggerCode, data);
+            return await TriggerAsync(flowInstance, triggerCode, data);
         }
 
-        public async Task<FlowResult> CiaoAndFireAsync(string flowKey,
+        public async Task<FlowResult> CiaoAndTriggerAsync(string flowKey,
             int trigger,
             Dictionary<object, object> data = null)
         {
             var flowInstance = await Ciao(flowKey);
 
-            return await FireAsync(flowInstance, trigger, data);
+            return await TriggerAsync(flowInstance, trigger, data);
         }
 
         private static void ValidateFireable(FlowInstance flowInstance, int triggerCode)
