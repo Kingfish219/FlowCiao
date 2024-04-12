@@ -36,7 +36,7 @@ public class FlowSerializerHelper
         };
 
         var initialTransitions = flow.Transitions.Where(t => t.From.IsInitial).ToList();
-        if (initialTransitions is null)
+        if (initialTransitions.IsNullOrEmpty())
         {
             throw new FlowCiaoSerializationException("No initial state found");
         }

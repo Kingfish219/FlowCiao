@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
 using FlowCiao.Models.Builder.Serialized;
 using FlowCiao.Models.Core;
@@ -21,26 +22,30 @@ internal class SerializerFlowPlanner : IFlowPlanner
         _activityService = activityService;
         Key = _serializedFlow.Key;
     }
-    
+
     public IFlowBuilder Plan(IFlowBuilder builder)
     {
         var states = _serializedFlow.States
             .Select(state => new State(state.Code, state.Name))
             .ToList();
+        var triggers = _serializedFlow.Triggers
+            .Select(trigger => new Trigger(trigger.Code, trigger.Name))
+            .ToList();
 
-        builder.Initial(CreateStepBuilder(_serializedFlow.Initial, states));
+        builder.Initial(CreateStepBuilder(_serializedFlow.Initial, states, triggers));
 
         if (_serializedFlow.Steps.IsNullOrEmpty())
         {
             return builder;
         }
 
-        _serializedFlow.Steps.ForEach(step => { builder.NewStep(CreateStepBuilder(step, states)); });
+        _serializedFlow.Steps.ForEach(step => { builder.NewStep(CreateStepBuilder(step, states, triggers)); });
 
         return builder;
     }
-    
-    private Action<IFlowStepBuilder> CreateStepBuilder(SerializedStep serializedStep, IReadOnlyCollection<State> states)
+
+    private Action<IFlowStepBuilder> CreateStepBuilder(SerializedStep serializedStep, IReadOnlyCollection<State> states,
+        IReadOnlyCollection<Trigger> triggers)
     {
         return stepBuilder =>
         {
@@ -50,7 +55,8 @@ internal class SerializerFlowPlanner : IFlowPlanner
                 .Select(state => new
                 {
                     AllowedState = state,
-                    AllowedTrigger = serializedStep.Allows.Single(x => x.AllowedStateCode == state.Code).TriggerCode
+                    AllowedTrigger = triggers.Single(t =>
+                        t.Code == serializedStep.Allows.Single(x => x.AllowedStateCode == state.Code).TriggerCode)
                 })
                 .ToList();
 
@@ -71,15 +77,21 @@ internal class SerializerFlowPlanner : IFlowPlanner
             }
         };
     }
-    
+
     private void CreateActivity(IFlowStepBuilder stepBuilder, SerializedActivity serializedActivity)
     {
         var flowActivity = TryGetActivity(serializedActivity.ActorName);
+        if (flowActivity is null)
+        {
+            throw new FlowCiaoSerializationException(
+                $"Could not find Activity with name: {serializedActivity.ActorName}");
+        }
+
         var methodInfo = typeof(IFlowStepBuilder).GetMethod(nameof(IFlowStepBuilder.OnEntry));
         var genericMethod = methodInfo!.MakeGenericMethod(flowActivity.GetType());
         genericMethod.Invoke(stepBuilder, null);
     }
-    
+
     private IFlowActivity TryGetActivity(string activityName)
     {
         try

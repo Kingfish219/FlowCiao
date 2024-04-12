@@ -39,6 +39,11 @@ namespace FlowCiao.Builder
 
         public IFlowStepBuilder Allow(State state, int trigger, Func<bool> condition = null)
         {
+            return Allow(state, new Trigger(trigger), condition);
+        }
+
+        public IFlowStepBuilder Allow(State state, Trigger trigger, Func<bool> condition = null)
+        {
             FlowStep.Allowed.Add(new Transition
             {
                 From = FlowStep.For,
@@ -51,7 +56,7 @@ namespace FlowCiao.Builder
                     : new List<Activity>(),
                 Triggers = new List<Trigger>
                 {
-                    new(trigger)
+                    trigger
                 },
                 Condition = condition
             });

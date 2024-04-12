@@ -5,9 +5,10 @@ namespace FlowCiao.Models.Core
 {
     public class Trigger : BaseEntity
     {
-        public Trigger(int code)
+        public Trigger(int code, string name = null)
         {
             Code = code;
+            Name = name;
         }
 
         public int Code { get; set; }

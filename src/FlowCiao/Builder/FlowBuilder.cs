@@ -61,6 +61,11 @@ namespace FlowCiao.Builder
             try
             {
                 build(this);
+
+                if (StepBuilders.IsNullOrEmpty())
+                {
+                    throw new FlowCiaoException("There is noting to build. Use Initial() and NewStep() to add Steps to your desired Flow");
+                }
                 
                 var flow = new Flow
                 {
@@ -68,11 +73,22 @@ namespace FlowCiao.Builder
                     Name = flowKey,
                     IsActive = true
                 };
+
+                var flowSteps = StepBuilders
+                    .Select(stepBuilder => stepBuilder.Build(flow.Id))
+                    .ToList();
+                
+                if (flowSteps
+                    .GroupBy(f => f.For.Code)
+                    .Any(g => g.Count() > 1))
+                {
+                    throw new FlowCiaoException("Cannot have more than 1 Step with the same starting State");
+                }
                 
                 flow.States ??= new List<State>();
                 flow.Transitions ??= new List<Transition>();
     
-                foreach (var flowStep in StepBuilders.Select(stepBuilder => stepBuilder.Build(flow.Id)))
+                foreach (var flowStep in flowSteps)
                 {
                     flow.States.Add(flowStep.For);
                     if (flowStep.Allowed.IsNullOrEmpty())

@@ -11,6 +11,7 @@ namespace FlowCiao.Interfaces
         internal void AsInitialStep();
         public IFlowStepBuilder For(State state);
         public IFlowStepBuilder Allow(State state, int trigger, Func<bool> condition = null);
+        public IFlowStepBuilder Allow(State state, Trigger trigger, Func<bool> condition = null);
         public IFlowStepBuilder OnEntry<TActivity>() where TActivity : IFlowActivity, new();
         public IFlowStepBuilder OnExit<TActivity>() where TActivity : IFlowActivity, new();
         internal FlowStep Build(Guid flowId);
