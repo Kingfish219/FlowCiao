@@ -4,6 +4,7 @@ using FlowCiao.Interfaces;
 using FlowCiao.Models.Builder.Serialized;
 using FlowCiao.Models.Core;
 using FlowCiao.Services;
+using FlowCiao.Utils;
 
 namespace FlowCiao.Builder.Serialization;
 
@@ -54,8 +55,49 @@ public class FlowSerializerHelper
                     Name = a.Name,
                     ActorName = a.ActorName
                 })
+                .FirstOrDefault(),
+            OnExit = initialTransitions.First().Activities
+                .Select(a => new SerializedActivity
+                {
+                    Name = a.Name,
+                    ActorName = a.ActorName
+                })
                 .FirstOrDefault()
         };
+        
+        var otherTransitions = flow.Transitions
+            .Where(t => t.From.Code != initialTransitions.First().From.Code)
+            .GroupBy(t=>t.From.Code)
+            .ToList();
+        if (otherTransitions.IsNullOrEmpty())
+        {
+            return serializedFlow;
+        }
+
+        serializedFlow.Steps = otherTransitions.Select(transitionGroup => new SerializedStep
+            {
+                FromStateCode = transitionGroup.First().From.Code,
+                Allows = transitionGroup.Select(t => new SerializedTransition
+                {
+                    AllowedStateCode = t.To.Code,
+                    TriggerCode = t.Triggers.First().Code
+                }).ToList(),
+                OnEntry = transitionGroup.First().From.Activities
+                    .Select(a => new SerializedActivity
+                    {
+                        Name = a.Name,
+                        ActorName = a.ActorName
+                    })
+                    .FirstOrDefault(),
+                OnExit = transitionGroup.First().Activities
+                    .Select(a => new SerializedActivity
+                    {
+                        Name = a.Name,
+                        ActorName = a.ActorName
+                    })
+                    .FirstOrDefault()
+            })
+            .ToList();
 
         return serializedFlow;
     }
