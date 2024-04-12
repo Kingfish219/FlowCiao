@@ -72,7 +72,13 @@ function App() {
       try {
         const jsonData = JSON.parse(reader.result);
         if (flowDesignerRef.current) {
-          flowDesignerRef.current.importJson(jsonData);
+          var err = flowDesignerRef.current.importJson(jsonData);
+          if (err != undefined && err != "") {
+            messageApi.open({
+              type: "error",
+              content: err,
+            });
+          }
         }
       } catch (error) {
         console.error("Error parsing JSON file:", error);
@@ -81,7 +87,6 @@ function App() {
     reader.readAsText(file);
   };
 
-  
   const {
     isLoading: isBuilderLoading,
     error: builderError,
@@ -93,21 +98,20 @@ function App() {
       var json = flowDesignerRef.current.exportFlowAsJSON();
       sendBuildFlowRequest(
         {
-          params: {Content : json},
+          params: { Content: json },
         },
         (response) => {
-          if (response.status == 200) {
+          if (response.status == 200 && response.data.status === "success") {
             messageApi.open({
               type: "success",
               content: "Building is successful",
             });
-          }else{
+          } else {
             messageApi.open({
               type: "error",
-              content: "Building is failed",
+              content: response.data.message,
             });
           }
-          console.log(response);
         }
       );
     }
@@ -136,19 +140,18 @@ function App() {
         (response) => {
           setIsUploadingDll(false);
 
-          if (response.status == 200) {
+          if (response.success) {
             messageApi.open({
               type: "success",
               content: "Uploading is successful",
             });
             getActivities();
-          }else{
+          } else {
             messageApi.open({
               type: "error",
               content: "Uploading is failed",
             });
           }
-          console.log(response);
         }
       );
     };
@@ -237,9 +240,29 @@ function App() {
 
   const getWorkflows = () => {
     senGetFlowsRequest({}, (data) => {
-      var flowActivities = data.map((flow) => ({ name: flow.name }));
+      var flowActivities = data.map((flow) => ({
+        name: flow.name,
+        json: flow.serializedJson,
+      }));
       setPreviousFlow(flowActivities);
     });
+  };
+
+  const loadFlow = (serializedJson) => {
+    try {
+      const jsonData = JSON.parse(serializedJson);
+      if (flowDesignerRef.current) {
+        var err = flowDesignerRef.current.importJson(jsonData);
+        if (err != undefined && err != "") {
+          messageApi.open({
+            type: "error",
+            content: "Loading flow is failed",
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error parsing JSON file:", error);
+    }
   };
 
   var createNewFlowDropDownItem = [
@@ -265,7 +288,12 @@ function App() {
           key: index + 1,
           name: x.name,
           label: (
-            <span className="activities-dropdown-item">
+            <span
+              className="activities-dropdown-item"
+              onClick={() => {
+                loadFlow(x.json);
+              }}
+            >
               <img src={actionIconImg} />
               <span className="activity-name">{x.name}</span>
             </span>

@@ -18,8 +18,8 @@ const useFlowData = () => {
         );
 
         var data = [];
-        if (response.status == 200) {
-           data = response.data.map((flow) => ({
+        if (response.status == 200 && response.data.status === "success") {
+           data = response.data.data.map((flow) => ({
             key: flow.id,
             ...flow,
           }));
@@ -27,7 +27,7 @@ const useFlowData = () => {
         applyData(data);
       
     } catch (err) {
-      setError(err.message || "Something went wrong!");
+      setError( err.response.data.message || err.message || "Something went wrong!");
     }
     setIsLoading(false);
   }, []);
