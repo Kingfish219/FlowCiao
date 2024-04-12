@@ -26,7 +26,7 @@ namespace FlowCiao.Operators
             _flowService = flowService;
         }
 
-        private static FlowStepContext InstantiateContext(int trigger,
+        private static FlowStepContext InitializeContext(int trigger,
             Dictionary<object, object> data,
             FlowInstance flowInstance)
         {
@@ -63,7 +63,7 @@ namespace FlowCiao.Operators
                 await Task.CompletedTask;
                 ValidateFireable(flowInstance, triggerCode);
 
-                var flowStepContext = InstantiateContext(triggerCode, data, flowInstance);
+                var flowStepContext = InitializeContext(triggerCode, data, flowInstance);
                 var result = _flowHandlerFactory
                     .BuildHandlers()
                     .Peek()

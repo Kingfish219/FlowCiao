@@ -29,10 +29,9 @@ using (var scope = app.Services.CreateScope()) {
     var flowBuilder = scope.ServiceProvider.GetRequiredService<IFlowBuilder>();
     var flow = flowBuilder.Build<PhoneStateMachine>();
     
-    // Initialize it using Ciao and Fire!!!
+    // Call CiaoAndTriggerAsync to Initialize it using Ciao and run it using Trigger
     var flowOperator = scope.ServiceProvider.GetService<IFlowOperator>();
-    var instance = flowOperator.Ciao(flow).GetAwaiter().GetResult();
-    var result = flowOperator.TriggerAsync(instance, (int)PhoneStateMachine.Triggers.Call).GetAwaiter().GetResult();
+    var result = flowOperator.CiaoAndTriggerAsync(flow.Key, (int)PhoneStateMachine.Triggers.Call).GetAwaiter().GetResult();
     Console.WriteLine(result.Message);
 }
 
