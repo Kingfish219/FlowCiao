@@ -43,7 +43,7 @@ var app = builder.Build();
     }
 
     app.UseFlowCiao();
-    var logger = app.Services.GetRequiredService<ILogger>();
+    var logger = app.Services.GetRequiredService<ILogger<Exception>>();
     app.ConfigureExceptionHandler(logger);
     
     app.UseDefaultFiles();
