@@ -288,7 +288,7 @@ function App() {
           key: index + 1,
           name: x.name,
           label: (
-            <span
+            <div
               className="activities-dropdown-item"
               onClick={() => {
                 loadFlow(x.json);
@@ -296,7 +296,7 @@ function App() {
             >
               <img src={actionIconImg} />
               <span className="activity-name">{x.name}</span>
-            </span>
+            </div>
           ),
         })),
       },
