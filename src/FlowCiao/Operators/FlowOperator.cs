@@ -41,6 +41,11 @@ namespace FlowCiao.Operators
             };
         }
 
+        public async Task<FlowResult> CiaoAndTriggerAsync(string flowKey, Trigger trigger, Dictionary<object, object> data = null)
+        {
+            return await CiaoAndTriggerAsync(flowKey, trigger.Code, data);
+        }
+
         public async Task<FlowInstance> Ciao(Flow flow)
         {
             var flowInstance = await _flowInstanceService.InitializeFlowInstance(flow);

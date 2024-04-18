@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowCiao.Samples.Phone", "s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowCiao.Samples.CustomActivities", "samples\FlowCiao.Samples.CustomActivities\FlowCiao.Samples.CustomActivities.csproj", "{380672FE-7127-4F56-8377-B856C895BC7A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowCiao.Samples.Ticketing", "samples\FlowCiao.Samples.Ticketing\FlowCiao.Samples.Ticketing.csproj", "{1AE058D1-0682-4F92-82ED-1EEE8B934D7F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{380672FE-7127-4F56-8377-B856C895BC7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{380672FE-7127-4F56-8377-B856C895BC7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{380672FE-7127-4F56-8377-B856C895BC7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AE058D1-0682-4F92-82ED-1EEE8B934D7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AE058D1-0682-4F92-82ED-1EEE8B934D7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AE058D1-0682-4F92-82ED-1EEE8B934D7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AE058D1-0682-4F92-82ED-1EEE8B934D7F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,6 +54,7 @@ Global
 		{706FC053-D43F-4535-9B52-03AE5EBD7197} = {1B986D1B-26FA-4E2D-B924-3BB9B335B56C}
 		{4067470F-1EEE-4260-B0CC-442EC3E125BC} = {DF03484B-6E7A-45E8-A689-A9988D5C6E79}
 		{380672FE-7127-4F56-8377-B856C895BC7A} = {DF03484B-6E7A-45E8-A689-A9988D5C6E79}
+		{1AE058D1-0682-4F92-82ED-1EEE8B934D7F} = {DF03484B-6E7A-45E8-A689-A9988D5C6E79}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A929E70D-0BAD-4033-98B5-87473E6069C6}

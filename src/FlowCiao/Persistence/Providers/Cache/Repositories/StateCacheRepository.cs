@@ -19,11 +19,11 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
             return FlowHub.States.SingleOrDefault(s => s.Id == id);
         }
 
-        public async Task<State> GetByKey(int code, Guid flowId)
+        public async Task<State> GetByKey(int code, string flowKey)
         {
             await Task.CompletedTask;
 
-            return FlowHub.States.SingleOrDefault(s => s.Code == code && s.FlowId == flowId);
+            return FlowHub.States.SingleOrDefault(s => s.Code == code && s.Flow?.Key == flowKey);
         }
 
         public async Task<Guid> Modify(State entity)

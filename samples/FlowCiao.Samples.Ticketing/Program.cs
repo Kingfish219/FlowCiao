@@ -1,7 +1,9 @@
 using FlowCiao;
 using FlowCiao.Interfaces;
 using FlowCiao.Operators;
-using FlowCiao.Samples.Phone.FlowCiao;
+using FlowCiao.Samples.Ticketing;
+using FlowCiao.Samples.Ticketing.Flow;
+using FlowCiao.Samples.Ticketing.Flow.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,11 +25,12 @@ app.UseFlowCiao();
 using (var scope = app.Services.CreateScope()) {
     // Build your custom Flow
     var flowBuilder = scope.ServiceProvider.GetRequiredService<IFlowBuilder>();
-    var flow = flowBuilder.Build<PhoneStateMachine>();
+    var flow = flowBuilder.Build<TicketingFlow>();
     
     // Call CiaoAndTriggerAsync to Initialize it using Ciao and run it using Trigger
     var flowOperator = scope.ServiceProvider.GetService<IFlowOperator>();
-    var result = flowOperator.CiaoAndTriggerAsync(flow.Key, (int)PhoneStateMachine.Triggers.Call).GetAwaiter().GetResult();
+    var result = flowOperator.CiaoAndTriggerAsync(flow.Key, Triggers.Assign)
+        .GetAwaiter().GetResult();
     Console.WriteLine(result.Message);
 }
 

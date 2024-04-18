@@ -107,9 +107,10 @@ namespace FlowCiao.Builder
             // ignored
         }
 
-        public async Task<FuncResult> Persist(Guid flowId)
+        public async Task<FuncResult> Persist(Flow flow)
         {
-            FlowStep.For.FlowId = flowId;
+            FlowStep.For.Flow = flow;
+            FlowStep.For.FlowId = flow.Id;
             var forResult = await _stateService.Modify(FlowStep.For);
             if (forResult == default)
             {
@@ -123,21 +124,24 @@ namespace FlowCiao.Builder
 
             foreach (var transition in FlowStep.Allowed)
             {
-                transition.From.FlowId = flowId;
+                transition.From.FlowId = flow.Id;
+                transition.From.Flow = flow;
                 transition.FromId = await _stateService.Modify(transition.From);
                 if (transition.FromId == default)
                 {
                     return new FuncResult(false, "Modifying State failed");
                 }
 
-                transition.To.FlowId = flowId;
+                transition.To.FlowId = flow.Id;
+                transition.To.Flow = flow;
                 transition.ToId = await _stateService.Modify(transition.To);
                 if (transition.ToId == default)
                 {
                     return new FuncResult(false, "Modifying State failed");
                 }
 
-                transition.FlowId = flowId;
+                transition.FlowId = flow.Id;
+                transition.Flow = flow;
                 var transitionResult = await _transitionService.Modify(transition);
                 if (transitionResult == default)
                 {

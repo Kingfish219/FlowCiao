@@ -15,6 +15,6 @@ namespace FlowCiao.Interfaces
         public IFlowStepBuilder OnEntry<TActivity>() where TActivity : IFlowActivity, new();
         public IFlowStepBuilder OnExit<TActivity>() where TActivity : IFlowActivity, new();
         internal FlowStep Build(Guid flowId);
-        internal Task<FuncResult> Persist(Guid flowId);
+        internal Task<FuncResult> Persist(Flow flow);
     }
 }

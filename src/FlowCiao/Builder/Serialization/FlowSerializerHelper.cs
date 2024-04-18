@@ -82,14 +82,16 @@ public class FlowSerializerHelper
                     AllowedStateCode = t.To.Code,
                     TriggerCode = t.Triggers.First().Code
                 }).ToList(),
-                OnEntry = transitionGroup.First().From.Activities
+                OnEntry = transitionGroup.FirstOrDefault(g=> !g.From.Activities.IsNullOrEmpty())
+                    ?.From.Activities
                     .Select(a => new SerializedActivity
                     {
                         Name = a.Name,
                         ActorName = a.ActorName
                     })
                     .FirstOrDefault(),
-                OnExit = transitionGroup.First().Activities
+                OnExit = transitionGroup.FirstOrDefault(g=> !g.Activities.IsNullOrEmpty())
+                    ?.Activities
                     .Select(a => new SerializedActivity
                     {
                         Name = a.Name,

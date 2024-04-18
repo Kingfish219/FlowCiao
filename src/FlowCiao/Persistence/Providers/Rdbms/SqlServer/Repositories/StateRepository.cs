@@ -24,18 +24,18 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
                 .SingleOrDefaultAsync(a => a.Id == id);
         }
 
-        public async Task<State> GetByKey(int code, Guid flowId)
+        public async Task<State> GetByKey(int code, string flowKey)
         {
             return await FlowCiaoDbContext.States
                 .AsNoTracking()
                 .Include(s => s.Activities)
                 .Include(s => s.StateActivities)
-                .SingleOrDefaultAsync(state => state.Code == code && state.FlowId == flowId);
+                .SingleOrDefaultAsync(state => state.Code == code && state.Flow.Key == flowKey);
         }
 
         public async Task<Guid> Modify(State entity)
         {
-            var existed = await GetById(entity.Id) ?? await GetByKey(entity.Code, entity.FlowId);
+            var existed = await GetById(entity.Id) ?? await GetByKey(entity.Code, entity.Flow.Key);
             if (existed != null)
             {
                 if (!existed.StateActivities.IsNullOrEmpty())

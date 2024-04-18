@@ -171,7 +171,7 @@ namespace FlowCiao.Builder
 
             foreach (var stepBuilder in StepBuilders)
             {
-                var persisted = await stepBuilder.Persist(result);
+                var persisted = await stepBuilder.Persist(flow);
                 if (!persisted.Success)
                 {
                     return new FuncResult<Flow>(false);
