@@ -76,8 +76,8 @@ const Flow = forwardRef((props, ref) => {
       data: {
         AddIdleNodeFunc: onAddIdleNodeFunc,
         Name: "",
-        onEntry: {name: "", actorName: ""},
-        onExit: {name: "", actorName: ""},
+        onEntry: { name: "", actorName: "" },
+        onExit: { name: "", actorName: "" },
       },
       origin: [0.5, 0.0],
     };
@@ -132,8 +132,8 @@ const Flow = forwardRef((props, ref) => {
       data: {
         AddIdleNodeFunc: onAddIdleNodeFunc,
         Name: "",
-        onEntry: {name: "", actorName: ""},
-        onExit: {name: "", actorName: ""},
+        onEntry: { name: "", actorName: "" },
+        onExit: { name: "", actorName: "" },
       },
       origin: [0.5, 0.0],
       position: { x: 200, y: 0 },
@@ -168,18 +168,26 @@ const Flow = forwardRef((props, ref) => {
         .filter((edge) => edge.source === firstIdleNodeId)
         .map((item) => ({
           allowedStateCode: item.target,
-          actionCode: item.id,
+          triggerCode: item.id,
         })),
       onEntry:
         nodes.find((x) => x.id === firstIdleNodeId).data.onEntry.name != ""
-          ? { name: nodes.find((x) => x.id === firstIdleNodeId).data.onEntry.name,
-             actorName: nodes.find((x) => x.id === firstIdleNodeId).data.onEntry.actorName }
-          : {name: "", actorName: ""},
+          ? {
+              name: nodes.find((x) => x.id === firstIdleNodeId).data.onEntry
+                .name,
+              actorName: nodes.find((x) => x.id === firstIdleNodeId).data
+                .onEntry.actorName,
+            }
+          : { name: "", actorName: "" },
       onExit:
         nodes.find((x) => x.id === firstIdleNodeId).data.onExit.name != ""
-          ? { name: nodes.find((x) => x.id === firstIdleNodeId).data.onExit.name,
-             actorName: nodes.find((x) => x.id === firstIdleNodeId).data.onExit.actorName}
-          : {name: "", actorName: ""},
+          ? {
+              name: nodes.find((x) => x.id === firstIdleNodeId).data.onExit
+                .name,
+              actorName: nodes.find((x) => x.id === firstIdleNodeId).data.onExit
+                .actorName,
+            }
+          : { name: "", actorName: "" },
     };
 
     var steps = edges
@@ -190,16 +198,24 @@ const Flow = forwardRef((props, ref) => {
           .filter((edge) => edge.source === item.source)
           .map((item2) => ({
             allowedStateCode: item2.target,
-            actionCode: item2.id,
+            triggerCode: item2.id,
           })),
         onEntry:
           nodes.find((x) => x.id === item.source).data.onEntry.name != ""
-                ? { name: nodes.find((x) => x.id === item.source).data.onEntry.name, actorName: nodes.find((x) => x.id === item.source).data.onEntry.actorName}
-            : {name: "", actorName: ""},
+            ? {
+                name: nodes.find((x) => x.id === item.source).data.onEntry.name,
+                actorName: nodes.find((x) => x.id === item.source).data.onEntry
+                  .actorName,
+              }
+            : { name: "", actorName: "" },
         onExit:
           nodes.find((x) => x.id === item.source).data.onExit.name != ""
-            ? { name: nodes.find((x) => x.id === item.source).data.onExit.name, actorName: nodes.find((x) => x.id === item.source).data.onExit.actorName }
-            : {name: "", actorName: ""},
+            ? {
+                name: nodes.find((x) => x.id === item.source).data.onExit.name,
+                actorName: nodes.find((x) => x.id === item.source).data.onExit
+                  .actorName,
+              }
+            : { name: "", actorName: "" },
       }));
 
     const removeDuplicates = (arr) => {
@@ -221,12 +237,20 @@ const Flow = forwardRef((props, ref) => {
         fromStateCode: item.Code,
         onEntry:
           nodes.find((x) => x.id === item.Code).data.onEntry.name != ""
-            ? { name: nodes.find((x) => x.id === item.Code).data.onEntry.name, actorName: nodes.find((x) => x.id === item.Code).data.onEntry.actorName}
-            : {name: "", actorName: ""},
+            ? {
+                name: nodes.find((x) => x.id === item.Code).data.onEntry.name,
+                actorName: nodes.find((x) => x.id === item.Code).data.onEntry
+                  .actorName,
+              }
+            : { name: "", actorName: "" },
         onExit:
           nodes.find((x) => x.id === item.Code).data.onExit.name != ""
-            ? { name: nodes.find((x) => x.id === item.Code).data.onExit.name, actorName: nodes.find((x) => x.id === item.Code).data.onExit.actorName }
-            : {name: "", actorName: ""},
+            ? {
+                name: nodes.find((x) => x.id === item.Code).data.onExit.name,
+                actorName: nodes.find((x) => x.id === item.Code).data.onExit
+                  .actorName,
+              }
+            : { name: "", actorName: "" },
       }));
 
     const flow = {
@@ -239,160 +263,187 @@ const Flow = forwardRef((props, ref) => {
     };
 
     const jsonFlow = JSON.stringify(flowData, null);
-   // downloadJSON(JSON.stringify(flow, null));
+    // downloadJSON(JSON.stringify(flow, null));
     return JSON.stringify(flow, null);
     // console.log("Exported JSON:", jsonFlow);
     // console.log("Exported JSON22: ", JSON.stringify(flow, null));
   };
 
   function ConvertToCamelCase(o) {
-    var newO, origKey, newKey, value
+    var newO, origKey, newKey, value;
     if (o instanceof Array) {
-      return o.map(function(value) {
-          if (typeof value === "object") {
-            value = ConvertToCamelCase(value)
-          }
-          return value
-      })
+      return o.map(function (value) {
+        if (typeof value === "object") {
+          value = ConvertToCamelCase(value);
+        }
+        return value;
+      });
     } else {
-      newO = {}
+      newO = {};
       for (origKey in o) {
         if (o.hasOwnProperty(origKey)) {
-          newKey = (origKey.charAt(0).toLowerCase() + origKey.slice(1) || origKey).toString()
-          value = o[origKey]
-          if (value instanceof Array || (value !== null && value.constructor === Object)) {
-            value = ConvertToCamelCase(value)
+          newKey = (
+            origKey.charAt(0).toLowerCase() + origKey.slice(1) || origKey
+          ).toString();
+          value = o[origKey];
+          if (
+            value instanceof Array ||
+            (value !== null && value.constructor === Object)
+          ) {
+            value = ConvertToCamelCase(value);
           }
-          newO[newKey] = value
+          newO[newKey] = value;
         }
       }
     }
-    return newO
+    return newO;
   }
 
   const importJson = (jsonFlow) => {
-    jsonFlow = ConvertToCamelCase(jsonFlow)
-    nodesPosition.current = [{ x: 0, y: 0 }];
-    setId();
+    try {
+      jsonFlow = ConvertToCamelCase(jsonFlow);
+      nodesPosition.current = [{ x: 0, y: 0 }];
+      setId();
 
-    var importedNodes = jsonFlow.states.map((node) => ({
-      id: node.code.toString(),
-      type: "idleNode",
-      data: {
-        AddIdleNodeFunc: onAddIdleNodeFunc,
-        Name: node.name,
-        onEntry: {name: "", actorName: ""},
-        onExit: {name: "", actorName: ""},
-        reset: true
-      },
-      origin: [0.5, 0.0],
-      position: null,
-    }));
+      var importedNodes = jsonFlow.states.map((node) => ({
+        id: node.code.toString(),
+        type: "idleNode",
+        data: {
+          AddIdleNodeFunc: onAddIdleNodeFunc,
+          Name: node.name,
+          onEntry: { name: "", actorName: "" },
+          onExit: { name: "", actorName: "" },
+          reset: true,
+        },
+        origin: [0.5, 0.0],
+        position: null,
+      }));
 
-    var importedEdges = jsonFlow.triggers.map((edge) => ({
-      id: edge.code.toString(),
-      source: "",
-      target: "",
-      type: "custom-edge",
-      data: { Name: edge.name },
-    }));
+      var importedEdges = jsonFlow.triggers.map((edge) => ({
+        id: edge.code.toString(),
+        source: "",
+        target: "",
+        type: "custom-edge",
+        data: { Name: edge.name },
+      }));
 
-    var firstIdleNode = importedNodes.find(
-      (x) => x.id == jsonFlow.initial.fromStateCode.toString()
-    );
-    firstIdleNode.data.onEntry =
-      jsonFlow.initial.onEntry != undefined && jsonFlow.initial.onEntry.name != ""
-        ? {name: jsonFlow.initial.onEntry.name, actorName: jsonFlow.initial.onEntry.actorName}
-        : {name: "", actorName: ""};
-    firstIdleNode.data.onExit =
-      jsonFlow.initial.onExit != undefined && jsonFlow.initial.onExit.name != ""
-        ? {name: jsonFlow.initial.onExit.name, actorName: jsonFlow.initial.onExit.actorName}
-        : {name: "", actorName: ""};
-    firstIdleNode.position = { x: 200, y: 0 };
-    jsonFlow.initial.allows.forEach((element) => {
-      importedEdges.find((x) => x.id == element.actionCode.toString()).source =
-        jsonFlow.initial.fromStateCode.toString();
-      importedEdges.find((x) => x.id == element.actionCode.toString()).target =
-        element.allowedStateCode.toString();
-      var nextStepNode = importedNodes.find(
-        (x) => x.id == element.allowedStateCode.toString()
+      var firstIdleNode = importedNodes.find(
+        (x) => x.id == jsonFlow.initial.fromStateCode.toString()
       );
+      firstIdleNode.data.onEntry =
+        jsonFlow.initial.onEntry != undefined &&
+        jsonFlow.initial.onEntry.name != ""
+          ? {
+              name: jsonFlow.initial.onEntry.name,
+              actorName: jsonFlow.initial.onEntry.actorName,
+            }
+          : { name: "", actorName: "" };
+      firstIdleNode.data.onExit =
+        jsonFlow.initial.onExit != undefined &&
+        jsonFlow.initial.onExit.name != ""
+          ? {
+              name: jsonFlow.initial.onExit.name,
+              actorName: jsonFlow.initial.onExit.actorName,
+            }
+          : { name: "", actorName: "" };
+      firstIdleNode.position = { x: 200, y: 0 };
+      jsonFlow.initial.allows.forEach((element) => {
+        importedEdges.find(
+          (x) => x.id == element.triggerCode.toString()
+        ).source = jsonFlow.initial.fromStateCode.toString();
+        importedEdges.find(
+          (x) => x.id == element.triggerCode.toString()
+        ).target = element.allowedStateCode.toString();
+        var nextStepNode = importedNodes.find(
+          (x) => x.id == element.allowedStateCode.toString()
+        );
 
-      const position = findFirstEmptyPosition(
-        firstIdleNode.position.x + 350,
-        firstIdleNode.position.y
-      );
-      nodesPosition.current.push(position);
-      nextStepNode.position = position;
-    });
+        const position = findFirstEmptyPosition(
+          firstIdleNode.position.x + 350,
+          firstIdleNode.position.y
+        );
+        nodesPosition.current.push(position);
+        nextStepNode.position = position;
+      });
 
-    const initialNode = {
-      id: (firstIdleNode.id - 1).toString(),
-      type: "StartNode",
-      position: { x: 0, y: 15 },
-      data: {
-        AddIdleNodeFunc: onAddIdleNodeFunc,
-      },
-    };
-    importedNodes = [initialNode, ...importedNodes];
+      const initialNode = {
+        id: (firstIdleNode.id - 1).toString(),
+        type: "StartNode",
+        position: { x: 0, y: 15 },
+        data: {
+          AddIdleNodeFunc: onAddIdleNodeFunc,
+        },
+      };
+      importedNodes = [initialNode, ...importedNodes];
 
-    const initialEdge = {
-      id: (
-        Math.min(...jsonFlow.initial.allows.map((o) => o.actionCode)) - 1
-      ).toString(),
-      source: (firstIdleNode.id - 1).toString(),
-      target: firstIdleNode.id.toString(),
-      type: "custom-edge",
-      data: { Name: "", noInput: true },
-    };
-    importedEdges = [initialEdge, ...importedEdges];
+      const initialEdge = {
+        id: (
+          Math.min(...jsonFlow.initial.allows.map((o) => o.triggerCode)) - 1
+        ).toString(),
+        source: (firstIdleNode.id - 1).toString(),
+        target: firstIdleNode.id.toString(),
+        type: "custom-edge",
+        data: { Name: "", noInput: true },
+      };
+      importedEdges = [initialEdge, ...importedEdges];
 
-    jsonFlow.steps.forEach((stepElement) => {
-      var stepNode = importedNodes.find(
-        (x) => x.id == stepElement.fromStateCode.toString()
-      );
-      stepNode.data.onEntry =
-        stepElement.onEntry != undefined && stepElement.onEntry.name != ""
-          ? {name: stepElement.onEntry.name, actorName: stepElement.onEntry.actorName}
-          : {name: "", actorName: ""};
-      stepNode.data.onExit =
-        stepElement.onExit != undefined && stepElement.onExit.name != ""
-          ? {name: stepElement.onExit.name, actorName: stepElement.onExit.actorName}
-          : {name: "", actorName: ""};
-      if (stepNode.position == null) {
-        stepNode.position = { x: 200, y: 0 };
-      }
-      if (stepElement.allows != undefined && stepElement.allows != "") {
-        stepElement.allows.forEach((element) => {
-          importedEdges.find((x) => x.id == element.actionCode.toString()).source =
-            stepElement.fromStateCode.toString();
-          importedEdges.find((x) => x.id == element.actionCode.toString()).target =
-            element.allowedStateCode.toString();
-          var nextStepNode = importedNodes.find(
-            (x) => x.id == element.allowedStateCode.toString()
-          );
-
-          if (nextStepNode.position == null) {
-            const position = findFirstEmptyPosition(
-              stepNode.position.x + 350,
-              stepNode.position.y
+      jsonFlow.steps.forEach((stepElement) => {
+        var stepNode = importedNodes.find(
+          (x) => x.id == stepElement.fromStateCode.toString()
+        );
+        stepNode.data.onEntry =
+          stepElement.onEntry != undefined && stepElement.onEntry.name != ""
+            ? {
+                name: stepElement.onEntry.name,
+                actorName: stepElement.onEntry.actorName,
+              }
+            : { name: "", actorName: "" };
+        stepNode.data.onExit =
+          stepElement.onExit != undefined && stepElement.onExit.name != ""
+            ? {
+                name: stepElement.onExit.name,
+                actorName: stepElement.onExit.actorName,
+              }
+            : { name: "", actorName: "" };
+        if (stepNode.position == null) {
+          stepNode.position = { x: 200, y: 0 };
+        }
+        if (stepElement.allows != undefined && stepElement.allows != "") {
+          stepElement.allows.forEach((element) => {
+            importedEdges.find(
+              (x) => x.id == element.triggerCode.toString()
+            ).source = stepElement.fromStateCode.toString();
+            importedEdges.find(
+              (x) => x.id == element.triggerCode.toString()
+            ).target = element.allowedStateCode.toString();
+            var nextStepNode = importedNodes.find(
+              (x) => x.id == element.allowedStateCode.toString()
             );
-            nodesPosition.current.push(position);
-            nextStepNode.position = position;
-          }
-        });
-      }
-    });
 
-    var maxNodeId = Math.max(...jsonFlow.states.map((o) => o.code));
-    var maxEdgeId = Math.max(...jsonFlow.triggers.map((o) => o.code));
-    var lastMaxId = maxNodeId > maxEdgeId ? maxNodeId : maxEdgeId;
-    setId(lastMaxId);
+            if (nextStepNode.position == null) {
+              const position = findFirstEmptyPosition(
+                stepNode.position.x + 350,
+                stepNode.position.y
+              );
+              nodesPosition.current.push(position);
+              nextStepNode.position = position;
+            }
+          });
+        }
+      });
 
-    setEdges(importedEdges);
-    setNodes(importedNodes);
+      var maxNodeId = Math.max(...jsonFlow.states.map((o) => o.code));
+      var maxEdgeId = Math.max(...jsonFlow.triggers.map((o) => o.code));
+      var lastMaxId = maxNodeId > maxEdgeId ? maxNodeId : maxEdgeId;
+      setId(lastMaxId);
 
-    props.onSetWorkflowName(jsonFlow.name);
+      setEdges(importedEdges);
+      setNodes(importedNodes);
+
+      props.onSetWorkflowName(jsonFlow.name);
+    } catch (err) {
+      return "Importing json is failed.";
+    }
   };
 
   const onNodesChange = useCallback(

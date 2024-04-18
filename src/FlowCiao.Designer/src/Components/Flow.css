@@ -171,7 +171,7 @@
   right: -15px;
 }
 .node-activity-count-container{
-  padding: 1px 3px;
+  padding: 0px 3px;
     background: transparent;
     outline: none;
     border: 1px solid #C8C8C8;
@@ -185,7 +185,7 @@
 .node-activity-count-container.no-activity{
   border-radius: 50%;
   height: 16px;
-  width: 16px;
+  width: 17px;
 }
 
 .node-activity-count-container img{
@@ -200,6 +200,7 @@
   font-size: 10px;
   line-height: 12px;
   padding-left: 2px;
+  padding-top: 1px;
   color: #2F6EE9;
 }
 .node-name {

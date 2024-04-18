@@ -14,7 +14,8 @@ const useBuilderData = () => {
         const response = await ApiCaller.post(
           `${activityApiPath}/json`,
           requestConfig.params,
-        );        
+        );    
+          
         applyData(response);
       
     } catch (err) {

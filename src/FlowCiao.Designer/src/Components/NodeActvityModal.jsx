@@ -92,7 +92,7 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
         (response) => {
           setIsUploadingDll(false);
 
-          if (response.status == 200) {
+          if (response.success) {
             messageApi.open({
               type: "success",
               content: "Uploading is successful",
@@ -101,7 +101,7 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
           }else{
             messageApi.open({
               type: "error",
-              content: "Uploading is failed",
+              content: response.message,
             });
           }
         }
@@ -171,7 +171,6 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
   }
 
   items = items.concat(registerActivityDropDownItem);
-console.log(activities)
   return (
     <>
       {contextHolder}

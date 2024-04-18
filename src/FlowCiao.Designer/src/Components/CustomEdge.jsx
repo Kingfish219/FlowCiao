@@ -42,8 +42,8 @@ const CustomEdge = ({
           {data.noInput == undefined || !data.noInput ? (
             <input
               className="custom-edge-input"
-              placeholder="some action"
-              defaultValue={data.Name != "" ? data.Name : "some action"}
+              placeholder="No Name"
+              defaultValue={data.Name != "" ? data.Name : "No Name"}
               onChange={onEdgeNameChange}
             />
           ) : (
