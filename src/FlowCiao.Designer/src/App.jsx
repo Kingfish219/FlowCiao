@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Flow from "./Components/Flow";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import {
@@ -347,6 +347,29 @@ function App() {
     setFocused(true);
   };
 
+useEffect(() => {
+  const errorHandler = (e) => {
+    if (
+      e.message.includes(
+        "ResizeObserver loop completed with undelivered notifications" ||
+          "ResizeObserver loop limit exceeded"
+      )
+    ) {
+      const resizeObserverErr = document.getElementById(
+        "webpack-dev-server-client-overlay"
+      );
+      if (resizeObserverErr) {
+        resizeObserverErr.style.display = "none";
+      }
+    }
+  };
+  window.addEventListener("error", errorHandler);
+
+  return () => {
+    window.removeEventListener("error", errorHandler);
+  };
+}, []);
+
   return (
     <ApplicationContextProvider color={color}>
       <ConfigProvider
@@ -358,6 +381,7 @@ function App() {
           },
         }}
       >
+        {contextHolder}
         <Layout className="main-layout">
           <Header className="main-header">
             <Space className="header-workflow-name-container">
@@ -440,7 +464,6 @@ function App() {
           </Header>
           <Content className="main-content">
             <div>
-              {contextHolder}
               <Flow
                 ref={flowDesignerRef}
                 resetFlowCalled={resetFlow}
