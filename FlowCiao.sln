@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{DF03
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowCiao.Samples.Phone", "samples\FlowCiao.Samples.Phone\FlowCiao.Samples.Phone.csproj", "{4067470F-1EEE-4260-B0CC-442EC3E125BC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowCiao.Samples.CustomActivities", "samples\FlowCiao.Samples.CustomActivities\FlowCiao.Samples.CustomActivities.csproj", "{380672FE-7127-4F56-8377-B856C895BC7A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowCiao.Samples.ActivityHub", "samples\FlowCiao.Samples.ActivityHub\FlowCiao.Samples.ActivityHub.csproj", "{380672FE-7127-4F56-8377-B856C895BC7A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlowCiao.Samples.Ticketing", "samples\FlowCiao.Samples.Ticketing\FlowCiao.Samples.Ticketing.csproj", "{1AE058D1-0682-4F92-82ED-1EEE8B934D7F}"
 EndProject

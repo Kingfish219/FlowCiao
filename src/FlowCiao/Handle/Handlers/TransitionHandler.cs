@@ -25,7 +25,8 @@ namespace FlowCiao.Handle.Handlers
 
                 if (!flowStepContext.FlowInstanceStepDetail.IsCompleted)
                 {
-                    throw new FlowCiaoExecutionException("Exception occured while completing progress transition, flow step action is not yet completed");
+                    throw new FlowCiaoExecutionException(
+                        "Exception occured while completing progress transition, flow step action is not yet completed");
                 }
 
                 var transition = flowStepContext.FlowInstanceStepDetail.Transition;
@@ -33,30 +34,24 @@ namespace FlowCiao.Handle.Handlers
                 {
                     return NextHandler.Handle(flowStepContext);
                 }
-                
+
                 if (!transition.Condition())
                 {
-                    throw new FlowCiaoExecutionException("Exception occured while completing transition as transition condition did not meet");
+                    throw new FlowCiaoExecutionException(
+                        "Exception occured while completing transition as transition condition did not meet");
                 }
 
                 return NextHandler.Handle(flowStepContext);
             }
             catch (Exception exception)
             {
-                return new FlowResult
-                {
-                    Status = FlowResultStatus.Failed,
-                    Message = exception.Message
-                };
+                return new FlowResult(FlowResultStatus.Failed, message: exception.Message);
             }
         }
 
         public override FlowResult RollBack(FlowStepContext flowStepContext)
         {
-            return PreviousHandler?.RollBack(flowStepContext) ?? new FlowResult
-            {
-                Status = FlowResultStatus.Failed
-            };
+            return PreviousHandler?.RollBack(flowStepContext) ?? new FlowResult(FlowResultStatus.Failed);
         }
     }
 }

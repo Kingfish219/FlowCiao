@@ -21,20 +21,13 @@ namespace FlowCiao.Handle.Handlers
             }
             catch (Exception exception)
             {
-                return new FlowResult
-                {
-                    Status = FlowResultStatus.Failed,
-                    Message = exception.Message
-                };
+                return new FlowResult(FlowResultStatus.Failed, message: exception.Message);
             }
         }
 
         public override FlowResult RollBack(FlowStepContext flowStepContext)
         {
-            return PreviousHandler?.RollBack(flowStepContext) ?? new FlowResult
-            {
-                Status = FlowResultStatus.Failed
-            };
+            return PreviousHandler?.RollBack(flowStepContext) ?? new FlowResult(FlowResultStatus.Failed);
         }
     }
 }

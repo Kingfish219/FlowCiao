@@ -74,19 +74,16 @@ namespace FlowCiao.Operators
                     .Peek()
                     .Handle(flowStepContext);
                 
-                result.Message = result.Status == FlowResultStatus.Completed
-                    ? "Flow fired successfully"
-                    : "Firing flow occurred error and operations would be rolled back";
+                // var message = result.Status == FlowResult.MapStatus(FlowResultStatus.Completed)
+                //     ? "Flow fired successfully"
+                //     : "Firing flow occurred error and operations would be rolled back";
 
                 return result;
             }
             catch (Exception exception)
             {
-                return new FlowResult
-                {
-                    Status = FlowResultStatus.Failed,
-                    Message = $"Firing flow occurred error and operations would be rolled back: {exception.Message}"
-                };
+                return new FlowResult(FlowResultStatus.Failed,
+                    $"Firing flow occurred error and operations would be rolled back: {exception.Message}");
             }
         }
 

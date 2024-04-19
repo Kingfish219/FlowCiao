@@ -5,6 +5,6 @@ namespace FlowCiao.Interfaces
 {
     public interface IFlowActivity
     {
-        FlowResult Execute(FlowStepContext context);
+        void Execute(FlowStepContext context);
     }
 }
