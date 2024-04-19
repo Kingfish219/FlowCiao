@@ -12,7 +12,7 @@ public class TicketingFlow : IFlowPlanner
     {
         builder.Initial(stepBuilder =>
             {
-                stepBuilder.For(States.Created)
+                stepBuilder.For(States.Start)
                     .Allow(States.New, Triggers.Created)
                     .OnEntry<TicketCreatedActivity>();
             })
@@ -26,7 +26,7 @@ public class TicketingFlow : IFlowPlanner
             {
                 stepBuilder.For(States.InProgress)
                     .Allow(States.AwaitingApproval, Triggers.Respond)
-                    .Allow(States.Created, Triggers.Assign)
+                    .Allow(States.Start, Triggers.Assign)
                     .OnEntry<TicketAssignedActivity>()
                     .OnExit<TicketRespondActivity>();
             })

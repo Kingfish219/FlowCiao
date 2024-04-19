@@ -51,14 +51,6 @@ namespace FlowCiao.Studio.Controllers
             return Ok(new ApiResponse(flowInstances));
         }
         
-        [HttpGet, Route("{id}/instances")]
-        public async Task<IActionResult> GetFlowExecutions1([FromRoute] string id)
-        {
-            var flowInstances = await _flowInstanceService.Get(new Guid(id));
-
-            return Ok(new ApiResponse(flowInstances));
-        }
-
         [HttpPost, Route("{key}/fire")]
         public async Task<IActionResult> Fire([FromRoute] string key, int triggerCode)
         {

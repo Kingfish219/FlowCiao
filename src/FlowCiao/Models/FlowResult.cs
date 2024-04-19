@@ -5,18 +5,25 @@ namespace FlowCiao.Models
 {
     public class FlowResult
     {
-        public FlowResultStatus Status { get; set; } = FlowResultStatus.Completed;
-        public string Message { get; set; }
-        public Guid InstanceId { get; set; }
-
-        public static FlowResult Success()
+        public FlowResult(FlowResultStatus flowResultStatus = FlowResultStatus.Completed, string message = default, Guid instanceId = default)
         {
-            return new FlowResult
+            
+        }
+
+        public static string MapStatus(FlowResultStatus status)
+        {
+            return status switch
             {
-                Status = FlowResultStatus.Completed,
-                Message = "Success"
+                FlowResultStatus.Completed => "completed",
+                FlowResultStatus.Cancelled => "cancelled",
+                FlowResultStatus.Failed => "failed",
+                _ => "failed"
             };
         }
+        
+        public string Status { get; }
+        public string Message { get; }
+        public Guid InstanceId { get; }
     }
 
     public class FlowResult<T> : FlowResult
@@ -26,10 +33,8 @@ namespace FlowCiao.Models
 
     public enum FlowResultStatus
     {
-        NotStarted,
         Cancelled,
         Completed,
-        Failed,
-        SetOwner
+        Failed
     }
 }

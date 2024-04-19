@@ -99,10 +99,9 @@ namespace FlowCiao.Builder
                     flow.Transitions.AddRange(flowStep.Allowed);
                     flow.States.AddRange(flow.Transitions.Select(t => t.To));
                 }
-
-                flow.States = flow.States.DistinctBy(s => s.Code).ToList();
-                flow.Transitions = flow.Transitions.DistinctBy(t => (t.From.Code, t.To.Code)).ToList();
-
+                
+                flow = FixAnomalies(flow);
+                
                 var persist = await Persist(flow);
                 if (!persist.Success)
                 {
@@ -118,7 +117,31 @@ namespace FlowCiao.Builder
                 throw;
             }
         }
-        
+
+        private static Flow FixAnomalies(Flow flow)
+        {
+            flow.States = flow.States.DistinctBy(s => s.Code).ToList();
+            flow.Transitions = flow.Transitions.DistinctBy(t => (t.From.Code, t.To.Code)).ToList();
+            flow.Transitions.ForEach(transition =>
+            {
+                if (flow.InitialStates.Any(s => transition.From.Code == s.Code))
+                {
+                    transition.From.IsInitial = flow.InitialStates
+                        .Single(s => s.Code == transition.From.Code)
+                        .IsInitial;
+                }
+                
+                if (flow.InitialStates.Any(s => transition.To.Code == s.Code))
+                {
+                    transition.To.IsInitial = flow.InitialStates
+                        .Single(s => s.Code == transition.To.Code)
+                        .IsInitial;
+                }
+            });
+            
+            return flow;
+        }
+
         public Flow Build<T>() where T : IFlowPlanner, new()
         {
             var flowPlanner = Activator.CreateInstance<T>();

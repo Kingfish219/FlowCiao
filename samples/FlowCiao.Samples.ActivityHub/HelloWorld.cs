@@ -1,16 +1,13 @@
 ﻿using FlowCiao.Interfaces;
-using FlowCiao.Models;
 using FlowCiao.Models.Execution;
 
-namespace FlowCiao.Samples.CustomActivities
+namespace FlowCiao.Samples.ActivityHub
 {
     public class HelloWorld : IFlowActivity
     {
-        public FlowResult Execute(FlowStepContext context)
+        public void Execute(FlowStepContext context)
         {
             Console.WriteLine("Hello world");
-
-            return FlowResult.Success();
         }
     }
 }

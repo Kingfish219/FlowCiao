@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
 using FlowCiao.Models;
 using FlowCiao.Models.Execution;
@@ -38,42 +37,20 @@ namespace FlowCiao.Handle.Handlers
                         continue;
                     }
 
-                    var result = activity.Execute(flowStepContext);
-                    if (result.Status != FlowResultStatus.Completed && result.Status != FlowResultStatus.SetOwner)
-                    {
-                        throw new FlowCiaoExecutionException("Exception occured while invoking activities" + result.Message);
-                    }
+                    activity.Execute(flowStepContext);
                 }
 
                 return NextHandler?.Handle(flowStepContext);
             }
             catch (Exception exception)
             {
-                return new FlowResult
-                {
-                    Status = FlowResultStatus.Failed,
-                    Message = exception.Message
-                };
+                return new FlowResult(FlowResultStatus.Failed, message: exception.Message);
             }
         }
 
         public override FlowResult RollBack(FlowStepContext flowStepContext)
         {
-            try
-            {
-                return PreviousHandler?.RollBack(flowStepContext) ?? new FlowResult
-                {
-                    Status = FlowResultStatus.Failed
-                };
-            }
-            catch (Exception exception)
-            {
-                return new FlowResult
-                {
-                    Status = FlowResultStatus.Failed,
-                    Message = exception.Message
-                };
-            }
+            return PreviousHandler?.RollBack(flowStepContext) ?? new FlowResult(FlowResultStatus.Failed);
         }
     }
 }
