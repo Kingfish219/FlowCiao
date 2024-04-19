@@ -1,7 +1,6 @@
 using FlowCiao;
 using FlowCiao.Interfaces;
 using FlowCiao.Operators;
-using FlowCiao.Samples.Ticketing;
 using FlowCiao.Samples.Ticketing.Flow;
 using FlowCiao.Samples.Ticketing.Flow.Models;
 

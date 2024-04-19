@@ -2,13 +2,13 @@
 using FlowCiao.Models;
 using FlowCiao.Models.Execution;
 
-namespace FlowCiao.Samples.Phone.FlowCiao.Activities
+namespace FlowCiao.Samples.Phone.Flow.Activities
 {
-    public class HelloWorld : IFlowActivity
+    public class PhoneOnExitIdleActivity : IFlowActivity
     {
         public FlowResult Execute(FlowStepContext context)
         {
-            Console.WriteLine("Hello world");
+            Console.WriteLine("Phone exited idle");
 
             return FlowResult.Success();
         }

@@ -26,6 +26,7 @@ public class TicketingFlow : IFlowPlanner
             {
                 stepBuilder.For(States.InProgress)
                     .Allow(States.AwaitingApproval, Triggers.Respond)
+                    .Allow(States.Created, Triggers.Assign)
                     .OnEntry<TicketAssignedActivity>()
                     .OnExit<TicketRespondActivity>();
             })

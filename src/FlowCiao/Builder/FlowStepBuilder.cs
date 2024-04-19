@@ -126,26 +126,30 @@ namespace FlowCiao.Builder
             {
                 transition.From.FlowId = flow.Id;
                 transition.From.Flow = flow;
-                transition.FromId = await _stateService.Modify(transition.From);
-                if (transition.FromId == default)
-                {
-                    return new FuncResult(false, "Modifying State failed");
-                }
 
+                var stateResult = await _stateService.Modify(transition.From);
+                if (!stateResult.Success || stateResult.Data == default)
+                {
+                    return new FuncResult(false, stateResult.Message ?? "Modifying State failed");
+                }
+                
+                transition.FromId = stateResult.Data;
                 transition.To.FlowId = flow.Id;
                 transition.To.Flow = flow;
-                transition.ToId = await _stateService.Modify(transition.To);
-                if (transition.ToId == default)
+
+                stateResult = await _stateService.Modify(transition.To);
+                if (!stateResult.Success || stateResult.Data == default)
                 {
-                    return new FuncResult(false, "Modifying State failed");
+                    return new FuncResult(false, stateResult.Message ?? "Modifying State failed");
                 }
 
+                transition.ToId = stateResult.Data;
                 transition.FlowId = flow.Id;
                 transition.Flow = flow;
                 var transitionResult = await _transitionService.Modify(transition);
-                if (transitionResult == default)
+                if (!transitionResult.Success || transitionResult.Data == default)
                 {
-                    return new FuncResult(false, "Modifying Transition failed");
+                    return new FuncResult(false, transitionResult.Message ?? "Modifying Transition failed");
                 }
             }
 

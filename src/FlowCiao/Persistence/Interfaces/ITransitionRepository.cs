@@ -8,6 +8,7 @@ namespace FlowCiao.Persistence.Interfaces
     {
         Task<Transition> GetById(Guid id);
         Task<Transition> GetByKey(Guid flowId, Guid fromStateId, Guid toStateId);
+        Task<Transition> GetByKey(string flowKey, Guid fromStateId, Guid toStateId);
         Task<Guid> Modify(Transition entity);
     }
 }
