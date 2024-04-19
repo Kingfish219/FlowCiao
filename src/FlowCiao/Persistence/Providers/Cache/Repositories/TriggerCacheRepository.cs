@@ -11,6 +11,11 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
         {
         }
 
+        public Task<Trigger> GetByKey(int code, Guid transitionId)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task<Trigger> GetById(Guid id)
         {
             throw new NotImplementedException();

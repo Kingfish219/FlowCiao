@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using FlowCiao.Exceptions;
+using FlowCiao.Models;
 using FlowCiao.Models.Core;
 using FlowCiao.Persistence.Interfaces;
 using FlowCiao.Utils;
@@ -18,7 +18,7 @@ namespace FlowCiao.Services
             _activityService = activityService;
         }
 
-        public async Task<Guid> Modify(State state)
+        public async Task<FuncResult<Guid>> Modify(State state)
         {
             if (!state.Activities.IsNullOrEmpty())
             {
@@ -27,12 +27,14 @@ namespace FlowCiao.Services
                     var activityResult = await _activityService.Modify(activity);
                     if (activityResult == default)
                     {
-                        throw new FlowCiaoPersistencyException("Modifying Activity failed");
+                        return new FuncResult<Guid>(false, "Modifying Activity failed");
                     }
                 }
             }
             
-            return await _stateRepository.Modify(state);
+            var result = await _stateRepository.Modify(state);
+            
+            return new FuncResult<Guid>(true, data: result);
         }
     }
 }

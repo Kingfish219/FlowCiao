@@ -6,6 +6,7 @@ namespace FlowCiao.Persistence.Interfaces
 {
     public interface ITriggerRepository
     {
+        Task<Trigger> GetByKey(int code, Guid transitionId);
         Task<Trigger> GetById(Guid id);
         Task<Guid> Modify(Trigger entity);
     }

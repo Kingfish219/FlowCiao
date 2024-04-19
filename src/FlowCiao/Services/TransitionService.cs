@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using FlowCiao.Exceptions;
+using FlowCiao.Models;
 using FlowCiao.Models.Core;
 using FlowCiao.Persistence.Interfaces;
 using FlowCiao.Utils;
@@ -23,7 +23,7 @@ namespace FlowCiao.Services
             _activityService = activityService;
         }
 
-        public async Task<Guid> Modify(Transition transition)
+        public async Task<FuncResult<Guid>> Modify(Transition transition)
         {
             if (!transition.Activities.IsNullOrEmpty())
             {
@@ -32,7 +32,7 @@ namespace FlowCiao.Services
                     var activityResult = await _activityService.Modify(activity);
                     if (activityResult == default)
                     {
-                        throw new FlowCiaoPersistencyException("Modifying Activity failed");
+                        return new FuncResult<Guid>(false, "Modifying Activity failed");
                     }
                 }
             }
@@ -40,23 +40,23 @@ namespace FlowCiao.Services
             var result = await _transitionRepository.Modify(transition);
             if (result == default)
             {
-                throw new FlowCiaoPersistencyException("Modifying Transition failed");
+                return new FuncResult<Guid>(false, "Modifying Transition failed");
             }
 
             if (!transition.Triggers.IsNullOrEmpty())
             {
                 foreach (var trigger in transition.Triggers)
                 {
-                    trigger.TransitionId = trigger.TransitionId == default ? transition.Id : trigger.TransitionId;
+                    trigger.TransitionId = transition.Id;
                     var triggerResult = await _triggerService.Modify(trigger);
                     if (triggerResult == default)
                     {
-                        throw new FlowCiaoPersistencyException("Modifying Activity failed");
+                        return new FuncResult<Guid>(false, "Modifying Trigger failed");
                     }
                 }
             }
 
-            return result;
+            return new FuncResult<Guid>(true, data: result);
         }
     }
 }

@@ -33,9 +33,19 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
                 .SingleOrDefaultAsync(a => a.FlowId == flowId && a.FromId == fromStateId && a.ToId == toStateId);
         }
 
+        public async Task<Transition> GetByKey(string flowKey, Guid fromStateId, Guid toStateId)
+        {
+            return await FlowCiaoDbContext.Transitions
+                .AsNoTracking()
+                .Include(s => s.Activities)
+                .Include(s => s.TransitionActivities)
+                .Include(s => s.Triggers)
+                .SingleOrDefaultAsync(a => a.Flow.Key == flowKey && a.FromId == fromStateId && a.ToId == toStateId);
+        }
+
         public async Task<Guid> Modify(Transition entity)
         {
-            var existed = await GetById(entity.Id) ?? await GetByKey(entity.FlowId, entity.From.Id, entity.To.Id);
+            var existed = await GetById(entity.Id) ?? await GetByKey(entity.Flow.Key, entity.From.Id, entity.To.Id);
             if (existed != null)
             {
                 if (!existed.TransitionActivities.IsNullOrEmpty())
