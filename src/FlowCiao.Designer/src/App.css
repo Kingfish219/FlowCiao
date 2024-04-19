@@ -18,6 +18,9 @@ body {
   background: #fff;
   padding: 0 0 0 31px;
 }
+.header-workflow-name-container{
+  height: 100%;
+}
 #workflow-name,
 #workflow-name:active{
   width: 220px;
