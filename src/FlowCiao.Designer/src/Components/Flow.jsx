@@ -156,11 +156,17 @@ const Flow = forwardRef((props, ref) => {
 
     var states = nodes
       .filter((x) => x.id !== startNode.id)
-      .map((node) => ({ Code: node.id, Name: node.data.Name }));
+      .map((node) => ({
+        Code: node.id,
+        Name: node.data.Name === "" ? "New State" : node.data.Name,
+      }));
 
     var triggers = edges
       .filter((x) => x.source !== startNode.id)
-      .map((edge) => ({ Code: edge.id, Name: edge.data.Name }));
+      .map((edge) => ({
+        Code: edge.id,
+        Name: edge.data.Name === "" ? "New Trigger" : edge.data.Name,
+      }));
 
     var initial = {
       fromStateCode: firstIdleNodeId,
@@ -512,6 +518,8 @@ const Flow = forwardRef((props, ref) => {
     setNodes(updatedNodes);
   };
 
+  const { setViewport } = useReactFlow();
+
   useEffect(() => {
     if (props.resetFlowCalled) {
       var resetNode = initialNodes;
@@ -520,6 +528,14 @@ const Flow = forwardRef((props, ref) => {
       setEdges(initialEdges);
       nodesPosition.current = [{ x: 0, y: 0 }];
       setId();
+      setViewport(
+        {
+          x: window.innerWidth * 0.3,
+          y: window.innerHeight * 0.3,
+          zoom: 1.3,
+        },
+        { duration: 800 }
+      );
       props.onResetFlowClick(false);
     }
   }, [props.resetFlowCalled]);
@@ -530,36 +546,55 @@ const Flow = forwardRef((props, ref) => {
   };
 
   return (
-    <div className="dndflow">
-      <ReactFlowProvider>
-        {/* <Sidebar /> */}
-        <div className="reactflow-wrapper" ref={reactFlowWrapper}>
-          <ReactFlow
-            nodes={nodes}
-            edges={edges}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            // onNodeClick={onNodesClick}
-            deleteKeyCode={["Backspace", "Delete"]}
-            onNodesDelete={onNodesDelete}
-            // onEdgesDelete={}   // as needed
-            onConnect={onConnect}
-            onEdgeUpdate={onEdgeUpdate}
-            onEdgeUpdateStart={onEdgeUpdateStart}
-            onEdgeUpdateEnd={onEdgeUpdateEnd}
-            onInit={setReactFlowInstance}
-            nodeTypes={nodeTypes}
-            edgeTypes={edgeTypes}
-            connectionLineComponent={CustomConnectionLine}
-            connectionLineStyle={connectionLineStyle}
-            fitView
-          >
-            <Controls />
-          </ReactFlow>
-        </div>
-      </ReactFlowProvider>
+    // <div className="dndflow">
+    //   <ReactFlowProvider>
+    <div className="reactflow-wrapper" ref={reactFlowWrapper}>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        // onNodeClick={onNodesClick}
+        deleteKeyCode={["Backspace", "Delete"]}
+        onNodesDelete={onNodesDelete}
+        // onEdgesDelete={}   // as needed
+        onConnect={onConnect}
+        onEdgeUpdate={onEdgeUpdate}
+        onEdgeUpdateStart={onEdgeUpdateStart}
+        onEdgeUpdateEnd={onEdgeUpdateEnd}
+        onInit={setReactFlowInstance}
+        nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
+        connectionLineComponent={CustomConnectionLine}
+        connectionLineStyle={connectionLineStyle}
+        // fitView
+        defaultViewport={{
+          x: window.innerWidth * 0.3,
+          y: window.innerHeight * 0.3,
+          zoom: 1.3,
+        }}
+      >
+        <Controls />
+      </ReactFlow>
     </div>
   );
 });
 
-export default Flow;
+export default forwardRef(
+  (
+    { resetFlowCalled, onResetFlowClick, workflowName, onSetWorkflowName },
+    ref
+  ) => (
+    <div className="dndflow">
+      <ReactFlowProvider>
+        <Flow
+          ref={ref}
+          resetFlowCalled = {resetFlowCalled}
+          onResetFlowClick = {onResetFlowClick}
+          workflowName = {workflowName}
+          onSetWorkflowName = {onSetWorkflowName}
+        />
+      </ReactFlowProvider>
+    </div>
+  )
+);

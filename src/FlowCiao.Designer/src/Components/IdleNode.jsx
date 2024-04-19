@@ -1,5 +1,6 @@
 import { useCallback, useState, useContext, useEffect } from "react";
 import { Handle, Position } from "reactflow";
+import {  message } from 'antd';
 import dotImg from "../Assets/dot.svg";
 import plusImg from "../Assets/circle-plus.svg";
 import actionIconImg from "../Assets/action-icon.svg";
@@ -8,11 +9,12 @@ import NodeActvityModal from "./NodeActvityModal";
 
 const IdleNode = (node) => {
   const appCtx = useContext(ApplicationContext);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const [isHoverNode, setIsHoverNode] = useState(false);
   const [isHoverSpaceNode, setIsHoverSpaceNode] = useState(false);
   const [nodeName, setNodeName] = useState(
-    node.data.Name != "" ? node.data.Name : "Pending"
+    node.data.Name != "" ? node.data.Name : "New State"
   );
   const onIdleNodeHoverFunc = () => {
     setIsHoverNode(true);
@@ -53,7 +55,7 @@ const IdleNode = (node) => {
 
   useEffect(() => {
     if (node.data.reset) {
-      setNodeName(node.data.Name != "" ? node.data.Name : "Pending");
+      setNodeName(node.data.Name != "" ? node.data.Name : "New State");
       let updatedActivities = [];
       if (node.data.onEntry.name != "") {
         updatedActivities.push(node.data.onEntry);
@@ -72,6 +74,10 @@ const IdleNode = (node) => {
   };
   const onActivitiesApplyChanges = (activities) => {
     if (activities != null) {
+      messageApi.open({
+        type: "success",
+        content: "Changes is applied",
+      });
       node.data.onEntry = {name: activities.onEntryName, actorName: activities.onEntryActorName};
       node.data.onExit = {name:activities.onExitName, actorName: activities.onExitActorName};
       let updatedActivities = [];
@@ -88,6 +94,7 @@ const IdleNode = (node) => {
 
   return (
     <>
+    {contextHolder}
       <div
         onMouseEnter={onIdleNodeHoverFunc}
         onMouseLeave={onIdleNodeLoseHoverFunc}
@@ -154,7 +161,7 @@ const IdleNode = (node) => {
           className="add-node-btn"
           onClick={onAddIdleNodeClick}
         >
-          {isHoverNode ? <img src={plusImg} /> : <img src={dotImg} />}
+          {isHoverNode ? <img style={{marginTop: "5px"}} src={plusImg} /> : <img src={dotImg} />}
         </button>
         {!isHoverNode && !isHoverSpaceNode ? (
           <></>
@@ -187,7 +194,7 @@ const IdleNode = (node) => {
         <input
           className="node-name"
           type="text"
-          placeholder="Pending"
+          placeholder="New State"
           value={nodeName}
           onChange={onNodeNameChange}
         />

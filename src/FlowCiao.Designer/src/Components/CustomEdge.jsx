@@ -1,5 +1,7 @@
 import React from "react";
 import { getBezierPath, EdgeLabelRenderer, BaseEdge } from "reactflow";
+import { Input } from 'antd';
+const { TextArea } = Input;
 
 const CustomEdge = ({
   id,
@@ -40,12 +42,22 @@ const CustomEdge = ({
           }}
         >
           {data.noInput == undefined || !data.noInput ? (
-            <input
-              className="custom-edge-input"
-              placeholder="No Name"
-              defaultValue={data.Name != "" ? data.Name : "No Name"}
+            // <input
+            //   className="custom-edge-input"
+            //   placeholder="New Trigger"
+            //   defaultValue={data.Name != "" ? data.Name : "New Trigger"}
+            //   onChange={onEdgeNameChange}
+            // />
+            <TextArea
+            className="custom-edge-input"
+              placeholder="New Trigger"
+              defaultValue={data.Name != "" ? data.Name : "New Trigger"}
               onChange={onEdgeNameChange}
-            />
+            autoSize={{
+              minRows: 1,
+              maxRows: 6,
+            }}
+          />
           ) : (
             <></>
           )}

@@ -12,6 +12,7 @@ import {
   Upload,
   Dropdown,
   message,
+  Tooltip
 } from "antd";
 import "./App.css";
 import plusImg from "./Assets/plus.svg";
@@ -268,6 +269,7 @@ function App() {
   var createNewFlowDropDownItem = [
     {
       key: "newFlow",
+      overlayclassname:"header-activities-dropdown-new-flow",
       label: (
         <span className="activities-dropdown-item">
           <img src={plusImg} />
@@ -311,6 +313,7 @@ function App() {
   const chooseWorkflowHandler = ({ key }) => {
     if (key == "newFlow") {
       resetFlowClick();
+      getWorkflows();
     }
   };
 
@@ -347,28 +350,32 @@ function App() {
     setFocused(true);
   };
 
-useEffect(() => {
-  const errorHandler = (e) => {
-    if (
-      e.message.includes(
-        "ResizeObserver loop completed with undelivered notifications" ||
-          "ResizeObserver loop limit exceeded"
-      )
-    ) {
-      const resizeObserverErr = document.getElementById(
-        "webpack-dev-server-client-overlay"
-      );
-      if (resizeObserverErr) {
-        resizeObserverErr.style.display = "none";
-      }
-    }
-  };
-  window.addEventListener("error", errorHandler);
+  useEffect(() => {
+    getActivities();
+  }, []);
 
-  return () => {
-    window.removeEventListener("error", errorHandler);
-  };
-}, []);
+  useEffect(() => {
+    const errorHandler = (e) => {
+      if (
+        e.message.includes(
+          "ResizeObserver loop completed with undelivered notifications" ||
+            "ResizeObserver loop limit exceeded"
+        )
+      ) {
+        const resizeObserverErr = document.getElementById(
+          "webpack-dev-server-client-overlay"
+        );
+        if (resizeObserverErr) {
+          resizeObserverErr.style.display = "none";
+        }
+      }
+    };
+    window.addEventListener("error", errorHandler);
+
+    return () => {
+      window.removeEventListener("error", errorHandler);
+    };
+  }, []);
 
   return (
     <ApplicationContextProvider color={color}>
@@ -377,6 +384,7 @@ useEffect(() => {
           components: {
             Layout: {
               headerBg: "#fff",
+              headerHeight: "47px"
             },
           },
         }}
@@ -412,20 +420,23 @@ useEffect(() => {
                 </Button>
               </Dropdown>
             </Space>
-            <Space className="header-botton-container">
-              <Button
-                loading={isBuilderLoading}
-                className="header-btn"
-                style={{ background: "#0047FF" }}
-                icon={<img src={publishImg} width={18} />}
-                onClick={onBuildClick}
-              />
-
-              <Button
-                className="header-btn"
-                icon={<img src={exportImg} width={18} />}
-                onClick={handleExportFlowAsJSON}
-              />
+            <div className="header-botton-container">
+              <Tooltip placement="bottom" title={"Build And Publish Flow"}>
+                <Button
+                  loading={isBuilderLoading}
+                  className="header-btn"
+                  style={{ background: "#0047FF" }}
+                  icon={<img src={publishImg} width={18} />}
+                  onClick={onBuildClick}
+                />
+              </Tooltip>
+              <Tooltip placement="bottom" title={"Export Flow"}>
+                <Button
+                  className="header-btn"
+                  icon={<img src={exportImg}/>}
+                  onClick={handleExportFlowAsJSON}
+                />
+              </Tooltip>
               <Upload
                 accept=".json"
                 className="header-btn"
@@ -433,10 +444,12 @@ useEffect(() => {
                 showUploadList={false}
                 beforeUpload={() => false} // Prevent auto-upload
               >
-                <Button
-                  className="header-btn"
-                  icon={<img src={importImg} width={18} />}
-                />
+                <Tooltip placement="bottom" title={"Import Flow"}>
+                  <Button
+                    className="header-btn"
+                    icon={<img src={importImg}/>}
+                  />
+                </Tooltip>
               </Upload>
               <Dropdown
                 menu={{
@@ -446,21 +459,29 @@ useEffect(() => {
                 trigger={["click"]}
                 onOpenChange={actionDropdownOnClick}
               >
-                <Button
-                  loading={isUploadingDll}
-                  className="header-btn header-activities-btn"
+                <Tooltip
+                  placement="bottom"
+                  title={"Register Or Update Activity"}
                 >
-                  <img className="activities-icon" src={actionIconImg} />
-                  <img src={arrowDownIconImg} />
-                </Button>
+                  <Button
+                    loading={isUploadingDll}
+                    className="header-btn header-activities-btn"
+                  >
+                    <img className="activities-icon" src={actionIconImg} />
+                    <img src={arrowDownIconImg} />
+                  </Button>
+                </Tooltip>
               </Dropdown>
               <ColorPicker defaultValue={color} onChange={onChangeColor}>
+              <Tooltip placement="bottom" title={"Nodes Color Picker"}>
+
                 <Button
                   className="header-btn"
-                  icon={<img src={paintImg} width={22} />}
+                  icon={<img src={paintImg} width={20} />}
                 />
+                </Tooltip>
               </ColorPicker>
-            </Space>
+            </div>
           </Header>
           <Content className="main-content">
             <div>

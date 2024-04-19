@@ -1,3 +1,6 @@
+.react-flow__viewport{
+transform: translate(221.854px, 201.908px) scale(1.38889);
+}
 .react-flow__panel.react-flow__attribution {
   display: none;
 }
@@ -66,7 +69,9 @@
 }
 
 .react-flow__node.selected > div {
-  box-shadow: 0px 1px 7px 0px #757575;
+  border-bottom: 1px solid #2f6ee9 !important;
+  border-left: 1px solid #2f6ee9 !important;
+  border-right: 1px solid #2f6ee9 !important;
 }
 .dndflow .dndnode.circle-node {
   width: 70px;
@@ -102,8 +107,8 @@
 .custom-edge-input:focus {
   border: none;
   outline: none;
-  min-width: 50px;
-  max-width: 100px;
+  width: fit-content;
+  max-width: 100px !important;
   color: #000;
   text-align: center;
   font-size: 12px;
@@ -129,8 +134,8 @@
 }
 
 .add-node-btn {
-  width: 4px;
-  height: 4px;
+  width: 6px;
+  height: 6px;
   position: absolute;
   right: -8px;
   top: 30%;
@@ -140,7 +145,7 @@
   cursor: pointer;
 }
 .start-node .add-node-btn{
-  top: -1px;
+  top: -3px;
     right: -6px;
 }
 .node-actvity-btn-hover-space{
@@ -171,7 +176,7 @@
   right: -15px;
 }
 .node-activity-count-container{
-  padding: 0px 3px;
+  padding: 0.5px 3px 0px 3px;
     background: transparent;
     outline: none;
     border: 1px solid #C8C8C8;
@@ -185,7 +190,7 @@
 .node-activity-count-container.no-activity{
   border-radius: 50%;
   height: 16px;
-  width: 17px;
+  width: 16px;
 }
 
 .node-activity-count-container img{
@@ -206,9 +211,9 @@
 .node-name {
   border: none;
   outline: none;
-  width: 100%;
+  width: 98%;
   text-align: center;
-  margin: 14px 0;
+  margin: 14px 1px;
 }
 
 .node-handle{
@@ -218,8 +223,8 @@
 .start-node{
   border-radius: 50%;
   border: 2px solid #3C3C3C;
-   width: 23px; 
-   height: 23px;
+   width: 20px; 
+   height: 20px;
 }
 
 /*#region activity modal*/

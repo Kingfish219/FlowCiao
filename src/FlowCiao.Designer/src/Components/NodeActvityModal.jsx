@@ -33,7 +33,7 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
       onExitName: node.data.onExit.name,
       onExitActorName: node.data.onExit.actorName,
     });
-    onApplyChanges(null, null);
+    onApplyChanges(null);
   };
 
   const chooseOnEntryActionHandler = ({ key }) => {
@@ -186,7 +186,7 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
         <Modal
           title={
             <span className="modal-title">
-              Configure events for "{node.data.Name}"
+              Configure events for "{(node.data.Name == "" ? "New State" : node.data.Name)}"
             </span>
           }
           open={isModalOpen}
