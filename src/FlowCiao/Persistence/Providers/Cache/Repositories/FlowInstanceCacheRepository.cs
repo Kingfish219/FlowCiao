@@ -56,5 +56,12 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
 
             return entity.Id;
         }
+
+        public async Task<Guid> Update(FlowInstance entity)
+        {
+            await FlowHub.ModifyFlowExecution(entity);
+
+            return entity.Id;
+        }
     }
 }
