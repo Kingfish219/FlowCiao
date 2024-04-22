@@ -55,7 +55,7 @@ namespace FlowCiao.Services
             await Task.CompletedTask;
 
             flowInstance.InstanceSteps.Add(GenerateFlowStep(flowInstance.Flow, flowInstance.State));
-
+            
             return flowInstance;
         }
 

@@ -7,7 +7,9 @@ namespace FlowCiao.Models
     {
         public FlowResult(FlowResultStatus flowResultStatus = FlowResultStatus.Completed, string message = default, Guid instanceId = default)
         {
-            
+            Status = MapStatus(flowResultStatus);
+            Message = message;
+            InstanceId = instanceId;
         }
 
         public static string MapStatus(FlowResultStatus status)

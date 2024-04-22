@@ -27,7 +27,7 @@ namespace FlowCiao.Handle.Handlers
 
                 _instanceService.Modify(flowStepContext.FlowInstance).GetAwaiter().GetResult();
 
-                return new FlowResult(FlowResultStatus.Completed, message: "Triggering was successful",
+                return new FlowResult(message: "Triggering was successful",
                     instanceId: flowStepContext.FlowInstance.Id);
             }
             catch (Exception exception)
