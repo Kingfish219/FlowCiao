@@ -559,9 +559,9 @@ const Flow = forwardRef((props, ref) => {
         onNodesDelete={onNodesDelete}
         // onEdgesDelete={}   // as needed
         onConnect={onConnect}
-        onEdgeUpdate={onEdgeUpdate}
-        onEdgeUpdateStart={onEdgeUpdateStart}
-        onEdgeUpdateEnd={onEdgeUpdateEnd}
+        // onEdgeUpdate={onEdgeUpdate}
+        // onEdgeUpdateStart={onEdgeUpdateStart}
+        // onEdgeUpdateEnd={onEdgeUpdateEnd}
         onInit={setReactFlowInstance}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
