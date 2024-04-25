@@ -25,6 +25,8 @@ import publishImg from "./Assets/publish.svg";
 import actionIconImg from "./Assets/action-icon.svg";
 import uploadIconImg from "./Assets/upload-icon.svg";
 import arrowDownIconImg from "./Assets/arrow-down-icon.svg";
+import flowImg from "./Assets/flow-icon.svg"
+import guideImg from "./Assets/help-icon.svg";
 import ApplicationContextProvider from "./Store/ApplicationContextProvider";
 import useActivityData from "./apis/data/useActivityData";
 import useFlowData from "./apis/data/useFlowData";
@@ -257,7 +259,7 @@ function App() {
 
   const {
     isLoading: isFlowLoading,
-    error:flowError,
+    error: flowError,
     sendGetRequest: senGetFlowsRequest,
   } = useFlowData();
   const [previousFlows, setPreviousFlow] = useState([]);
@@ -295,7 +297,7 @@ function App() {
       overlayclassname: "header-activities-dropdown-new-flow",
       label: (
         <span className="activities-dropdown-item">
-          <img src={plusImg} />
+          <img src={plusImg} style={{filter: "brightness(0) saturate(100%) invert(37%) sepia(99%) saturate(695%) hue-rotate(189deg) brightness(91%) contrast(103%)"}}/>
           <span className="activity-name">New State Machine</span>
         </span>
       ),
@@ -340,7 +342,7 @@ function App() {
                 loadFlow(x.json);
               }}
             >
-              <img src={actionIconImg} />
+              <img src={flowImg} width={12}/>
               <span className="activity-name">{x.name}</span>
             </div>
           ),
@@ -476,6 +478,8 @@ function App() {
     },
   ];
 
+  const [isGuideModalOpen, setGuideModalOpen] = useState(false);
+
   return (
     <ApplicationContextProvider color={color}>
       <ConfigProvider
@@ -584,6 +588,32 @@ function App() {
                   />
                 </Tooltip>
               </ColorPicker>
+              <Dropdown
+                menu={{
+                  items: [
+                    {
+                      key: 1,
+                      label: (
+                        <span onClick={() => setGuideModalOpen(true)}>
+                          Guide
+                        </span>
+                      ),
+                    },
+                    {
+                      key: 2,
+                      label: (
+                        <span onClick={() => setTourOpen(true)}>Tour</span>
+                      ),
+                    },
+                  ],
+                }}
+                placement="bottomRight"
+                trigger={["click"]}
+              >
+                <Button className="header-btn header-activities-btn">
+                  <img src={guideImg} />
+                </Button>
+              </Dropdown>
             </div>
           </Header>
           <Content className="main-content" ref={flowContainerRef}>
@@ -606,6 +636,91 @@ function App() {
         onClose={() => setTourOpen(false)}
         steps={tourSteps}
       />
+      <Modal
+        title="Guid"
+        centered
+        open={isGuideModalOpen}
+        cancelText
+        style={{overflow: "hidden"}}
+        footer={[
+          <Button key="ok" type="primary" onClick={() => setGuideModalOpen(false)}>
+            OK
+          </Button>,
+        ]}
+      >
+        <div style={{overflow: "auto",maxHeight: "70vh"}}>
+        <h2>FlowCiao Studio</h2>
+        <h3>Getting Started</h3>
+        <p>To start designing your workflow, follow these steps:</p>
+        <ul>
+          <li>
+            <strong>Create a New Workflow:</strong>
+            <span>
+              {" "}
+              Click on the "New Workflow" button to begin. Set a name for your
+              workflow on the left side of the header.
+            </span>
+          </li>
+        <li>
+          <strong>Design Your Flow:</strong>
+          <span>
+            Start with the Start Node, which is automatically placed on the
+            canvas. This node signifies the beginning of your workflow.
+          </span>
+        </li>
+        <li>
+          <strong>Add Nodes:</strong>
+          <span>
+            Click on the plus button on the Start Node to add other nodes
+            connected to it. Each newly added node will also have a plus button,
+            allowing you to expand your workflow as needed.
+          </span>
+        </li>
+        <li>
+          <strong>Connect Nodes: </strong>
+          <span>
+            Drag from one node to another to create transitions, defining the
+            flow of your process.
+          </span>
+        </li>
+        <li>
+          <strong>Customize Node Colors:</strong>
+          <span>
+            Use the color picker in the header to customize the colors of your
+            nodes, enhancing visual clarity and organization.
+          </span>
+        </li>
+        <li>
+          <strong>Register and Update Activities: </strong>
+          <span>
+            Utilize the "Activities" button to register or update activities
+            from DLL files. These activities can be assigned as onEntry or
+            onExit actions for each node in your workflow.
+          </span>
+        </li>
+        <li>
+          <strong>Save and Publish Your Workflow:</strong>
+          <span>
+            Once you're satisfied with your workflow design, click on the
+            "Publish" button to save it to the database securely.
+          </span>
+        </li>
+        <li>
+          <strong>Export and Import Workflows:</strong>
+          <span>
+            Use the "Export" button to save your workflow as a JSON file.
+            Conversely, the "Import" button allows you to import workflows from
+            JSON files for collaboration or backup purposes.
+          </span>
+        </li>
+        </ul>
+        <strong>Additional Features</strong>
+        <p>
+          Access a dropdown menu to view and select from your previously created
+          workflows, facilitating easy navigation and management.
+        </p>
+        </div>
+      </Modal>
     </ApplicationContextProvider>
   );
 }

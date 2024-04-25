@@ -19,6 +19,18 @@ var builder = WebApplication.CreateBuilder(args);
             });
     });
 
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("DevelopmentCorsPolicy",
+            builder => builder
+                .WithOrigins("http://localhost:3000", "http://127.0.0.1:3000")
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .AllowCredentials()
+        );
+    });
+
+
     builder.Services.AddApiVersioning(options =>
     {
         options.DefaultApiVersion = new ApiVersion(1);
@@ -40,12 +52,14 @@ var app = builder.Build();
     {
         app.UseSwagger();
         app.UseSwaggerUI();
+        app.UseCors("DevelopmentCorsPolicy");
     }
+
 
     app.UseFlowCiao();
     var logger = app.Services.GetRequiredService<ILogger<Exception>>();
     app.ConfigureExceptionHandler(logger);
-    
+
     app.UseDefaultFiles();
     app.UseStaticFiles();
 

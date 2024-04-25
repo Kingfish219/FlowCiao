@@ -161,7 +161,7 @@ const IdleNode = (node) => {
           className="add-node-btn"
           onClick={onAddIdleNodeClick}
         >
-          {isHoverNode ? <img style={{marginTop: "5px"}} src={plusImg} /> : <img src={dotImg} />}
+          {isHoverNode ? <img style={{marginTop: "3px", width:"13px"}} src={plusImg} /> : <img src={dotImg} />}
         </button>
         {!isHoverNode && !isHoverSpaceNode ? (
           <></>
