@@ -15,7 +15,13 @@ const useActivityData = () => {
         requestConfig.params
       );
       var data = [];
-      if (response.status == 200 && response.data.status === "success") {
+      if (
+        response !== undefined &&
+        response.status == 200 &&
+        response.data.status === "success" &&
+        response.data !== undefined &&
+        response.data.data !== undefined
+      ) {
         data = response.data.data.map((activity) => ({
           key: activity.id,
           ...activity,
@@ -50,7 +56,8 @@ const useActivityData = () => {
       } catch (err) {
         setError(err.message || "Something went wrong!");
         result.success = false;
-        result.message = err.response.data.message || err.message || "Something went wrong!";
+        result.message =
+          err.response.data.message || err.message || "Something went wrong!";
         applyData(result);
       }
       setIsLoading(false);

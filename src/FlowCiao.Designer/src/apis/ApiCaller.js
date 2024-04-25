@@ -1,6 +1,8 @@
 import axios from "axios";
 const api = axios.create({
-  baseURL: process.env.REACT_APP_BASE_API_URL,
+  baseURL: process.env.NODE_ENV == "development"
+  ? process.env.REACT_APP_BASE_API_URL_Development
+  : process.env.REACT_APP_BASE_API_URL,
 });
 export const ApiCaller = {
   getList: async function (resource, params, cancel = false) {
