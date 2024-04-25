@@ -5,16 +5,16 @@ using FlowCiao.Models.Execution;
 
 namespace FlowCiao.Persistence.Providers.Cache
 {
-    public class FlowHub
+    internal sealed class FlowHub
     {
-        public List<Flow> Flows { get; set; }
-        public List<FlowInstance> FlowExecutions { get; set; }
-        public List<State> States { get; set; }
-        public List<Activity> Activities { get; set; }
-        public List<Transition> Transitions { get; set; }
-        public List<Trigger> Triggers { get; set; }
+        internal List<Flow> Flows { get; set; }
+        internal List<FlowInstance> FlowExecutions { get; set; }
+        internal List<State> States { get; set; }
+        internal List<Activity> Activities { get; set; }
+        internal List<Transition> Transitions { get; set; }
+        internal List<Trigger> Triggers { get; set; }
 
-        public void Initiate(List<Flow> flows,
+        internal void Initiate(List<Flow> flows,
             List<FlowInstance> flowExecutions,
             List<State> states,
             List<Transition> transitions,
@@ -29,7 +29,7 @@ namespace FlowCiao.Persistence.Providers.Cache
             Triggers = triggers;
         }
 
-        public async Task DeleteFlow(Flow flow)
+        internal async Task DeleteFlow(Flow flow)
         {
             await Task.Run(() =>
             {
@@ -37,7 +37,7 @@ namespace FlowCiao.Persistence.Providers.Cache
             });
         }
 
-        public async Task ModifyFlow(Flow flow)
+        internal async Task ModifyFlow(Flow flow)
         {
             await Task.Run(() =>
             {
@@ -50,7 +50,7 @@ namespace FlowCiao.Persistence.Providers.Cache
             });
         }
 
-        public async Task DeleteFlowExecution(FlowInstance flowInstance)
+        internal async Task DeleteFlowExecution(FlowInstance flowInstance)
         {
             await Task.Run(() =>
             {
@@ -58,7 +58,7 @@ namespace FlowCiao.Persistence.Providers.Cache
             });
         }
 
-        public async Task ModifyFlowExecution(FlowInstance flowInstance)
+        internal async Task ModifyFlowInstance(FlowInstance flowInstance)
         {
             await Task.Run(() =>
             {
@@ -71,7 +71,7 @@ namespace FlowCiao.Persistence.Providers.Cache
             });
         }
 
-        public async Task ModifyState(State state)
+        internal async Task ModifyState(State state)
         {
             await Task.Run(() =>
             {
@@ -84,7 +84,7 @@ namespace FlowCiao.Persistence.Providers.Cache
             });
         }
 
-        public async Task DeleteState(State state)
+        internal async Task DeleteState(State state)
         {
             await Task.Run(() =>
             {
@@ -92,7 +92,7 @@ namespace FlowCiao.Persistence.Providers.Cache
             });
         }
 
-        public async Task ModifyTransition(Transition transition)
+        internal async Task ModifyTransition(Transition transition)
         {
             await Task.Run(() =>
             {
@@ -105,7 +105,7 @@ namespace FlowCiao.Persistence.Providers.Cache
             });
         }
 
-        public async Task DeleteTransition(Transition transition)
+        internal async Task DeleteTransition(Transition transition)
         {
             await Task.Run(() =>
             {
@@ -113,7 +113,7 @@ namespace FlowCiao.Persistence.Providers.Cache
             });
         }
 
-        public async Task ModifyActivity(Activity activity)
+        internal async Task ModifyActivity(Activity activity)
         {
             await Task.Run(() =>
             {
@@ -126,7 +126,7 @@ namespace FlowCiao.Persistence.Providers.Cache
             });
         }
 
-        public async Task DeleteActivity(Activity activity)
+        internal async Task DeleteActivity(Activity activity)
         {
             await Task.Run(() =>
             {
@@ -134,7 +134,7 @@ namespace FlowCiao.Persistence.Providers.Cache
             });
         }
 
-        public async Task ModifyTrigger(Trigger trigger)
+        internal async Task ModifyTrigger(Trigger trigger)
         {
             await Task.Run(() =>
             {
@@ -147,7 +147,7 @@ namespace FlowCiao.Persistence.Providers.Cache
             });
         }
 
-        public async Task DeleteTrigger(Trigger trigger)
+        internal async Task DeleteTrigger(Trigger trigger)
         {
             await Task.Run(() =>
             {

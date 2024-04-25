@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
 {
-    public class ActivityRepository : FlowSqlServerRepository, IActivityRepository
+    internal sealed class ActivityRepository : FlowSqlServerRepository, IActivityRepository
     {
         public ActivityRepository(FlowCiaoDbContext flowCiaoDbContext) : base(flowCiaoDbContext)
         {

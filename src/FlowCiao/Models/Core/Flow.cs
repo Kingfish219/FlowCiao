@@ -20,7 +20,8 @@ namespace FlowCiao.Models.Core
         public List<State> States { get; set; } = null!;
 
         [NotMapped]
-        public List<Trigger> Triggers => Transitions?.SelectMany(t => t.Triggers)?
+        public List<Trigger> Triggers => Transitions?
+            .SelectMany(t => t.Triggers)
             .DistinctBy(t => t.Code)
             .ToList();
 
@@ -28,6 +29,8 @@ namespace FlowCiao.Models.Core
         public string SerializedJson { get; set; }
 
         [NotMapped]
-        public List<State> InitialStates => Transitions?.Where(x => x.From.IsInitial).Select(x => x.From).ToList();
+        public List<State> InitialStates => Transitions?.Where(x => x.From?.IsInitial ?? false)
+            .Select(x => x.From)
+            .ToList();
     }
 }

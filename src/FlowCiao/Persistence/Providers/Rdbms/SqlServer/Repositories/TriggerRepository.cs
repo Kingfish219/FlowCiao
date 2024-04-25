@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
 {
-    public class TriggerRepository : FlowSqlServerRepository, ITriggerRepository
+    internal sealed class TriggerRepository : FlowSqlServerRepository, ITriggerRepository
     {
         public TriggerRepository(FlowCiaoDbContext dbContext) : base(dbContext) { }
 

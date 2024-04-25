@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace FlowCiao.Persistence.Providers.Rdbms;
 
-public class FlowCiaoDbContextFactory : IDesignTimeDbContextFactory<FlowCiaoDbContext>
+internal class FlowCiaoDbContextFactory : IDesignTimeDbContextFactory<FlowCiaoDbContext>
 {
     public FlowCiaoDbContext CreateDbContext(string[] args)
     {

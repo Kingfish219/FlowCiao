@@ -33,7 +33,7 @@ namespace FlowCiao.Services
             return await _flowRepository.Modify(flow);
         }
 
-        public FlowInstanceStep GenerateFlowStep(Flow flow, State state)
+        internal FlowInstanceStep GenerateFlowStep(Flow flow, State state)
         {
             var flowExecutionStep = new FlowInstanceStep
             {

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
 {
-    public class FlowInstanceRepository : FlowSqlServerRepository, IFlowInstanceRepository
+    internal sealed class FlowInstanceRepository : FlowSqlServerRepository, IFlowInstanceRepository
     {
         public FlowInstanceRepository(FlowCiaoDbContext dbContext) : base(dbContext)
         {
@@ -28,6 +28,15 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
             return await FlowCiaoDbContext.FlowInstances
                 .AsNoTracking()
                 .Include(fi => fi.Flow)
+                    .ThenInclude(f => f.Transitions)
+                        .ThenInclude(t => t.Triggers)
+                .Include(fi => fi.Flow)
+                    .ThenInclude(f => f.Transitions)
+                        .ThenInclude(t => t.From)
+                .Include(fi => fi.Flow)
+                    .ThenInclude(f => f.Transitions)
+                        .ThenInclude(t => t.To)
+                .AsSplitQuery()
                 .SingleOrDefaultAsync(a => a.Id == id);
         }
 
