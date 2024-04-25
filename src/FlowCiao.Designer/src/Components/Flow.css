@@ -254,6 +254,10 @@ transform: translate(221.854px, 201.908px) scale(1.38889);
 {
   padding-left: 0 !important;
 }
+.activities-dropdown-item {
+  display: flex;
+  align-items: center;
+}
 .activities-dropdown-item .activity-name{
   padding: 0 8px;
 }

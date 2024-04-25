@@ -32,10 +32,12 @@ body {
    overflow-x: auto;
   white-space: nowrap;
   text-overflow: ellipsis;
+  cursor: pointer;
 }
 #workflow-name.focused {
   white-space: normal;
   text-overflow: clip;
+  cursor: text;
 }
 .header-workflow-dropdown-btn,
 .header-workflow-dropdown-btn:active{
@@ -68,6 +70,7 @@ margin-right: 5px;
 .ant-dropdown-menu-item[overlayclassname="header-activities-dropdown-new-flow"]
 {
   width: 240px !important;
+  padding-left: 8px !important;
 }
 .main-content{
   padding: 35px;
