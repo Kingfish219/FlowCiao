@@ -22,12 +22,10 @@ namespace FlowCiao.Handle.Handlers
             try
             {
                 flowStepContext.FlowInstanceStep.IsCompleted = true;
-                flowStepContext.FlowInstance = FlowService.Finalize(flowStepContext.FlowInstance)
+                flowStepContext.FlowInstance = _instanceService.Finalize(flowStepContext.FlowInstance, flowStepContext)
                     .GetAwaiter().GetResult();
 
-                _instanceService.Modify(flowStepContext.FlowInstance).GetAwaiter().GetResult();
-
-                return new FlowResult(FlowResultStatus.Completed, message: "Triggering was successful",
+                return new FlowResult(message: "Triggering was successful",
                     instanceId: flowStepContext.FlowInstance.Id);
             }
             catch (Exception exception)

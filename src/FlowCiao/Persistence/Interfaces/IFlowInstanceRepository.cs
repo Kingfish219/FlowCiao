@@ -10,5 +10,6 @@ namespace FlowCiao.Persistence.Interfaces
         Task<List<FlowInstance>> Get(Guid flowId = default);
         Task<FlowInstance> GetById(Guid id);
         Task<Guid> Modify(FlowInstance entity);
+        Task<Guid> Update(FlowInstance entity);
     }
 }

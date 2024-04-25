@@ -73,10 +73,6 @@ namespace FlowCiao.Operators
                     .BuildHandlers()
                     .Peek()
                     .Handle(flowStepContext);
-                
-                // var message = result.Status == FlowResult.MapStatus(FlowResultStatus.Completed)
-                //     ? "Flow fired successfully"
-                //     : "Firing flow occurred error and operations would be rolled back";
 
                 return result;
             }

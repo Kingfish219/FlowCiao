@@ -45,5 +45,12 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
 
             return entity.Id;
         }
+
+        public async Task<Guid> Update(FlowInstance entity)
+        {
+            await UpdateAsync(entity);
+
+            return entity.Id;
+        }
     }
 }

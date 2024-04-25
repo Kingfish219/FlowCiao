@@ -50,15 +50,6 @@ namespace FlowCiao.Services
             return flowExecutionStep;
         }
 
-        public async Task<FlowInstance> Finalize(FlowInstance flowInstance)
-        {
-            await Task.CompletedTask;
-
-            flowInstance.InstanceSteps.Add(GenerateFlowStep(flowInstance.Flow, flowInstance.State));
-
-            return flowInstance;
-        }
-
         public async Task<FuncResult> Deactivate(Flow flow)
         {
             flow.IsActive = false;

@@ -37,7 +37,7 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer
         protected async Task<int> UpdateAsync<TEntity>(TEntity entity, TEntity existed = null)
             where TEntity : BaseEntity
         {
-            entity.Id = existed.Id;
+            entity.Id = existed?.Id ?? entity.Id;
             FlowCiaoDbContext.Entry(entity).State = EntityState.Modified;
             FlowCiaoDbContext.Set<TEntity>().Update(entity);
             var result = await FlowCiaoDbContext.SaveChangesAsync();

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FlowCiao.Exceptions;
 using FlowCiao.Models;
 using FlowCiao.Models.Core;
 using FlowCiao.Models.Execution;
@@ -98,10 +97,10 @@ namespace FlowCiao.Services
             return flowExecution;
         }
 
-        public async Task<FlowInstance> Finalize(FlowInstance flowInstance)
+        public async Task<FlowInstance> Finalize(FlowInstance flowInstance, FlowStepContext flowStepContext)
         {
             flowInstance.InstanceSteps.Add(GenerateFlowStep(flowInstance.Flow,
-                        flowInstance.Flow.Transitions.First(x => x.From.IsInitial).From));
+                        flowStepContext.FlowInstanceStep.Details.First(x=>x.IsCompleted).Transition.To));
 
             if (_flowSettings.PersistFlow)
             {

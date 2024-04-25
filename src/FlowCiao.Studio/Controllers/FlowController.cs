@@ -1,4 +1,5 @@
 using FlowCiao.Builder.Serialization.Serializers;
+using FlowCiao.Models;
 using FlowCiao.Operators;
 using FlowCiao.Services;
 using FlowCiao.Studio.Models;
@@ -37,9 +38,20 @@ namespace FlowCiao.Studio.Controllers
         [HttpGet, Route("instances/{id}")]
         public async Task<IActionResult> GetFlowExecution([FromRoute] string id)
         {
-            var flowInstances = await _flowInstanceService.GetById(new Guid(id));
+            var flowInstance = await _flowInstanceService.GetById(new Guid(id));
 
-            return Ok(new ApiResponse(flowInstances));
+            return Ok(new ApiResponse(flowInstance));
+        }
+        
+        [HttpPost, Route("instances/{id}/trigger")]
+        public async Task<IActionResult> TriggerFlowExecution([FromRoute] string id, int triggerCode)
+        {
+            var flowInstance = await _flowInstanceService.GetById(new Guid(id));
+            var result = await _operator.TriggerAsync(flowInstance, triggerCode);
+            
+            return Ok(result.Status == "failed" ?
+                new ApiResponse(ApiResponse.ApiResponseStatus.Error, result, result.Message) :
+                new ApiResponse(result));
         }
 
         [HttpGet, Route("{key}/instances")]
@@ -56,7 +68,9 @@ namespace FlowCiao.Studio.Controllers
         {
             var result = await _operator.CiaoAndTriggerAsync(key, triggerCode);
 
-            return Ok(new ApiResponse(result));
+            return Ok(result.Status == "failed" ?
+                new ApiResponse(ApiResponse.ApiResponseStatus.Error, result, result.Message) :
+                new ApiResponse(result));
         }
     }
 }
