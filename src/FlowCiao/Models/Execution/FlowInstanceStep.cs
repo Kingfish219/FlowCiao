@@ -4,7 +4,7 @@ using FlowCiao.Models.Core;
 
 namespace FlowCiao.Models.Execution
 {
-    public class FlowInstanceStep
+    internal class FlowInstanceStep
     {
         public List<FlowInstanceStepDetail> Details { get; set; }
         public bool IsCompleted { get; set; }

@@ -48,7 +48,7 @@ namespace FlowCiao.Services
             return flowStep;
         }
 
-        public async Task<FlowInstance> InitializeFlowInstance(Flow flow)
+        internal async Task<FlowInstance> InitializeFlowInstance(Flow flow)
         {
             var flowExecution = new FlowInstance
             {
@@ -71,7 +71,7 @@ namespace FlowCiao.Services
             return flowExecution;
         }
 
-        public async Task<FlowInstance> Finalize(FlowInstance flowInstance, FlowStepContext flowStepContext)
+        internal async Task<FlowInstance> Finalize(FlowInstance flowInstance, FlowStepContext flowStepContext)
         {
             flowInstance.InstanceSteps.Add(GenerateFlowStep(flowInstance.Flow,
                         flowStepContext.FlowInstanceStep.Details.First(x=>x.IsCompleted).Transition.To));

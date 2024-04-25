@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Migrations
 {
-    public partial class Initial : Migration
+    internal partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

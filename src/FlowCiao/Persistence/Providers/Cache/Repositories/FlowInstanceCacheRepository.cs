@@ -7,7 +7,7 @@ using FlowCiao.Persistence.Interfaces;
 
 namespace FlowCiao.Persistence.Providers.Cache.Repositories
 {
-    internal class FlowInstanceCacheRepository : FlowCiaoCacheRepository, IFlowInstanceRepository
+    internal sealed class FlowInstanceCacheRepository : FlowCiaoCacheRepository, IFlowInstanceRepository
     {
         public FlowInstanceCacheRepository(FlowHub flowHub) : base(flowHub)
         {

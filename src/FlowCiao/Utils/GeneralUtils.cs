@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace FlowCiao.Utils;
 
-public static class GeneralUtils
+internal static class GeneralUtils
 {
     public static Type FindType(string typeName, Type assignableFrom = null)
     {

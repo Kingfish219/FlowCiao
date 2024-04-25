@@ -12,7 +12,7 @@ using FlowCiao.Persistence.Interfaces;
 
 namespace FlowCiao.Persistence.Providers.Cache.Repositories
 {
-    public class ActivityCacheRepository : FlowCiaoCacheRepository, IActivityRepository
+    internal sealed class ActivityCacheRepository : FlowCiaoCacheRepository, IActivityRepository
     {
         public ActivityCacheRepository(FlowHub flowHub) : base(flowHub)
         {

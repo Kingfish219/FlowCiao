@@ -5,7 +5,7 @@ using FlowCiao.Persistence.Interfaces;
 
 namespace FlowCiao.Persistence.Providers.Cache.Repositories
 {
-    public class TriggerCacheRepository : FlowCiaoCacheRepository, ITriggerRepository
+    internal sealed class TriggerCacheRepository : FlowCiaoCacheRepository, ITriggerRepository
     {
         public TriggerCacheRepository(FlowHub flowHub) : base(flowHub)
         {

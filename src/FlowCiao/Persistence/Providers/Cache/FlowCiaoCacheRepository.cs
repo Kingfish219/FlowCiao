@@ -1,6 +1,6 @@
 ﻿namespace FlowCiao.Persistence.Providers.Cache
 {
-    public class FlowCiaoCacheRepository
+    internal class FlowCiaoCacheRepository
     {
         protected readonly FlowHub FlowHub;
 

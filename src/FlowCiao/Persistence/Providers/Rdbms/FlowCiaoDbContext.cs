@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FlowCiao.Persistence.Providers.Rdbms;
 
-public class FlowCiaoDbContext : DbContext
+internal class FlowCiaoDbContext : DbContext
 {
     public FlowCiaoDbContext(DbContextOptions<FlowCiaoDbContext> contextOptions) : base(contextOptions)
     {

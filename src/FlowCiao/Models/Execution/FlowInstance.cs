@@ -17,10 +17,10 @@ namespace FlowCiao.Models.Execution
         public FlowExecutionState ExecutionState { get; set; }
 
         [NotMapped]
-        public FlowInstanceStep ActiveInstanceStep => InstanceSteps.SingleOrDefault(x => !x.IsCompleted);
+        internal FlowInstanceStep ActiveInstanceStep => InstanceSteps.SingleOrDefault(x => !x.IsCompleted);
 
         [NotMapped]
-        public List<FlowInstanceStep> InstanceSteps { get; set; }
+        internal List<FlowInstanceStep> InstanceSteps { get; set; }
 
         public DateTime CreatedOn { get; set; }
 

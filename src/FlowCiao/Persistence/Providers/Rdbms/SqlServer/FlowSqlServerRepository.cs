@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer
 {
-    public class FlowSqlServerRepository
+    internal class FlowSqlServerRepository
     {
         protected FlowCiaoDbContext FlowCiaoDbContext { get; }
 

@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
 {
-    public class StateRepository : FlowSqlServerRepository, IStateRepository
+    internal sealed class StateRepository : FlowSqlServerRepository, IStateRepository
     {
         public StateRepository(FlowCiaoDbContext dbContext) : base(dbContext)
         {
