@@ -28,7 +28,7 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
             await Task.CompletedTask;
 
             return FlowHub.Flows.SingleOrDefault(a =>
-                (a.Id == default || a.Id == id) &&
+                (id == default || a.Id == id) &&
                 (string.IsNullOrWhiteSpace(key) || a.Key.Equals(key, StringComparison.InvariantCultureIgnoreCase)) &&
                 a.IsActive
             );
@@ -39,12 +39,6 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
             if (entity.Id == default)
             {
                 entity.Id = Guid.NewGuid();
-            }
-
-            var flows = await GetByKey(entity.Id, entity.Key);
-            if (flows is not null)
-            {
-                await FlowHub.DeleteFlow(entity);
             }
 
             await FlowHub.ModifyFlow(entity);

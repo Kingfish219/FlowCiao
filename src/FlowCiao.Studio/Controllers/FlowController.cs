@@ -1,5 +1,4 @@
 using FlowCiao.Builder.Serialization.Serializers;
-using FlowCiao.Models;
 using FlowCiao.Operators;
 using FlowCiao.Services;
 using FlowCiao.Studio.Models;
@@ -16,7 +15,8 @@ namespace FlowCiao.Studio.Controllers
         private readonly FlowJsonSerializer _flowJsonSerializer;
         private readonly FlowInstanceService _flowInstanceService;
 
-        public FlowController(IFlowOperator flowOperator, FlowService flowService, FlowJsonSerializer flowJsonSerializer,
+        public FlowController(IFlowOperator flowOperator, FlowService flowService,
+            FlowJsonSerializer flowJsonSerializer,
             FlowInstanceService flowInstanceService)
         {
             _operator = flowOperator;
@@ -24,7 +24,7 @@ namespace FlowCiao.Studio.Controllers
             _flowJsonSerializer = flowJsonSerializer;
             _flowInstanceService = flowInstanceService;
         }
-        
+
         [HttpGet, Route("")]
         public async Task<IActionResult> Get()
         {
@@ -35,25 +35,26 @@ namespace FlowCiao.Studio.Controllers
             return Ok(new ApiResponse(flows));
         }
 
-        [HttpGet, Route("instances/{id}")]
-        public async Task<IActionResult> GetFlowExecution([FromRoute] string id)
+        [HttpPost, Route("{key}/ciao")]
+        public async Task<IActionResult> Ciao([FromRoute] string key)
         {
-            var flowInstance = await _flowInstanceService.GetById(new Guid(id));
+            var result = await _operator.Ciao(key);
 
-            return Ok(new ApiResponse(flowInstance));
+            return Ok(result is null
+                ? new ApiResponse(ApiResponse.ApiResponseStatus.Error, null, "Could not create Flow Instance")
+                : new ApiResponse(result));
+        }
+
+        [HttpPost, Route("{key}/fire")]
+        public async Task<IActionResult> Fire([FromRoute] string key, int triggerCode)
+        {
+            var result = await _operator.CiaoAndTriggerAsync(key, triggerCode);
+
+            return Ok(result.Status == "failed"
+                ? new ApiResponse(ApiResponse.ApiResponseStatus.Error, result, result.Message)
+                : new ApiResponse(result));
         }
         
-        [HttpPost, Route("instances/{id}/trigger")]
-        public async Task<IActionResult> TriggerFlowExecution([FromRoute] string id, int triggerCode)
-        {
-            var flowInstance = await _flowInstanceService.GetById(new Guid(id));
-            var result = await _operator.TriggerAsync(flowInstance, triggerCode);
-            
-            return Ok(result.Status == "failed" ?
-                new ApiResponse(ApiResponse.ApiResponseStatus.Error, result, result.Message) :
-                new ApiResponse(result));
-        }
-
         [HttpGet, Route("{key}/instances")]
         public async Task<IActionResult> GetFlowExecutions([FromRoute] string key)
         {
@@ -63,14 +64,23 @@ namespace FlowCiao.Studio.Controllers
             return Ok(new ApiResponse(flowInstances));
         }
         
-        [HttpPost, Route("{key}/fire")]
-        public async Task<IActionResult> Fire([FromRoute] string key, int triggerCode)
+        [HttpGet, Route("instances/{id}")]
+        public async Task<IActionResult> GetFlowExecution([FromRoute] string id)
         {
-            var result = await _operator.CiaoAndTriggerAsync(key, triggerCode);
+            var flowInstance = await _flowInstanceService.GetById(new Guid(id));
 
-            return Ok(result.Status == "failed" ?
-                new ApiResponse(ApiResponse.ApiResponseStatus.Error, result, result.Message) :
-                new ApiResponse(result));
+            return Ok(new ApiResponse(flowInstance));
+        }
+
+        [HttpPost, Route("instances/{id}/trigger")]
+        public async Task<IActionResult> TriggerFlowExecution([FromRoute] string id, int triggerCode)
+        {
+            var flowInstance = await _flowInstanceService.GetById(new Guid(id));
+            var result = await _operator.TriggerAsync(flowInstance, triggerCode);
+
+            return Ok(result.Status == "failed"
+                ? new ApiResponse(ApiResponse.ApiResponseStatus.Error, result, result.Message)
+                : new ApiResponse(result));
         }
     }
 }

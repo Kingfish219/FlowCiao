@@ -36,15 +36,12 @@ namespace FlowCiao.Services
             var flowStep = new FlowInstanceStep
             {
                 CreatedOn = DateTime.Now,
-                Details = flow.Transitions.Where(x => x.From.Id.Equals(state.Id))
-                    .Select(transition =>
+                Details = flow.Transitions.Where(x => x.FromId.Equals(state.Id))
+                    .Select(transition => new FlowInstanceStepDetail
                     {
-                        return new FlowInstanceStepDetail
-                        {
-                            Id = Guid.NewGuid(),
-                            CreatedOn = DateTime.Now,
-                            Transition = transition
-                        };
+                        Id = Guid.NewGuid(),
+                        CreatedOn = DateTime.Now,
+                        Transition = transition
                     }).ToList()
             };
 
@@ -63,29 +60,6 @@ namespace FlowCiao.Services
                 {
                     GenerateFlowStep(flow,
                             flow.Transitions.First(x => x.From.IsInitial).From)
-                }
-            };
-
-            if (_flowSettings.PersistFlow)
-            {
-                await Modify(flowExecution);
-            }
-
-            return flowExecution;
-        }
-
-        public async Task<FlowInstance> FinalizeFlowInstanceStep(Flow flow)
-        {
-            var flowExecution = new FlowInstance
-            {
-                Id = Guid.NewGuid(),
-                Flow = flow,
-                CreatedOn = DateTime.Now,
-                ExecutionState = FlowInstance.FlowExecutionState.Initial,
-                InstanceSteps = new List<FlowInstanceStep>
-                {
-                    GenerateFlowStep(flow,
-                        flow.Transitions.First(x => x.From.IsInitial).From)
                 }
             };
 

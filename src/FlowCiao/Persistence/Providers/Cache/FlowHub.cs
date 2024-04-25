@@ -58,7 +58,7 @@ namespace FlowCiao.Persistence.Providers.Cache
             });
         }
 
-        public async Task ModifyFlowExecution(FlowInstance flowInstance)
+        public async Task ModifyFlowInstance(FlowInstance flowInstance)
         {
             await Task.Run(() =>
             {

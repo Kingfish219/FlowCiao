@@ -66,7 +66,7 @@ namespace FlowCiao.Operators
             try
             {
                 await Task.CompletedTask;
-                ValidateFireable(flowInstance, triggerCode);
+                ValidateTriggerable(flowInstance, triggerCode);
 
                 var flowStepContext = InitializeContext(triggerCode, data, flowInstance);
                 var result = _flowHandlerFactory
@@ -100,7 +100,7 @@ namespace FlowCiao.Operators
             return await TriggerAsync(flowInstance, trigger, data);
         }
 
-        private static void ValidateFireable(FlowInstance flowInstance, int triggerCode)
+        private static void ValidateTriggerable(FlowInstance flowInstance, int triggerCode)
         {
             if (flowInstance is null)
             {

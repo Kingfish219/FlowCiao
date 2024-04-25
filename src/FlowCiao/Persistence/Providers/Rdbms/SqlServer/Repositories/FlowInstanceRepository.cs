@@ -28,6 +28,15 @@ namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories
             return await FlowCiaoDbContext.FlowInstances
                 .AsNoTracking()
                 .Include(fi => fi.Flow)
+                    .ThenInclude(f => f.Transitions)
+                        .ThenInclude(t => t.Triggers)
+                .Include(fi => fi.Flow)
+                    .ThenInclude(f => f.Transitions)
+                        .ThenInclude(t => t.From)
+                .Include(fi => fi.Flow)
+                    .ThenInclude(f => f.Transitions)
+                        .ThenInclude(t => t.To)
+                .AsSplitQuery()
                 .SingleOrDefaultAsync(a => a.Id == id);
         }
 

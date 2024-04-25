@@ -20,6 +20,9 @@ namespace FlowCiao
 {
     public static class ServiceCollectionProvider
     {
+        /// <summary>
+        /// Adds FlowCiao and its required components to your application
+        /// </summary>
         public static IServiceCollection AddFlowCiao(this IServiceCollection services,
             Action<FlowSettings> settings)
         {

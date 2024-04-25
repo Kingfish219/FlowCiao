@@ -52,14 +52,14 @@ namespace FlowCiao.Persistence.Providers.Cache.Repositories
                 entity.Id = Guid.NewGuid();
             }
 
-            await FlowHub.ModifyFlowExecution(entity);
+            await FlowHub.ModifyFlowInstance(entity);
 
             return entity.Id;
         }
 
         public async Task<Guid> Update(FlowInstance entity)
         {
-            await FlowHub.ModifyFlowExecution(entity);
+            await FlowHub.ModifyFlowInstance(entity);
 
             return entity.Id;
         }
