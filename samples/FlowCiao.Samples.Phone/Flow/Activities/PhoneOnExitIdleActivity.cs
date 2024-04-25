@@ -7,7 +7,8 @@ namespace FlowCiao.Samples.Phone.Flow.Activities
     {
         public void Execute(FlowStepContext context)
         {
-            Console.WriteLine("Phone exited idle");
+            Console.WriteLine($"Phone exited idle state: caller id: {context.Data["CallerId"]}");
+            context.Data["Location"] = "USA";
         }
     }
 }

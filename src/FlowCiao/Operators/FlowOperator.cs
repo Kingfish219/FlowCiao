@@ -83,6 +83,11 @@ namespace FlowCiao.Operators
             }
         }
 
+        public async Task<FlowResult> TriggerAsync(FlowInstance flowInstance, Trigger trigger, Dictionary<object, object> data = null)
+        {
+            return await TriggerAsync(flowInstance, trigger.Code, data);
+        }
+
         public async Task<FlowResult> TriggerAsync(Guid flowInstanceId, int triggerCode,
             Dictionary<object, object> data = null)
         {
