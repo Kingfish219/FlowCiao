@@ -77,6 +77,12 @@ margin-right: 5px;
   width: 100%;
    height: 100%;
 }
+.dropdown-spin{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 /* width */
 ::-webkit-scrollbar {
   width: 5px;

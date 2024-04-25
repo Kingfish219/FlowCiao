@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import Flow from "./Components/Flow";
-import { ExclamationCircleFilled } from "@ant-design/icons";
+import { ExclamationCircleFilled, LoadingOutlined } from "@ant-design/icons";
 import {
   ConfigProvider,
   Layout,
@@ -12,8 +12,9 @@ import {
   Upload,
   Dropdown,
   message,
-  Tooltip, 
-  Tour
+  Tooltip,
+  Tour,
+  Spin,
 } from "antd";
 import "./App.css";
 import plusImg from "./Assets/plus.svg";
@@ -120,7 +121,7 @@ function App() {
   };
 
   const {
-    isLoading,
+    isLoading: isActivityListLoading,
     error,
     sendGetRequest: senGetActivitiesRequest,
     sendUploadDLLFileRequest: sendUploadActvitiesDllFileRequest,
@@ -192,6 +193,27 @@ function App() {
   ];
   var activitiesDropDownItems = [];
 
+  if (isActivityListLoading) {
+    activitiesDropDownItems = [
+      {
+        key: 0,
+        label: (
+          <div className="dropdown-spin">
+            <Spin
+              indicator={
+                <LoadingOutlined
+                  style={{
+                    fontSize: 24,
+                  }}
+                  spin
+                />
+              }
+            />
+          </div>
+        ),
+      },
+    ];
+  }
   if (flowActivitiesList.length > 0) {
     activitiesDropDownItems = [
       {
@@ -234,8 +256,8 @@ function App() {
   };
 
   const {
-    isFlowLoading,
-    flowError,
+    isLoading: isFlowLoading,
+    error:flowError,
     sendGetRequest: senGetFlowsRequest,
   } = useFlowData();
   const [previousFlows, setPreviousFlow] = useState([]);
@@ -270,7 +292,7 @@ function App() {
   var createNewFlowDropDownItem = [
     {
       key: "newFlow",
-      overlayclassname:"header-activities-dropdown-new-flow",
+      overlayclassname: "header-activities-dropdown-new-flow",
       label: (
         <span className="activities-dropdown-item">
           <img src={plusImg} />
@@ -280,6 +302,27 @@ function App() {
     },
   ];
   var workflowItems = [];
+  if (isFlowLoading) {
+    workflowItems = [
+      {
+        key: 0,
+        label: (
+          <div className="dropdown-spin">
+            <Spin
+              indicator={
+                <LoadingOutlined
+                  style={{
+                    fontSize: 24,
+                  }}
+                  spin
+                />
+              }
+            />
+          </div>
+        ),
+      },
+    ];
+  }
   if (previousFlows.length > 0) {
     workflowItems = [
       {
@@ -388,46 +431,50 @@ function App() {
   const flowContainerRef = useRef(null);
   const [istourOpen, setTourOpen] = useState(true);
   const tourSteps = [
-    
     {
-      title: 'Save and Publish Your Workflow',
-      description: "Once you're satisfied with your workflow design, click on the \"Publish\" button to save it to the database securely.",
+      title: "Save and Publish Your Workflow",
+      description:
+        'Once you\'re satisfied with your workflow design, click on the "Publish" button to save it to the database securely.',
       target: () => publishBtnRef.current,
     },
     {
-      title: 'Export Workflows',
-      description: "Use the \"Export\" button to save your workflow as a JSON file",
+      title: "Export Workflows",
+      description:
+        'Use the "Export" button to save your workflow as a JSON file',
       target: () => exportBtnRef.current,
     },
     {
-      title: 'Import Workflows',
-      description: "the \"Import\" button allows you to import workflows from JSON files for collaboration or backup purposes",
+      title: "Import Workflows",
+      description:
+        'the "Import" button allows you to import workflows from JSON files for collaboration or backup purposes',
       target: () => importBtnRef.current,
     },
     {
-      title: 'Register and Update Activities',
-      description: "Utilize the \"Activities\" button to register or update activities from DLL files. These activities can be assigned as onEntry or onExit actions for each node in your workflow.",
+      title: "Register and Update Activities",
+      description:
+        'Utilize the "Activities" button to register or update activities from DLL files. These activities can be assigned as onEntry or onExit actions for each node in your workflow.',
       target: () => activitiesBtnRef.current,
     },
     {
-      title: 'Customize Node Colors',
-      description: "Use the color picker in the header to customize the colors of your nodes, enhancing visual clarity and organization.",
+      title: "Customize Node Colors",
+      description:
+        "Use the color picker in the header to customize the colors of your nodes, enhancing visual clarity and organization.",
       target: () => paintBtnRef.current,
     },
     {
-      title: 'Workflow Management',
-      description: "Set a name for your workflow and Access a dropdown menu to view and select from your previously created workflows, facilitating easy navigation and management, and create new workflow",
+      title: "Workflow Management",
+      description:
+        "Set a name for your workflow and Access a dropdown menu to view and select from your previously created workflows, facilitating easy navigation and management, and create new workflow",
       target: () => flowNameRef.current,
     },
     {
-      title: 'Design Your Flow',
+      title: "Design Your Flow",
       description: `Start with the Start Node, which is automatically placed on the canvas. This node signifies the beginning of your workflow.
       Click on the plus button on the Start Node to add other nodes connected to it. Each newly added node will also have a plus button, allowing you to expand your workflow as needed.
       Drag from one node to another to create transitions, defining the flow of your process.`,
       target: () => flowContainerRef.current,
     },
   ];
-
 
   return (
     <ApplicationContextProvider color={color}>
@@ -436,7 +483,7 @@ function App() {
           components: {
             Layout: {
               headerBg: "#fff",
-              headerHeight: "47px"
+              headerHeight: "47px",
             },
           },
         }}
@@ -475,7 +522,7 @@ function App() {
             <div className="header-botton-container">
               <Tooltip placement="bottom" title={"Build And Publish Flow"}>
                 <Button
-                ref={publishBtnRef}
+                  ref={publishBtnRef}
                   loading={isBuilderLoading}
                   className="header-btn"
                   style={{ background: "#0047FF" }}
@@ -485,9 +532,9 @@ function App() {
               </Tooltip>
               <Tooltip placement="bottom" title={"Export Flow"}>
                 <Button
-                ref={exportBtnRef}
+                  ref={exportBtnRef}
                   className="header-btn"
-                  icon={<img src={exportImg}/>}
+                  icon={<img src={exportImg} />}
                   onClick={handleExportFlowAsJSON}
                 />
               </Tooltip>
@@ -500,9 +547,9 @@ function App() {
               >
                 <Tooltip placement="bottom" title={"Import Flow"}>
                   <Button
-                  ref={importBtnRef}
+                    ref={importBtnRef}
                     className="header-btn"
-                    icon={<img src={importImg}/>}
+                    icon={<img src={importImg} />}
                   />
                 </Tooltip>
               </Upload>
@@ -519,7 +566,7 @@ function App() {
                   title={"Register Or Update Activity"}
                 >
                   <Button
-                  ref={activitiesBtnRef}
+                    ref={activitiesBtnRef}
                     loading={isUploadingDll}
                     className="header-btn header-activities-btn"
                   >
@@ -529,13 +576,12 @@ function App() {
                 </Tooltip>
               </Dropdown>
               <ColorPicker defaultValue={color} onChange={onChangeColor}>
-              <Tooltip placement="bottom" title={"Nodes Color Picker"}>
-
-                <Button
-                ref={paintBtnRef}
-                  className="header-btn"
-                  icon={<img src={paintImg} width={20} />}
-                />
+                <Tooltip placement="bottom" title={"Nodes Color Picker"}>
+                  <Button
+                    ref={paintBtnRef}
+                    className="header-btn"
+                    icon={<img src={paintImg} width={20} />}
+                  />
                 </Tooltip>
               </ColorPicker>
             </div>
@@ -555,7 +601,11 @@ function App() {
           </Content>
         </Layout>
       </ConfigProvider>
-      <Tour open={istourOpen} onClose={() => setTourOpen(false)} steps={tourSteps} />
+      <Tour
+        open={istourOpen}
+        onClose={() => setTourOpen(false)}
+        steps={tourSteps}
+      />
     </ApplicationContextProvider>
   );
 }
