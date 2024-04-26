@@ -58,11 +58,10 @@ const CustomEdge = ({
   ) {
     const centerX = (sourceX + targetX) / 2;
     const centerY = (sourceY + targetY) / 2;
-    const offset = sourceX < targetX ? 50 : (sourceX - targetX) * -0.2;
+    const offset = (sourceX - targetX) * -0.2;
 
     if (targetX < sourceX) {
-      edgeLabelY = labelY - 50;
-
+      edgeLabelY = centerY + (sourceX - targetX) * -0.1;
       path = `M ${sourceX - 156} ${sourceY} Q ${centerX} ${centerY + offset} ${
         targetX + 156
       } ${targetY}`;
@@ -71,13 +70,14 @@ const CustomEdge = ({
         centerY + offset
       } ${targetX} ${targetY}`;
 
-      edgeLabelY = labelY - 17 + (sourceX - targetX) * -0.2;
+      edgeLabelY = centerY + (sourceX - targetX) * -0.1;
     }
   } else if (Math.abs(sourceY - targetY) < 50) {
     if (nodes.filter((item) => item.position.x < sourceX).length > 1) {
       const centerX = (sourceX + targetX) / 2;
       const centerY = (sourceY + targetY) / 2;
-      const offset = sourceX < targetX ? 50 : (sourceX - targetX) * -0.2;
+      // const offset = sourceX < targetX ? 50 : (sourceX - targetX) * -0.2;
+      const offset = (sourceX - targetX) * -0.2;
 
       if (targetX < sourceX) {
         edgeLabelY = centerY + (sourceX - targetX) * -0.1;
