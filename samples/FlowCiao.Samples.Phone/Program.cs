@@ -30,7 +30,11 @@ using (var scope = app.Services.CreateScope()) {
     
     // Call CiaoAndTriggerAsync() to both initialize it using Ciao() and run it using Trigger()
     var flowOperator = scope.ServiceProvider.GetService<IFlowOperator>();
-    var result = flowOperator.CiaoAndTriggerAsync(flow.Key, Triggers.Call).GetAwaiter().GetResult();
+    var data = new Dictionary<object, object>
+    {
+        { "CallerId", 12134664789 }
+    };
+    var result = flowOperator.CiaoAndTriggerAsync(flow.Key, Triggers.Call, data).GetAwaiter().GetResult();
     Console.WriteLine(result.Message);
 }
 
