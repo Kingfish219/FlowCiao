@@ -20,4 +20,8 @@
     <ProjectReference Include="..\FlowCiao\FlowCiao.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\designer\" />
+  </ItemGroup>
+
 </Project>

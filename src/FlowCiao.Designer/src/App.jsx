@@ -27,7 +27,7 @@ import uploadIconImg from "./Assets/upload-icon.svg";
 import arrowDownIconImg from "./Assets/arrow-down-icon.svg";
 import flowImg from "./Assets/flow-icon.svg";
 import guideImg from "./Assets/help-icon.svg";
-import headerActivitiesImg from "./Assets/header-activities-icon.svg"
+import headerActivitiesImg from "./Assets/header-activities-icon.svg";
 import ApplicationContextProvider from "./Store/ApplicationContextProvider";
 import useActivityData from "./apis/data/useActivityData";
 import useFlowData from "./apis/data/useFlowData";
@@ -38,7 +38,7 @@ const { confirm } = Modal;
 function App() {
   const [messageApi, contextHolder] = message.useMessage();
   const flowDesignerRef = useRef();
-  const [workflowName, setWorkflowName] = useState("My Flow");
+  const [workflowName, setWorkflowName] = useState("My New Flow");
 
   const handleExportFlowAsJSON = () => {
     if (flowDesignerRef.current) {
@@ -69,8 +69,8 @@ function App() {
     document.body.removeChild(a);
   };
 
-  const handleFileChange = (info) => {
-    handleFileSelect(info.file);
+  const handleFileChange = (file) => {
+     handleFileSelect(file);
   };
   const handleFileSelect = (file) => {
     const reader = new FileReader();
@@ -110,7 +110,7 @@ function App() {
           if (response.status == 200 && response.data.status === "success") {
             messageApi.open({
               type: "success",
-              content: "Building is successful",
+              content: "Publish and saving are successful",
             });
           } else {
             messageApi.open({
@@ -155,7 +155,7 @@ function App() {
           } else {
             messageApi.open({
               type: "error",
-              content: "Uploading is failed",
+              content: response.message,
             });
           }
         }
@@ -370,23 +370,27 @@ function App() {
     }
   };
 
+  const flowNameInputRef = useRef(null);
   const [resetFlow, setResetFlow] = useState(false);
   const resetFlowClick = (isCleared = true) => {
     if (isCleared) {
-      showConfirm();
+      showConfirm(() => {
+        setWorkflowName("My New Flow");
+        setResetFlow(true);
+        flowNameInputRef.current.focus();
+      });
     } else {
       setResetFlow(false);
     }
   };
-  const showConfirm = () => {
+  const showConfirm = (confirmFunction) => {
     confirm({
       title: "Do you want to delete flow?",
       icon: <ExclamationCircleFilled />,
       // content: 'Some descriptions',
       okText: "Yes",
       onOk() {
-        setWorkflowName("My Flow");
-        setResetFlow(true);
+        confirmFunction();
       },
     });
   };
@@ -442,27 +446,27 @@ function App() {
   const [istourOpen, setTourOpen] = useState(true);
   const tourSteps = [
     {
-      title: "Save and Publish Your Workflow",
+      title: "Publish and Save Your Flow",
       description:
-        'Once you\'re satisfied with your workflow design, click on the "Publish" button to save it to the database securely.',
+        'Once you\'re satisfied with your flow design, click on the "Publish" button to save it to the database securely.',
       target: () => publishBtnRef.current,
     },
     {
-      title: "Export Workflows",
+      title: "Export Flows",
       description:
-        'Use the "Export" button to save your workflow as a JSON file',
+        'Use the "Export" button to save your flow as a JSON file',
       target: () => exportBtnRef.current,
     },
     {
-      title: "Import Workflows",
+      title: "Import Flows",
       description:
-        'the "Import" button allows you to import workflows from JSON files for collaboration or backup purposes',
+        'the "Import" button allows you to import flows from JSON files for collaboration or backup purposes',
       target: () => importBtnRef.current,
     },
     {
       title: "Register and Update Activities",
       description:
-        'Utilize the "Activities" button to register or update activities from DLL files. These activities can be assigned as onEntry or onExit actions for each node in your workflow.',
+        'Utilize the "Activities" button to register or update activities from DLL files. These activities can be assigned as onEntry or onExit actions for each node in your flow.',
       target: () => activitiesBtnRef.current,
     },
     {
@@ -472,15 +476,16 @@ function App() {
       target: () => paintBtnRef.current,
     },
     {
-      title: "Workflow Management",
+      title: "Create a New Flow",
       description:
-        "Set a name for your workflow and Access a dropdown menu to view and select from your previously created workflows, facilitating easy navigation and management, and create new workflow",
+        "Set a name for your flow and Access a dropdown menu to view and select from your previously created flows, facilitating easy navigation and management, and create new flow",
       target: () => flowNameRef.current,
     },
     {
       title: "Design Your Flow",
-      description: `Start with the Start Node, which is automatically placed on the canvas. This node signifies the beginning of your workflow.
-      Click on the plus button on the Start Node to add other nodes connected to it. Each newly added node will also have a plus button, allowing you to expand your workflow as needed.
+      description: `Start with the Start Node, which is automatically placed on the canvas. This node signifies the beginning of your flow.
+      Click on the plus button on the Start Node to add other nodes connected to it.
+      Each newly added node will also have a plus button, allowing you to expand your flow as needed.
       Drag from one node to another to create transitions, defining the flow of your process.`,
       target: () => flowContainerRef.current,
     },
@@ -505,6 +510,7 @@ function App() {
           <Header className="main-header">
             <Space className="header-workflow-name-container" ref={flowNameRef}>
               <Input
+                ref={flowNameInputRef}
                 placeholder="Workflow Name"
                 id="workflow-name"
                 className={`${focused ? "focused" : ""}`}
@@ -531,19 +537,14 @@ function App() {
                 </Button>
               </Dropdown>
             </Space>
-            <div className="header-botton-container">
-              <Tooltip placement="bottom" title={"Build And Publish Flow"}>
+            <div className="header-button-container">
+              <Tooltip placement="bottom" title={"Publish And Save Flow"}>
                 <Button
                   ref={publishBtnRef}
                   loading={isBuilderLoading}
                   className="header-btn"
                   style={{ background: "#0047FF" }}
-                  icon={
-                    <img
-                      src={publishImg}
-                      style={{ marginLeft: "2px" }}
-                    />
-                  }
+                  icon={<img src={publishImg} style={{ marginLeft: "2px" }} />}
                   onClick={onBuildClick}
                 />
               </Tooltip>
@@ -558,10 +559,13 @@ function App() {
               <Upload
                 accept=".json"
                 className="header-btn"
-                onChange={handleFileChange}
+                beforeUpload={(file) => {
+                  showConfirm(() => handleFileChange(file))
+                  return false;
+                }}
+                //onChange={handleFileChange}
                 showUploadList={false}
                 style={{ height: "100%" }}
-                beforeUpload={() => false} // Prevent auto-upload
               >
                 <Tooltip placement="bottom" title={"Import Flow"}>
                   <Button
@@ -590,7 +594,7 @@ function App() {
                   >
                     {/* <img className="activities-icon" src={actionIconImg} />
                     <img src={arrowDownIconImg} /> */}
-                    <img src={headerActivitiesImg}/>
+                    <img src={headerActivitiesImg} />
                   </Button>
                 </Tooltip>
               </Dropdown>
@@ -662,8 +666,8 @@ function App() {
       <Modal
         title="FlowCiao Studio"
         centered
+        width={650}
         open={isGuideModalOpen}
-        
         style={{ overflow: "hidden" }}
         onCancel={() => setGuideModalOpen(false)}
         footer={[
@@ -678,74 +682,69 @@ function App() {
       >
         <div style={{ overflow: "auto", maxHeight: "70vh" }}>
           <h3>Getting Started</h3>
-          <p>To start designing your workflow, follow these steps:</p>
+          <p>To start designing your flow, follow these steps:</p>
           <ul>
             <li>
-              <strong>Create a New Workflow:</strong>
+              <strong>Create a New Flow:</strong>
               <span>
-                {" "}
-                Click on the "New Workflow" button to begin. Set a name for your
-                workflow on the left side of the header.
+              Click on the "New Flow" button to begin. You can set a name for it on the left side of the header.
+              </span>
+            </li>
+            <li>
+              <strong>Previous Flows:</strong>
+              <span>
+              Access a dropdown menu to view and select from your previously created flows, facilitating easy navigation and management.
               </span>
             </li>
             <li>
               <strong>Design Your Flow:</strong>
               <span>
-                Start with the Start Node, which is automatically placed on the
-                canvas. This node signifies the beginning of your workflow.
+              Begin with the Start Node, which is automatically placed on the canvas. This node signifies the starting point of your flow.
               </span>
             </li>
             <li>
               <strong>Add Nodes:</strong>
               <span>
-                Click on the plus button on the Start Node to add other nodes
-                connected to it. Each newly added node will also have a plus
-                button, allowing you to expand your workflow as needed.
+              Click on the plus button on the Start Node to add other nodes connected to it. Each newly added node will also have a plus button, allowing you to expand your flow as needed.
               </span>
             </li>
             <li>
               <strong>Connect Nodes: </strong>
               <span>
-                Drag from one node to another to create transitions, defining
-                the flow of your process.
+              Drag from one node to another to create transitions, defining the flow of your process.
               </span>
             </li>
             <li>
               <strong>Customize Node Colors:</strong>
               <span>
-                Use the color picker in the header to customize the colors of
-                your nodes, enhancing visual clarity and organization.
+              Use the color picker in the header to customize the colors of your nodes, enhancing visual clarity and organization.
               </span>
             </li>
             <li>
               <strong>Register and Update Activities: </strong>
               <span>
-                Utilize the "Activities" button to register or update activities
-                from DLL files. These activities can be assigned as onEntry or
-                onExit actions for each node in your workflow.
+              Utilize the "Activities" button to register or update activities from DLL files. These activities can be assigned as OnEntry or OnExit actions for each node in your flow.
               </span>
             </li>
             <li>
-              <strong>Save and Publish Your Workflow:</strong>
+              <strong>Add OnEntry and OnExit Activities: </strong>
               <span>
-                Once you're satisfied with your workflow design, click on the
-                "Publish" button to save it to the database securely.
+              You can declare OnEntry and OnExit activities for a state by hovering and clicking on the activity icon which appears next to the state.
               </span>
             </li>
             <li>
-              <strong>Export and Import Workflows:</strong>
+              <strong>Publish and Save Your Flow:</strong>
               <span>
-                Use the "Export" button to save your workflow as a JSON file.
-                Conversely, the "Import" button allows you to import workflows
-                from JSON files for collaboration or backup purposes.
+              Once you're satisfied with your flow design, click on the "Publish" button in order to save it to the database securely.
+              </span>
+            </li>
+            <li>
+              <strong>Export and Import Flows:</strong>
+              <span>
+              Use the "Export" button to save your flow as a JSON file. Conversely, the "Import" button allows you to import flows from JSON files for collaboration or backup purposes.
               </span>
             </li>
           </ul>
-          <strong>Additional Features</strong>
-          <p>
-            Access a dropdown menu to view and select from your previously
-            created workflows, facilitating easy navigation and management.
-          </p>
         </div>
       </Modal>
     </ApplicationContextProvider>
