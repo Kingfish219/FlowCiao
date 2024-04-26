@@ -1,10 +1,19 @@
-import React from "react";
-import { getBezierPath, EdgeLabelRenderer, BaseEdge } from "reactflow";
-import { Input } from 'antd';
+import React, { useCallback } from "react";
+import {
+  useStore,
+  getBezierPath,
+  EdgeLabelRenderer,
+  BaseEdge,
+  useEdges,
+  useNodes
+} from "reactflow";
+import { Input } from "antd";
 const { TextArea } = Input;
 
 const CustomEdge = ({
   id,
+  source,
+  target,
   sourceX,
   sourceY,
   targetX,
@@ -13,6 +22,12 @@ const CustomEdge = ({
   targetPosition,
   data,
 }) => {
+  const edges = useEdges();
+const nodes = useNodes();
+
+  let path = "",
+    edgeLabelX = "",
+    edgeLabelY = "";
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
@@ -22,6 +37,45 @@ const CustomEdge = ({
     targetPosition,
   });
 
+  path = edgePath;
+  edgeLabelX = labelX;
+  edgeLabelY = labelY;
+
+  if (source === target) {
+    const radiusX = (sourceX - targetX) * 0.6;
+    const radiusY = 50;
+    path = `M ${sourceX - 5} ${sourceY} A ${radiusX} ${radiusY} 0 1 0 ${
+      targetX + 2
+    } ${targetY}`;
+    edgeLabelY = labelY - radiusX + 17;
+  } else if (
+    edges.some(
+      (e) =>
+        (e.source === target && e.target === source) ||
+        (e.target === source && e.source === target)
+    )
+  ) {
+    const centerX = (sourceX + targetX) / 2;
+    const centerY = (sourceY + targetY) / 2;
+    const offset = sourceX < targetX ? 50 : (sourceX - targetX) * -0.2;
+
+    if (targetX < sourceX) {
+      edgeLabelY = labelY - 50;
+
+      path = `M ${sourceX} ${sourceY} Q ${centerX} ${
+        centerY + offset
+      } ${targetX} ${targetY}`;
+
+    } else if (Math.abs(sourceY - targetY) > 20) {
+
+      path = `M ${sourceX} ${sourceY} Q ${centerX} ${
+        centerY + offset
+      } ${targetX} ${targetY}`;
+      
+      edgeLabelY = labelY - 17 + (sourceX - targetX) * -0.2;
+    }
+  }
+
   const onEdgeNameChange = (e) => {
     data.Name = e.target.value;
   };
@@ -30,7 +84,7 @@ const CustomEdge = ({
     <>
       <BaseEdge
         id={id}
-        path={edgePath}
+        path={path}
         style={{ stroke: "#393939" }}
         markerEnd="url(#arrowclosed)"
       />
@@ -38,26 +92,20 @@ const CustomEdge = ({
         <div
           className="custom-edge-container"
           style={{
-            transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
+            transform: `translate(-50%, -50%) translate(${edgeLabelX}px,${edgeLabelY}px)`,
           }}
         >
           {data.noInput == undefined || !data.noInput ? (
-            // <input
-            //   className="custom-edge-input"
-            //   placeholder="New Trigger"
-            //   defaultValue={data.Name != "" ? data.Name : "New Trigger"}
-            //   onChange={onEdgeNameChange}
-            // />
             <TextArea
-            className="custom-edge-input"
+              className="custom-edge-input"
               placeholder="New Trigger"
               defaultValue={data.Name != "" ? data.Name : "New Trigger"}
               onChange={onEdgeNameChange}
-            autoSize={{
-              minRows: 1,
-              maxRows: 6,
-            }}
-          />
+              autoSize={{
+                minRows: 1,
+                maxRows: 6,
+              }}
+            />
           ) : (
             <></>
           )}

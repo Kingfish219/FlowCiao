@@ -1,6 +1,6 @@
 import { useCallback, useState, useContext, useEffect } from "react";
 import { Handle, Position } from "reactflow";
-import {  message } from 'antd';
+import { message, Tooltip } from "antd";
 import dotImg from "../Assets/dot.svg";
 import plusImg from "../Assets/circle-plus.svg";
 import actionIconImg from "../Assets/action-icon.svg";
@@ -78,8 +78,14 @@ const IdleNode = (node) => {
         type: "success",
         content: "Changes is applied",
       });
-      node.data.onEntry = {name: activities.onEntryName, actorName: activities.onEntryActorName};
-      node.data.onExit = {name:activities.onExitName, actorName: activities.onExitActorName};
+      node.data.onEntry = {
+        name: activities.onEntryName,
+        actorName: activities.onEntryActorName,
+      };
+      node.data.onExit = {
+        name: activities.onExitName,
+        actorName: activities.onExitActorName,
+      };
       let updatedActivities = [];
       if (node.data.onEntry.name != "") {
         updatedActivities.push(node.data.onEntry);
@@ -94,7 +100,7 @@ const IdleNode = (node) => {
 
   return (
     <>
-    {contextHolder}
+      {contextHolder}
       <div
         onMouseEnter={onIdleNodeHoverFunc}
         onMouseLeave={onIdleNodeLoseHoverFunc}
@@ -156,13 +162,19 @@ const IdleNode = (node) => {
           className="node-handle"
           position={Position.Bottom}
         />
-        <button
-          id="addIdleNode"
-          className="add-node-btn"
-          onClick={onAddIdleNodeClick}
-        >
-          {isHoverNode ? <img style={{marginTop: "3px", width:"13px"}} src={plusImg} /> : <img src={dotImg} />}
-        </button>
+        <Tooltip placement="bottom" title={"Add State"}>
+          <button
+            id="addIdleNode"
+            className="add-node-btn"
+            onClick={onAddIdleNodeClick}
+          >
+            {isHoverNode ? (
+              <img style={{ marginTop: "3px", width: "13px" }} src={plusImg} />
+            ) : (
+              <img src={dotImg} />
+            )}
+          </button>
+        </Tooltip>
         {!isHoverNode && !isHoverSpaceNode ? (
           <></>
         ) : (

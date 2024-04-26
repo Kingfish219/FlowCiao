@@ -25,8 +25,9 @@ import publishImg from "./Assets/publish.svg";
 import actionIconImg from "./Assets/action-icon.svg";
 import uploadIconImg from "./Assets/upload-icon.svg";
 import arrowDownIconImg from "./Assets/arrow-down-icon.svg";
-import flowImg from "./Assets/flow-icon.svg"
+import flowImg from "./Assets/flow-icon.svg";
 import guideImg from "./Assets/help-icon.svg";
+import headerActivitiesImg from "./Assets/header-activities-icon.svg"
 import ApplicationContextProvider from "./Store/ApplicationContextProvider";
 import useActivityData from "./apis/data/useActivityData";
 import useFlowData from "./apis/data/useFlowData";
@@ -37,7 +38,7 @@ const { confirm } = Modal;
 function App() {
   const [messageApi, contextHolder] = message.useMessage();
   const flowDesignerRef = useRef();
-  const [workflowName, setWorkflowName] = useState("My State Machine");
+  const [workflowName, setWorkflowName] = useState("My Flow");
 
   const handleExportFlowAsJSON = () => {
     if (flowDesignerRef.current) {
@@ -297,8 +298,14 @@ function App() {
       overlayclassname: "header-activities-dropdown-new-flow",
       label: (
         <span className="activities-dropdown-item">
-          <img src={plusImg} style={{filter: "brightness(0) saturate(100%) invert(37%) sepia(99%) saturate(695%) hue-rotate(189deg) brightness(91%) contrast(103%)"}}/>
-          <span className="activity-name">New State Machine</span>
+          <img
+            src={plusImg}
+            style={{
+              filter:
+                "brightness(0) saturate(100%) invert(37%) sepia(99%) saturate(695%) hue-rotate(189deg) brightness(91%) contrast(103%)",
+            }}
+          />
+          <span className="activity-name">New Flow</span>
         </span>
       ),
     },
@@ -330,7 +337,7 @@ function App() {
       {
         key: "flows",
         type: "group",
-        label: "Previous State Machines",
+        label: "Previous Flows",
         overlayclassname: "activities-dropdown-items-container",
         children: previousFlows.map((x, index) => ({
           key: index + 1,
@@ -342,7 +349,7 @@ function App() {
                 loadFlow(x.json);
               }}
             >
-              <img src={flowImg} width={12}/>
+              <img src={flowImg} width={12} />
               <span className="activity-name">{x.name}</span>
             </div>
           ),
@@ -376,8 +383,9 @@ function App() {
       title: "Do you want to delete flow?",
       icon: <ExclamationCircleFilled />,
       // content: 'Some descriptions',
+      okText: "Yes",
       onOk() {
-        setWorkflowName("My State Machine");
+        setWorkflowName("My Flow");
         setResetFlow(true);
       },
     });
@@ -530,7 +538,12 @@ function App() {
                   loading={isBuilderLoading}
                   className="header-btn"
                   style={{ background: "#0047FF" }}
-                  icon={<img src={publishImg} width={18} />}
+                  icon={
+                    <img
+                      src={publishImg}
+                      style={{ marginLeft: "2px" }}
+                    />
+                  }
                   onClick={onBuildClick}
                 />
               </Tooltip>
@@ -547,6 +560,7 @@ function App() {
                 className="header-btn"
                 onChange={handleFileChange}
                 showUploadList={false}
+                style={{ height: "100%" }}
                 beforeUpload={() => false} // Prevent auto-upload
               >
                 <Tooltip placement="bottom" title={"Import Flow"}>
@@ -574,18 +588,27 @@ function App() {
                     loading={isUploadingDll}
                     className="header-btn header-activities-btn"
                   >
-                    <img className="activities-icon" src={actionIconImg} />
-                    <img src={arrowDownIconImg} />
+                    {/* <img className="activities-icon" src={actionIconImg} />
+                    <img src={arrowDownIconImg} /> */}
+                    <img src={headerActivitiesImg}/>
                   </Button>
                 </Tooltip>
               </Dropdown>
               <ColorPicker defaultValue={color} onChange={onChangeColor}>
                 <Tooltip placement="bottom" title={"Nodes Color Picker"}>
                   <Button
+                    style={{ display: "relative" }}
                     ref={paintBtnRef}
                     className="header-btn"
-                    icon={<img src={paintImg} width={20} />}
-                  />
+                    icon={<img src={paintImg} />}
+                  >
+                    <div
+                      className="selected-color"
+                      style={{
+                        background: `${color}`,
+                      }}
+                    ></div>
+                  </Button>
                 </Tooltip>
               </ColorPicker>
               <Dropdown
@@ -610,7 +633,7 @@ function App() {
                 placement="bottomRight"
                 trigger={["click"]}
               >
-                <Button className="header-btn header-activities-btn">
+                <Button className="header-btn">
                   <img src={guideImg} />
                 </Button>
               </Dropdown>
@@ -637,88 +660,92 @@ function App() {
         steps={tourSteps}
       />
       <Modal
-        title="Guid"
+        title="FlowCiao Studio"
         centered
         open={isGuideModalOpen}
-        cancelText
-        style={{overflow: "hidden"}}
+        
+        style={{ overflow: "hidden" }}
+        onCancel={() => setGuideModalOpen(false)}
         footer={[
-          <Button key="ok" type="primary" onClick={() => setGuideModalOpen(false)}>
+          <Button
+            key="ok"
+            type="primary"
+            onClick={() => setGuideModalOpen(false)}
+          >
             OK
           </Button>,
         ]}
       >
-        <div style={{overflow: "auto",maxHeight: "70vh"}}>
-        <h2>FlowCiao Studio</h2>
-        <h3>Getting Started</h3>
-        <p>To start designing your workflow, follow these steps:</p>
-        <ul>
-          <li>
-            <strong>Create a New Workflow:</strong>
-            <span>
-              {" "}
-              Click on the "New Workflow" button to begin. Set a name for your
-              workflow on the left side of the header.
-            </span>
-          </li>
-        <li>
-          <strong>Design Your Flow:</strong>
-          <span>
-            Start with the Start Node, which is automatically placed on the
-            canvas. This node signifies the beginning of your workflow.
-          </span>
-        </li>
-        <li>
-          <strong>Add Nodes:</strong>
-          <span>
-            Click on the plus button on the Start Node to add other nodes
-            connected to it. Each newly added node will also have a plus button,
-            allowing you to expand your workflow as needed.
-          </span>
-        </li>
-        <li>
-          <strong>Connect Nodes: </strong>
-          <span>
-            Drag from one node to another to create transitions, defining the
-            flow of your process.
-          </span>
-        </li>
-        <li>
-          <strong>Customize Node Colors:</strong>
-          <span>
-            Use the color picker in the header to customize the colors of your
-            nodes, enhancing visual clarity and organization.
-          </span>
-        </li>
-        <li>
-          <strong>Register and Update Activities: </strong>
-          <span>
-            Utilize the "Activities" button to register or update activities
-            from DLL files. These activities can be assigned as onEntry or
-            onExit actions for each node in your workflow.
-          </span>
-        </li>
-        <li>
-          <strong>Save and Publish Your Workflow:</strong>
-          <span>
-            Once you're satisfied with your workflow design, click on the
-            "Publish" button to save it to the database securely.
-          </span>
-        </li>
-        <li>
-          <strong>Export and Import Workflows:</strong>
-          <span>
-            Use the "Export" button to save your workflow as a JSON file.
-            Conversely, the "Import" button allows you to import workflows from
-            JSON files for collaboration or backup purposes.
-          </span>
-        </li>
-        </ul>
-        <strong>Additional Features</strong>
-        <p>
-          Access a dropdown menu to view and select from your previously created
-          workflows, facilitating easy navigation and management.
-        </p>
+        <div style={{ overflow: "auto", maxHeight: "70vh" }}>
+          <h3>Getting Started</h3>
+          <p>To start designing your workflow, follow these steps:</p>
+          <ul>
+            <li>
+              <strong>Create a New Workflow:</strong>
+              <span>
+                {" "}
+                Click on the "New Workflow" button to begin. Set a name for your
+                workflow on the left side of the header.
+              </span>
+            </li>
+            <li>
+              <strong>Design Your Flow:</strong>
+              <span>
+                Start with the Start Node, which is automatically placed on the
+                canvas. This node signifies the beginning of your workflow.
+              </span>
+            </li>
+            <li>
+              <strong>Add Nodes:</strong>
+              <span>
+                Click on the plus button on the Start Node to add other nodes
+                connected to it. Each newly added node will also have a plus
+                button, allowing you to expand your workflow as needed.
+              </span>
+            </li>
+            <li>
+              <strong>Connect Nodes: </strong>
+              <span>
+                Drag from one node to another to create transitions, defining
+                the flow of your process.
+              </span>
+            </li>
+            <li>
+              <strong>Customize Node Colors:</strong>
+              <span>
+                Use the color picker in the header to customize the colors of
+                your nodes, enhancing visual clarity and organization.
+              </span>
+            </li>
+            <li>
+              <strong>Register and Update Activities: </strong>
+              <span>
+                Utilize the "Activities" button to register or update activities
+                from DLL files. These activities can be assigned as onEntry or
+                onExit actions for each node in your workflow.
+              </span>
+            </li>
+            <li>
+              <strong>Save and Publish Your Workflow:</strong>
+              <span>
+                Once you're satisfied with your workflow design, click on the
+                "Publish" button to save it to the database securely.
+              </span>
+            </li>
+            <li>
+              <strong>Export and Import Workflows:</strong>
+              <span>
+                Use the "Export" button to save your workflow as a JSON file.
+                Conversely, the "Import" button allows you to import workflows
+                from JSON files for collaboration or backup purposes.
+              </span>
+            </li>
+          </ul>
+          <strong>Additional Features</strong>
+          <p>
+            Access a dropdown menu to view and select from your previously
+            created workflows, facilitating easy navigation and management.
+          </p>
         </div>
       </Modal>
     </ApplicationContextProvider>
