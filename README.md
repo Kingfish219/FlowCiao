@@ -7,10 +7,9 @@
     <br />
 </div>
 
-FlowCiao is a lightweight, user-friendly and extensible .NET state machine workflow that simplifies the creation and management of state machines in your applications. With FlowCiao, you can effortlessly define and control the flow of your application's logic, making it an ideal choice for managing workflows and state-driven processes. Start building robust and efficient state machines with ease. It will also contains a powerful server and a designer interface which will be explained later in the document.\
+FlowCiao is a lightweight, user-friendly and extensible .NET state machine workflow that simplifies the creation and management of state machines in your applications. With FlowCiao, you can effortlessly define and control the flow of your application's logic. It will also contains a powerful server and a designer interface which will be explained later in the document.\
 \
-we prefer to use the term **"Flow"** instead of **"State Machine"**.
-Why "Flow"? The term "Flow" intuitively captures the essence of a state machine. It signifies a dynamic process, a sequence of operations, or a progression of states. Just as water flows from one point to another, transitioning through various paths and channels, a Flow transitions from one state to another, guided by certain rules and conditions.
+We prefer the term **"Flow"** instead of **"State Machine"**. Why "Flow"? because The term "Flow" captures the dynamic essence of the process. Like water flowing through paths, a Flow progresses through states guided by rules and conditions, making it a more intuitive term.
 
 ## Simplicity
 
@@ -40,12 +39,13 @@ To get started with FlowCiao, follow these steps:
 
 1. Install FlowCiao via NuGet Package Manager.
 2. Create your custom flow by implementing the `IFlowPlanner` interface.
-3. Define your States, Transitions, and Triggers using the fluent API provided by FlowCiao.
-4. Start managing states effortlessly in your application.
+3. Give it a unique `Key`
+4. Define your States, Transitions, and Triggers using the fluent API provided by FlowCiao.
+5. Start managing states and flows effortlessly in your application.
 
 ## Example
 
-Here's a simple example of creating a flow for implementing a simple **Phone** machine with FlowCiao:
+Here's a simple example of creating a flow for implementing a simple [Phone](https://github.com/Kingfish219/FlowCiao/tree/main/samples/FlowCiao.Samples.Phone/) machine with FlowCiao:
 
 ```csharp
 public class PhoneFlow : IFlowPlanner
@@ -84,7 +84,7 @@ Add FlowCiao to your project:
 builder.Services.AddFlowCiao();
 ```
 
-Then **Build** your desired flow using `Ciao()` and **Fire** it:
+Then **Build** your desired flow using `IFlowBuilder` interface and **Fire** it by calling `CiaoAndTriggerAsync()`:
 
 ```csharp
 var flowBuilder = scope.ServiceProvider.GetRequiredService<IFlowBuilder>();
@@ -94,9 +94,7 @@ var flowOperator = scope.ServiceProvider.GetService<IFlowOperator>();
 await flowOperator.CiaoAndTriggerAsync(flow.Key, Triggers.Call);
 ```
 
-And that's it!
-
-## And also Persistency if required 💪
+## Persistency if required
 
 If there is a need to persist your flows for long-running processes, you can connect FlowCiao to database providers (For now, Sql Server and other providers very soon!).
 Otherwise, as long as your application is running, We track the status and data of all of your running flows. So no wories:)
@@ -149,35 +147,40 @@ await flowOperator.CiaoAndTriggerAsync(flow.Key, Triggers.Call, data);
 
 ***Limitaion**: this data is only available during a transition and will not be accessible in the next Trigger*
 
-## Some Features
+## Other Features
 
-- **Simple & Fast Development**: Speed up your flow development with a user-friendly fluent API.
-- **Trigger-Packed Transitions**: Trigger transitions with ease to move between states effortlessly.
-- **Dynamic On Entry and On Exit Activities**: Enhance states with custom activities upon entry and exit of each state for more responsive and intelligent state management.
-- **Persistence Power**: Achieve persistency with support for common database providers.
-- **Flow Management**: There are plenty of additional functionalities for better managing your Flows. Here are some of them
-    - You can monitor the current running or finished instances of your flow using the following command
-        ```csharp
-        var flowService = scope.ServiceProvider.GetRequiredService<FlowService>();
-        var flow = await flowService.GetByKey(key: key);
+There are plenty of additional functionalities for better managing your Flows. Here are some of them
+- You can monitor the current running or finished instances of your flow using the following command
+    ```csharp
+    var flowService = scope.ServiceProvider.GetRequiredService<FlowService>();
+    var flow = await flowService.GetByKey(key: key);
 
-        var flowInstanceService = scope.ServiceProvider.GetRequiredService<FlowInstanceService>();
-        var flowInstances = await flowInstanceService.Get(flow.Id);
-        ```
-    - Instead of using `CiaoAndTriggerAsync()`, you can First initialize a new instance of your Flow using `Ciao()` and then Trigger it whenever you wish using `TiggerAsync()` which accepts the same arguments as `CiaoAndTriggerAsync()`
-        ```csharp
-            var flowOperator = scope.ServiceProvider.GetService<IFlowOperator>();
-            var flowInstance = await flowOperator.Ciao(flow.Key);
-            var result = await flowOperator.TriggerAsync(flowInstance, Triggers.Call);
-        ```
+    var flowInstanceService = scope.ServiceProvider.GetRequiredService<FlowInstanceService>();
+    var flowInstances = await flowInstanceService.Get(flow.Id);
+    ```
+- Instead of using `CiaoAndTriggerAsync()`, you can First initialize a new instance of your Flow using `Ciao()` and then Trigger it whenever you wish using `TiggerAsync()` which accepts the same arguments as `CiaoAndTriggerAsync()`
+    ```csharp
+        var flowOperator = scope.ServiceProvider.GetService<IFlowOperator>();
+        var flowInstance = await flowOperator.Ciao(flow.Key);
+        var result = await flowOperator.TriggerAsync(flowInstance, Triggers.Call);
+    ```
+- **JSON:** you can also export and import flow definitions as JSON
+    ```csharp
+    var flowJsonSerializer = scope.ServiceProvider.GetRequiredService<FlowJsonSerializer>();
+    
+    // Export
+    var flow = await _flowService.GetByKey(key: "phone");
+    var definition = flowJsonSerializer.Export(flow);
 
-<br>
+    // Import
+    var flowFromDefinition = flowJsonSerializer.Import(definition);
+    ```
 <br>
 <br>
         
-# Welcome to FlowCiao Studio 🤌
+# Welcome to FlowCiao Studio
 
-**FlowCiao Studio** is an integral part of the FlowCiao project, a powerful platform built upon **FlowCiao** that enables the creation and management of flows using Restful API. You can use it to orchestrate your business workflows.
+**FlowCiao Studio** is an important part of the FlowCiao project, a powerful platform built upon **FlowCiao** that enables the creation and management of flows using a Restful API. You can use it to orchestrate your business workflows.
 
 ## How to Use
 
@@ -190,7 +193,7 @@ here’s how you can run FlowCiao Studio and access its Swagger documentation:
 3. Once you're in the project directory, run the following command to start Studio:
 
 ```bash
-dotnet run
+dotnet run --urls "http://localhost:9600"
 ```
 
 ### Accessing Swagger Documentation
@@ -205,7 +208,7 @@ This will take you to the Swagger UI where you can view and interact with its AP
 
 Remember, the server needs to be running to access the Swagger UI. If you stop it, the Swagger UI will not be accessible.
 
-*Please replace `localhost` with the appropriate server address if you're not running the server on your local machine*
+*Please replace `localhost` with the appropriate server address if you're not running the server on your local machine.*
 
 <br>
 
@@ -238,7 +241,13 @@ Here are some exciting features of it
 
 <br>
 <br>
-<br>
+
+## Roadmap
+Here are some features that we are planned for future releases
+- **Allow Self:** Ability to self transition a state to itself
+- **Transition and Trigger Activities:** You will be able to call activities through a transition or a specfic trigger 
+- **Error Handling:** Define error situations in activities which includes `OnError()` and `Compensate()`
+- **Conditions:** Defining conditions for transactions
 
 ## The Journey Ahead
 
