@@ -76,7 +76,7 @@ const IdleNode = (node) => {
     if (activities != null) {
       messageApi.open({
         type: "success",
-        content: "Changes are applied",
+        content: "Changes were applied",
       });
       node.data.onEntry = {
         name: activities.onEntryName,

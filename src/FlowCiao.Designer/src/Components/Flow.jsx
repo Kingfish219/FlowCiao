@@ -184,7 +184,7 @@ const Flow = forwardRef((props, ref) => {
               actorName: nodes.find((x) => x.id === firstIdleNodeId).data
                 .onEntry.actorName,
             }
-          : { name: "", actorName: "" },
+          : null,
       onExit:
         nodes.find((x) => x.id === firstIdleNodeId).data.onExit.name != ""
           ? {
@@ -193,7 +193,7 @@ const Flow = forwardRef((props, ref) => {
               actorName: nodes.find((x) => x.id === firstIdleNodeId).data.onExit
                 .actorName,
             }
-          : { name: "", actorName: "" },
+          : null,
     };
 
     var steps = edges
@@ -213,7 +213,7 @@ const Flow = forwardRef((props, ref) => {
                 actorName: nodes.find((x) => x.id === item.source).data.onEntry
                   .actorName,
               }
-            : { name: "", actorName: "" },
+            : null,
         onExit:
           nodes.find((x) => x.id === item.source).data.onExit.name != ""
             ? {
@@ -221,7 +221,7 @@ const Flow = forwardRef((props, ref) => {
                 actorName: nodes.find((x) => x.id === item.source).data.onExit
                   .actorName,
               }
-            : { name: "", actorName: "" },
+            : null,
       }));
 
     const removeDuplicates = (arr) => {
@@ -248,7 +248,7 @@ const Flow = forwardRef((props, ref) => {
                 actorName: nodes.find((x) => x.id === item.Code).data.onEntry
                   .actorName,
               }
-            : { name: "", actorName: "" },
+            : null,
         onExit:
           nodes.find((x) => x.id === item.Code).data.onExit.name != ""
             ? {
@@ -256,7 +256,7 @@ const Flow = forwardRef((props, ref) => {
                 actorName: nodes.find((x) => x.id === item.Code).data.onExit
                   .actorName,
               }
-            : { name: "", actorName: "" },
+            : null,
       }));
 
     const flow = {

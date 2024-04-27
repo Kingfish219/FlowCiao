@@ -70,7 +70,7 @@ function App() {
   };
 
   const handleFileChange = (file) => {
-     handleFileSelect(file);
+    handleFileSelect(file);
   };
   const handleFileSelect = (file) => {
     const reader = new FileReader();
@@ -110,12 +110,17 @@ function App() {
           if (response.status == 200 && response.data.status === "success") {
             messageApi.open({
               type: "success",
-              content: "Publish and saving are successful",
+              content: "Flow published successfully",
             });
           } else {
             messageApi.open({
               type: "error",
-              content: response.data.message,
+              content:
+                response != undefined &&
+                response.data != undefined &&
+                response.data.message != undefined
+                  ? response.data.message
+                  : "Flow published failed",
             });
           }
         }
@@ -149,7 +154,7 @@ function App() {
           if (response.success) {
             messageApi.open({
               type: "success",
-              content: "Uploading is successful",
+              content: "Uploaded successfully",
             });
             getActivities();
           } else {
@@ -346,7 +351,9 @@ function App() {
             <div
               className="activities-dropdown-item"
               onClick={() => {
-                loadFlow(x.json);
+                showConfirm(() => {
+                  loadFlow(x.json);
+                });
               }}
             >
               <img src={flowImg} width={12} />
@@ -385,7 +392,7 @@ function App() {
   };
   const showConfirm = (confirmFunction) => {
     confirm({
-      title: "Do you want to delete flow?",
+      title: "By this action, the current flow will be deleted without publishing and saving. Are you sure?",
       icon: <ExclamationCircleFilled />,
       // content: 'Some descriptions',
       okText: "Yes",
@@ -453,8 +460,7 @@ function App() {
     },
     {
       title: "Export Flows",
-      description:
-        'Use the "Export" button to save your flow as a JSON file',
+      description: 'Use the "Export" button to save your flow as a JSON file',
       target: () => exportBtnRef.current,
     },
     {
@@ -560,7 +566,7 @@ function App() {
                 accept=".json"
                 className="header-btn"
                 beforeUpload={(file) => {
-                  showConfirm(() => handleFileChange(file))
+                  showConfirm(() => handleFileChange(file));
                   return false;
                 }}
                 //onChange={handleFileChange}
@@ -622,14 +628,16 @@ function App() {
                       key: 1,
                       label: (
                         <span onClick={() => setGuideModalOpen(true)}>
-                          Guide
+                          How-to Guide
                         </span>
                       ),
                     },
                     {
                       key: 2,
                       label: (
-                        <span onClick={() => setTourOpen(true)}>Tour</span>
+                        <span onClick={() => setTourOpen(true)}>
+                          Feature Tour
+                        </span>
                       ),
                     },
                   ],
@@ -687,61 +695,75 @@ function App() {
             <li>
               <strong>Create a New Flow:</strong>
               <span>
-              Click on the "New Flow" button to begin. You can set a name for it on the left side of the header.
+                Click on the "New Flow" button to begin. You can set a name for
+                it on the left side of the header.
               </span>
             </li>
             <li>
               <strong>Previous Flows:</strong>
               <span>
-              Access a dropdown menu to view and select from your previously created flows, facilitating easy navigation and management.
+                Access a dropdown menu to view and select from your previously
+                created flows, facilitating easy navigation and management.
               </span>
             </li>
             <li>
               <strong>Design Your Flow:</strong>
               <span>
-              Begin with the Start Node, which is automatically placed on the canvas. This node signifies the starting point of your flow.
+                Begin with the Start Node, which is automatically placed on the
+                canvas. This node signifies the starting point of your flow.
               </span>
             </li>
             <li>
               <strong>Add Nodes:</strong>
               <span>
-              Click on the plus button on the Start Node to add other nodes connected to it. Each newly added node will also have a plus button, allowing you to expand your flow as needed.
+                Click on the plus button on the Start Node to add other nodes
+                connected to it. Each newly added node will also have a plus
+                button, allowing you to expand your flow as needed.
               </span>
             </li>
             <li>
               <strong>Connect Nodes: </strong>
               <span>
-              Drag from one node to another to create transitions, defining the flow of your process.
+                Drag from one node to another to create transitions, defining
+                the flow of your process.
               </span>
             </li>
             <li>
               <strong>Customize Node Colors:</strong>
               <span>
-              Use the color picker in the header to customize the colors of your nodes, enhancing visual clarity and organization.
+                Use the color picker in the header to customize the colors of
+                your nodes, enhancing visual clarity and organization.
               </span>
             </li>
             <li>
               <strong>Register and Update Activities: </strong>
               <span>
-              Utilize the "Activities" button to register or update activities from DLL files. These activities can be assigned as OnEntry or OnExit actions for each node in your flow.
+                Utilize the "Activities" button to register or update activities
+                from DLL files. These activities can be assigned as OnEntry or
+                OnExit actions for each node in your flow.
               </span>
             </li>
             <li>
               <strong>Add OnEntry and OnExit Activities: </strong>
               <span>
-              You can declare OnEntry and OnExit activities for a state by hovering and clicking on the activity icon which appears next to the state.
+                You can declare OnEntry and OnExit activities for a state by
+                hovering and clicking on the activity icon which appears next to
+                the state.
               </span>
             </li>
             <li>
               <strong>Publish and Save Your Flow:</strong>
               <span>
-              Once you're satisfied with your flow design, click on the "Publish" button in order to save it to the database securely.
+                Once you're satisfied with your flow design, click on the
+                "Publish" button in order to save it to the database securely.
               </span>
             </li>
             <li>
               <strong>Export and Import Flows:</strong>
               <span>
-              Use the "Export" button to save your flow as a JSON file. Conversely, the "Import" button allows you to import flows from JSON files for collaboration or backup purposes.
+                Use the "Export" button to save your flow as a JSON file.
+                Conversely, the "Import" button allows you to import flows from
+                JSON files for collaboration or backup purposes.
               </span>
             </li>
           </ul>

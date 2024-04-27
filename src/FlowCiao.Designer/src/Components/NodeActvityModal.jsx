@@ -95,7 +95,7 @@ const NodeActvityModal = ({ node, isModalOpen, onApplyChanges }) => {
           if (response.success) {
             messageApi.open({
               type: "success",
-              content: "Uploading is successful",
+              content: "Uploaded successfully",
             });
             getActivities();
           }else{
