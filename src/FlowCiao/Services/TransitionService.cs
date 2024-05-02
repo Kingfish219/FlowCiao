@@ -1,58 +1,62 @@
 ﻿using System;
 using System.Threading.Tasks;
-using FlowCiao.Exceptions;
-using FlowCiao.Models.Flow;
+using FlowCiao.Models;
+using FlowCiao.Models.Core;
 using FlowCiao.Persistence.Interfaces;
+using FlowCiao.Utils;
 
 namespace FlowCiao.Services
 {
     public class TransitionService
     {
         private readonly ITransitionRepository _transitionRepository;
-        private readonly IActionRepository _actionRepository;
+        private readonly TriggerService _triggerService;
         private readonly ActivityService _activityService;
 
         public TransitionService(ITransitionRepository transitionRepository
-                        , IActionRepository actionRepository
+                        , TriggerService triggerService
                         , ActivityService activityService
             )
         {
             _transitionRepository = transitionRepository;
-            _actionRepository = actionRepository;
+            _triggerService = triggerService;
             _activityService = activityService;
         }
 
-        public async Task<Guid> Modify(Transition transition)
+        public async Task<FuncResult<Guid>> Modify(Transition transition)
         {
-            transition.Id = await _transitionRepository.Modify(transition);
-            if (transition.Id == default)
+            if (!transition.Activities.IsNullOrEmpty())
             {
-                throw new FlowCiaoPersistencyException();
+                foreach (var activity in transition.Activities)
+                {
+                    var activityResult = await _activityService.Modify(activity);
+                    if (activityResult == default)
+                    {
+                        return new FuncResult<Guid>(false, "Modifying Activity failed");
+                    }
+                }
+            }
+            
+            var result = await _transitionRepository.Modify(transition);
+            if (result == default)
+            {
+                return new FuncResult<Guid>(false, "Modifying Transition failed");
             }
 
-            transition.Activities?.ForEach(activity =>
+            if (!transition.Triggers.IsNullOrEmpty())
             {
-                var result = _activityService.Modify(activity).GetAwaiter().GetResult();
-                if (result == default)
+                foreach (var trigger in transition.Triggers)
                 {
-                    throw new FlowCiaoPersistencyException("State Activity");
+                    trigger.TransitionId = transition.Id;
+                    var triggerResult = await _triggerService.Modify(trigger);
+                    if (triggerResult == default)
+                    {
+                        return new FuncResult<Guid>(false, "Modifying Trigger failed");
+                    }
                 }
+            }
 
-                _transitionRepository.AssociateActivities(transition, activity).GetAwaiter().GetResult();
-            });
-
-            transition.Actions?.ForEach(action =>
-            {
-                var result = _actionRepository.Modify(action).GetAwaiter().GetResult();
-                if (result == default)
-                {
-                    throw new FlowCiaoPersistencyException("State Activity");
-                }
-
-                _transitionRepository.AssociateActions(transition, action).GetAwaiter().GetResult();
-            });
-
-            return transition.Id;
+            return new FuncResult<Guid>(true, data: result);
         }
     }
 }

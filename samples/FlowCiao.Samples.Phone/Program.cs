@@ -1,40 +1,41 @@
 using FlowCiao;
-using FlowCiao.Builders;
-using FlowCiao.Copilot.Extensions;
-using FlowCiao.Samples.Phone.FLowCiao;
+using FlowCiao.Interfaces;
+using FlowCiao.Operators;
+using FlowCiao.Samples.Phone.Flow;
+using FlowCiao.Samples.Phone.Flow.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 // Add FlowCiao to services
 builder.Services.AddFlowCiao(settings =>
 {
+    /*  Use Persist() if you want to persist the states of your Flows to your desired database
+        or ignore it and use InMemory caching as long as the application is alive */
     settings
         .Persist(persistenceSettings =>
         {
             persistenceSettings.UseSqlServer(builder.Configuration.GetConnectionString("FlowCiao"));
-        })
-        .UseCopilot(builder.Services);
+        });
 });
 
 var app = builder.Build();
 
-// Build your custom flow and Fire!!!
-var stateMachineBuilder = app.Services.GetService<IFlowBuilder>();
-stateMachineBuilder?.Build<PhoneStateMachine>();
-//var defaultFlowOperator = app.Services.GetService<IFlowOperator>();
-//var result = defaultFlowOperator?.Fire("phone", 1);
+// Call UseFlowCiao() if you are using Persistence
+app.UseFlowCiao();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+using (var scope = app.Services.CreateScope()) {
+    // Build your desired Flow
+    var flowBuilder = scope.ServiceProvider.GetRequiredService<IFlowBuilder>();
+    var flow = flowBuilder.Build<PhoneFlow>();
+    
+    // Call CiaoAndTriggerAsync() to both initialize it using Ciao() and run it using Trigger()
+    var flowOperator = scope.ServiceProvider.GetService<IFlowOperator>();
+    var data = new Dictionary<object, object>
+    {
+        { "CallerId", 12134664789 }
+    };
+    var result = flowOperator.CiaoAndTriggerAsync(flow.Key, Triggers.Call, data).GetAwaiter().GetResult();
+    Console.WriteLine(result.Message);
 }
-
-app.UseCopilot();
-app.MapControllers();
 
 app.Run();

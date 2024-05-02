@@ -1,0 +1,335 @@
+.react-flow__viewport{
+transform: translate(221.854px, 201.908px) scale(1.38889);
+}
+.react-flow__panel.react-flow__attribution {
+  display: none;
+}
+
+.dndflow {
+  flex-direction: column;
+  display: flex;
+  flex-grow: 1;
+  height: 100%;
+}
+
+.dndflow aside {
+  border-right: 1px solid #eee;
+  padding: 15px 10px;
+  font-size: 12px;
+  background: #fcfcfc;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dndflow aside .description {
+  margin-bottom: 10px;
+}
+
+.dndflow .dndnode {
+  width: 127px;
+  height: 49px;
+  border: 1px solid #1a192b;
+  border-radius: 9px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: grab;
+}
+
+.dndflow .dndnode.input {
+  width: 110px;
+  min-height: 48px;
+  border: 1px solid #c8c8c8;
+  border-top: 3px solid #2f6ee9;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: grab;
+}
+.react-flow__node-idleNode {
+  width: 146px !important;
+  min-height: 54px !important;
+  display: flex;
+  align-items: center;
+  background-color: transparent;
+}
+.react-flow__node-idleNode > div {
+  width: 146px;
+  border: 1px solid !important;
+  border-left-color: #c8c8c8 !important;
+  border-right-color: #c8c8c8 !important;
+  border-bottom-color: #c8c8c8 !important;
+  border-top: 3px solid #2f6ee9 !important;
+  border-radius: 4px !important;
+  background: #fff;
+}
+
+.react-flow__node.selected > div {
+  border-bottom: 1px solid #2f6ee9 !important;
+  border-left: 1px solid #2f6ee9 !important;
+  border-right: 1px solid #2f6ee9 !important;
+}
+.dndflow .dndnode.circle-node {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: grab;
+}
+.dndflow .dndnode.disabled {
+  border: #d9d9d9;
+  background: #d9d9d9;
+  cursor: not-allowed;
+}
+
+.dndflow .reactflow-wrapper {
+  flex-grow: 1;
+  height: 100%;
+}
+
+.dndflow .selectall {
+  margin-top: 10px;
+}
+
+/*#region custom edge*/
+.custom-edge-container {
+  position: absolute;
+  pointer-events: all;
+}
+.custom-edge-input,
+.custom-edge-input:focus {
+  border: none;
+  outline: none;
+  width: fit-content;
+  max-width: 100px !important;
+  color: #000;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+  background: #f5f5f5;
+}
+/*#endregion*/
+
+.trash-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 5px;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.trash-icon i {
+  font-size: 20px;
+}
+
+.add-node-btn {
+  width: 6px;
+  height: 6px;
+  position: absolute;
+  right: -8px;
+  top: 30%;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+.start-node .add-node-btn{
+  top: -3px;
+    right: -6px;
+}
+.node-actvity-btn-hover-space{
+  width: 160px;
+  height: 19px;
+  background: transparent;
+  position: absolute;
+  top: -15px;
+}
+.node-actvity-btn {
+  background: #f5f5f5;
+    outline: none;
+    position: absolute;
+    top: -15px;
+    right: -25px;
+    cursor: pointer;
+    padding: 0;
+    border: unset;
+    height: 16px;
+    min-width: 16px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+}
+.node-actvity-btn.no-activity{
+  right: -15px;
+}
+.node-activity-count-container{
+  padding: 0.5px 3px 0px 3px;
+    background: transparent;
+    outline: none;
+    border: 1px solid #C8C8C8;
+    border-radius: 6px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.node-activity-count-container.no-activity{
+  border-radius: 50%;
+  height: 16px;
+  width: 16px;
+}
+
+.node-activity-count-container img{
+  margin: 0;
+}
+
+.node-activity-count-container img.active-filter{
+  filter: invert(46%) sepia(63%) saturate(5622%) hue-rotate(210deg) brightness(95%) contrast(92%);
+}
+
+.node-activity-count-container span{
+  font-size: 10px;
+  line-height: 12px;
+  padding-left: 2px;
+  padding-top: 1px;
+  color: #2F6EE9;
+}
+.node-name {
+  border: none;
+  outline: none;
+  width: 98%;
+  text-align: center;
+  margin: 14px 1px;
+}
+
+.node-handle{
+  background: transparent;
+   border: none;
+}
+.start-node{
+  border-radius: 50%;
+  border: 2px solid #3C3C3C;
+   width: 20px; 
+   height: 20px;
+}
+
+/*#region activity modal*/
+
+.activity-modal .title{
+  font-size: 18px;
+  font-weight: 600 ;
+  color: #313131;
+  padding: 0;
+  margin: 0;
+}
+
+.activity-modal .modal-title{
+  font-size: 20px;
+  font-weight: 600 ;
+  color: #1B1B1B;
+}
+
+.activity-container{
+  padding: 25px 0;
+}
+.activity-container.dash-bottom-border{
+  border-bottom: 1px dashed #DFDFDF;
+  margin-bottom: 25px;
+}
+.ant-dropdown-menu li[overlayclassname="activities-dropdown-items-container"] ul li
+{
+  padding-left: 0 !important;
+}
+.activities-dropdown-item {
+  display: flex;
+  align-items: center;
+}
+.activities-dropdown-item .activity-name{
+  padding: 0 8px;
+}
+
+.activities-dropdown-item img{
+  height: 15px;
+  width: 15px;
+}
+
+.add-actvity-btn{
+  width: 100%;
+  height: 36px;
+  background: transparent;
+  border: 1px dashed #B6B6B6;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+
+}
+.node-activity{
+  display: flex;
+  align-items: center;
+}
+.node-activity .action-icon{
+  width: 15px;
+    height: 15px;
+    margin-right: 10px;
+  filter: invert(59%) sepia(67%) saturate(6875%) hue-rotate(128deg) brightness(93%) contrast(105%);
+}
+
+.node-activity p{
+  font-size: 14px;
+  font-weight: 500;
+  flex:1;
+}
+.node-activity span .node-action-edit-btn,
+.node-activity span .node-action-remove-btn  {
+  background: none;
+  border: none;
+  outline: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.node-activity span .node-action-edit-btn img{
+  width: 18px;
+  height: 18px;
+}
+.node-activity span .node-action-remove-btn  img{
+  width: 16px;
+  height: 16px;
+  margin-left: 8px;
+}
+
+.action-modal-footer-btn{
+  width: 48%;
+  height: 40px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/*#endregion*/
+
+@media screen and (min-width: 768px) {
+  .dndflow {
+    flex-direction: row;
+  }
+
+  .dndflow aside {
+    width: 20%;
+    max-width: 250px;
+  }
+}

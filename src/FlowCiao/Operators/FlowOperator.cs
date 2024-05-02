@@ -3,110 +3,125 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FlowCiao.Exceptions;
-using FlowCiao.Handlers;
+using FlowCiao.Handle;
 using FlowCiao.Models;
-using FlowCiao.Models.Flow;
+using FlowCiao.Models.Core;
+using FlowCiao.Models.Execution;
 using FlowCiao.Services;
 
 namespace FlowCiao.Operators
 {
-    public class FlowOperator : IFlowOperator
+    internal class FlowOperator : IFlowOperator
     {
-        private readonly ProcessExecutionService _processExecutionService;
-        private readonly ProcessHandlerFactory _processHandlerFactory;
-        private readonly IProcessService _processService;
+        private readonly FlowInstanceService _flowInstanceService;
+        private readonly FlowHandlerFactory _flowHandlerFactory;
+        private readonly FlowService _flowService;
 
-        public FlowOperator(ProcessHandlerFactory processHandlerFactory,
-            ProcessExecutionService processExecutionService,
-            IProcessService processService)
+        public FlowOperator(FlowHandlerFactory flowHandlerFactory,
+            FlowInstanceService flowInstanceService,
+            FlowService flowService)
         {
-            _processHandlerFactory = processHandlerFactory;
-            _processExecutionService = processExecutionService;
-            _processService = processService;
+            _flowHandlerFactory = flowHandlerFactory;
+            _flowInstanceService = flowInstanceService;
+            _flowService = flowService;
         }
 
-        private static ProcessStepContext InitiateContext(int action,
-            Dictionary<string, object> data,
-            ProcessExecution processExecution,
-            ProcessExecutionStep activeProcessStep)
+        private static FlowStepContext InitializeContext(int trigger,
+            Dictionary<object, object> data,
+            FlowInstance flowInstance)
         {
-            return new ProcessStepContext
+            return new FlowStepContext
             {
-                ProcessExecution = processExecution,
-                ProcessExecutionStep = activeProcessStep,
-                ProcessExecutionStepDetail = activeProcessStep.Details.Single(x => x.Transition.Actions.FirstOrDefault().Code == action),
+                FlowInstance = flowInstance,
+                FlowInstanceStep = flowInstance.ActiveInstanceStep,
+                FlowInstanceStepDetail =
+                    flowInstance.ActiveInstanceStep.Details.Single(x =>
+                        x.Transition.Triggers.FirstOrDefault()!.Code == trigger),
                 Data = data
             };
         }
 
-        public async Task<ProcessResult> Fire(string key,
-            int action,
-            Dictionary<string, object> data = null)
+        public async Task<FlowResult> CiaoAndTriggerAsync(string flowKey, Trigger trigger, Dictionary<object, object> data = null)
         {
-            var processExecution = (await _processExecutionService.Get()).SingleOrDefault();
+            return await CiaoAndTriggerAsync(flowKey, trigger.Code, data);
+        }
 
+        public async Task<FlowInstance> Ciao(Flow flow)
+        {
+            var flowInstance = await _flowInstanceService.InitializeFlowInstance(flow);
+
+            return flowInstance;
+        }
+
+        public async Task<FlowInstance> Ciao(string flowKey)
+        {
+            var flow = await _flowService.GetByKey(key: flowKey);
+
+            return await Ciao(flow);
+        }
+
+        public async Task<FlowResult> TriggerAsync(FlowInstance flowInstance, int triggerCode,
+            Dictionary<object, object> data = null)
+        {
             try
             {
-                if (processExecution is null)
-                {
-                    var process = (await _processService.Get(key: key))
-                        .SingleOrDefault();
-                    if (process is null)
-                    {
-                        throw new FlowCiaoException("Invalid flow key!");
-                    }
+                await Task.CompletedTask;
+                ValidateTriggerable(flowInstance, triggerCode);
 
-                    processExecution = await _processExecutionService.InitializeProcessExecution(process);
-                }
-
-                //var activeProcessStep = processExecution.ExecutionSteps
-                //    .SingleOrDefault(x => !x.IsCompleted);
-
-                var activeProcessStep = processExecution.ActiveExecutionStep;
-                if (activeProcessStep is null)
-                {
-                    throw new FlowCiaoProcessExecutionException("No active steps to fire");
-                }
-
-                if (activeProcessStep.Details
-                        .SingleOrDefault(x => x.Transition.Actions.FirstOrDefault()!.Code == action) is null)
-                {
-                    throw new FlowCiaoProcessExecutionException("Action is invalid!");
-                }
-
-                var processStepContext = InitiateContext(action, data, processExecution, processExecution.ActiveExecutionStep);
-                var handlers = _processHandlerFactory.BuildHandlers();
-
-                var result = handlers.Peek().Handle(processStepContext);
+                var flowStepContext = InitializeContext(triggerCode, data, flowInstance);
+                var result = _flowHandlerFactory
+                    .BuildHandlers()
+                    .Peek()
+                    .Handle(flowStepContext);
 
                 return result;
             }
             catch (Exception exception)
             {
-                return new ProcessResult
-                {
-                    Status = ProcessResultStatus.Failed,
-                    Message = exception.Message
-                };
+                return new FlowResult(FlowResultStatus.Failed,
+                    $"Firing flow occurred error and operations would be rolled back: {exception.Message}");
             }
         }
-        
-        public async Task<State> GetFLowState(string key)
-        {
-            var processExecution = (await _processExecutionService.Get()).SingleOrDefault();
-            if (processExecution is null)
-            {
-                var process = (await _processService.Get(key: key))
-                        .SingleOrDefault();
-                if (process is null)
-                {
-                    throw new FlowCiaoException("Invalid key!");
-                }
 
-                processExecution = await _processExecutionService.InitializeProcessExecution(process);
+        public async Task<FlowResult> TriggerAsync(FlowInstance flowInstance, Trigger trigger, Dictionary<object, object> data = null)
+        {
+            return await TriggerAsync(flowInstance, trigger.Code, data);
+        }
+
+        public async Task<FlowResult> TriggerAsync(Guid flowInstanceId, int triggerCode,
+            Dictionary<object, object> data = null)
+        {
+            var flowInstance = await _flowInstanceService.GetById(id: flowInstanceId);
+
+            return await TriggerAsync(flowInstance, triggerCode, data);
+        }
+
+        public async Task<FlowResult> CiaoAndTriggerAsync(string flowKey,
+            int trigger,
+            Dictionary<object, object> data = null)
+        {
+            var flowInstance = await Ciao(flowKey);
+
+            return await TriggerAsync(flowInstance, trigger, data);
+        }
+
+        private static void ValidateTriggerable(FlowInstance flowInstance, int triggerCode)
+        {
+            if (flowInstance is null)
+            {
+                throw new FlowCiaoException("Invalid ProcessInstance id!");
             }
 
-            return processExecution.State;
+            if (flowInstance.ActiveInstanceStep is null)
+            {
+                throw new FlowCiaoExecutionException("No active steps to fire");
+            }
+
+            if (flowInstance.ActiveInstanceStep.Details
+                    .SingleOrDefault(x => x.Transition.Triggers.FirstOrDefault()!.Code == triggerCode) is null)
+            {
+                throw new FlowCiaoExecutionException("Trigger is invalid!");
+            }
         }
     }
 }

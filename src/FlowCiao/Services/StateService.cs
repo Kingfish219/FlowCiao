@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
-using FlowCiao.Exceptions;
-using FlowCiao.Models.Flow;
+using FlowCiao.Models;
+using FlowCiao.Models.Core;
 using FlowCiao.Persistence.Interfaces;
+using FlowCiao.Utils;
 
 namespace FlowCiao.Services
 {
@@ -11,34 +12,29 @@ namespace FlowCiao.Services
         private readonly IStateRepository _stateRepository;
         private readonly ActivityService _activityService;
 
-        public StateService(IStateRepository stateRepository
-                        , ActivityService activityService
-            )
+        public StateService(IStateRepository stateRepository, ActivityService activityService)
         {
             _stateRepository = stateRepository;
             _activityService = activityService;
         }
 
-        public async Task<Guid> Modify(State state)
+        public async Task<FuncResult<Guid>> Modify(State state)
         {
-            var stateId = await _stateRepository.Modify(state);
-            if (stateId == default)
+            if (!state.Activities.IsNullOrEmpty())
             {
-                throw new FlowCiaoPersistencyException("State");
-            }
-
-            state.Activities?.ForEach(activity =>
-            {
-                var result = _activityService.Modify(activity).GetAwaiter().GetResult();
-                if (result == default)
+                foreach (var activity in state.Activities)
                 {
-                    throw new FlowCiaoPersistencyException("State Activity");
+                    var activityResult = await _activityService.Modify(activity);
+                    if (activityResult == default)
+                    {
+                        return new FuncResult<Guid>(false, "Modifying Activity failed");
+                    }
                 }
-
-                _stateRepository.AssociateActivities(state, activity).GetAwaiter().GetResult();
-            });
-
-            return stateId;
+            }
+            
+            var result = await _stateRepository.Modify(state);
+            
+            return new FuncResult<Guid>(true, data: result);
         }
     }
 }

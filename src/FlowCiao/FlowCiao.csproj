@@ -30,7 +30,7 @@
 
 	<ItemGroup>
 		<None Remove="Persistence\Providers\SqlServer\Migration\00.Schemas\0000-Create FlowCiao-Up.sql" />
-		<None Remove="Persistence\Providers\SqlServer\Migration\01.Tables\0000-Create Action-UP.sql" />
+		<None Remove="Persistence\Providers\SqlServer\Migration\01.Tables\0000-Create Trigger-UP.sql" />
 		<None Remove="Persistence\Providers\SqlServer\Migration\01.Tables\0001-Create ActionType-UP.sql" />
 		<None Remove="Persistence\Providers\SqlServer\Migration\01.Tables\0002-Create ActiveProcessStep-UP.sql" />
 		<None Remove="Persistence\Providers\SqlServer\Migration\01.Tables\0003-Create Activity-UP.sql" />
@@ -42,7 +42,6 @@
 		<None Remove="Persistence\Providers\SqlServer\Migration\01.Tables\0009-Create State-UP.sql" />
 		<None Remove="Persistence\Providers\SqlServer\Migration\01.Tables\0010-Create Transition-UP.sql" />
 		<None Remove="Persistence\Providers\SqlServer\Migration\01.Tables\0011-Create TransitionAction-UP.sql" />
-		<None Remove="Persistence\Providers\SqlServer\Migration\01.Tables\0012-Create TransitionActivity-UP.sql" />
 		<None Remove="Persistence\Providers\SqlServer\Migration\01.Tables\0013-Create StateActivity-UP.sql" />
 		<None Remove="Persistence\Providers\SqlServer\Migration\01.Tables\0014-Create ProcessStepHistory-UP.sql" />
 		<None Remove="Persistence\Providers\SqlServer\Migration\01.Tables\0015-Create ProcessExecution-UP.sql" />
@@ -60,57 +59,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Resource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0000-Create Action-UP.sql" />
-		<Resource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0001-Create ActionType-UP.sql" />
-		<Resource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0002-Create ActiveProcessStep-UP.sql" />
-		<Resource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0003-Create Activity-UP.sql" />
-		<Resource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0004-Create ActivityType-UP.sql" />
-		<Resource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0005-Create Process-UP.sql" />
-		<Resource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0006-Create ProcessStepComment-UP.sql" />
-		<Resource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0007-Create ProcessStepHistory-UP.sql" />
-		<Resource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0008-Create ProcessStepHistoryActivity-UP.sql" />
-		<Resource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0009-Create State-UP.sql" />
-		<Resource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0010-Create Transition-UP.sql" />
-		<Resource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0011-Create TransitionAction-UP.sql" />
-		<Resource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0012-Create TransitionActivity-UP.sql" />
+		<None Remove="Persistence\Providers\SqlServer\Migration\01.Tables\0012-Create TransitionActivity-UP.sql" />
+		<None Remove="Persistence\Providers\SqlServer\Migration\02.Stored Procedures\0004-Create usp_Trigger_Modify-UP.sql" />
+		<None Remove="Persistence\Providers\SqlServer\Migration\02.Stored Procedures\0003-Create usp_TransitionTrigger_Modify-UP.sql" />
+		<None Remove="Persistence\Providers\SqlServer\Migration\01.Tables\0011-Create TransitionTrigger-UP.sql" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0000-Create Action-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0001-Create ActionType-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0002-Create ActiveProcessStep-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0003-Create Activity-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0004-Create ActivityType-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0005-Create Process-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0006-Create ProcessStepComment-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0007-Create ProcessStepHistory-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0008-Create ProcessStepHistoryActivity-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0009-Create State-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0010-Create Transition-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0011-Create TransitionAction-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0012-Create TransitionActivity-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0013-Create StateActivity-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0014-Create ProcessStepHistory-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0015-Create ProcessExecution-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0016-Create ProcessExecutionStep-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\01.Tables\0017-Create ProcessExecutionStepDetail-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\02.Stored Procedures\0000-Create usp_State_Modify-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\02.Stored Procedures\0001-Create usp_Transition_Modify-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\02.Stored Procedures\0002-Create usp_Process_Modify-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\02.Stored Procedures\0003-Create usp_TransitionAction_Modify-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\02.Stored Procedures\0004-Create usp_Action_Modify-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\02.Stored Procedures\0005-Create usp_TransitionActivity_Modify-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\02.Stored Procedures\0007-Create usp_Activity_Modify-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\02.Stored Procedures\0006-Create usp_StateActivity_Modify-UP.sql" />
-		<EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\02.Stored Procedures\0008-Create usp_ProcessExecution_Modify-UP.sql" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Dapper" Version="2.0.35" />
-		<PackageReference Include="Dapper.Contrib" Version="2.0.35" />
-		<PackageReference Include="Dapper.FluentMap" Version="1.8.1" />
-		<PackageReference Include="dbup-core" Version="5.0.10" />
-		<PackageReference Include="dbup-sqlserver" Version="5.0.8" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.28" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.28">
+		  <PrivateAssets>all</PrivateAssets>
+		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.28" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
@@ -122,9 +83,14 @@
 			<PackagePath>\</PackagePath>
 		</None>
 	</ItemGroup>
+	
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
 
 	<ItemGroup>
-	  <EmbeddedResource Include="Persistence\Providers\SqlServer\Migration\00.Schemas\0000-Create FlowCiao-Up.sql" />
+	  <Folder Include="Persistence\Providers\Rdbms\SqlServer\Migrations\" />
 	</ItemGroup>
 
 </Project>

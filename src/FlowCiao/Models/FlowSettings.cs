@@ -1,43 +1,37 @@
 ﻿using System;
-using System.Data;
-using Microsoft.Data.SqlClient;
+using FlowCiao.Persistence.Providers.Rdbms.SqlServer;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace FlowCiao.Models
 {
     public class FlowSettings
     {
+        private readonly IServiceCollection _serviceCollection;
         public bool PersistFlow { get; private set; }
-        public FlowPersistenceSettings PersistenceSettings { get; set; }
+        private FlowSqlServerPersistenceSettings PersistenceSettings { get; set; }
 
-        public FlowSettings Persist(Action<FlowPersistenceSettings> settings)
+        public FlowSettings(IServiceCollection serviceCollection)
+        {
+            _serviceCollection = serviceCollection;
+        }
+        
+        public FlowSettings Persist(Action<FlowSqlServerPersistenceSettings> settings)
         {
             PersistFlow = true;
-            PersistenceSettings = new FlowPersistenceSettings();
+            PersistenceSettings = new FlowSqlServerPersistenceSettings(_serviceCollection);
             settings(PersistenceSettings);
             
             return this;
         }
         
-        // public FlowPersistenceSettings Persist()
-        // {
-        //     PersistFlow = true;
-        //     PersistenceSettings = new FlowPersistenceSettings();
-        //
-        //     return PersistenceSettings;
-        // }
-    }
-
-    public class FlowPersistenceSettings
-    {
-        public string ConnectionString { get; private set; }
-        public void UseSqlServer(string connectionString)
+        internal void Migrate(IServiceScope serviceScope)
         {
-            ConnectionString = connectionString;
-        }
-
-        public IDbConnection GetDbConnection()
-        {
-            return new SqlConnection(ConnectionString);
+            if (!PersistFlow)
+            {
+                return;
+            }
+            
+            PersistenceSettings.Migrate(serviceScope);
         }
     }
 }

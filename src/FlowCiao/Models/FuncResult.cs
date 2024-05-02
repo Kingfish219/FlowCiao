@@ -1,22 +1,27 @@
-﻿
-namespace FlowCiao.Models
+﻿namespace FlowCiao.Models
 {
     public class FuncResult
     {
-        public bool Success { get; set; } = true;
-        public int Code { get; set; }
-        public string Title { get; set; }
-        public string Message { get; set; }
-        public int StatusCode { get; set; }
+        public FuncResult(bool success, string message = default, int code = default)
+        {
+            Success = success;
+            Code = code;
+            Message = message;
+        }
+
+        public bool Success { get; }
+        public int Code { get; }
+        public string Message { get; }
     }
 
-    public class FuncResult<T>
+    public class FuncResult<T> : FuncResult
     {
-        public bool Success { get; set; } = true;
-        public int Code { get; set; }
-        public string Title { get; set; }
-        public string Message { get; set; }
-        public int StatusCode { get; set; }
-        public T Data { get; set; }
+        public FuncResult(bool success, string message = default, int code = default, T data = default)
+            : base(success, message, code)
+        {
+            Data = data;
+        }
+
+        public T Data { get; }
     }
 }

@@ -1,45 +1,65 @@
 ﻿using System;
 using System.Collections.Generic;
-using FlowCiao.Builders;
-using FlowCiao.Exceptions;
-using FlowCiao.Handlers;
+using FlowCiao.Builder;
+using FlowCiao.Builder.Serialization;
+using FlowCiao.Builder.Serialization.Serializers;
+using FlowCiao.Handle;
+using FlowCiao.Interfaces;
 using FlowCiao.Models;
-using FlowCiao.Models.Flow;
+using FlowCiao.Models.Core;
+using FlowCiao.Models.Execution;
 using FlowCiao.Operators;
 using FlowCiao.Persistence.Interfaces;
 using FlowCiao.Persistence.Providers.Cache;
 using FlowCiao.Persistence.Providers.Cache.Repositories;
-using FlowCiao.Persistence.Providers.SqlServer;
-using FlowCiao.Persistence.Providers.SqlServer.Repositories;
 using FlowCiao.Services;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FlowCiao
 {
     public static class ServiceCollectionProvider
     {
+        /// <summary>
+        /// Adds FlowCiao and its required components to your application
+        /// </summary>
         public static IServiceCollection AddFlowCiao(this IServiceCollection services,
             Action<FlowSettings> settings)
         {
-            var flowSettings = new FlowSettings();
+            var flowSettings = new FlowSettings(services);
             settings.Invoke(flowSettings);
             services.AddSingleton(flowSettings);
 
             AddRepositories(services, flowSettings);
             AddServices(services);
-            services.AddTransient<IFlowBuilder, FlowBuilder>();
-            services.AddSingleton<IFlowOperator, FlowOperator>();
-            
+            AddInfra(services);
+
             return services;
+        }
+
+        private static void AddInfra(IServiceCollection services)
+        {
+            services.AddScoped<IFlowBuilder, FlowBuilder>();
+            services.AddScoped<IFlowStepBuilder, FlowStepBuilder>();
+            services.AddScoped<IFlowOperator, FlowOperator>();
+            services.AddScoped<FlowSerializerHelper>();
+            services.AddScoped<FlowJsonSerializer>();
+        }
+
+        public static void UseFlowCiao(this IApplicationBuilder applicationBuilder)
+        {
+            using var scope = applicationBuilder.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
+                .CreateScope();
+            var flowSettings = scope.ServiceProvider.GetService<FlowSettings>();
+            if (flowSettings.PersistFlow)
+            {
+                flowSettings.Migrate(scope);
+            }
         }
 
         private static void AddRepositories(IServiceCollection services, FlowSettings flowSettings)
         {
-            if (flowSettings.PersistFlow)
-            {
-                AddSqlServerRepositories(services, flowSettings);
-            }
-            else
+            if (!flowSettings.PersistFlow)
             {
                 AddCacheRepositories(services);
             }
@@ -48,51 +68,31 @@ namespace FlowCiao
         private static void AddCacheRepositories(IServiceCollection services)
         {
             var flowHub = new FlowHub();
-            flowHub.Initiate(new List<Process>(),
-                new List<ProcessExecution>(),
+            flowHub.Initiate(new List<Flow>(),
+                new List<FlowInstance>(),
                 new List<State>(),
                 new List<Transition>(),
                 new List<Activity>(),
-                new List<ProcessAction>());
+                new List<Trigger>());
 
             services.AddSingleton(flowHub);
-            services.AddTransient<ITransitionRepository, TransitionCacheRepository>();
-            services.AddTransient<IStateRepository, StateCacheRepository>();
-            services.AddTransient<IActionRepository, ActionCacheRepository>();
-            services.AddTransient<IActivityRepository, ActivityCacheRepository>();
-            services.AddTransient<ILogRepository, LogCacheRepository>();
-            services.AddTransient<IProcessExecutionRepository, ProcessExecutionCacheRepository>();
-            services.AddTransient<IProcessRepository, ProcessCacheRepository>();
-        }
-
-        private static void AddSqlServerRepositories(IServiceCollection services, FlowSettings flowSettings)
-        {
-            DapperHelper.EnsureMappings();
-
-            var migration = new DbMigrationManager(flowSettings);
-            if (!migration.MigrateUp())
-            {
-                throw new FlowCiaoPersistencyException("Migration failed");
-            }
-
-            services.AddTransient<ITransitionRepository, TransitionRepository>();
-            services.AddTransient<IStateRepository, StateRepository>();
-            services.AddTransient<IActionRepository, ActionRepository>();
-            services.AddTransient<IActivityRepository, ActivityRepository>();
-            services.AddTransient<ILogRepository, LogRepository>();
-            services.AddTransient<IProcessExecutionRepository, ProcessExecutionRepository>();
-            services.AddTransient<IProcessRepository, ProcessRepository>();
+            services.AddScoped<ITransitionRepository, TransitionCacheRepository>();
+            services.AddScoped<IStateRepository, StateCacheRepository>();
+            services.AddScoped<ITriggerRepository, TriggerCacheRepository>();
+            services.AddScoped<IActivityRepository, ActivityCacheRepository>();
+            services.AddScoped<IFlowInstanceRepository, FlowInstanceCacheRepository>();
+            services.AddScoped<IFlowRepository, FlowCacheRepository>();
         }
 
         private static void AddServices(IServiceCollection services)
         {
-            services.AddTransient<ActivityService>();
-            services.AddTransient<TransitionService>();
-            services.AddTransient<StateService>();
-            services.AddTransient<IProcessService, ProcessService>();
-            services.AddTransient<ProcessExecutionService>();
-            services.AddTransient<ProcessHandlerFactory>();
-            services.AddTransient<ProcessExecutionService>();
+            services.AddScoped<ActivityService>();
+            services.AddScoped<TriggerService>();
+            services.AddScoped<TransitionService>();
+            services.AddScoped<StateService>();
+            services.AddScoped<FlowInstanceService>();
+            services.AddScoped<FlowHandlerFactory>();
+            services.AddScoped<FlowService>();
         }
     }
 }
