@@ -215,6 +215,7 @@ Remember, the server needs to be running to access the Swagger UI. If you stop i
 ## And the Juicy Part: Designer 🎨
 That's not all. FlowCiao Studio goes beyond being just a server. It also includes a **Designer**, providing a visual interface that makes flow creation intuitive and straightforward. Here is a peek at what it looks like:
 
+![designer](resources/designer.png)
 
 After running **Studio**, you can access the designer using this URL:\
 **http://localhost:9600/designer**
@@ -232,6 +233,8 @@ Here are some exciting features of it
 - **Customize Node Colors:** Use the color picker in the header to customize the colors of your nodes, enhancing visual clarity and organization.
 
 - **Register and Update Activities:** Utilize the "Activities" button to register or update activities from DLL files. These activities can be assigned as OnEntry or OnExit actions for each node in your flow.
+
+    ![designer-act](resources/desginer-act.png)
 
 - **Add OnEntry and OnExit Activities:** You can declare OnEntry and OnExit activities for a state by hovering and clicking on the activity icon which appears next to the state.
 
