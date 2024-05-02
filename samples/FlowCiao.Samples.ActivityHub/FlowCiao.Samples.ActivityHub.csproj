@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\FlowCiao\FlowCiao.csproj" />
+      <PackageReference Include="FlowCiao" Version="1.5.0" />
     </ItemGroup>
 
 </Project>
