@@ -5,7 +5,7 @@
 		<SccProvider>SAK</SccProvider>
 		<SccAuxPath>SAK</SccAuxPath>
 		<SccLocalPath>SAK</SccLocalPath>
-		<Version>1.0.4</Version>
+		<Version>1.5.0</Version>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -19,8 +19,8 @@
 		<Authors>Kingfish</Authors>
 		<PackageId>FlowCiao</PackageId>
 		<PackageIcon>Resources/FlowCiao.png</PackageIcon>
-		<AssemblyVersion>1.0.2</AssemblyVersion>
-		<FileVersion>1.0.2</FileVersion>
+		<AssemblyVersion>1.5.0</AssemblyVersion>
+		<FileVersion>1.5.0</FileVersion>
 		<VersionPrefix>1.0.2</VersionPrefix>
 	</PropertyGroup>
 
