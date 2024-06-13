@@ -24,10 +24,10 @@ namespace FlowCiao
         /// Adds FlowCiao and its required components to your application
         /// </summary>
         public static IServiceCollection AddFlowCiao(this IServiceCollection services,
-            Action<FlowSettings> settings)
+            Action<FlowSettings> settings = null)
         {
             var flowSettings = new FlowSettings(services);
-            settings.Invoke(flowSettings);
+            settings?.Invoke(flowSettings);
             services.AddSingleton(flowSettings);
 
             AddRepositories(services, flowSettings);

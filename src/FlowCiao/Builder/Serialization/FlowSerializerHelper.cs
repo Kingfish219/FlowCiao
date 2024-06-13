@@ -49,14 +49,14 @@ public class FlowSerializerHelper
                 AllowedStateCode = t.To.Code,
                 TriggerCode = t.Triggers.First().Code
             }).ToList(),
-            OnEntry = initialTransitions.First().From.Activities
+            OnEntry = initialTransitions.First().From.Activities?
                 .Select(a => new SerializedActivity
                 {
                     Name = a.Name,
                     ActorName = a.ActorName
                 })
                 .FirstOrDefault(),
-            OnExit = initialTransitions.First().Activities
+            OnExit = initialTransitions.First().Activities?
                 .Select(a => new SerializedActivity
                 {
                     Name = a.Name,

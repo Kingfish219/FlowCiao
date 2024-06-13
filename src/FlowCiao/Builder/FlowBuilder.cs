@@ -34,6 +34,7 @@ namespace FlowCiao.Builder
 
         public IFlowBuilder Initial(Action<IFlowStepBuilder> action)
         {
+            StepBuilders = new List<IFlowStepBuilder>();
             InitialStepBuilder = new FlowStepBuilder(_stateService, _transitionService);
             action(InitialStepBuilder);
             InitialStepBuilder.AsInitialStep();
