@@ -25,4 +25,8 @@
       <ProjectReference Include="..\..\..\src\FlowCiao\FlowCiao.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Fixtures\Flows\" />
+    </ItemGroup>
+
 </Project>

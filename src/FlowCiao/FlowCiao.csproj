@@ -88,9 +88,14 @@
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 	</ItemGroup>
 
-
 	<ItemGroup>
 	  <Folder Include="Persistence\Providers\Rdbms\SqlServer\Migrations\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+			<_Parameter1>$(MSBuildProjectName).UnitTests</_Parameter1>
+		</AssemblyAttribute>
 	</ItemGroup>
 
 </Project>
