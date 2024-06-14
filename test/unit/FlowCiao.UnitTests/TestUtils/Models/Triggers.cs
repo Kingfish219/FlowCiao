@@ -1,6 +1,6 @@
 ﻿using FlowCiao.Models.Core;
 
-namespace FlowCiao.UnitTests.Fixtures.Models;
+namespace FlowCiao.UnitTests.TestUtils.Models;
 
 public static class Triggers
 {

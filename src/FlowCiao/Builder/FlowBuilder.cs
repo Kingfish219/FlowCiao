@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FlowCiao.Builder.Serialization.Serializers;
 using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
+using FlowCiao.Interfaces.Builder;
 using FlowCiao.Models;
 using FlowCiao.Models.Core;
-using FlowCiao.Services;
+using FlowCiao.Services.Interfaces;
 using FlowCiao.Utils;
 using Newtonsoft.Json.Linq;
 
@@ -17,13 +17,13 @@ namespace FlowCiao.Builder
     {
         private List<IFlowStepBuilder> StepBuilders { get; set; }
         private IFlowStepBuilder InitialStepBuilder { get; set; }
-        private readonly FlowService _flowService;
-        private readonly StateService _stateService;
-        private readonly TransitionService _transitionService;
-        private readonly FlowJsonSerializer _flowJsonSerializer;
+        private readonly IFlowService _flowService;
+        private readonly IStateService _stateService;
+        private readonly ITransitionService _transitionService;
+        private readonly IFlowJsonSerializer _flowJsonSerializer;
 
-        public FlowBuilder(FlowService flowService, StateService stateService, TransitionService transitionService,
-            FlowJsonSerializer flowJsonSerializer)
+        public FlowBuilder(IFlowService flowService, IStateService stateService, ITransitionService transitionService,
+            IFlowJsonSerializer flowJsonSerializer)
         {
             StepBuilders = new List<IFlowStepBuilder>();
             _flowService = flowService;
@@ -170,7 +170,7 @@ namespace FlowCiao.Builder
             // ignored
         }
         
-        private async Task<FuncResult<Flow>> Persist(Flow flow)
+        public async Task<FuncResult<Flow>> Persist(Flow flow)
         {
             var existed = await _flowService.GetByKey(key: flow.Key);
             if (existed is not null)

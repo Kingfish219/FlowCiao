@@ -1,7 +1,7 @@
-﻿using FlowCiao.Interfaces;
-using FlowCiao.UnitTests.Fixtures.Models;
+﻿using FlowCiao.IntegrationTests.TestUtils.Models;
+using FlowCiao.Interfaces;
 
-namespace FlowCiao.UnitTests.Fixtures;
+namespace FlowCiao.IntegrationTests.TestUtils.Flows;
 
 public class SamplePhoneFlow : IFlowPlanner
 {

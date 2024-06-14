@@ -5,6 +5,7 @@ using FlowCiao.Builder.Serialization;
 using FlowCiao.Builder.Serialization.Serializers;
 using FlowCiao.Handle;
 using FlowCiao.Interfaces;
+using FlowCiao.Interfaces.Builder;
 using FlowCiao.Models;
 using FlowCiao.Models.Core;
 using FlowCiao.Models.Execution;
@@ -13,6 +14,7 @@ using FlowCiao.Persistence.Interfaces;
 using FlowCiao.Persistence.Providers.Cache;
 using FlowCiao.Persistence.Providers.Cache.Repositories;
 using FlowCiao.Services;
+using FlowCiao.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -43,7 +45,7 @@ namespace FlowCiao
             services.AddScoped<IFlowStepBuilder, FlowStepBuilder>();
             services.AddScoped<IFlowOperator, FlowOperator>();
             services.AddScoped<FlowSerializerHelper>();
-            services.AddScoped<FlowJsonSerializer>();
+            services.AddScoped<IFlowJsonSerializer, FlowJsonSerializer>();
         }
 
         public static void UseFlowCiao(this IApplicationBuilder applicationBuilder)
@@ -88,11 +90,11 @@ namespace FlowCiao
         {
             services.AddScoped<ActivityService>();
             services.AddScoped<TriggerService>();
-            services.AddScoped<TransitionService>();
-            services.AddScoped<StateService>();
+            services.AddScoped<ITransitionService, TransitionService>();
+            services.AddScoped<IStateService, StateService>();
             services.AddScoped<FlowInstanceService>();
             services.AddScoped<FlowHandlerFactory>();
-            services.AddScoped<FlowService>();
+            services.AddScoped<IFlowService, FlowService>();
         }
     }
 }

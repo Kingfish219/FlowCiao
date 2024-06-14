@@ -3,6 +3,7 @@ using FlowCiao.Models;
 using FlowCiao.Models.Execution;
 using FlowCiao.Persistence.Interfaces;
 using FlowCiao.Services;
+using FlowCiao.Services.Interfaces;
 
 namespace FlowCiao.Handle.Handlers
 {
@@ -11,7 +12,7 @@ namespace FlowCiao.Handle.Handlers
         private readonly FlowInstanceService _instanceService;
 
         public FlowStepFinalizerHandler(IFlowRepository flowRepository,
-            FlowService flowService,
+            IFlowService flowService,
             FlowInstanceService flowInstanceService) : base(flowRepository, flowService)
         {
             _instanceService = flowInstanceService;

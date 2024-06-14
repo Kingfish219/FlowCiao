@@ -3,6 +3,7 @@ using FlowCiao.Models;
 using FlowCiao.Models.Execution;
 using FlowCiao.Persistence.Interfaces;
 using FlowCiao.Services;
+using FlowCiao.Services.Interfaces;
 
 namespace FlowCiao.Handle
 {
@@ -12,12 +13,12 @@ namespace FlowCiao.Handle
         internal IFlowHandler PreviousHandler { get; private set; }
 
         protected readonly IFlowRepository FlowRepository;
-        protected readonly FlowService FlowService;
+        protected readonly IFlowService FlowService;
 
-        internal FlowHandler(IFlowRepository flowRepository, FlowService flowStepManager)
+        internal FlowHandler(IFlowRepository flowRepository, IFlowService flowService)
         {
             FlowRepository = flowRepository;
-            FlowService = flowStepManager;
+            FlowService = flowService;
         }
 
         public void SetNextHandler(IFlowHandler handler)

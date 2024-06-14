@@ -1,16 +1,43 @@
+using FlowCiao.Builder;
 using FlowCiao.Interfaces;
-using FlowCiao.UnitTests.Fixtures;
-using Microsoft.Extensions.DependencyInjection;
+using FlowCiao.Interfaces.Builder;
+using FlowCiao.Models;
+using FlowCiao.Models.Core;
+using FlowCiao.Services.Interfaces;
+using FlowCiao.UnitTests.TestUtils.Flows;
+using Moq;
 
 namespace FlowCiao.UnitTests.Builder;
 
-public class FlowBuilderTests : IClassFixture<ServiceProviderFixture>
+public class FlowBuilderTests
 {
     private readonly IFlowBuilder _flowBuilder;
     
-    public FlowBuilderTests(ServiceProviderFixture serviceProviderFixture)
+    public FlowBuilderTests()
     {
-        _flowBuilder = serviceProviderFixture.ServiceProvider.GetService<IFlowBuilder>();
+        var mockFlowService = new Mock<IFlowService>();
+        mockFlowService
+            .Setup(service => service.Modify(It.IsAny<Flow>()))
+            .Returns(Task.FromResult(Guid.NewGuid()));
+        
+        var mockStateService = new Mock<IStateService>();
+        mockStateService
+            .Setup(service => service.Modify(It.IsAny<State>()))
+            .Returns(Task.FromResult(new FuncResult<Guid>(true, data: Guid.NewGuid())));
+        
+        var mockTransitionService = new Mock<ITransitionService>();
+        mockTransitionService
+            .Setup(service => service.Modify(It.IsAny<Transition>()))
+            .Returns(Task.FromResult(new FuncResult<Guid>(true, data: Guid.NewGuid())));
+        
+        var mockFlowJsonSerializer = new Mock<IFlowJsonSerializer>();
+
+        _flowBuilder = new FlowBuilder(
+            mockFlowService.Object,
+            mockStateService.Object,
+            mockTransitionService.Object,
+            mockFlowJsonSerializer.Object
+        );
     }
     
     [Fact]
@@ -18,7 +45,7 @@ public class FlowBuilderTests : IClassFixture<ServiceProviderFixture>
     {
         var result = _flowBuilder.Build<SamplePhoneFlow>();
         
-        Assert.NotEqual(result.Id, default);
+        Assert.NotNull(result);
     }
     
     [Fact]
@@ -26,7 +53,7 @@ public class FlowBuilderTests : IClassFixture<ServiceProviderFixture>
     {
         var result = await _flowBuilder.BuildAsync<SamplePhoneFlow>();
         
-        Assert.NotEqual(result.Id, default);
+        Assert.NotNull(result);
     }
     
     [Fact]
@@ -36,7 +63,6 @@ public class FlowBuilderTests : IClassFixture<ServiceProviderFixture>
         
         var result = await _flowBuilder.BuildAsync<SamplePhoneFlow>();
         
-        Assert.NotEqual(result.Id, default);
         Assert.Equal(samplePhoneFlow.Key, result.Key);
         Assert.Single(result.InitialStates);
         Assert.Equal(4, result.States.Count);

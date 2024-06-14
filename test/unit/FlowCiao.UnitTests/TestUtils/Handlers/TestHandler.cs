@@ -2,13 +2,13 @@
 using FlowCiao.Models;
 using FlowCiao.Models.Execution;
 using FlowCiao.Persistence.Interfaces;
-using FlowCiao.Services;
+using FlowCiao.Services.Interfaces;
 
-namespace FlowCiao.UnitTests.Fixtures.Handlers;
+namespace FlowCiao.UnitTests.TestUtils.Handlers;
 
 internal class TestHandler : FlowHandler
 {
-    public TestHandler(IFlowRepository flowRepository, FlowService flowStepManager) : base(flowRepository, flowStepManager)
+    public TestHandler(IFlowRepository flowRepository, IFlowService flowStepManager) : base(flowRepository, flowStepManager)
     {
     }
 

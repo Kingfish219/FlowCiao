@@ -6,7 +6,7 @@ using FlowCiao.Interfaces;
 using FlowCiao.Models;
 using FlowCiao.Models.Builder;
 using FlowCiao.Models.Core;
-using FlowCiao.Services;
+using FlowCiao.Services.Interfaces;
 using FlowCiao.Utils;
 
 namespace FlowCiao.Builder
@@ -15,10 +15,10 @@ namespace FlowCiao.Builder
     {
         private FlowStep FlowStep { get; }
 
-        private readonly StateService _stateService;
-        private readonly TransitionService _transitionService;
+        private readonly IStateService _stateService;
+        private readonly ITransitionService _transitionService;
 
-        public FlowStepBuilder(StateService stateService, TransitionService transitionService)
+        public FlowStepBuilder(IStateService stateService, ITransitionService transitionService)
         {
             _stateService = stateService;
             _transitionService = transitionService;

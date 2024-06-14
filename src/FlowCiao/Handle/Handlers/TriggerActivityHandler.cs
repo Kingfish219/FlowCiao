@@ -2,14 +2,14 @@
 using FlowCiao.Models;
 using FlowCiao.Models.Execution;
 using FlowCiao.Persistence.Interfaces;
-using FlowCiao.Services;
+using FlowCiao.Services.Interfaces;
 
 namespace FlowCiao.Handle.Handlers
 {
     internal class TriggerActivityHandler : FlowHandler
     {
         public TriggerActivityHandler(IFlowRepository flowRepository
-            , FlowService flowService) : base(flowRepository, flowService)
+            , IFlowService flowService) : base(flowRepository, flowService)
         {
         }
 

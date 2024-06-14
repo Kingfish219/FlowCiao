@@ -4,13 +4,13 @@ using FlowCiao.Interfaces;
 using FlowCiao.Models;
 using FlowCiao.Models.Execution;
 using FlowCiao.Persistence.Interfaces;
-using FlowCiao.Services;
+using FlowCiao.Services.Interfaces;
 
 namespace FlowCiao.Handle.Handlers
 {
     internal class StateActivityHandler : FlowHandler
     {
-        public StateActivityHandler(IFlowRepository flowRepository, FlowService flowService) : base(flowRepository, flowService)
+        public StateActivityHandler(IFlowRepository flowRepository, IFlowService flowService) : base(flowRepository, flowService)
         {
         }
 

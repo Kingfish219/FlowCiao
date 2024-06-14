@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using FlowCiao.Models;
 using FlowCiao.Models.Core;
 
 namespace FlowCiao.Interfaces
@@ -14,5 +15,6 @@ namespace FlowCiao.Interfaces
         Task<Flow> BuildAsync<T>() where T : IFlowPlanner, new();
         Flow Build(IFlowPlanner flowPlanner);
         Task<Flow> BuildAsync(IFlowPlanner flowPlanner);
+        Task<FuncResult<Flow>> Persist(Flow flow);
     }
 }

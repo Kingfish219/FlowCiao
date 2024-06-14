@@ -4,13 +4,13 @@ using FlowCiao.Interfaces;
 using FlowCiao.Models;
 using FlowCiao.Models.Execution;
 using FlowCiao.Persistence.Interfaces;
-using FlowCiao.Services;
+using FlowCiao.Services.Interfaces;
 
 namespace FlowCiao.Handle.Handlers
 {
     internal class TransitionActivityHandler : FlowHandler
     {
-        public TransitionActivityHandler(IFlowRepository flowRepository, FlowService flowService) : base(flowRepository, flowService)
+        public TransitionActivityHandler(IFlowRepository flowRepository, IFlowService flowService) : base(flowRepository, flowService)
         {
         }
 
