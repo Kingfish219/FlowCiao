@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace FlowCiao.Tests.Fixtures;
+namespace FlowCiao.UnitTests.Fixtures;
 
 public class ServiceProviderFixture : IDisposable
 {

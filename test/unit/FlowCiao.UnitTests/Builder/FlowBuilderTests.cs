@@ -1,8 +1,8 @@
 using FlowCiao.Interfaces;
-using FlowCiao.Tests.Fixtures;
+using FlowCiao.UnitTests.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace FlowCiao.Tests.Builder;
+namespace FlowCiao.UnitTests.Builder;
 
 public class FlowBuilderTests : IClassFixture<ServiceProviderFixture>
 {
