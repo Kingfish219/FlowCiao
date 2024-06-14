@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
+using FlowCiao.Interfaces.Builder;
 using FlowCiao.Models.Builder.Serialized;
 using FlowCiao.Models.Core;
 using FlowCiao.Services;

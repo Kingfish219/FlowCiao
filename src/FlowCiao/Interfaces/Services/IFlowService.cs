@@ -5,7 +5,7 @@ using FlowCiao.Models;
 using FlowCiao.Models.Core;
 using FlowCiao.Models.Execution;
 
-namespace FlowCiao.Services.Interfaces;
+namespace FlowCiao.Interfaces.Services;
 
 internal interface IFlowService
 {

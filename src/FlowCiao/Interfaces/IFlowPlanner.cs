@@ -1,4 +1,6 @@
-﻿namespace FlowCiao.Interfaces
+﻿using FlowCiao.Interfaces.Builder;
+
+namespace FlowCiao.Interfaces
 {
     public interface IFlowPlanner
     {

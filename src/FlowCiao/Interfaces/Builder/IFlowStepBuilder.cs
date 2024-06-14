@@ -4,7 +4,7 @@ using FlowCiao.Models;
 using FlowCiao.Models.Builder;
 using FlowCiao.Models.Core;
 
-namespace FlowCiao.Interfaces
+namespace FlowCiao.Interfaces.Builder
 {
     public interface IFlowStepBuilder
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using FlowCiao.Interfaces.Persistence;
 using FlowCiao.Models.Core;
-using FlowCiao.Persistence.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories

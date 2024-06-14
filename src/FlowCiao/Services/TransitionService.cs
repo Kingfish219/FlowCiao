@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
+using FlowCiao.Interfaces.Persistence;
+using FlowCiao.Interfaces.Services;
 using FlowCiao.Models;
 using FlowCiao.Models.Core;
-using FlowCiao.Persistence.Interfaces;
-using FlowCiao.Services.Interfaces;
 using FlowCiao.Utils;
 
 namespace FlowCiao.Services

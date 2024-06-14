@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FlowCiao.Interfaces.Persistence;
 using FlowCiao.Models.Core;
-using FlowCiao.Persistence.Interfaces;
 using FlowCiao.Utils;
 using Microsoft.EntityFrameworkCore;
 

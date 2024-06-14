@@ -6,9 +6,9 @@ using System.Reflection;
 using System.Threading.Tasks;
 using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
+using FlowCiao.Interfaces.Persistence;
 using FlowCiao.Models;
 using FlowCiao.Models.Core;
-using FlowCiao.Persistence.Interfaces;
 
 namespace FlowCiao.Persistence.Providers.Cache.Repositories
 {

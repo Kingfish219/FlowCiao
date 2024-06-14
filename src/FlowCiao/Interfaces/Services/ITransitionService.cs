@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using FlowCiao.Models;
 using FlowCiao.Models.Core;
 
-namespace FlowCiao.Services.Interfaces;
+namespace FlowCiao.Interfaces.Services;
 
 public interface ITransitionService
 {
