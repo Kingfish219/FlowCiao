@@ -1,8 +1,8 @@
 ﻿using FlowCiao.Handle;
+using FlowCiao.Interfaces.Persistence;
+using FlowCiao.Interfaces.Services;
 using FlowCiao.Models;
 using FlowCiao.Models.Execution;
-using FlowCiao.Persistence.Interfaces;
-using FlowCiao.Services.Interfaces;
 
 namespace FlowCiao.UnitTests.TestUtils.Handlers;
 

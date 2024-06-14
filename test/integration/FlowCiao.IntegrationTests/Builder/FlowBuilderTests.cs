@@ -1,6 +1,7 @@
 using FlowCiao.IntegrationTests.Fixtures;
 using FlowCiao.IntegrationTests.TestUtils.Flows;
 using FlowCiao.Interfaces;
+using FlowCiao.Interfaces.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FlowCiao.IntegrationTests.Builder

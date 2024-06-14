@@ -7,12 +7,12 @@ using Moq;
 
 namespace FlowCiao.UnitTests.Handle.Handlers;
 
-public class TriggerHandlerTests
+public class TransitionHandlerTests
 {
     private readonly IFlowRepository _flowRepository;
     private readonly IFlowService _flowService;
     
-    public TriggerHandlerTests()
+    public TransitionHandlerTests()
     {
         var mockFlowRepository = new Mock<IFlowRepository>();
         var mockFlowService = new Mock<IFlowService>();
@@ -22,36 +22,19 @@ public class TriggerHandlerTests
     }
     
     [Fact]
-    public void Handle_ShouldWork()
+    public void Handle_ShouldFail()
     {
         var testHandler = new TestHandler(_flowRepository, _flowService);
-        var handler = new TriggerHandler(_flowRepository, _flowService);
+        var handler = new TransitionHandler(_flowRepository, _flowService);
         handler.SetNextHandler(testHandler);
         
         var context = new FlowStepContext
         {
             FlowInstanceStepDetail = new FlowInstanceStepDetail()
         };
-
+        
         var result = handler.Handle(context);
         
-        Assert.Equal("completed", result.Status);
-    }
-    
-    [Fact]
-    public void Handle_ShouldBeValid()
-    {
-        var testHandler = new TestHandler(_flowRepository, _flowService);
-        var handler = new TriggerHandler(_flowRepository, _flowService);
-        handler.SetNextHandler(testHandler);
-        
-        var context = new FlowStepContext
-        {
-            FlowInstanceStepDetail = new FlowInstanceStepDetail()
-        };
-
-        handler.Handle(context);
-        
-        Assert.True(context.FlowInstanceStepDetail.IsCompleted);
+        Assert.Equal("failed", result.Status);
     }
 }
