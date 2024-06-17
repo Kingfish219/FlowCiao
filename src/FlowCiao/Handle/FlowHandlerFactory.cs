@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using FlowCiao.Handle.Handlers;
 using FlowCiao.Interfaces.Persistence;
+using FlowCiao.Interfaces.Services;
 using FlowCiao.Services;
 
 namespace FlowCiao.Handle
@@ -8,11 +9,11 @@ namespace FlowCiao.Handle
     internal class FlowHandlerFactory
     {
         private readonly IFlowRepository _flowRepository;
-        private readonly FlowService _flowService;
+        private readonly IFlowService _flowService;
         private readonly FlowInstanceService _flowInstanceService;
 
         public FlowHandlerFactory(IFlowRepository flowRepository
-            , FlowService flowService,
+            , IFlowService flowService,
             FlowInstanceService flowInstanceService)
         {
             _flowRepository = flowRepository;
@@ -26,7 +27,7 @@ namespace FlowCiao.Handle
         }
 
         private Queue<FlowHandler> BuildDefaultHandlers(IFlowRepository flowRepository,
-            FlowService flowService,
+            IFlowService flowService,
             FlowInstanceService flowInstanceService)
         {
             var triggerHandler = new TriggerHandler(flowRepository, flowService);
