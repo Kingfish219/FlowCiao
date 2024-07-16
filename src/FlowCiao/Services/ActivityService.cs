@@ -6,13 +6,14 @@ using System.Threading.Tasks;
 using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
 using FlowCiao.Interfaces.Persistence;
+using FlowCiao.Interfaces.Services;
 using FlowCiao.Models;
 using FlowCiao.Models.Core;
 using FlowCiao.Utils;
 
 namespace FlowCiao.Services
 {
-    public class ActivityService
+    public class ActivityService : IActivityService
     {
         private readonly IActivityRepository _activityRepository;
 
