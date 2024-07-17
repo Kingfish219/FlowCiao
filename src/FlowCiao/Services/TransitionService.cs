@@ -12,11 +12,11 @@ namespace FlowCiao.Services
     {
         private readonly ITransitionRepository _transitionRepository;
         private readonly TriggerService _triggerService;
-        private readonly ActivityService _activityService;
+        private readonly IActivityService _activityService;
 
         public TransitionService(ITransitionRepository transitionRepository
                         , TriggerService triggerService
-                        , ActivityService activityService
+                        , IActivityService activityService
             )
         {
             _transitionRepository = transitionRepository;

@@ -11,9 +11,9 @@ namespace FlowCiao.Services
     public class StateService : IStateService
     {
         private readonly IStateRepository _stateRepository;
-        private readonly ActivityService _activityService;
+        private readonly IActivityService _activityService;
 
-        public StateService(IStateRepository stateRepository, ActivityService activityService)
+        public StateService(IStateRepository stateRepository, IActivityService activityService)
         {
             _stateRepository = stateRepository;
             _activityService = activityService;
