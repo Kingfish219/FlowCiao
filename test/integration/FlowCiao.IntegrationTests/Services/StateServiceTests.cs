@@ -48,18 +48,15 @@ namespace FlowCiao.IntegrationTests.Services
             }
 
             flow.Id = flowId;
-            
+
             var state = flow.States.First();
             state.Description = "test modified state at:" + DateTime.Now;
             state.Flow = flow;
             state.FlowId = flowId;
-            
+
             var result = await _stateService.Modify(state);
 
             Assert.NotEqual(default, result);
-
         }
-
     }
 }
-

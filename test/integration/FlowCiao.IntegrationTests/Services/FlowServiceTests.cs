@@ -1,7 +1,4 @@
-﻿using FlowCiao.Builder;
-using FlowCiao.IntegrationTests.Fixtures;
-using FlowCiao.Interfaces.Builder;
-using FlowCiao.Interfaces.Persistence;
+﻿using FlowCiao.IntegrationTests.Fixtures;
 using FlowCiao.Interfaces.Services;
 using FlowCiao.Models.Core;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +8,7 @@ namespace FlowCiao.IntegrationTests.Services
     public class FlowServiceTests : IClassFixture<ServiceProviderFixture>
     {
         private readonly IFlowService _flowService;
+
         public FlowServiceTests(ServiceProviderFixture serviceProviderFixture)
         {
             _flowService = serviceProviderFixture.ServiceProvider.GetService<IFlowService>();
@@ -26,19 +24,19 @@ namespace FlowCiao.IntegrationTests.Services
                 IsActive = true,
                 CreatedAt = DateTime.Now,
                 Transitions = new List<Transition>
-            {
-                new Transition
                 {
-                    From = new State(1, "State1") { IsInitial = true },
-                    To = new State(2, "State2"),
-                    Triggers = new List<Trigger> { new Trigger(1, "Trigger1") }
-                }
-            },
+                    new Transition
+                    {
+                        From = new State(1, "State1") { IsInitial = true },
+                        To = new State(2, "State2"),
+                        Triggers = new List<Trigger> { new Trigger(1, "Trigger1") }
+                    }
+                },
                 States = new List<State>
-            {
-                new State(1, "State1") { IsInitial = true },
-                new State(2, "State2")
-            }
+                {
+                    new State(1, "State1") { IsInitial = true },
+                    new State(2, "State2")
+                }
             };
             var result = await _flowService.Modify(flow);
 
