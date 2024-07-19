@@ -16,7 +16,9 @@ public class ServiceProviderFixture : IDisposable
             settings
             .Persist(persistenceSettings =>
             {
-                persistenceSettings.UseSqlServer("TrustServerCertificate=True;Integrated Security=True;Initial Catalog=FlowCiaoStudio;Data Source=.");
+                // persistenceSettings.UseSqlServer("TrustServerCertificate=True;Integrated Security=True;Initial Catalog=FlowCiaoStudio;Data Source=.");
+                persistenceSettings.UseInMemoryDatabase();
+                
             });
         });
         ServiceProvider = serviceCollection.BuildServiceProvider();

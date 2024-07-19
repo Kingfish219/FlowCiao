@@ -46,6 +46,29 @@ namespace FlowCiao.IntegrationTests.Services
         [Fact]
         public async Task GetAsync_ShouldWork()
         {
+            var flow = new Flow
+            {
+                Key = "flowKey",
+                Name = "flowName",
+                IsActive = true,
+                CreatedAt = DateTime.Now,
+                Transitions = new List<Transition>
+                {
+                    new Transition
+                    {
+                        From = new State(1, "State1") { IsInitial = true },
+                        To = new State(2, "State2"),
+                        Triggers = new List<Trigger> { new Trigger(1, "Trigger1") }
+                    }
+                },
+                States = new List<State>
+                {
+                    new State(1, "State1") { IsInitial = true },
+                    new State(2, "State2")
+                }
+            };
+            var resultFlow = await _flowService.Modify(flow);
+
             var result = await _flowService.Get();
 
             Assert.NotNull(result);
@@ -55,6 +78,29 @@ namespace FlowCiao.IntegrationTests.Services
         [Fact]
         public async Task GetByKeyAsync_ShouldWork()
         {
+            var flow = new Flow
+            {
+                Key = "flowKey",
+                Name = "flowName",
+                IsActive = true,
+                CreatedAt = DateTime.Now,
+                Transitions = new List<Transition>
+                {
+                    new Transition
+                    {
+                        From = new State(1, "State1") { IsInitial = true },
+                        To = new State(2, "State2"),
+                        Triggers = new List<Trigger> { new Trigger(1, "Trigger1") }
+                    }
+                },
+                States = new List<State>
+                {
+                    new State(1, "State1") { IsInitial = true },
+                    new State(2, "State2")
+                }
+            };
+            var resultFlow = await _flowService.Modify(flow);
+
             var result = await _flowService.GetByKey(key: "flowKey");
 
             Assert.NotEqual(default, result.Id);
