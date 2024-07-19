@@ -1,46 +1,62 @@
 ﻿using FlowCiao.IntegrationTests.Fixtures;
-using FlowCiao.IntegrationTests.TestUtils.Models;
 using FlowCiao.Interfaces.Persistence;
 using FlowCiao.Interfaces.Services;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FlowCiao.Models.Core;
 
 namespace FlowCiao.IntegrationTests.Services
 {
     public class StateServiceTests : IClassFixture<ServiceProviderFixture>
     {
-        private readonly IStateRepository _stateRepository;
-        private readonly IActivityService _activityService;
+        private readonly IStateService _stateService;
+        private readonly IFlowService _flowService;
 
         public StateServiceTests(ServiceProviderFixture serviceProviderFixture)
         {
-            _stateRepository = serviceProviderFixture.ServiceProvider.GetService<IStateRepository>();
-            _activityService = serviceProviderFixture.ServiceProvider.GetService<IActivityService>();
+            _stateService = serviceProviderFixture.ServiceProvider.GetService<IStateService>();
+            _flowService = serviceProviderFixture.ServiceProvider.GetService<IFlowService>();
         }
 
         [Fact]
         public async Task ModifyAsync_ShouldWork()
         {
-            var state = States.Idle;
-            if (state.Activities is null || state.Activities.Count == 0)
+            var flow = new Flow
             {
-                foreach (var activity in state.Activities)
+                Key = "flowKey",
+                Name = "flowName",
+                IsActive = true,
+                CreatedAt = DateTime.Now,
+                Transitions = new List<Transition>
                 {
-                    var activityResult = await _activityService.Modify(activity);
-                    if (activityResult == default)
+                    new Transition
                     {
-                        Assert.Fail("Modifying Activity failed");
+                        From = new State(1, "State1") { IsInitial = true },
+                        To = new State(2, "State2"),
+                        Triggers = new List<Trigger> { new Trigger(1, "Trigger1") }
                     }
+                },
+                States = new List<State>
+                {
+                    new State(1, "State1") { IsInitial = true },
+                    new State(2, "State2")
                 }
+            };
+            var flowId = await _flowService.Modify(flow);
+            if (flowId == default)
+            {
+                Assert.Fail("modified flow failed");
             }
 
-            var result = await _stateRepository.Modify(state);
+            flow.Id = flowId;
+            
+            var state = flow.States.First();
+            state.Description = "test modified state at:" + DateTime.Now;
+            state.Flow = flow;
+            state.FlowId = flowId;
+            
+            var result = await _stateService.Modify(state);
 
-            Assert.NotEqual(result, default);
+            Assert.NotEqual(default, result);
 
         }
 

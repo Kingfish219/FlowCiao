@@ -39,7 +39,7 @@ namespace FlowCiao.Services
 
         public async Task<FuncResult> RegisterActivity(string actorName, byte[] actorContent)
         {
-            if (!actorName.EndsWith(".dll"))
+            if (!actorName.EndsWith(".dll") || actorContent.Length == 0)
             {
                 throw new FlowCiaoException("Invalid file");
             }

@@ -10,10 +10,10 @@ namespace FlowCiao.IntegrationTests.Services
 {
     public class FlowServiceTests : IClassFixture<ServiceProviderFixture>
     {
-        private readonly IFlowRepository _flowRepository;
+        private readonly IFlowService _flowService;
         public FlowServiceTests(ServiceProviderFixture serviceProviderFixture)
         {
-            _flowRepository = serviceProviderFixture.ServiceProvider.GetService<IFlowRepository>();
+            _flowService = serviceProviderFixture.ServiceProvider.GetService<IFlowService>();
         }
 
         [Fact]
@@ -40,7 +40,7 @@ namespace FlowCiao.IntegrationTests.Services
                 new State(2, "State2")
             }
             };
-            var result = await _flowRepository.Modify(flow);
+            var result = await _flowService.Modify(flow);
 
             Assert.NotEqual(default, result);
         }
@@ -48,7 +48,7 @@ namespace FlowCiao.IntegrationTests.Services
         [Fact]
         public async Task GetAsync_ShouldWork()
         {
-            var result = await _flowRepository.Get();
+            var result = await _flowService.Get();
 
             Assert.NotNull(result);
             Assert.Contains("flowKey", result.Select(x => x.Key));
@@ -57,7 +57,7 @@ namespace FlowCiao.IntegrationTests.Services
         [Fact]
         public async Task GetByKeyAsync_ShouldWork()
         {
-            var result = await _flowRepository.GetByKey(key: "flowKey");
+            var result = await _flowService.GetByKey(key: "flowKey");
 
             Assert.NotEqual(default, result.Id);
         }
