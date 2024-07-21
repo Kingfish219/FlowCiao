@@ -7,15 +7,16 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace FlowCiao.IntegrationTests.Services;
 
+[Collection("Sequential")]
 public class ActivityServiceTests : IClassFixture<ServiceProviderFixture>
 {
     private readonly IActivityService _activityService;
-    
+
     public ActivityServiceTests(ServiceProviderFixture serviceProviderFixture)
     {
         _activityService = serviceProviderFixture.ServiceProvider.GetService<IActivityService>();
     }
-    
+
     [Fact]
     public async Task RegisterActivity_ShouldThrowException_WhenActorNameIsInvalid()
     {
@@ -32,15 +33,15 @@ public class ActivityServiceTests : IClassFixture<ServiceProviderFixture>
         var actorContent = Array.Empty<byte>();
         await Assert.ThrowsAsync<FlowCiaoException>(() => _activityService.RegisterActivity(actorName, actorContent));
     }
-  
+
     [Fact]
     public async Task RegisterActivity_ShouldRegisterActivitiesSuccessfully()
     {
-        string actorName = "FlowCiao.Samples.ActivityHub.dll";
-        byte[] actorContent = File.ReadAllBytes("TestUtils/Resource/FlowCiao.Samples.ActivityHub.dll");
+        var actorName = "FlowCiao.Samples.ActivityHub.dll";
+        var actorContent = await File.ReadAllBytesAsync("TestUtils/Resource/FlowCiao.Samples.ActivityHub.dll");
 
         var result = await _activityService.RegisterActivity(actorName, actorContent);
-    
+
         Assert.True(result.Success);
         Assert.Equal("Activities registered successfully", result.Message);
     }

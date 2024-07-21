@@ -29,19 +29,6 @@ public class FlowSqlServerPersistenceSettings
         _serviceCollection.AddTransient<IFlowInstanceRepository, FlowInstanceRepository>();
         _serviceCollection.AddTransient<IFlowRepository, FlowRepository>();
     }
-    
-    public void UseInMemoryDatabase()
-    {
-        _serviceCollection.AddDbContext<FlowCiaoDbContext>(options =>
-            options.UseInMemoryDatabase(Guid.NewGuid().ToString()));
-
-        _serviceCollection.AddTransient<ITransitionRepository, TransitionRepository>();
-        _serviceCollection.AddTransient<IStateRepository, StateRepository>();
-        _serviceCollection.AddTransient<ITriggerRepository, TriggerRepository>();
-        _serviceCollection.AddTransient<IActivityRepository, ActivityRepository>();
-        _serviceCollection.AddTransient<IFlowInstanceRepository, FlowInstanceRepository>();
-        _serviceCollection.AddTransient<IFlowRepository, FlowRepository>();
-    }
 
     internal void Migrate(IServiceScope serviceScope)
     {

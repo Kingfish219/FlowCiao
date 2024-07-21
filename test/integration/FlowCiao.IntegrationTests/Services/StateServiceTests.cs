@@ -1,4 +1,5 @@
 ﻿using FlowCiao.IntegrationTests.Fixtures;
+using FlowCiao.IntegrationTests.TestUtils.Flows;
 using FlowCiao.Interfaces.Persistence;
 using FlowCiao.Interfaces.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -6,6 +7,7 @@ using FlowCiao.Models.Core;
 
 namespace FlowCiao.IntegrationTests.Services
 {
+    [Collection("Sequential")]
     public class StateServiceTests : IClassFixture<ServiceProviderFixture>
     {
         private readonly IStateService _stateService;
@@ -20,27 +22,7 @@ namespace FlowCiao.IntegrationTests.Services
         [Fact]
         public async Task ModifyAsync_ShouldWork()
         {
-            var flow = new Flow
-            {
-                Key = "flowKey",
-                Name = "flowName",
-                IsActive = true,
-                CreatedAt = DateTime.Now,
-                Transitions = new List<Transition>
-                {
-                    new Transition
-                    {
-                        From = new State(1, "State1") { IsInitial = true },
-                        To = new State(2, "State2"),
-                        Triggers = new List<Trigger> { new Trigger(1, "Trigger1") }
-                    }
-                },
-                States = new List<State>
-                {
-                    new State(1, "State1") { IsInitial = true },
-                    new State(2, "State2")
-                }
-            };
+            var flow = Sample.Flow;
             var flowId = await _flowService.Modify(flow);
             if (flowId == default)
             {
