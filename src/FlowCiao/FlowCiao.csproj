@@ -5,7 +5,7 @@
 		<SccProvider>SAK</SccProvider>
 		<SccAuxPath>SAK</SccAuxPath>
 		<SccLocalPath>SAK</SccLocalPath>
-		<Version>1.5.0</Version>
+		<Version>1.5.1</Version>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -16,11 +16,11 @@
 		<RepositoryUrl>https://github.com/Kingfish219/FlowCiao</RepositoryUrl>
 		<PackageTags>workflow;state;machine;flow;ciao;</PackageTags>
 		<PackAsTool>False</PackAsTool>
-		<Authors>Kingfish</Authors>
+		<Authors>Kingfish, Maryam</Authors>
 		<PackageId>FlowCiao</PackageId>
 		<PackageIcon>Resources/FlowCiao.png</PackageIcon>
-		<AssemblyVersion>1.5.0</AssemblyVersion>
-		<FileVersion>1.5.0</FileVersion>
+		<AssemblyVersion>1.5.1</AssemblyVersion>
+		<FileVersion>1.5.1</FileVersion>
 		<VersionPrefix>1.0.2</VersionPrefix>
 	</PropertyGroup>
 
