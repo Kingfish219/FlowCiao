@@ -11,11 +11,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bb9e3724-90e8-4d7c-8419-7292fd268022" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/appsettings.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.FlowCiao/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FlowCiao/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/Fixtures/ServiceProviderFixture.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/Fixtures/ServiceProviderFixture.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/FlowCiao.IntegrationTests.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/FlowCiao.IntegrationTests.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/Services/TransitionServiceTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/Services/TransitionServiceTests.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,27 +69,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;.NET Launch Settings Profile.FlowCiao.Studio.executor&quot;: &quot;Debug&quot;,
-    &quot;600e0e5a-34a4-4494-9016-980c8ee75a53.executor&quot;: &quot;Debug&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;dd4c6dec-eb41-401e-8f04-9566b0219a2a.executor&quot;: &quot;Debug&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;#13 on feature/complete-tests&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    ".NET Launch Settings Profile.FlowCiao.Studio.executor": "Debug",
+    "600e0e5a-34a4-4494-9016-980c8ee75a53.executor": "Debug",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "dd4c6dec-eb41-401e-8f04-9566b0219a2a.executor": "Debug",
+    "git-widget-placeholder": "#13 on feature/complete-tests",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "RiderTestRunnerUnitTestingPageId",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;rider.external.source.directories&quot;: [
-      &quot;C:\\Users\\User\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\DecompilerCache&quot;,
-      &quot;C:\\Users\\User\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\SourcesCache&quot;,
-      &quot;C:\\Users\\User\\AppData\\Local\\Symbols\\src&quot;
+  "keyToStringList": {
+    "rider.external.source.directories": [
+      "C:\\Users\\User\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\DecompilerCache",
+      "C:\\Users\\User\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\SourcesCache",
+      "C:\\Users\\User\\AppData\\Local\\Symbols\\src"
     ]
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected=".NET Launch Settings Profile.FlowCiao.Studio">
     <configuration name="FlowCiao.Studio" type="LaunchSettings" factoryName=".NET Launch Settings Profile" temporary="true">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/src/FlowCiao.Studio/FlowCiao.Studio.csproj" />
@@ -126,6 +124,7 @@
       <workItem from="1721490996502" duration="15661000" />
       <workItem from="1721588673480" duration="8427000" />
       <workItem from="1721665041963" duration="4288000" />
+      <workItem from="1721673691151" duration="184000" />
     </task>
     <servers />
   </component>
@@ -337,13 +336,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/Fixtures/ServiceProviderFixture.cs</url>
-          <line>20</line>
+          <line>24</line>
           <properties documentPath="C:\Projects\FlowCiao\test\integration\FlowCiao.IntegrationTests\Fixtures\ServiceProviderFixture.cs" containingFunctionPresentation="Constructor 'ServiceProviderFixture'">
             <startOffsets>
-              <option value="586" />
+              <option value="712" />
             </startOffsets>
             <endOffsets>
-              <option value="660" />
+              <option value="786" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="52" />
