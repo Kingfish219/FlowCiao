@@ -5,15 +5,9 @@
     <img src="src\FlowCiao\Resources\FlowCiao.png" alt="Logo" width="164">
     <br />
     <br />
-    
-    <br />
-    <img src="https://github.com/Kingfish219/FlowCiao/actions/workflows/FlowCiaoBuildWorkflow.yml/badge.svg"/>
-    
-    <br />
-    <br />
+       
 </div>
 
-    <br />
 FlowCiao is a lightweight, user-friendly and extensible .NET state machine workflow that simplifies the creation and management of state machines in your applications. With FlowCiao, you can effortlessly define and control the flow of your application's logic. It will also contains a powerful server and a designer interface which will be explained later in the document.\
 \
 We prefer the term **"Flow"** instead of **"State Machine"**. Why "Flow"? because The term "Flow" captures the dynamic essence of the process. Like water flowing through paths, a Flow progresses through states guided by rules and conditions, making it a more intuitive term.
