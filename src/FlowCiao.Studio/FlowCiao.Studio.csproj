@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="Asp.Versioning.Http" Version="6.5.0" />
     <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="6.4.0" />
+    <PackageReference Include="FlowCiao" Version="1.5.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.28">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -18,10 +19,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\designer\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\FlowCiao\FlowCiao.csproj" />
   </ItemGroup>
 
 </Project>
