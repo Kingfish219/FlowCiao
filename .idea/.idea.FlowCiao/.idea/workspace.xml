@@ -10,16 +10,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="bb9e3724-90e8-4d7c-8419-7292fd268022" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.FlowCiao/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FlowCiao/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FlowCiao.Studio/Controllers/ActivityController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/FlowCiao.Studio/Controllers/ActivityController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FlowCiao.Studio/Controllers/BuilderController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/FlowCiao.Studio/Controllers/BuilderController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FlowCiao.Studio/Controllers/FlowController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/FlowCiao.Studio/Controllers/FlowController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FlowCiao.Studio/FlowCiao.Studio.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/FlowCiao.Studio/FlowCiao.Studio.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FlowCiao/Interfaces/Services/IFlowService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/FlowCiao/Interfaces/Services/IFlowService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FlowCiao/Models/Execution/FlowInstanceStep.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/FlowCiao/Models/Execution/FlowInstanceStep.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FlowCiao/Services/FlowService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/FlowCiao/Services/FlowService.cs" afterDir="false" />
-    </list>
+    <list default="true" id="bb9e3724-90e8-4d7c-8419-7292fd268022" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
