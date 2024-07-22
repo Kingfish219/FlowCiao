@@ -10,7 +10,7 @@ using FlowCiao.Models.Execution;
 
 namespace FlowCiao.Services
 {
-    internal class FlowService : IFlowService
+    public class FlowService : IFlowService
     {
         private readonly IFlowRepository _flowRepository;
 

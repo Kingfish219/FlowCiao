@@ -44,7 +44,7 @@ namespace FlowCiao
             services.AddScoped<IFlowBuilder, FlowBuilder>();
             services.AddScoped<IFlowStepBuilder, FlowStepBuilder>();
             services.AddScoped<IFlowOperator, FlowOperator>();
-            services.AddScoped<FlowSerializerHelper>();
+            services.AddScoped<IFlowSerializerHelper, FlowSerializerHelper>();
             services.AddScoped<IFlowJsonSerializer, FlowJsonSerializer>();
         }
 
@@ -88,7 +88,7 @@ namespace FlowCiao
 
         private static void AddServices(IServiceCollection services)
         {
-            services.AddScoped<ActivityService>();
+            services.AddScoped<IActivityService, ActivityService>();
             services.AddScoped<TriggerService>();
             services.AddScoped<ITransitionService, TransitionService>();
             services.AddScoped<IStateService, StateService>();

@@ -1,4 +1,5 @@
-﻿using FlowCiao.Services;
+﻿using FlowCiao.Interfaces.Services;
+using FlowCiao.Services;
 using FlowCiao.Studio.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,9 +8,9 @@ namespace FlowCiao.Studio.Controllers;
 [Route("flowciao/api/activity")]
 public class ActivityController : FlowCiaoControllerBase
 {
-    private readonly ActivityService _activityService;
+    private readonly IActivityService _activityService;
 
-    public ActivityController(ActivityService activityService)
+    public ActivityController(IActivityService activityService)
     {
         _activityService = activityService;
     }
