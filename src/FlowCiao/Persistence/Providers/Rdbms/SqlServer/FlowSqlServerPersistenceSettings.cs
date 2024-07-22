@@ -1,4 +1,5 @@
-using FlowCiao.Persistence.Interfaces;
+using System;
+using FlowCiao.Interfaces.Persistence;
 using FlowCiao.Persistence.Providers.Rdbms.SqlServer.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;

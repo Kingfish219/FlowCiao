@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using FlowCiao.Models.Execution;
 
-namespace FlowCiao.Persistence.Interfaces
+namespace FlowCiao.Interfaces.Persistence
 {
     public interface IFlowInstanceRepository
     {

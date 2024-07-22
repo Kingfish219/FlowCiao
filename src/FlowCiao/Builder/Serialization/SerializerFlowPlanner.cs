@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
+using FlowCiao.Interfaces.Builder;
+using FlowCiao.Interfaces.Services;
 using FlowCiao.Models.Builder.Serialized;
 using FlowCiao.Models.Core;
 using FlowCiao.Services;
@@ -13,10 +15,10 @@ namespace FlowCiao.Builder.Serialization;
 internal class SerializerFlowPlanner : IFlowPlanner
 {
     private readonly SerializedFlow _serializedFlow;
-    private readonly ActivityService _activityService;
+    private readonly IActivityService _activityService;
     public string Key { get; set; }
 
-    public SerializerFlowPlanner(SerializedFlow serializedFlow, ActivityService activityService)
+    public SerializerFlowPlanner(SerializedFlow serializedFlow, IActivityService activityService)
     {
         _serializedFlow = serializedFlow;
         _activityService = activityService;

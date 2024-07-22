@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using FlowCiao.Exceptions;
 using FlowCiao.Handle;
+using FlowCiao.Interfaces.Services;
 using FlowCiao.Models;
 using FlowCiao.Models.Core;
 using FlowCiao.Models.Execution;
@@ -15,11 +16,11 @@ namespace FlowCiao.Operators
     {
         private readonly FlowInstanceService _flowInstanceService;
         private readonly FlowHandlerFactory _flowHandlerFactory;
-        private readonly FlowService _flowService;
+        private readonly IFlowService _flowService;
 
         public FlowOperator(FlowHandlerFactory flowHandlerFactory,
             FlowInstanceService flowInstanceService,
-            FlowService flowService)
+            IFlowService flowService)
         {
             _flowHandlerFactory = flowHandlerFactory;
             _flowInstanceService = flowInstanceService;

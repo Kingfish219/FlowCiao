@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using FlowCiao.Models.Core;
 
-namespace FlowCiao.Persistence.Interfaces
+namespace FlowCiao.Interfaces.Persistence
 {
     public interface IStateRepository
     {

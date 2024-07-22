@@ -5,11 +5,13 @@ using FlowCiao.Builder.Serialization;
 using FlowCiao.Builder.Serialization.Serializers;
 using FlowCiao.Handle;
 using FlowCiao.Interfaces;
+using FlowCiao.Interfaces.Builder;
+using FlowCiao.Interfaces.Persistence;
+using FlowCiao.Interfaces.Services;
 using FlowCiao.Models;
 using FlowCiao.Models.Core;
 using FlowCiao.Models.Execution;
 using FlowCiao.Operators;
-using FlowCiao.Persistence.Interfaces;
 using FlowCiao.Persistence.Providers.Cache;
 using FlowCiao.Persistence.Providers.Cache.Repositories;
 using FlowCiao.Services;
@@ -24,10 +26,10 @@ namespace FlowCiao
         /// Adds FlowCiao and its required components to your application
         /// </summary>
         public static IServiceCollection AddFlowCiao(this IServiceCollection services,
-            Action<FlowSettings> settings)
+            Action<FlowSettings> settings = null)
         {
             var flowSettings = new FlowSettings(services);
-            settings.Invoke(flowSettings);
+            settings?.Invoke(flowSettings);
             services.AddSingleton(flowSettings);
 
             AddRepositories(services, flowSettings);
@@ -42,8 +44,8 @@ namespace FlowCiao
             services.AddScoped<IFlowBuilder, FlowBuilder>();
             services.AddScoped<IFlowStepBuilder, FlowStepBuilder>();
             services.AddScoped<IFlowOperator, FlowOperator>();
-            services.AddScoped<FlowSerializerHelper>();
-            services.AddScoped<FlowJsonSerializer>();
+            services.AddScoped<IFlowSerializerHelper, FlowSerializerHelper>();
+            services.AddScoped<IFlowJsonSerializer, FlowJsonSerializer>();
         }
 
         public static void UseFlowCiao(this IApplicationBuilder applicationBuilder)
@@ -86,13 +88,13 @@ namespace FlowCiao
 
         private static void AddServices(IServiceCollection services)
         {
-            services.AddScoped<ActivityService>();
+            services.AddScoped<IActivityService, ActivityService>();
             services.AddScoped<TriggerService>();
-            services.AddScoped<TransitionService>();
-            services.AddScoped<StateService>();
+            services.AddScoped<ITransitionService, TransitionService>();
+            services.AddScoped<IStateService, StateService>();
             services.AddScoped<FlowInstanceService>();
             services.AddScoped<FlowHandlerFactory>();
-            services.AddScoped<FlowService>();
+            services.AddScoped<IFlowService, FlowService>();
         }
     }
 }

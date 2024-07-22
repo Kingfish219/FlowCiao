@@ -1,15 +1,16 @@
 using FlowCiao.Interfaces;
+using FlowCiao.Interfaces.Builder;
 using FlowCiao.Models.Builder.Serialized;
 using FlowCiao.Models.Core;
 using Newtonsoft.Json;
 
 namespace FlowCiao.Builder.Serialization.Serializers;
 
-public class FlowJsonSerializer
+public class FlowJsonSerializer : IFlowJsonSerializer
 {
-    private readonly FlowSerializerHelper _flowSerializerHelper;
+    private readonly IFlowSerializerHelper _flowSerializerHelper;
 
-    public FlowJsonSerializer(FlowSerializerHelper flowSerializerHelper)
+    public FlowJsonSerializer(IFlowSerializerHelper flowSerializerHelper)
     {
         _flowSerializerHelper = flowSerializerHelper;
     }

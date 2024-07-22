@@ -5,14 +5,15 @@ using System.Reflection;
 using System.Threading.Tasks;
 using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
+using FlowCiao.Interfaces.Persistence;
+using FlowCiao.Interfaces.Services;
 using FlowCiao.Models;
 using FlowCiao.Models.Core;
-using FlowCiao.Persistence.Interfaces;
 using FlowCiao.Utils;
 
 namespace FlowCiao.Services
 {
-    public class ActivityService
+    public class ActivityService : IActivityService
     {
         private readonly IActivityRepository _activityRepository;
 
@@ -38,7 +39,7 @@ namespace FlowCiao.Services
 
         public async Task<FuncResult> RegisterActivity(string actorName, byte[] actorContent)
         {
-            if (!actorName.EndsWith(".dll"))
+            if (!actorName.EndsWith(".dll") || actorContent.Length == 0)
             {
                 throw new FlowCiaoException("Invalid file");
             }

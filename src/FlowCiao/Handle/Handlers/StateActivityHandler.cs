@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Linq;
+using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
+using FlowCiao.Interfaces.Persistence;
+using FlowCiao.Interfaces.Services;
 using FlowCiao.Models;
 using FlowCiao.Models.Execution;
-using FlowCiao.Persistence.Interfaces;
-using FlowCiao.Services;
 
 namespace FlowCiao.Handle.Handlers
 {
     internal class StateActivityHandler : FlowHandler
     {
-        public StateActivityHandler(IFlowRepository flowRepository, FlowService flowService) : base(flowRepository, flowService)
+        public StateActivityHandler(IFlowRepository flowRepository, IFlowService flowService) : base(flowRepository, flowService)
         {
         }
 
@@ -30,13 +31,17 @@ namespace FlowCiao.Handle.Handlers
 
                 foreach (var type in types)
                 {
-                    var activity = (IFlowActivity)Activator.CreateInstance(type);
-                    if (activity is null ||
-                            !activities.Exists(x => x.Actor.GetType().Equals(activity.GetType())))
+                    if (!activities.Exists(x => x.ActorName.Equals(type.FullName, StringComparison.InvariantCulture)))
                     {
                         continue;
                     }
-
+                    
+                    var activity = (IFlowActivity)Activator.CreateInstance(type);
+                    if (activity is null)
+                    {
+                        throw new FlowCiaoExecutionException($"Activity with type: {type.FullName} not found");
+                    }
+                    
                     activity.Execute(flowStepContext);
                 }
 

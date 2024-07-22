@@ -1,16 +1,16 @@
 ﻿using System;
 using FlowCiao.Exceptions;
+using FlowCiao.Interfaces.Persistence;
+using FlowCiao.Interfaces.Services;
 using FlowCiao.Models;
 using FlowCiao.Models.Execution;
-using FlowCiao.Persistence.Interfaces;
-using FlowCiao.Services;
 
 namespace FlowCiao.Handle.Handlers
 {
     internal class TransitionHandler : FlowHandler
     {
         public TransitionHandler(IFlowRepository flowRepository
-            , FlowService flowService) : base(flowRepository, flowService)
+            , IFlowService flowService) : base(flowRepository, flowService)
         {
         }
 

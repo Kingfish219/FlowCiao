@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Threading.Tasks;
+using FlowCiao.Interfaces.Persistence;
+using FlowCiao.Interfaces.Services;
 using FlowCiao.Models;
 using FlowCiao.Models.Core;
-using FlowCiao.Persistence.Interfaces;
 using FlowCiao.Utils;
 
 namespace FlowCiao.Services
 {
-    public class StateService
+    public class StateService : IStateService
     {
         private readonly IStateRepository _stateRepository;
-        private readonly ActivityService _activityService;
+        private readonly IActivityService _activityService;
 
-        public StateService(IStateRepository stateRepository, ActivityService activityService)
+        public StateService(IStateRepository stateRepository, IActivityService activityService)
         {
             _stateRepository = stateRepository;
             _activityService = activityService;

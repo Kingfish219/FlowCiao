@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FlowCiao.Interfaces.Persistence;
+using FlowCiao.Interfaces.Services;
 using FlowCiao.Models;
 using FlowCiao.Models.Core;
 using FlowCiao.Models.Execution;
-using FlowCiao.Persistence.Interfaces;
 
 namespace FlowCiao.Services
 {
-    public class FlowService
+    public class FlowService : IFlowService
     {
         private readonly IFlowRepository _flowRepository;
 
@@ -33,7 +34,7 @@ namespace FlowCiao.Services
             return await _flowRepository.Modify(flow);
         }
 
-        internal FlowInstanceStep GenerateFlowStep(Flow flow, State state)
+        public FlowInstanceStep GenerateFlowStep(Flow flow, State state)
         {
             var flowExecutionStep = new FlowInstanceStep
             {

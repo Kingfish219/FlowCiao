@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Threading.Tasks;
+using FlowCiao.Interfaces.Persistence;
+using FlowCiao.Interfaces.Services;
 using FlowCiao.Models;
 using FlowCiao.Models.Core;
-using FlowCiao.Persistence.Interfaces;
 using FlowCiao.Utils;
 
 namespace FlowCiao.Services
 {
-    public class TransitionService
+    public class TransitionService : ITransitionService
     {
         private readonly ITransitionRepository _transitionRepository;
         private readonly TriggerService _triggerService;
-        private readonly ActivityService _activityService;
+        private readonly IActivityService _activityService;
 
         public TransitionService(ITransitionRepository transitionRepository
                         , TriggerService triggerService
-                        , ActivityService activityService
+                        , IActivityService activityService
             )
         {
             _transitionRepository = transitionRepository;

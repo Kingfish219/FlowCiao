@@ -1,4 +1,6 @@
 using FlowCiao.Builder.Serialization.Serializers;
+using FlowCiao.Interfaces.Builder;
+using FlowCiao.Interfaces.Services;
 using FlowCiao.Operators;
 using FlowCiao.Services;
 using FlowCiao.Studio.Models;
@@ -11,12 +13,12 @@ namespace FlowCiao.Studio.Controllers
     public class FlowController : ControllerBase
     {
         private readonly IFlowOperator _operator;
-        private readonly FlowService _flowService;
-        private readonly FlowJsonSerializer _flowJsonSerializer;
+        private readonly IFlowService _flowService;
+        private readonly IFlowJsonSerializer _flowJsonSerializer;
         private readonly FlowInstanceService _flowInstanceService;
 
-        public FlowController(IFlowOperator flowOperator, FlowService flowService,
-            FlowJsonSerializer flowJsonSerializer,
+        public FlowController(IFlowOperator flowOperator, IFlowService flowService,
+            IFlowJsonSerializer flowJsonSerializer,
             FlowInstanceService flowInstanceService)
         {
             _operator = flowOperator;

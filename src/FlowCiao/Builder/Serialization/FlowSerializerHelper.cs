@@ -1,6 +1,8 @@
 using System.Linq;
 using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
+using FlowCiao.Interfaces.Builder;
+using FlowCiao.Interfaces.Services;
 using FlowCiao.Models.Builder.Serialized;
 using FlowCiao.Models.Core;
 using FlowCiao.Services;
@@ -8,16 +10,16 @@ using FlowCiao.Utils;
 
 namespace FlowCiao.Builder.Serialization;
 
-public class FlowSerializerHelper
+public class FlowSerializerHelper : IFlowSerializerHelper
 {
-    private readonly ActivityService _activityService;
+    private readonly IActivityService _activityService;
 
-    public FlowSerializerHelper(ActivityService activityService)
+    public FlowSerializerHelper(IActivityService activityService)
     {
         _activityService = activityService;
     }
     
-    internal SerializedFlow CreateSerializedFlow(Flow flow)
+    public SerializedFlow CreateSerializedFlow(Flow flow)
     {
         var serializedFlow = new SerializedFlow
         {
@@ -49,14 +51,14 @@ public class FlowSerializerHelper
                 AllowedStateCode = t.To.Code,
                 TriggerCode = t.Triggers.First().Code
             }).ToList(),
-            OnEntry = initialTransitions.First().From.Activities
+            OnEntry = initialTransitions.First().From.Activities?
                 .Select(a => new SerializedActivity
                 {
                     Name = a.Name,
                     ActorName = a.ActorName
                 })
                 .FirstOrDefault(),
-            OnExit = initialTransitions.First().Activities
+            OnExit = initialTransitions.First().Activities?
                 .Select(a => new SerializedActivity
                 {
                     Name = a.Name,
@@ -104,7 +106,7 @@ public class FlowSerializerHelper
         return serializedFlow;
     }
 
-    internal IFlowPlanner CreateFlowPlanner(SerializedFlow serializedFlow)
+    public IFlowPlanner CreateFlowPlanner(SerializedFlow serializedFlow)
     {
         // var planner = new DefaultFlowPlanner(serializedFlow.Key, () =>
         // {

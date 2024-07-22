@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using FlowCiao.Exceptions;
 using FlowCiao.Interfaces;
+using FlowCiao.Interfaces.Builder;
+using FlowCiao.Interfaces.Services;
 using FlowCiao.Models;
 using FlowCiao.Models.Builder;
 using FlowCiao.Models.Core;
-using FlowCiao.Services;
 using FlowCiao.Utils;
 
 namespace FlowCiao.Builder
@@ -15,10 +16,10 @@ namespace FlowCiao.Builder
     {
         private FlowStep FlowStep { get; }
 
-        private readonly StateService _stateService;
-        private readonly TransitionService _transitionService;
+        private readonly IStateService _stateService;
+        private readonly ITransitionService _transitionService;
 
-        public FlowStepBuilder(StateService stateService, TransitionService transitionService)
+        public FlowStepBuilder(IStateService stateService, ITransitionService transitionService)
         {
             _stateService = stateService;
             _transitionService = transitionService;
