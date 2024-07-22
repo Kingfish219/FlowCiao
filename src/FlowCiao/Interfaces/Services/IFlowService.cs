@@ -7,7 +7,7 @@ using FlowCiao.Models.Execution;
 
 namespace FlowCiao.Interfaces.Services;
 
-internal interface IFlowService
+public interface IFlowService
 {
     Task<List<Flow>> Get();
     Task<Flow> GetByKey(Guid flowId = default, string key = default);
