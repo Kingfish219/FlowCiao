@@ -17,10 +17,10 @@ public class ServiceProviderFixture : IDisposable
         // var configuration = new ConfigurationBuilder()
         //     .AddJsonFile("appsettings.json")
         //     .Build();
+        
         var configuration = new ConfigurationBuilder()
             .AddEnvironmentVariables()
             .Build();
-
 
         var connectionString = configuration.GetConnectionString("FlowCiao_Test");
 

@@ -11,7 +11,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bb9e3724-90e8-4d7c-8419-7292fd268022" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.FlowCiao/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FlowCiao/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/Fixtures/ServiceProviderFixture.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/Fixtures/ServiceProviderFixture.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -124,7 +123,7 @@
       <workItem from="1721490996502" duration="15661000" />
       <workItem from="1721588673480" duration="8427000" />
       <workItem from="1721665041963" duration="4288000" />
-      <workItem from="1721673691151" duration="184000" />
+      <workItem from="1721673691151" duration="604000" />
     </task>
     <servers />
   </component>
@@ -339,10 +338,10 @@
           <line>24</line>
           <properties documentPath="C:\Projects\FlowCiao\test\integration\FlowCiao.IntegrationTests\Fixtures\ServiceProviderFixture.cs" containingFunctionPresentation="Constructor 'ServiceProviderFixture'">
             <startOffsets>
-              <option value="712" />
+              <option value="720" />
             </startOffsets>
             <endOffsets>
-              <option value="786" />
+              <option value="794" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="52" />
