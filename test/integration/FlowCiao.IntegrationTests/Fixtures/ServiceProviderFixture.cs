@@ -1,25 +1,29 @@
 ﻿using FlowCiao.Models;
 using FlowCiao.Persistence.Providers.Rdbms;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FlowCiao.IntegrationTests.Fixtures;
 
 public class ServiceProviderFixture : IDisposable
 {
-    private readonly string _connectionString =
-        "TrustServerCertificate=True;Integrated Security=True;Initial Catalog=FlowCiao_Test;Data Source=.";
-
     public ServiceProvider ServiceProvider { get; }
 
     public ServiceProviderFixture()
     {
         var serviceCollection = new ServiceCollection();
+        
+        var configuration = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+        var connectionString = configuration.GetConnectionString("FlowCiao_Test");
 
         serviceCollection.AddFlowCiao(settings =>
         {
             settings
-                .Persist(persistenceSettings => { persistenceSettings.UseSqlServer(_connectionString); });
+                .Persist(persistenceSettings => { persistenceSettings.UseSqlServer(connectionString); });
         });
         ServiceProvider = serviceCollection.BuildServiceProvider();
 

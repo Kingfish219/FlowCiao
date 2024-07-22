@@ -11,19 +11,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bb9e3724-90e8-4d7c-8419-7292fd268022" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/TestUtils/Flows/Sample.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/unit/FlowCiao.UnitTests/TestUtils/Flows/Sample.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/appsettings.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.FlowCiao/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FlowCiao/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FlowCiao/FlowCiao.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/src/FlowCiao/FlowCiao.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/FlowCiao/Persistence/Providers/Rdbms/SqlServer/FlowSqlServerPersistenceSettings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/src/FlowCiao/Persistence/Providers/Rdbms/SqlServer/FlowSqlServerPersistenceSettings.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/Builder/FlowBuilderTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/Builder/FlowBuilderTests.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/Fixtures/ServiceProviderFixture.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/Fixtures/ServiceProviderFixture.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/Operators/FlowOperatorTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/Operators/FlowOperatorTests.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/Services/ActivityServiceTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/Services/ActivityServiceTests.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/Services/FlowServiceTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/Services/FlowServiceTests.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/Services/StateServiceTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/Services/StateServiceTests.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/FlowCiao.IntegrationTests.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/FlowCiao.IntegrationTests.csproj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/Services/TransitionServiceTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/Services/TransitionServiceTests.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/unit/FlowCiao.UnitTests/Builder/Serialization/Serializers/FlowJsonSerializerTests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/test/unit/FlowCiao.UnitTests/Builder/Serialization/Serializers/FlowJsonSerializerTests.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,26 +47,13 @@
 }</component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/src/FlowCiao.Studio/wwwroot/designer/static/js/787.d7fc1af8.chunk.js.map" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Projects/FlowCiao/src/FlowCiao/Persistence/Providers/Rdbms/SqlServer/FlowSqlServerPersistenceSettings.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Projects/FlowCiao/src/FlowCiao/Persistence/Providers/Rdbms/SqlServer/FlowSqlServerPersistenceSettings.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Projects/FlowCiao/src/FlowCiao/Persistence/Providers/Rdbms/SqlServer/FlowSqlServerPersistenceSettings.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Projects/FlowCiao/test/integration/FlowCiao.IntegrationTests/Builder/FlowBuilderTests.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Projects/FlowCiao/test/integration/FlowCiao.IntegrationTests/Builder/FlowBuilderTests.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Projects/FlowCiao/test/integration/FlowCiao.IntegrationTests/Fixtures/ServiceProviderFixture.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Projects/FlowCiao/test/integration/FlowCiao.IntegrationTests/Fixtures/ServiceProviderFixture.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Projects/FlowCiao/test/integration/FlowCiao.IntegrationTests/Operators/FlowOperatorTests.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Projects/FlowCiao/test/integration/FlowCiao.IntegrationTests/Services/ActivityServiceTests.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Projects/FlowCiao/test/integration/FlowCiao.IntegrationTests/Services/FlowServiceTests.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Projects/FlowCiao/test/integration/FlowCiao.IntegrationTests/Services/StateServiceTests.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Projects/FlowCiao/test/integration/FlowCiao.IntegrationTests/Services/TransitionServiceTests.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Projects/FlowCiao/test/unit/FlowCiao.UnitTests/Builder/Serialization/Serializers/FlowJsonSerializerTests.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Projects/FlowCiao/test/unit/FlowCiao.UnitTests/Builder/Serialization/Serializers/FlowJsonSerializerTests.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/efcore/fcddaa8891f2e52d207ec47d1189bd9b39cc7147/src/EFCore.Relational/Storage/RelationalCommand.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/extensions/86e38007b27f3a464223908075c57f1d7f5ee649/src/DependencyInjection/DI/src/ServiceProvider.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/runtime/2a90daa2cc41ae8f11a2c1519cb8b235f609251a/src/libraries/System.Private.CoreLib/src/System/DateTime.Windows.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/runtime/2a90daa2cc41ae8f11a2c1519cb8b235f609251a/src/libraries/System.Private.CoreLib/src/System/DateTime.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/runtime/2a90daa2cc41ae8f11a2c1519cb8b235f609251a/src/libraries/System.Private.CoreLib/src/System/Guid.Windows.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/runtime/2a90daa2cc41ae8f11a2c1519cb8b235f609251a/src/libraries/System.Private.CoreLib/src/System/Runtime/CompilerServices/AsyncTaskMethodBuilderT.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/runtime/2a90daa2cc41ae8f11a2c1519cb8b235f609251a/src/libraries/System.Private.CoreLib/src/System/Runtime/ExceptionServices/ExceptionDispatchInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/runtime/2a90daa2cc41ae8f11a2c1519cb8b235f609251a/src/libraries/System.Private.CoreLib/src/System/Threading/ExecutionContext.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/runtime/2a90daa2cc41ae8f11a2c1519cb8b235f609251a/src/libraries/System.Private.CoreLib/src/System/Threading/Tasks/Task.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$USER_HOME$/AppData/Local/Symbols/src/dotnet/runtime/2a90daa2cc41ae8f11a2c1519cb8b235f609251a/src/libraries/System.Private.CoreLib/src/System/Threading/Tasks/TaskContinuation.cs" root0="SKIP_HIGHLIGHTING" />
@@ -145,7 +124,8 @@
       <option name="presentableId" value="Default" />
       <updated>1721490994815</updated>
       <workItem from="1721490996502" duration="15661000" />
-      <workItem from="1721588673480" duration="8265000" />
+      <workItem from="1721588673480" duration="8427000" />
+      <workItem from="1721665041963" duration="4288000" />
     </task>
     <servers />
   </component>
@@ -357,16 +337,16 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/test/integration/FlowCiao.IntegrationTests/Fixtures/ServiceProviderFixture.cs</url>
-          <line>32</line>
-          <properties documentPath="C:\Projects\FlowCiao\test\integration\FlowCiao.IntegrationTests\Fixtures\ServiceProviderFixture.cs" containingFunctionPresentation="Method 'Dispose'">
+          <line>20</line>
+          <properties documentPath="C:\Projects\FlowCiao\test\integration\FlowCiao.IntegrationTests\Fixtures\ServiceProviderFixture.cs" containingFunctionPresentation="Constructor 'ServiceProviderFixture'">
             <startOffsets>
-              <option value="1056" />
+              <option value="586" />
             </startOffsets>
             <endOffsets>
-              <option value="1105" />
+              <option value="660" />
             </endOffsets>
           </properties>
-          <option name="timeStamp" value="51" />
+          <option name="timeStamp" value="52" />
         </line-breakpoint>
         <breakpoint enabled="true" type="DotNet Exception Breakpoints">
           <properties exception="Xunit.Sdk.TestClassException" isInternal="false" displayValue="TestClassException" namespaceName="Xunit.Sdk">

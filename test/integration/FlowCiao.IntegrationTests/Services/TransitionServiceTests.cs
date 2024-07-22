@@ -21,13 +21,13 @@ public class TransitionServiceTests : IClassFixture<ServiceProviderFixture>
     }
 
     [Fact]
-    public async Task ModifyAsync_shouldWork()
+    public async Task ModifyAsync_ShouldWork()
     {
         var flow = Sample.Flow;
         var flowId = await _flowService.Modify(flow);
         if (flowId == default)
         {
-            Assert.Fail("modified flow failed");
+            Assert.Fail("Flow Modified Failed");
         }
 
         flow.Id = flowId;
@@ -39,7 +39,7 @@ public class TransitionServiceTests : IClassFixture<ServiceProviderFixture>
         fromState.Id = fromStateResult.Data;
         if (fromState.Id == default)
         {
-            Assert.Fail("getting flow state failed");
+            Assert.Fail("Getting Flow State Failed");
         }
 
         var toState = flow.States.Last();
@@ -49,7 +49,7 @@ public class TransitionServiceTests : IClassFixture<ServiceProviderFixture>
         toState.Id = toStateResult.Data;
         if (toState.Id == default)
         {
-            Assert.Fail("getting flow state failed");
+            Assert.Fail("Getting Flow State Failed");
         }
 
         var transition = flow.Transitions.First();
