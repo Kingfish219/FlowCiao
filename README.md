@@ -8,7 +8,7 @@
        
 </div>
 
-[![FlowCiao Tests](https://github.com/Kingfish219/FlowCiao/actions/workflows/FlowCiaoBuildWorkflow.yml/badge.svg)](https://github.com/Kingfish219/FlowCiao/actions/workflows/FlowCiaoBuildWorkflow.yml)
+[![FlowCiao Tests](https://github.com/Kingfish219/FlowCiao/actions/workflows/FlowCiaoBuildWorkflow.yml/badge.svg)](https://github.com/Kingfish219/FlowCiao/actions/workflows/FlowCiaoBuildWorkflow.yml) [![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/FlowCiao)](https://www.nuget.org/packages/FlowCiao/)
 
 FlowCiao is a lightweight, user-friendly and extensible .NET state machine workflow that simplifies the creation and management of state machines in your applications. With FlowCiao, you can effortlessly define and control the flow of your application's logic. It will also contains a powerful server and a designer interface which will be explained later in the document.\
 \
